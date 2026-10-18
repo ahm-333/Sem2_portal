@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل المادة | منصة الترم الثاني</title>
+  
+  <!-- خطوط جوجل (Cairo & JetBrains Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- مكتبة Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- أيقونات Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- التنسيقات المخصصة والأوضاع الثلاثة والمسارين -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ========================================== -->
+  <!-- 1. شريط التنقل العلوي (Navbar) -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 z-50 glass-header border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- العودة للرئيسية واللوجو -->
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="p-2.5 rounded-xl glass-panel border hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 text-xs font-bold" title="العودة للرئيسية">
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">جميع المواد</span>
+        </a>
+
+        <div class="h-6 w-px bg-[var(--border-subtle)] hidden sm:block"></div>
+
+        <div>
+          <span class="text-sm sm:text-base font-bold text-[var(--text-main)]" id="nav-subject-name">جارٍ التحميل...</span>
+          <p class="text-[11px] text-[var(--text-muted)] font-mono" id="nav-subject-code">---</p>
+        </div>
+      </div>
+
+      <!-- أزرار الأوضاع ومشاركة الرابط وتخصيص المجموعة -->
+      <div class="flex items-center gap-2">
+        <!-- زر تحديد وتغيير المجموعة والسكشن -->
+        <button 
+          data-open-profile-modal 
+          class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl glass-panel border flex items-center gap-1.5 text-xs font-bold text-indigo-400 hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all shadow-sm"
+          title="اضغط لتغيير مجموعتك أو سكشنك"
+        >
+          <span class="student-profile-badge">
+            <i data-lucide="user" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>مجموعتي</span>
+          </span>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-[var(--text-dim)]"></i>
+        </button>
+
+        <button id="share-btn" class="p-2 sm:px-3 sm:py-2 rounded-xl glass-panel border flex items-center gap-1.5 text-xs font-medium text-[var(--text-muted)] hover:text-indigo-400 hover:border-indigo-500/30 transition-all" title="مشاركة رابط المادة">
+          <i data-lucide="share-2" class="w-4 h-4"></i>
+          <span class="hidden md:inline">مشاركة</span>
+        </button>
+
+        <!-- رابط مستودع GitHub -->
+        <a 
+          href="https://github.com/ahm-333/Sem2_portal" 
+          id="portal-github-link"
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="p-2 sm:px-3 sm:py-2 rounded-xl glass-panel border flex items-center gap-1.5 text-xs font-bold text-[var(--text-main)] hover:text-indigo-400 hover:border-indigo-500/40 transition-all shadow-sm"
+          title="مستودع المشروع على GitHub"
+        >
+          <i data-lucide="github" class="w-4 h-4"></i>
+          <span class="hidden md:inline font-mono">GitHub</span>
+        </a>
+
+        <div class="p-1 rounded-xl glass-panel flex items-center gap-1 border">
+          <button data-theme-btn="dark" class="px-2.5 py-1.5 rounded-lg text-xs font-medium" title="الوضع الليلي">
+            <i data-lucide="moon" class="w-4 h-4"></i>
+          </button>
+          <button data-theme-btn="light" class="px-2.5 py-1.5 rounded-lg text-xs font-medium" title="الوضع النهاري">
+            <i data-lucide="sun" class="w-4 h-4"></i>
+          </button>
+          <button data-theme-btn="reading" class="px-2.5 py-1.5 rounded-lg text-xs font-medium" title="وضع القراءة">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- 2. محتوى صفحة المادة -->
+  <!-- ========================================== -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full" id="main-content">
+    
+    <!-- مسار التنقل (Breadcrumbs) والتبديل السريع بين المواد -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[var(--border-subtle)] text-xs">
+      <div class="flex items-center gap-2 text-[var(--text-muted)]">
+        <a href="index.html" class="hover:text-indigo-400">الرئيسية</a>
+        <span>/</span>
+        <span>مواد الترم الثاني</span>
+        <span>/</span>
+        <span class="text-[var(--text-main)] font-bold" id="crumb-subject-name">---</span>
+      </div>
+
+      <!-- قائمة منسدلة للانتقال السريع لمادة أخرى -->
+      <div class="flex items-center gap-2">
+        <span class="text-[var(--text-dim)]">الانتقال السريع:</span>
+        <select id="quick-course-select" class="glass-panel text-xs rounded-xl px-3 py-1.5 border text-[var(--text-main)] bg-[var(--bg-surface)] focus:outline-none">
+          <!-- يتم الملء تلقائياً بجميع المواد -->
+        </select>
+      </div>
+    </div>
+
+    <!-- رأس المادة الرئيسي -->
+    <div class="glass-panel rounded-3xl p-6 sm:p-8 border mb-8 relative overflow-hidden shadow-lg">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        
+        <div class="flex items-start gap-4">
+          <div id="subject-icon-box" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-lg flex-shrink-0">
+            <i data-lucide="book" class="w-8 h-8" id="subject-main-icon"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full border" id="subject-badge-code">---</span>
+              <span class="text-xs text-[var(--text-dim)]" id="subject-category">---</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-[var(--text-main)]" id="subject-title-en">---</h1>
+            <p class="text-sm font-semibold text-indigo-400 mb-2" id="subject-title-ar">---</p>
+            <p class="text-xs text-[var(--text-muted)] max-w-2xl leading-relaxed" id="subject-desc">---</p>
+          </div>
+        </div>
+
+        <!-- ملخص الدكتور والمعيد الخاص ببروفايل الطالب -->
+        <div class="p-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs space-y-2 min-w-[240px]">
+          <div class="flex items-center justify-between border-b border-[var(--border-subtle)] pb-2 mb-2">
+            <span class="text-[var(--text-dim)] font-medium">هيئة التدريس الخاصة بك:</span>
+            <button data-open-profile-modal class="text-[10px] text-indigo-400 hover:underline font-bold">تغيير</button>
+          </div>
+          <div class="flex items-center gap-2 text-[var(--text-main)]" id="subject-doctor-info">
+            <i data-lucide="graduation-cap" class="w-4 h-4 text-indigo-400 flex-shrink-0"></i>
+            <span id="subject-doctor" class="font-bold truncate">---</span>
+          </div>
+          <div class="flex items-center gap-2 text-[var(--text-muted)]" id="subject-ta-info">
+            <i data-lucide="user-check" class="w-4 h-4 text-cyan-400 flex-shrink-0"></i>
+            <span id="subject-ta" class="truncate">---</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. شريط اختيار المسار (طريق المحاضرة | طريق السكشن) -->
+    <!-- ========================================== -->
+    <div class="mb-8">
+      <div class="text-center mb-3">
+        <span class="text-xs text-[var(--text-dim)] font-semibold">اختر المسار الذي ترغب في مذاكرته الآن:</span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto p-2 rounded-2xl glass-panel border shadow-lg">
+        
+        <!-- زر طريق المحاضرة -->
+        <button 
+          data-track="lecture" 
+          class="track-btn active-track-lecture p-4 sm:p-5 rounded-2xl border text-right flex items-center gap-4 transition-all"
+        >
+          <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center flex-shrink-0 shadow-inner">
+            <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-0.5">
+              <span class="font-extrabold text-sm sm:text-base">طريق المحاضرة النظري</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold">Lecture Track</span>
+            </div>
+            <p class="text-xs text-[var(--text-muted)]">موقع الشرح المعتمد • سلايدات الدكاترة • امتحانات الفاينال</p>
+          </div>
+        </button>
+
+        <!-- زر طريق السكشن -->
+        <button 
+          data-track="section" 
+          class="track-btn p-4 sm:p-5 rounded-2xl border text-right flex items-center gap-4 transition-all border-[var(--border-subtle)] hover:border-cyan-500/40 text-[var(--text-muted)]"
+        >
+          <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 shadow-inner">
+            <i data-lucide="terminal" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-0.5">
+              <span class="font-extrabold text-sm sm:text-base">طريق السكشن والعملي</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">Lab Track</span>
+            </div>
+            <p class="text-xs text-[var(--text-muted)]">شيتات المعيدين • الأكواد البرمجية • التكليفات والـ Deadlines</p>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4. محتوى مسار المحاضرة (Lecture Track Panel) -->
+    <!-- ========================================== -->
+    <div id="track-panel-lecture" class="track-panel space-y-8">
+      
+      <!-- بانر موعد المحاضرة المعتمد لمجموعة الطالب -->
+      <div id="lecture-time-banner" class="p-4 rounded-2xl glass-panel border border-indigo-500/30 bg-indigo-500/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center flex-shrink-0 font-bold">
+            <i data-lucide="calendar-clock" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="font-bold text-[var(--text-main)] text-sm">موعد المحاضرة النظرية الرسمي لمجموعتك:</span>
+            <p class="text-[var(--text-muted)] mt-0.5" id="lecture-slot-desc">جارٍ التحميل...</p>
+          </div>
+        </div>
+        <button data-open-profile-modal class="text-indigo-400 hover:underline font-bold flex items-center gap-1 self-start sm:self-auto">
+          <span>تغيير المجموعة</span>
+          <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- البطل الرئيسي: موقع الشرح المعتمد للمادة -->
+      <div class="hero-explanation-card rounded-3xl p-6 sm:p-8 border shadow-xl">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+          <div class="max-w-3xl">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-xs font-bold text-indigo-400 flex items-center gap-1.5 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                موقع الشرح المعتمد للمادة (الأساس)
+              </span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold" id="exp-status">
+                متاح الآن
+              </span>
+            </div>
+
+            <h2 class="text-xl sm:text-2xl font-black text-[var(--text-main)] mb-2" id="exp-title">
+              ---
+            </h2>
+            <p class="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed mb-4" id="exp-desc">
+              ---
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-6" id="exp-features">
+              <!-- يتم الملء عبر JS -->
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row lg:flex-col gap-3 min-w-[220px]">
+            <a 
+              href="#" 
+              id="exp-main-btn" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-indigo-600 to-cyan-600 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-indigo-500/25 transition-all"
+            >
+              <span>فتح موقع الشرح التفاعلي</span>
+              <i data-lucide="external-link" class="w-4 h-4"></i>
+            </a>
+
+            <button 
+              id="toggle-preview-btn" 
+              class="w-full py-3 px-4 rounded-2xl glass-panel border text-xs sm:text-sm font-medium text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center gap-2"
+            >
+              <i data-lucide="eye" class="w-4 h-4"></i>
+              <span>معاينة الموقع داخل الصفحة</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- نافذة المعاينة المضمنة Iframe -->
+        <div id="preview-container" class="hidden mt-6 pt-6 border-t border-[var(--border-subtle)]">
+          <div class="flex items-center justify-between mb-3 text-xs text-[var(--text-muted)]">
+            <span class="flex items-center gap-1.5 font-bold">
+              <i data-lucide="monitor" class="w-4 h-4 text-indigo-400"></i>
+              معاينة موقع الشرح مباشرة:
+            </span>
+            <button id="close-preview-btn" class="hover:text-red-400 flex items-center gap-1 font-bold">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              إغلاق المعاينة
+            </button>
+          </div>
+          <div class="rounded-2xl overflow-hidden border border-[var(--border-subtle)] h-[600px] bg-black/20">
+            <iframe id="exp-iframe" src="" class="w-full h-full border-0" title="معاينة موقع الشرح"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- سجل المحاضرات والسلايدات النظري -->
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 border shadow-lg">
+        <div class="flex items-center justify-between mb-6 pb-3 border-b border-[var(--border-subtle)]">
+          <div>
+            <h3 class="text-lg font-bold text-[var(--text-main)] flex items-center gap-2">
+              <i data-lucide="book-open" class="w-5 h-5 text-indigo-400"></i>
+              سجل محاضرات وسلايدات المادة
+            </h3>
+            <p class="text-xs text-[var(--text-muted)]">سلايدات الـ PDF والتسجيلات الخاصة بمحاضرات الدكتور</p>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full glass-panel border text-indigo-400 font-mono font-bold" id="badge-lectures-count">0 محاضرات</span>
+        </div>
+
+        <div class="space-y-4" id="lectures-list">
+          <!-- يتم الملء عبر JS -->
+        </div>
+      </div>
+
+      <!-- بنك امتحانات وملخصات النظري -->
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 border shadow-lg">
+        <div class="flex items-center justify-between mb-6 pb-3 border-b border-[var(--border-subtle)]">
+          <div>
+            <h3 class="text-lg font-bold text-[var(--text-main)] flex items-center gap-2">
+              <i data-lucide="archive" class="w-5 h-5 text-indigo-400"></i>
+              ملخصات وامتحانات النظري السابقة
+            </h3>
+            <p class="text-xs text-[var(--text-muted)]">مذكرات المراجعة النهائية، قوانين المادة، وامتحانات الميدترم والفاينال</p>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full glass-panel border text-indigo-400 font-mono font-bold" id="badge-theory-resources">ملفات PDF</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="theory-resources-list">
+          <!-- يتم الملء عبر JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 5. محتوى مسار السكشن والعملي (Section Track Panel) -->
+    <!-- ========================================== -->
+    <div id="track-panel-section" class="track-panel hidden space-y-8">
+      
+      <!-- بانر موعد السكشن المعتمد لسكشن الطالب -->
+      <div id="section-time-banner" class="p-4 rounded-2xl glass-panel border border-cyan-500/30 bg-cyan-500/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center flex-shrink-0 font-bold">
+            <i data-lucide="map-pin" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <span class="font-bold text-[var(--text-main)] text-sm">موعد السكشن العملي والمعمل المخصص لسكشنك:</span>
+            <p class="text-[var(--text-muted)] mt-0.5" id="section-slot-desc">جارٍ التحميل...</p>
+          </div>
+        </div>
+        <button data-open-profile-modal class="text-cyan-400 hover:underline font-bold flex items-center gap-1 self-start sm:self-auto">
+          <span>تغيير السكشن</span>
+          <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- سكاشن العملي وشيتات التطبيق والأكواد -->
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 border shadow-lg">
+        <div class="flex items-center justify-between mb-6 pb-3 border-b border-[var(--border-subtle)]">
+          <div>
+            <h3 class="text-lg font-bold text-[var(--text-main)] flex items-center gap-2">
+              <i data-lucide="code-2" class="w-5 h-5 text-cyan-400"></i>
+              سكاشن العملي والشيتات والأكواد
+            </h3>
+            <p class="text-xs text-[var(--text-muted)]">تحميل شيتات المعيدين، أكواد C++/Python، وروابط GitHub و Google Colab</p>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full glass-panel border text-cyan-400 font-mono font-bold" id="badge-sections-count">0 سكاشن</span>
+        </div>
+
+        <div class="space-y-4" id="sections-list">
+          <!-- يتم الملء عبر JS -->
+        </div>
+      </div>
+
+      <!-- التكليفات والمشاريع المطلوبة (Assignments) -->
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 border shadow-lg">
+        <div class="flex items-center justify-between mb-6 pb-3 border-b border-[var(--border-subtle)]">
+          <div>
+            <h3 class="text-lg font-bold text-[var(--text-main)] flex items-center gap-2">
+              <i data-lucide="clipboard-check" class="w-5 h-5 text-amber-400"></i>
+              التكليفات والمشاريع والـ Deadlines
+            </h3>
+            <p class="text-xs text-[var(--text-muted)]">متابعة مواعيد التسليم الرسمية وشيتات التكليفات للسكشن</p>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full glass-panel border text-amber-400 font-mono font-bold" id="badge-assignments-count">0 تكليفات</span>
+        </div>
+
+        <div class="space-y-4" id="assignments-list">
+          <!-- يتم الملء عبر JS -->
+        </div>
+      </div>
+
+      <!-- بنك أسئلة العملي ونماذج الكويزات -->
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 border shadow-lg">
+        <div class="flex items-center justify-between mb-6 pb-3 border-b border-[var(--border-subtle)]">
+          <div>
+            <h3 class="text-lg font-bold text-[var(--text-main)] flex items-center gap-2">
+              <i data-lucide="terminal" class="w-5 h-5 text-cyan-400"></i>
+              نماذج اختبارات العملي وكويزات اللاب
+            </h3>
+            <p class="text-xs text-[var(--text-muted)]">أسئلة امتحانات العملي السابقة، أكواد تجريبية، وملفات الإعداد</p>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full glass-panel border text-cyan-400 font-mono font-bold">بنك العملي</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="practical-resources-list">
+          <!-- يتم الملء عبر JS -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- تنبيه منبثق (Toast) عند نسخ الرابط -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl glass-panel border border-emerald-500/30 text-emerald-400 text-xs font-bold shadow-xl flex items-center gap-2 opacity-0 pointer-events-none transition-opacity duration-300">
+    <i data-lucide="check-circle" class="w-4 h-4"></i>
+    <span>تم نسخ الرابط بنجاح! يمكنك مشاركته مع زملائك.</span>
+  </div>
+
+  <!-- تذييل الصفحة -->
+  <footer class="border-t py-8 glass-header mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
+      <div class="flex items-center gap-2">
+        <a href="index.html" class="hover:text-indigo-400 font-bold">العودة للصفحة الرئيسية</a>
+        <span>•</span>
+        <span>بوابة الترم الثاني - قسم الذكاء الاصطناعي</span>
+      </div>
+      <div>
+        <span>2026 © جميع الحقوق محفوظة</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ملفات الجافاسكربت -->
+  <script src="js/theme.js"></script>
+  <script src="js/courses-data.js"></script>
+  <script src="js/schedule-data.js"></script>
+  <script src="js/profile-modal.js"></script>
+  <script src="js/subject.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

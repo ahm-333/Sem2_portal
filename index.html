@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة مواد الترم الثاني | قسم الذكاء الاصطناعي</title>
+  
+  <!-- خطوط جوجل (Cairo & JetBrains Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- مكتبة Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- أيقونات Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- التنسيقات المخصصة والأوضاع الثلاثة -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ========================================== -->
+  <!-- 1. شريط التنقل العلوي (Navbar) -->
+  <!-- ========================================== -->
+  <header class="sticky top-0 z-50 glass-header border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- اللوجو والعنوان -->
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform">
+          <i data-lucide="sparkles" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-bold tracking-tight text-[var(--text-main)]">بوابة الترم الثاني</span>
+            <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">AI & FCI</span>
+          </div>
+          <p class="text-xs text-[var(--text-muted)]">كلية الحاسبات والمعلومات • قسم الذكاء الاصطناعي</p>
+        </div>
+      </a>
+
+      <!-- أزرار اختيار المجموعة والسكشن والأوضاع البصرية -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- زر تحديد وتغيير المجموعة والسكشن -->
+        <button 
+          data-open-profile-modal 
+          class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl glass-panel border flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-indigo-400 hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all shadow-sm"
+          title="اضغط لتغيير مجموعتك أو سكشنك"
+        >
+          <span class="student-profile-badge">
+            <i data-lucide="user" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>تحديد مجموعتي</span>
+          </span>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-[var(--text-dim)]"></i>
+        </button>
+
+        <!-- رابط مستودع GitHub -->
+        <a 
+          href="https://github.com/ahm-333/Sem2_portal" 
+          id="portal-github-link"
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="p-2 sm:px-3 sm:py-2 rounded-xl glass-panel border flex items-center gap-1.5 text-xs font-bold text-[var(--text-main)] hover:text-indigo-400 hover:border-indigo-500/40 transition-all shadow-sm"
+          title="مستودع المشروع على GitHub"
+        >
+          <i data-lucide="github" class="w-4 h-4"></i>
+          <span class="hidden md:inline font-mono">GitHub</span>
+        </a>
+
+        <div class="p-1 rounded-xl glass-panel flex items-center gap-1 border">
+          <button data-theme-btn="dark" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all" title="الوضع الليلي">
+            <i data-lucide="moon" class="w-4 h-4"></i>
+            <span class="hidden md:inline">ليلي</span>
+          </button>
+          
+          <button data-theme-btn="light" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all" title="الوضع النهاري">
+            <i data-lucide="sun" class="w-4 h-4"></i>
+            <span class="hidden md:inline">نهاري</span>
+          </button>
+          
+          <button data-theme-btn="reading" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all" title="وضع القراءة الهادئ (Sepia)">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            <span class="hidden md:inline">قراءة</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- 2. القسم الترحيبي (Hero Section) -->
+  <!-- ========================================== -->
+  <main class="flex-grow">
+    <section class="relative pt-12 pb-8 overflow-hidden">
+      <!-- خلفية جمالية خفيفة -->
+      <div class="absolute inset-0 -z-10 flex items-center justify-center opacity-30 pointer-events-none">
+        <div class="w-[600px] h-[300px] bg-gradient-to-tr from-indigo-600/30 via-cyan-500/20 to-purple-500/30 blur-[100px] rounded-full"></div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-4 glass-panel text-[var(--text-muted)] border font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Official Semester 2 Portal • Faculty of AI 2026
+        </div>
+
+        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-4 text-[var(--text-main)] leading-tight">
+          All Semester Courses & <span class="text-gradient">Dedicated Interactive Hubs</span> in One Place
+        </h1>
+        
+        <p class="max-w-2xl mx-auto text-sm sm:text-base text-[var(--text-muted)] mb-8 leading-relaxed">
+          The unified academic portal for Artificial Intelligence students — bringing together interactive explanation websites, lecture slides, practical lab sheets, assignments, and past exams.
+        </p>
+
+        <!-- صندوق البحث الفوري والتصفية -->
+        <div class="max-w-xl mx-auto mb-10">
+          <div class="relative glass-panel rounded-2xl p-1.5 border flex items-center shadow-lg">
+            <div class="pr-3 pl-2 text-[var(--text-muted)]">
+              <i data-lucide="search" class="w-5 h-5"></i>
+            </div>
+            <input 
+              type="text" 
+              id="search-input" 
+              placeholder="Search courses, code (CS221), or topic / ابحث عن مادة أو كود..." 
+              class="w-full bg-transparent px-2 py-2.5 text-sm sm:text-base text-[var(--text-main)] placeholder-[var(--text-dim)] focus:outline-none"
+            >
+            <button id="clear-search" class="hidden px-2.5 text-[var(--text-muted)] hover:text-[var(--text-main)]">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <div class="flex items-center justify-center gap-2 mt-3 text-xs text-[var(--text-muted)]">
+            <span>تصفية سريعة:</span>
+            <button class="filter-chip active-chip px-2.5 py-1 rounded-lg border text-xs" data-filter="all">الكل (6)</button>
+            <button class="filter-chip px-2.5 py-1 rounded-lg border text-xs" data-filter="CS">علوم حاسب</button>
+            <button class="filter-chip px-2.5 py-1 rounded-lg border text-xs" data-filter="IS">نظم معلومات</button>
+            <button class="filter-chip px-2.5 py-1 rounded-lg border text-xs" data-filter="General">مهارات عامة</button>
+          </div>
+        </div>
+
+        <!-- إحصائيات سريعة للترم -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12">
+          <div class="glass-panel p-4 rounded-2xl border text-center">
+            <div class="text-2xl sm:text-3xl font-black text-indigo-400 mb-1" id="stat-courses">6</div>
+            <div class="text-xs text-[var(--text-muted)]">مواد دراسية معتمدة</div>
+          </div>
+          <div class="glass-panel p-4 rounded-2xl border text-center">
+            <div class="text-2xl sm:text-3xl font-black text-cyan-400 mb-1" id="stat-paths">2</div>
+            <div class="text-xs text-[var(--text-muted)]">مسار لكل مادة (محاضرة / سكشن)</div>
+          </div>
+          <div class="glass-panel p-4 rounded-2xl border text-center">
+            <div class="text-2xl sm:text-3xl font-black text-emerald-400 mb-1" id="stat-groups">B1-B3</div>
+            <div class="text-xs text-[var(--text-muted)]">3 مجموعات و 12 سكشن</div>
+          </div>
+          <div class="glass-panel p-4 rounded-2xl border text-center">
+            <div class="text-2xl sm:text-3xl font-black text-amber-400 mb-1 flex items-center justify-center gap-1.5 font-mono">
+              <i data-lucide="github" class="w-6 h-6"></i>
+              <span>Hub</span>
+            </div>
+            <div class="text-xs text-[var(--text-muted)]">ربط مستودع GitHub</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. شبكة بطاقات المواد (Course Cards) -->
+    <!-- ========================================== -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold text-[var(--text-main)]">مواد الترم الثاني المقررة</h2>
+          <p class="text-xs sm:text-sm text-[var(--text-muted)]">اختر المادة لتصفح موقع الشرح الخاص بها وكافة ملفات المحاضرات والسكاشن</p>
+        </div>
+        <span class="text-xs px-3 py-1 rounded-full border glass-panel text-[var(--text-muted)] font-mono" id="results-count">
+          6 مواد متاحة
+        </span>
+      </div>
+
+      <!-- الحاوية التي سيتم حقن البطاقات بداخلها عبر JS -->
+      <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- يتم التوليد التلقائي هنا من courses-data.js -->
+      </div>
+
+      <!-- حالة عدم وجود نتائج عند البحث -->
+      <div id="no-results" class="hidden text-center py-16">
+        <div class="w-16 h-16 mx-auto rounded-full glass-panel flex items-center justify-center text-[var(--text-dim)] mb-4">
+          <i data-lucide="search-x" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-lg font-bold text-[var(--text-main)] mb-1">لم يتم العثور على أي نتائج</h3>
+        <p class="text-sm text-[var(--text-muted)]">تأكد من كتابة اسم المادة أو كود المادة بشكل صحيح.</p>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 4. قسم جدول المواعيد الأسبوعي المخصص للطالب -->
+    <!-- ========================================== -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 border relative overflow-hidden shadow-xl">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border-subtle)]">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-2 font-mono">
+              <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+              جدول الحضور الأسبوعي المعتمد
+            </div>
+            <h2 class="text-xl sm:text-2xl font-bold text-[var(--text-main)]">
+              جدول مواعيد <span id="schedule-target-label" class="text-gradient">مجموعة B1 • سكشن 1</span>
+            </h2>
+            <p class="text-xs sm:text-sm text-[var(--text-muted)]">مواعيد محاضراتك وسكاشنك مع أرقام القاعات والمدرجات والمعامل المخصصة لمجموعتك وسكشنك</p>
+          </div>
+
+          <button data-open-profile-modal class="px-4 py-2.5 rounded-xl glass-panel border text-xs font-bold text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2 self-start md:self-auto shadow-sm">
+            <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+            <span>تغيير المجموعة أو السكشن</span>
+          </button>
+        </div>
+
+        <!-- حاوية الأيام والجدول -->
+        <div id="weekly-schedule-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- يتم الملء ديناميكياً بواسطة app.js -->
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- 5. التذييل (Footer) -->
+  <!-- ========================================== -->
+  <footer class="border-t py-8 glass-header mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
+      <div class="flex items-center gap-2">
+        <i data-lucide="terminal" class="w-4 h-4 text-indigo-400"></i>
+        <span>بوابة مذاكرة مواد الذكاء الاصطناعي - جامعة الزقازيق 2026.</span>
+      </div>
+      <div>
+        <span>جميع الحقوق محفوظة للدفعة © 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ملفات الجافاسكربت -->
+  <script src="js/theme.js"></script>
+  <script src="js/courses-data.js"></script>
+  <script src="js/schedule-data.js"></script>
+  <script src="js/profile-modal.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
