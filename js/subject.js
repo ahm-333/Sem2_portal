@@ -134,6 +134,53 @@ document.addEventListener("DOMContentLoaded", function () {
   const badgeLecturesCount = document.getElementById("badge-lectures-count");
   if (badgeLecturesCount) badgeLecturesCount.textContent = `${lecturesCount} محاضرات`;
 
+  // إعداد نافذة معاينة الـ PDF المضمنة
+  const pdfModal = document.getElementById("pdf-modal");
+  const pdfFrame = document.getElementById("pdf-modal-frame");
+  const pdfTitle = document.getElementById("pdf-modal-title");
+  const pdfSubtitle = document.getElementById("pdf-modal-subtitle");
+  const pdfOpenNew = document.getElementById("pdf-modal-open-new");
+  const pdfDownload = document.getElementById("pdf-modal-download");
+  const pdfClose = document.getElementById("pdf-modal-close");
+
+  function openPdfModal(fileUrl, title, subtitle, filename) {
+    if (!pdfModal || !pdfFrame) return;
+    pdfFrame.src = fileUrl;
+    if (pdfTitle) pdfTitle.textContent = title || "سلايدات المحاضرة";
+    if (pdfSubtitle) pdfSubtitle.textContent = subtitle || "معاينة مباشرة";
+    if (pdfOpenNew) pdfOpenNew.href = fileUrl;
+    if (pdfDownload) {
+      pdfDownload.href = fileUrl;
+      pdfDownload.setAttribute("download", filename || "lecture.pdf");
+    }
+    pdfModal.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function closePdfModal() {
+    if (!pdfModal || !pdfFrame) return;
+    pdfModal.classList.add("hidden");
+    pdfFrame.src = "";
+    document.body.classList.remove("overflow-hidden");
+  }
+
+  if (pdfClose) {
+    pdfClose.addEventListener("click", closePdfModal);
+  }
+  if (pdfModal) {
+    pdfModal.addEventListener("click", function (e) {
+      if (e.target === pdfModal) {
+        closePdfModal();
+      }
+    });
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && pdfModal && !pdfModal.classList.contains("hidden")) {
+      closePdfModal();
+    }
+  });
+
   const lecturesList = document.getElementById("lectures-list");
   if (lecturesList) {
     if (lecturesCount === 0) {
@@ -142,44 +189,117 @@ document.addEventListener("DOMContentLoaded", function () {
         "المحتوى قيد التجهيز - سيتم رفع سلايدات الـ PDF وروابط الفيديوهات والشرح فور إرسال محتوى المادة."
       );
     } else {
-      lecturesList.innerHTML = course.lectures.map((lec) => `
-        <div class="glass-panel p-5 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 card-hover-effect">
-          <div class="flex items-start gap-3">
-            <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 font-bold flex items-center justify-center text-xs flex-shrink-0 border border-indigo-500/20 font-mono">
-              L${lec.id}
+      lecturesList.innerHTML = course.lectures.map((lec) => {
+        const pdfFile = lec.pdfUrl || lec.slidesUrl || "#";
+        const filename = pdfFile.split("/").pop() || `Lecture_${lec.id}.pdf`;
+        const topicsHtml = lec.topics && lec.topics.length > 0 ? `
+          <div class="mt-3 pt-3 border-t border-[var(--border-subtle)]">
+            <span class="text-[11px] font-bold text-[var(--text-dim)] block mb-1.5 flex items-center gap-1.5">
+              <i data-lucide="list-checks" class="w-3.5 h-3.5 text-indigo-400"></i>
+              أبرز المحاور والمفاهيم في هذه المحاضرة:
+            </span>
+            <div class="flex flex-wrap gap-1.5">
+              ${lec.topics.map(t => `<span class="text-[11px] px-2.5 py-0.5 rounded-lg bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-subtle)]">${t}</span>`).join("")}
             </div>
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-xs font-bold text-indigo-400">${lec.date || "محاضرة"}</span>
-                <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${lec.week || lec.id}</span>
+          </div>
+        ` : "";
+
+        return `
+          <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect">
+            <div class="flex items-start gap-3.5">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-600 text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono">
+                <span>L${lec.id}</span>
+                ${lec.chapter ? `<span class="text-[9px] opacity-80">${lec.chapter.replace("Chapter ", "Ch")}</span>` : ""}
               </div>
-              <h4 class="text-sm font-bold text-[var(--text-main)] mb-1">${lec.title}</h4>
-              <p class="text-xs text-[var(--text-muted)] mb-2">${lec.arabicTitle || ""}</p>
-              ${lec.notes ? `<p class="text-xs text-[var(--text-dim)] italic">ملاحظات المحاضرة: ${lec.notes}</p>` : ""}
+
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                  <span class="text-xs font-bold text-indigo-400">${lec.date || `المحاضرة ${lec.id}`}</span>
+                  <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${lec.week || lec.id}</span>
+                  ${lec.doctor ? `
+                    <span class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold flex items-center gap-1">
+                      <i data-lucide="graduation-cap" class="w-3 h-3"></i>
+                      ${lec.doctor} ${lec.doctorNote ? `(${lec.doctorNote})` : ""}
+                    </span>
+                  ` : ""}
+                  ${lec.pages ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">${lec.pages} صفحة</span>` : ""}
+                  ${lec.size ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">${lec.size}</span>` : ""}
+                </div>
+
+                <h4 class="text-base font-bold text-[var(--text-main)] mb-1">${lec.title}</h4>
+                <p class="text-xs font-semibold text-[var(--text-muted)] mb-2">${lec.arabicTitle || ""}</p>
+                ${lec.notes ? `<p class="text-xs text-[var(--text-dim)] bg-[var(--bg-surface)] p-2.5 rounded-xl border border-[var(--border-subtle)] leading-relaxed">💡 <strong>ملاحظة:</strong> ${lec.notes}</p>` : ""}
+                ${topicsHtml}
+              </div>
+            </div>
+
+            <!-- أزرار المعاينة والتحميل وموقع الشرح -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
+              <div class="flex flex-wrap items-center gap-2">
+                <!-- زر المعاينة داخل الصفحة -->
+                <button 
+                  type="button"
+                  data-preview-file="${pdfFile}"
+                  data-preview-title="${lec.title}"
+                  data-preview-subtitle="${lec.arabicTitle || ""}"
+                  data-preview-filename="${filename}"
+                  class="btn-preview-pdf px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer"
+                >
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                  <span>معاينة السلايدات</span>
+                </button>
+
+                <!-- زر فتح في نافذة مستقلة -->
+                <a 
+                  href="${pdfFile}" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm"
+                  title="فتح الـ PDF في نافذة جديدة"
+                >
+                  <i data-lucide="external-link" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span>نافذة جديدة</span>
+                </a>
+
+                <!-- زر تحميل مباشر للملف -->
+                <a 
+                  href="${pdfFile}" 
+                  download="${filename}"
+                  class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+                  title="تحميل السلايدات على جهازك"
+                >
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                  <span>تحميل مباشر</span>
+                </a>
+              </div>
+
+              <!-- رابط موقع الشرح التفاعلي -->
+              ${lec.studyManualUrl ? `
+                <a 
+                  href="${lec.studyManualUrl}" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="px-3.5 py-2 rounded-xl glass-panel border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm"
+                >
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>موقع الشرح التفاعلي</span>
+                </a>
+              ` : ""}
             </div>
           </div>
+        `;
+      }).join("");
 
-          <div class="flex flex-wrap items-center gap-2 pt-3 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)]">
-            <a 
-              href="${lec.slidesUrl}" 
-              target="_blank" 
-              class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold flex items-center gap-1.5 hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
-            >
-              <i data-lucide="file-text" class="w-3.5 h-3.5 text-indigo-400"></i>
-              <span>سلايدات PDF</span>
-            </a>
-
-            <a 
-              href="${lec.videoUrl}" 
-              target="_blank" 
-              class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold flex items-center gap-1.5 hover:bg-cyan-600 hover:text-white transition-all shadow-sm"
-            >
-              <i data-lucide="play-circle" class="w-3.5 h-3.5 text-cyan-400"></i>
-              <span>شرح الفيديو</span>
-            </a>
-          </div>
-        </div>
-      `).join("");
+      // ربط أزرار المعاينة بالنافذة المنبثقة
+      lecturesList.querySelectorAll(".btn-preview-pdf").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const file = this.getAttribute("data-preview-file");
+          const title = this.getAttribute("data-preview-title");
+          const sub = this.getAttribute("data-preview-subtitle");
+          const fname = this.getAttribute("data-preview-filename");
+          openPdfModal(file, title, sub, fname);
+        });
+      });
     }
   }
 
