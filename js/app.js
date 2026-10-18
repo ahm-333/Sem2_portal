@@ -119,15 +119,17 @@ document.addEventListener("DOMContentLoaded", function () {
               <i data-lucide="code-2" class="w-3.5 h-3.5 text-cyan-400"></i>
               ${sectionsCount > 0 ? `${sectionsCount} سكاشن` : '<span class="text-cyan-400/90 font-medium">السكاشن قريباً</span>'}
             </span>
+            ${course.githubRepo && !course.githubRepo.includes("your-username") ? `
             <a 
-              href="${course.githubRepo || '#'}" 
+              href="${course.githubRepo}" 
               target="_blank" 
+              rel="noopener noreferrer"
               class="flex items-center gap-1 text-[var(--text-dim)] hover:text-indigo-400 transition-colors"
               title="مستودع المادة على GitHub"
             >
               <i data-lucide="github" class="w-3.5 h-3.5"></i>
               <span>GitHub</span>
-            </a>
+            </a>` : ""}
           </div>
 
           <!-- أزرار مساري المادة (طريق المحاضرة وطريق السكشن) -->

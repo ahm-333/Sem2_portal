@@ -144,7 +144,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const pdfClose = document.getElementById("pdf-modal-close");
 
   function openPdfModal(fileUrl, title, subtitle, filename) {
-    if (!pdfModal || !pdfFrame) return;
+    // الموبايل مش بيعرض PDF جوه iframe، فنفتحه مباشرة في تاب جديد
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile || !pdfModal || !pdfFrame) {
+      window.open(fileUrl, "_blank", "noopener");
+      return;
+    }
     pdfFrame.src = fileUrl;
     if (pdfTitle) pdfTitle.textContent = title || "سلايدات المحاضرة";
     if (pdfSubtitle) pdfSubtitle.textContent = subtitle || "معاينة مباشرة";

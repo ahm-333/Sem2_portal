@@ -44,130 +44,105 @@ const COURSES_DATA = [
         id: 1,
         chapter: "Chapter 1",
         title: "Basic Concepts and Computer Evolution",
-        arabicTitle: "المفاهيم الأساسية، بنية فون نيومان وتطور أجيال الحاسوب والمعالجات",
+        arabicTitle: "المفاهيم الأساسية وتطور الحاسوب",
         doctor: "د. نبيل لاشين",
-        doctorNote: "مشترك لمجموعات B1, B2, B3",
+        doctorNote: "B1 • B2 • B3",
         week: 1,
         date: "المحاضرة 1",
         pages: 57,
         size: "2.4 MB",
         pdfUrl: "materials/arch/Arch_Lecture_01_Chapter1_Basic_Concepts.pdf",
-        slidesUrl: "materials/arch/Arch_Lecture_01_Chapter1_Basic_Concepts.pdf",
         studyManualUrl: "https://ahm-333.github.io/computer-architecture-study/",
         topics: [
-          "الفرق بين معمارية وتنظيم الحاسوب (Architecture vs Organization)",
-          "البنية الهرمية والوظائف الأربعة (Data processing, Storage, Movement, Control)",
-          "حاسوب IAS ومفهوم البرامج المخزنة لعالم الرياضيات فون نيومان (Von Neumann)",
-          "مسجلات IAS: MBR, MAR, IR, IBR, PC, AC, MQ ومخطط دورة العمليات",
-          "أجيال الحاسبات من الصمامات المفرغة إلى الدوائر المتكاملة الفائقة (ULSI)",
-          "قانون مور (Moore's Law) وتطور معالجات Intel (من 4004 إلى Core i7 EE)",
-          "الأنظمة المدمجة (Embedded Systems)، معمارية ARM، وإنترنت الأشياء (IoT)",
-          "مفاهيم الحوسبة السحابية (IaaS, PaaS, SaaS)"
+          "Computer Architecture vs Organization",
+          "Structure & Function",
+          "Multicore Computer Structure",
+          "IAS Computer & Registers",
+          "Computer Generations",
+          "Moore's Law",
+          "Embedded Systems & ARM",
+          "Cloud Computing"
         ],
-        notes: "سلايدات ويليام ستالينجز الرسمية (William Stallings 10th Ed) المعتمدة من د. نبيل لاشين."
+        notes: "سلايدات William Stallings - 10th Edition"
       },
       {
         id: 2,
         chapter: "Chapter 3",
         title: "A Top-Level View of Computer Function and Interconnection",
-        arabicTitle: "نظرة عليا على وظائف الحاسوب، دورة التنفيذ، المقاطعات وممرات النقل",
+        arabicTitle: "نظرة عامة على وظائف الحاسوب والتوصيلات الداخلية",
         doctor: "د. نبيل لاشين",
-        doctorNote: "تتضمن ملاحظات وشروحات الدكتور باللون الأحمر (My notes in red)",
+        doctorNote: "B1 • B2 • B3",
         week: 2,
         date: "المحاضرة 2",
         pages: 46,
         size: "3.2 MB",
         pdfUrl: "materials/arch/Arch_Lecture_02_Chapter3_Computer_Function_Interconnection.pdf",
-        slidesUrl: "materials/arch/Arch_Lecture_02_Chapter3_Computer_Function_Interconnection.pdf",
         studyManualUrl: "https://ahm-333.github.io/computer-architecture-study/",
         topics: [
-          "مكونات الحاسوب الرئيسية (CPU, Main Memory, I/O Modules, System Bus)",
-          "دورة جلب وتنفيذ التعليمات (Fetch Cycle & Execute Cycle)",
-          "أصناف المقاطعات الأربعة (Program, Timer, I/O, Hardware failure)",
-          "دورة التعليمات مع المقاطعات وكيفية عمل الـ Interrupt Handler",
-          "مخططات التوقيت للعمليات المتزامنة وحالات الانتظار القصيرة والطويلة",
-          "ممرات النظام الثلاثة: Data Bus (العرض والأداء), Address Bus, Control Bus",
-          "توصيلات Point-to-Point وتقنية QPI (طبقات Protocol, Routing, Link, Physical)",
-          "معمارية وبروتوكولات PCI Express وحزم الـ TLP والـ DLLP"
+          "Computer Components & Function",
+          "Instruction Cycle",
+          "Interrupts",
+          "Interconnection Structures",
+          "Data / Address / Control Bus",
+          "QPI",
+          "PCI Express"
         ],
-        notes: "سلايدات مركزة ومعدلة بملاحظات د. نبيل لاشين الحمراء التوضيحية لتسهيل استيعاب المقاطعات والـ Bus."
+        notes: "فيها ملاحظات الدكتور باللون الأحمر (My notes are in red)"
       },
       {
         id: 3,
         chapter: "Chapter 4",
         title: "Cache Memory",
-        arabicTitle: "الذاكرة المخبأة (كاش): مبادئ الموضعية، طرق التخطيط، والمسائل المحلولة",
+        arabicTitle: "الذاكرة المخبأة (الكاش)",
         doctor: "د. نبيل لاشين",
-        doctorNote: "تحتوي على مسائل تدريبية محلولة هامة جداً للامتحانات",
+        doctorNote: "B1 • B2 • B3",
         week: 3,
         date: "المحاضرة 3",
         pages: 56,
         size: "2.7 MB",
         pdfUrl: "materials/arch/Arch_Lecture_03_Chapter4_Cache_Memory.pdf",
-        slidesUrl: "materials/arch/Arch_Lecture_03_Chapter4_Cache_Memory.pdf",
         studyManualUrl: "https://ahm-333.github.io/computer-architecture-study/",
         topics: [
-          "مبدأ الموضعية الزمانية والمكانية (Temporal & Spatial Locality)",
-          "الهرمية التخزينية (Memory Hierarchy) وتكلفة وسرعة الوصول والـ Hit Ratio",
-          "حسابات الكاش ميس والكاش هيت وأزمنة الوصول (Access time, Latency)",
-          "طرق التخطيط الثلاثة بالتفصيل: Direct Mapping, Fully Associative, Set-Associative",
-          "قوانين حسابات الحقول: Tag, Index (Line), Offset (Byte)",
-          "مسائل عملية محلولة على ذاكرة 4GB ومعالجات Intel Core i7",
-          "خوارزميات الاستبدال (LRU, FIFO, LFU, Random) ومفهوم الـ Thrashing",
-          "سياسات الكتابة (Write-Through vs Write-Back) ومعالجة الـ Dirty Bit",
-          "الكاش متعدد المستويات (L1, L2, L3) والـ Unified vs Split Cache"
+          "Memory Hierarchy & Locality",
+          "Cache Principles",
+          "Mapping Function",
+          "Direct Mapping",
+          "Fully Associative Mapping",
+          "Set Associative (4-way example)",
+          "Replacement Algorithms",
+          "Write Policy",
+          "Line Size"
         ],
-        notes: "محاضرة أساسية تتضمن كافة القوانين والمسائل المحلولة لحسابات الـ Tag والـ Index في الامتحانات."
+        notes: "فيها أمثلة على الـ Mapping وملاحظات الدكتور"
       },
       {
         id: 4,
         chapter: "Chapter 5",
         title: "Internal Memory",
-        arabicTitle: "الذاكرة الداخلية: مقارنة DRAM وSRAM، تصحيح الأخطاء (Hamming) وSDRAM",
+        arabicTitle: "الذاكرة الداخلية",
         doctor: "د. نبيل لاشين",
-        doctorNote: "شرح شامل للذواكر وتطبيقات كود هامينج",
+        doctorNote: "B1 • B2 • B3",
         week: 4,
         date: "المحاضرة 4",
         pages: 38,
         size: "2.3 MB",
         pdfUrl: "materials/arch/Arch_Lecture_04_Chapter5_Internal_Memory.pdf",
-        slidesUrl: "materials/arch/Arch_Lecture_04_Chapter5_Internal_Memory.pdf",
         studyManualUrl: "https://ahm-333.github.io/computer-architecture-study/",
         topics: [
-          "أنواع ذواكر أشباه الموصلات (Semiconductor Memory Types)",
-          "المقارنة الجوهرية بين Dynamic RAM (DRAM) و Static RAM (SRAM)",
-          "أنواع ذواكر القراءة فقط: ROM, PROM, EPROM, EEPROM",
-          "ذاكرة الفلاش (Flash Memory) والمقارنة الرادارية بين NOR و NAND",
-          "تنظيم الشرائح وتوزيع الذاكرة المتشابكة (Interleaved Memory Banks)",
-          "تصحيح الأخطاء: Hard Failure مقابل Soft Error",
-          "كود هامينج لتصحيح الخطأ الفردي واكتشاف الزوجي (Hamming SEC-DED Code)",
-          "تطور ذواكر SDRAM وأجيال DDR1 إلى DDR4 والذواكر غير المتطايرة (ReRAM, PCRAM, STT-RAM)"
+          "Semiconductor Main Memory",
+          "DRAM vs SRAM",
+          "Read-Mostly Memory (ROM types)",
+          "Flash Memory",
+          "Interleaved Memory",
+          "Synchronous DRAM (SDRAM)",
+          "DDR"
         ],
-        notes: "سلايدات تفصيلية لتصنيف وتكوين الذواكر الداخلية وخوارزمية فحص وحساب بتات كود هامينج."
+        notes: "سلايدات William Stallings - 10th Edition"
       }
     ],
     sections: [],
     assignments: [],
-    resources: [
-      {
-        id: "book-william-stallings",
-        title: "William Stallings - Computer Organization and Architecture (10th Edition)",
-        type: "الكتاب المعتمد",
-        year: "المرجع الأصلي",
-        size: "الكتاب كاملاً",
-        fileUrl: "https://ahm-333.github.io/computer-architecture-study/",
-        desc: "المرجع الدراسي الدولي المعتمد لمقرر تنظيم ومعمارية الحاسوب بالكلية."
-      },
-      {
-        id: "interactive-study-manual",
-        title: "منصة الشرح والمذاكرة التفاعلية الشاملة (Live Study Manual)",
-        type: "موقع تفاعلي",
-        year: "2026",
-        size: "Web App",
-        fileUrl: "https://ahm-333.github.io/computer-architecture-study/",
-        desc: "الدليل التفاعلي الكامل للفصول والمفاهيم مع إمكانية البحث الفوري واختبارات الفهم الذاتي."
-      }
-    ]
+    resources: []
   },
 
   {
