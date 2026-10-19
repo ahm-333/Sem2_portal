@@ -6,9 +6,28 @@ global.window = {};
 
 require('../js/courses-data.js');
 require('../js/schedule-data.js');
+require('../js/lecture-explanations-data.js');
 
 console.log("Portal Config:", window.PORTAL_CONFIG);
 console.log("Total courses:", window.COURSES_DATA.length);
+
+if (window.LECTURE_EXPLANATIONS) {
+  console.log("\n========================================");
+  console.log("Smart Lecture Walkthrough Datasets:");
+  Object.keys(window.LECTURE_EXPLANATIONS).forEach(cid => {
+    const lecs = window.LECTURE_EXPLANATIONS[cid];
+    Object.keys(lecs).forEach(lid => {
+      const item = lecs[lid];
+      console.log(`- Course: ${cid} | Lecture: ${lid} | Slides: ${item.slides.length}`);
+      item.slides.forEach(s => {
+        const fullImgPath = path.resolve(__dirname, '..', s.image);
+        if (!fs.existsSync(fullImgPath)) {
+          throw new Error(`Missing image for slide #${s.num}: ${fullImgPath}`);
+        }
+      });
+    });
+  });
+}
 
 window.COURSES_DATA.forEach(course => {
   console.log(`\n========================================`);

@@ -727,8 +727,8 @@ const COURSES_DATA = [
         week: 2,
         date: "المحاضرة 2",
         fileType: "ppt",
-        pages: 38,
-        size: "PowerPoint",
+        pages: 30,
+        size: "30 شريحة (مع شرح تفاعلي)",
         driveId: "1pPnSfUyBRANVkDT2DYa32ZaNe2Zo6Txa",
         driveViewUrl: "https://drive.google.com/file/d/1pPnSfUyBRANVkDT2DYa32ZaNe2Zo6Txa/view",
         drivePreviewUrl: "https://drive.google.com/file/d/1pPnSfUyBRANVkDT2DYa32ZaNe2Zo6Txa/preview",
@@ -741,7 +741,7 @@ const COURSES_DATA = [
           "DBMS Languages (DDL, DML, DCL)",
           "Classification of Database Management Systems"
         ],
-        notes: "ملف المحاضرة 2 الرسمي المعتمد (DBLec2 ch 1.ppt) على Google Drive"
+        notes: "ملف المحاضرة 2 الرسمي المعتمد (DBLec2 ch 1.ppt) متوفر بشرح تفاعلي ذكي لكل شريحة وتريكات الامتحان وكويزات فورية."
       },
       {
         id: 3,

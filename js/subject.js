@@ -371,10 +371,300 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && pdfModal && !pdfModal.classList.contains("hidden")) {
-      closePdfModal();
+    if (e.key === "Escape") {
+      if (pdfModal && !pdfModal.classList.contains("hidden")) {
+        closePdfModal();
+      }
+      if (studyModal && !studyModal.classList.contains("hidden")) {
+        closeSmartStudyModal();
+      }
     }
   });
+
+  // ============================================================================
+  // المذاكرة الذكية للمحاضرات (Smart Lecture Study Modal)
+  // ============================================================================
+  const studyModal = document.getElementById("lecture-study-modal");
+  const studyModalClose = document.getElementById("study-modal-close");
+  const studyModalTitle = document.getElementById("study-modal-title");
+  const studyModalBadge = document.getElementById("study-modal-progress-badge");
+  const studyProgressBar = document.getElementById("study-progress-bar");
+  const studyJumpBar = document.getElementById("study-jump-bar");
+  const studySlidesFeed = document.getElementById("study-slides-feed");
+
+  function closeSmartStudyModal() {
+    if (!studyModal) return;
+    studyModal.classList.add("hidden");
+    document.body.classList.remove("overflow-hidden");
+  }
+
+  function openSmartStudyModal(courseId, lectureId) {
+    if (!studyModal || !studySlidesFeed) return;
+    const allExp = window.LECTURE_EXPLANATIONS || (typeof LECTURE_EXPLANATIONS !== "undefined" ? LECTURE_EXPLANATIONS : null);
+    const data = allExp && allExp[courseId] && allExp[courseId][lectureId];
+    if (!data) {
+      alert("عذراً، محتوى الشرح التفاعلي لهذه المحاضرة قيد التجهيز وسيتم إتاحته قريباً!");
+      return;
+    }
+
+    if (studyModalTitle) {
+      studyModalTitle.textContent = `${data.lectureTitle} • ${data.lectureArabicTitle || ""}`;
+    }
+    if (studyModalBadge) {
+      studyModalBadge.textContent = `${data.totalSlides} شريحة`;
+    }
+
+    // بناء شريط القفز السريع للشرائح
+    if (studyJumpBar) {
+      studyJumpBar.innerHTML = data.slides.map((s, idx) => `
+        <button 
+          type="button" 
+          data-jump-to="slide-card-${s.num}" 
+          class="study-jump-pill px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap border cursor-pointer ${
+            idx === 0 
+              ? 'bg-purple-600 text-white border-purple-500 shadow-sm' 
+              : 'glass-panel text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-purple-500/30'
+          }"
+        >
+          <span class="font-mono">#${s.num}</span>
+          <span class="text-[11px] font-medium hidden sm:inline max-w-[120px] truncate">${s.title}</span>
+        </button>
+      `).join("");
+
+      studyJumpBar.querySelectorAll(".study-jump-pill").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const targetId = this.getAttribute("data-jump-to");
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+    }
+
+    // بناء بطاقات التغذية المستمرة للشرائح
+    studySlidesFeed.innerHTML = data.slides.map((s) => {
+      const keywordsHtml = s.keywords && s.keywords.length > 0 ? `
+        <div class="p-3.5 rounded-2xl glass-panel border border-[var(--border-subtle)] mb-4 bg-[var(--bg-surface)]">
+          <div class="flex items-center gap-2 mb-2 text-xs font-bold text-cyan-400">
+            <i data-lucide="key" class="w-3.5 h-3.5"></i>
+            <span>مفاهيم ومصطلحات الشريحة:</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            ${s.keywords.map(kw => `
+              <div class="px-3 py-1 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs flex items-center gap-1.5">
+                <span class="font-bold text-cyan-300 font-mono">${kw.en}</span>
+                <span class="text-[var(--text-dim)]">←</span>
+                <span class="text-[var(--text-main)]">${kw.ar}</span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      ` : "";
+
+      const tricksHtml = s.tricks ? `
+        <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-amber-200 text-xs sm:text-sm mb-4 leading-relaxed flex items-start gap-3">
+          <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+          </div>
+          <div class="flex-1">
+            <span class="font-extrabold text-amber-300 block mb-1">⚡ تريكة وفخ في الامتحان:</span>
+            <p class="text-amber-100/90 text-xs sm:text-sm leading-relaxed">${s.tricks}</p>
+          </div>
+        </div>
+      ` : "";
+
+      const quizHtml = s.quiz ? `
+        <div class="p-4 sm:p-5 rounded-2xl glass-panel border border-indigo-500/30 bg-indigo-500/5 quiz-card" data-correct-idx="${s.quiz.correct}">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="text-xs font-bold text-indigo-400 flex items-center gap-1.5">
+              <i data-lucide="help-circle" class="w-4 h-4"></i>
+              <span>سؤال متوقع ومهم على هذه الشريحة:</span>
+            </span>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 font-mono font-bold border border-indigo-500/30">اختبر استيعابك</span>
+          </div>
+          <p class="text-xs sm:text-sm font-bold text-[var(--text-main)] mb-3 leading-relaxed">${s.quiz.question}</p>
+          <div class="space-y-2 quiz-options">
+            ${s.quiz.options.map((opt, optIdx) => `
+              <button 
+                type="button" 
+                class="quiz-opt-btn w-full text-right p-3 rounded-xl border border-[var(--border-subtle)] text-xs font-medium text-[var(--text-main)] hover:border-indigo-500/50 hover:bg-[var(--bg-surface)] transition-all flex items-center justify-between gap-3 group cursor-pointer" 
+                data-option-index="${optIdx}"
+              >
+                <span class="flex-1">${opt}</span>
+                <span class="w-6 h-6 rounded-lg border border-[var(--border-subtle)] flex items-center justify-center text-[10px] text-[var(--text-dim)] group-hover:border-indigo-400 group-hover:text-indigo-400 font-mono font-bold flex-shrink-0 transition-colors">
+                  ${String.fromCharCode(65 + optIdx)}
+                </span>
+              </button>
+            `).join("")}
+          </div>
+          <div class="quiz-feedback hidden mt-3 p-3.5 rounded-xl text-xs leading-relaxed border transition-all" data-explanation="${encodeURIComponent(s.quiz.explanation || "")}"></div>
+        </div>
+      ` : "";
+
+      return `
+        <article id="slide-card-${s.num}" class="glass-panel p-5 sm:p-7 rounded-3xl border border-[var(--border-subtle)] space-y-5 slide-study-card relative overflow-hidden shadow-xl" data-slide-num="${s.num}">
+          
+          <!-- هيدر الشريحة -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[var(--border-subtle)]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-8 h-8 rounded-xl bg-purple-600 text-white font-mono font-bold text-xs flex items-center justify-center flex-shrink-0 shadow-sm">
+                #${s.num}
+              </span>
+              <div>
+                <h4 class="text-sm sm:text-base font-extrabold text-[var(--text-main)]">${s.title}</h4>
+                <p class="text-xs text-[var(--text-muted)] font-medium">${s.arabicTitle || ""}</p>
+              </div>
+            </div>
+            <span class="text-[11px] px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-bold self-start sm:self-auto font-mono">
+              الشريحة ${s.num} من ${data.totalSlides}
+            </span>
+          </div>
+
+          <!-- صورة الشريحة كاملة وتظهر أولاً بشكل بارز -->
+          <div class="rounded-2xl overflow-hidden border border-[var(--border-subtle)] bg-black/40 shadow-xl relative group">
+            <img 
+              src="${s.image}" 
+              alt="Slide ${s.num}: ${s.title}" 
+              class="w-full h-auto object-contain max-h-[580px] mx-auto block" 
+              loading="lazy" 
+            />
+            <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-md text-white text-[11px] font-mono px-2.5 py-1 rounded-lg border border-white/10 flex items-center gap-1.5 opacity-85 group-hover:opacity-100 transition-opacity">
+              <i data-lucide="presentation" class="w-3.5 h-3.5 text-purple-400"></i>
+              <span>Slide #${s.num}</span>
+            </div>
+          </div>
+
+          <!-- الشرح تحت السلايد مباشرة -->
+          <div class="space-y-4 pt-1">
+            
+            <!-- 1. الشرح بالعامية المصرية (بالبلدي كده) -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-transparent border border-purple-500/20">
+              <div class="flex items-center gap-2 mb-2 text-purple-400 font-bold text-xs sm:text-sm">
+                <i data-lucide="message-square-heart" class="w-4 h-4 text-purple-400"></i>
+                <span>الشرح بالعامية المصرية (بالبلدي كده):</span>
+              </div>
+              <p class="text-xs sm:text-sm text-[var(--text-main)] leading-relaxed font-medium mb-3">${s.colloquial}</p>
+              ${s.coreSummary ? `
+                <div class="pt-2.5 border-t border-purple-500/15 text-[11px] sm:text-xs text-[var(--text-muted)] flex items-start gap-2">
+                  <i data-lucide="info" class="w-3.5 h-3.5 text-indigo-400 flex-shrink-0 mt-0.5"></i>
+                  <span><strong>الخلاصة الأكاديمية:</strong> ${s.coreSummary}</span>
+                </div>
+              ` : ""}
+            </div>
+
+            <!-- 2. الكلمات المفتاحية والمصطلحات -->
+            ${keywordsHtml}
+
+            <!-- 3. تريكات الامتحان وفخاخ الأسئلة -->
+            ${tricksHtml}
+
+            <!-- 4. الكويز التفاعلي على السلايد -->
+            ${quizHtml}
+
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    // تفاعل الكويزات
+    studySlidesFeed.querySelectorAll(".quiz-card").forEach((card) => {
+      const correctIdx = parseInt(card.getAttribute("data-correct-idx"), 10);
+      const feedbackEl = card.querySelector(".quiz-feedback");
+      const rawExplanation = feedbackEl ? decodeURIComponent(feedbackEl.getAttribute("data-explanation") || "") : "";
+      const buttons = card.querySelectorAll(".quiz-opt-btn");
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const selectedIdx = parseInt(this.getAttribute("data-option-index"), 10);
+          
+          // تعطيل جميع الخيارات بعد الإجابة
+          buttons.forEach((b) => {
+            b.disabled = true;
+            b.classList.remove("hover:border-indigo-500/50", "hover:bg-[var(--bg-surface)]");
+            b.classList.add("cursor-default");
+          });
+
+          if (selectedIdx === correctIdx) {
+            // إجابة صحيحة
+            this.classList.add("border-emerald-500", "bg-emerald-500/20", "text-emerald-300");
+            const badge = this.querySelector("span:last-child");
+            if (badge) {
+              badge.classList.add("border-emerald-500", "text-emerald-400", "bg-emerald-500/20");
+            }
+
+            if (feedbackEl) {
+              feedbackEl.classList.remove("hidden");
+              feedbackEl.className = "quiz-feedback mt-3 p-3.5 rounded-xl text-xs leading-relaxed border bg-emerald-500/10 border-emerald-500/30 text-emerald-200";
+              feedbackEl.innerHTML = `
+                <div class="flex items-start gap-2">
+                  <span class="text-base">🎉</span>
+                  <div>
+                    <strong class="font-bold text-emerald-300 block mb-0.5">إجابة صحيحة وممتازة!</strong>
+                    <span>${rawExplanation}</span>
+                  </div>
+                </div>
+              `;
+            }
+          } else {
+            // إجابة خاطئة
+            this.classList.add("border-rose-500", "bg-rose-500/20", "text-rose-300");
+            const badge = this.querySelector("span:last-child");
+            if (badge) {
+              badge.classList.add("border-rose-500", "text-rose-400", "bg-rose-500/20");
+            }
+
+            // إبراز الخيار الصحيح
+            const correctBtn = card.querySelector(`[data-option-index="${correctIdx}"]`);
+            if (correctBtn) {
+              correctBtn.classList.add("border-emerald-500/80", "bg-emerald-500/15", "text-emerald-300");
+            }
+
+            if (feedbackEl) {
+              feedbackEl.classList.remove("hidden");
+              feedbackEl.className = "quiz-feedback mt-3 p-3.5 rounded-xl text-xs leading-relaxed border bg-rose-500/10 border-rose-500/30 text-rose-200";
+              feedbackEl.innerHTML = `
+                <div class="flex items-start gap-2">
+                  <span class="text-base">💡</span>
+                  <div>
+                    <strong class="font-bold text-rose-300 block mb-0.5">حاول تركز في التريكة دي:</strong>
+                    <span>${rawExplanation}</span>
+                  </div>
+                </div>
+              `;
+            }
+          }
+        });
+      });
+    });
+
+    // تتبع التمرير لمؤشر التقدم
+    studySlidesFeed.onscroll = function () {
+      const scrollTop = studySlidesFeed.scrollTop;
+      const scrollHeight = studySlidesFeed.scrollHeight - studySlidesFeed.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      if (studyProgressBar) {
+        studyProgressBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+      }
+    };
+
+    studyModal.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+    studySlidesFeed.scrollTop = 0;
+    if (studyProgressBar) studyProgressBar.style.width = "0%";
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  if (studyModalClose) {
+    studyModalClose.addEventListener("click", closeSmartStudyModal);
+  }
+  if (studyModal) {
+    studyModal.addEventListener("click", function (e) {
+      if (e.target === studyModal) {
+        closeSmartStudyModal();
+      }
+    });
+  }
 
   const lecturesList = document.getElementById("lectures-list");
   if (lecturesList) {
@@ -390,6 +680,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const downloadUrl = lec.driveDownloadUrl || lec.pdfUrl || "#";
         const filename = `${course.name}_Lecture_${lec.id}.${lec.fileType || 'pdf'}`;
         
+        const allExp = window.LECTURE_EXPLANATIONS || (typeof LECTURE_EXPLANATIONS !== "undefined" ? LECTURE_EXPLANATIONS : null);
+        const smartStudyData = allExp && allExp[course.id] && allExp[course.id][lec.id];
+
         const fileTypeLabel = (lec.fileType || 'pdf').toUpperCase();
         const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
           ? 'bg-red-500/10 text-red-400 border-red-500/20' 
@@ -437,7 +730,20 @@ document.addEventListener("DOMContentLoaded", function () {
                   ${lec.pages ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">${lec.pages} صفحة</span>` : ""}
                 </div>
 
-                <h4 class="text-base font-bold text-[var(--text-main)] mb-1">${lec.title}</h4>
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+                  <h4 class="text-base font-bold text-[var(--text-main)]">${lec.title}</h4>
+                  ${smartStudyData ? `
+                    <button 
+                      type="button" 
+                      data-open-study-course="${course.id}" 
+                      data-open-study-lecture="${lec.id}" 
+                      class="btn-open-smart-study inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md shadow-purple-500/20 transition-all btn-smooth cursor-pointer"
+                    >
+                      <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                      <span>✨ الشرح بالعامية والتريكات (${smartStudyData.totalSlides} شريحة)</span>
+                    </button>
+                  ` : ""}
+                </div>
                 <p class="text-xs font-semibold text-[var(--text-muted)] mb-2">${lec.arabicTitle || ""}</p>
                 ${lec.notes ? `<p class="text-xs text-[var(--text-dim)] bg-[var(--bg-surface)] p-2.5 rounded-xl border border-[var(--border-subtle)] leading-relaxed">💡 <strong>ملاحظة:</strong> ${lec.notes}</p>` : ""}
                 ${topicsHtml}
@@ -447,6 +753,20 @@ document.addEventListener("DOMContentLoaded", function () {
             <!-- أزرار المعاينة والتحميل وموقع الشرح -->
             <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
               <div class="flex flex-wrap items-center gap-2">
+                ${smartStudyData ? `
+                  <!-- زر المذاكرة التفاعلية بالعامية -->
+                  <button 
+                    type="button"
+                    data-open-study-course="${course.id}"
+                    data-open-study-lecture="${lec.id}"
+                    class="btn-open-smart-study px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-purple-500/25 cursor-pointer btn-smooth"
+                    title="تصفح الشريحة وتحتها شرحها الكامل بالعامية وتريكاتها وكويز فوري"
+                  >
+                    <i data-lucide="sparkles" class="w-4 h-4 text-purple-200"></i>
+                    <span>مذاكرة السلايدات بالعامية</span>
+                  </button>
+                ` : ""}
+
                 <!-- زر المعاينة داخل الصفحة -->
                 <button 
                   type="button"
@@ -515,6 +835,15 @@ document.addEventListener("DOMContentLoaded", function () {
           const dUrl = this.getAttribute("data-preview-download");
           const vUrl = this.getAttribute("data-preview-view");
           openPdfModal(file, title, sub, fname, dUrl, vUrl);
+        });
+      });
+
+      // ربط أزرار المذاكرة الذكية بالعامية
+      lecturesList.querySelectorAll(".btn-open-smart-study").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const cid = this.getAttribute("data-open-study-course");
+          const lid = parseInt(this.getAttribute("data-open-study-lecture"), 10);
+          openSmartStudyModal(cid, lid);
         });
       });
     }

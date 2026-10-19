@@ -545,6 +545,52 @@
   </div>
 
   <!-- ========================================== -->
+  <!-- نافذة المذاكرة والشرح الذكي التفاعلي (Smart Reader Modal) -->
+  <!-- ========================================== -->
+  <div id="lecture-study-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-xl flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 hidden transition-opacity duration-300">
+    <div class="glass-panel w-full max-w-5xl h-[100dvh] sm:h-[94vh] rounded-none sm:rounded-3xl border shadow-2xl flex flex-col overflow-hidden animate-fade-in bg-[var(--bg-main)]">
+      
+      <!-- الشريط العلوي المثبت (Sticky Header) -->
+      <div class="p-3.5 sm:p-4 border-b border-[var(--border-subtle)] flex items-center justify-between gap-3 bg-[var(--bg-surface)] flex-shrink-0">
+        <div class="flex items-center gap-3 overflow-hidden">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 font-bold shadow-md shadow-purple-500/20 icon-box-modern">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <div class="truncate">
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-bold">المذاكرة الذكية بالعامية</span>
+              <span id="study-modal-progress-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono font-bold">30 شريحة</span>
+            </div>
+            <h3 id="study-modal-title" class="text-sm sm:text-base font-extrabold text-[var(--text-main)] truncate mt-0.5">شرح المحاضرة بالعامية والتريكات</h3>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button id="study-modal-close" class="w-9 h-9 rounded-xl glass-panel border text-[var(--text-muted)] hover:text-rose-400 hover:border-rose-400/30 flex items-center justify-center transition-all cursor-pointer" title="إغلاق">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- مؤشر تقدم القراءة الأفقي -->
+      <div class="w-full bg-[var(--border-subtle)] h-1 flex-shrink-0">
+        <div id="study-progress-bar" class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-400 transition-all duration-200" style="width: 0%;"></div>
+      </div>
+
+      <!-- شريط القفز السريع للشرائح (Slide Quick Jump Bar) -->
+      <div id="study-jump-bar" class="py-2 px-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] flex items-center gap-2 overflow-x-auto flex-shrink-0 no-scrollbar">
+        <!-- يتم تعبئة أزرار الشرائح السريعة عبر JS -->
+      </div>
+
+      <!-- المحتوى الرئيسي: التغذية المستمرة للشرائح والشروحات -->
+      <div id="study-slides-feed" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-12 focus:outline-none">
+        <!-- يتم ملء بطاقات الشرائح عبر JS -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
   <!-- تذييل الصفحة (Footer) -->
   <!-- ========================================== -->
   <footer class="border-t py-12 glass-header mt-auto">
@@ -590,11 +636,12 @@
   </footer>
 
   <!-- ملفات الجافاسكربت -->
-  <script src="js/theme.js?v=11"></script>
-  <script src="js/courses-data.js?v=11"></script>
-  <script src="js/schedule-data.js?v=11"></script>
-  <script src="js/profile-modal.js?v=11"></script>
-  <script src="js/subject.js?v=11"></script>
+  <script src="js/theme.js?v=12"></script>
+  <script src="js/courses-data.js?v=12"></script>
+  <script src="js/schedule-data.js?v=12"></script>
+  <script src="js/profile-modal.js?v=12"></script>
+  <script src="js/lecture-explanations-data.js?v=12"></script>
+  <script src="js/subject.js?v=12"></script>
   <script>
     lucide.createIcons();
   </script>
