@@ -1,0 +1,40 @@
+name: WhatsApp to Portal Auto Sync
+
+on:
+  repository_dispatch:
+    types: [whatsapp-new-material]
+  workflow_dispatch:
+    inputs:
+      payload:
+        description: 'JSON payload with courseId, type, ta, title, driveId, etc.'
+        required: true
+        default: '{}'
+
+jobs:
+  sync-material:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Inject Material and Validate
+        env:
+          PAYLOAD: ${{ github.event.client_payload && toJSON(github.event.client_payload) || github.event.inputs.payload }}
+        run: |
+          node tools/add_material_from_webhook.js
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "Portal WhatsApp Automation"
+          git add js/courses-data.js index.html subject.html
+          git commit -m "chore(auto): add new material via WhatsApp automation" || echo "No changes to commit"
+          git push

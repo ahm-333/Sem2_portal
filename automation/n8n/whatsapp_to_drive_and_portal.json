@@ -1,0 +1,401 @@
+{
+  "name": "Zagazig AI Portal - WhatsApp Hub Group to Drive & Portal Auto Sync",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-materials",
+        "responseMode": "onReceived",
+        "responseData": "OK",
+        "options": {}
+      },
+      "id": "1e784a0d-9b34-4061-9d9e-1cf305d76aa1",
+      "name": "1. WhatsApp Webhook (Evolution API)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        180,
+        300
+      ],
+      "webhookId": "whatsapp-materials-trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ====================================================================\n// استخراج بيانات الرسالة والمرفق من جروب البورتال المخصص (Hub Group)\n// ====================================================================\nconst body = $input.first().json.body || $input.first().json;\nconst data = body.data || body;\nconst message = data.message || {};\nconst messageType = data.messageType || '';\n\n// استخراج الكابشن من الرسالة المحولة أو الأصلية\nlet caption = '';\nif (message.conversation) caption = message.conversation;\nelse if (message.extendedTextMessage?.text) caption = message.extendedTextMessage.text;\nelse if (message.documentMessage?.caption) caption = message.documentMessage.caption;\nelse if (message.imageMessage?.caption) caption = message.imageMessage.caption;\nelse if (message.videoMessage?.caption) caption = message.videoMessage.caption;\n\n// دعم الكابشن للرسائل المعاد توجيهها (Quoted / Forwarded Context)\nconst contextInfo = message.extendedTextMessage?.contextInfo || message.documentMessage?.contextInfo;\nif (contextInfo?.quotedMessage) {\n  const q = contextInfo.quotedMessage;\n  const quotedText = q.conversation || q.extendedTextMessage?.text || q.documentMessage?.caption || '';\n  if (quotedText && !caption) caption = quotedText;\n  else if (quotedText) caption = `${caption} | محتوى محوّل: ${quotedText}`;\n}\n\n// استخراج المرفق واسم الملف\nconst docMsg = message.documentMessage || message.documentWithCaptionMessage?.message?.documentMessage;\nconst fileName = docMsg?.fileName || data.fileName || '';\nconst mimetype = docMsg?.mimetype || data.mimetype || 'application/pdf';\n\n// معلومات الشات\nconst remoteJid = data.key?.remoteJid || '';\nconst isGroup = remoteJid.endsWith('@g.us');\nconst groupName = data.groupName || data.chatName || '';\n\n// ====================================================================\n// تحديد جروب البورتال المخصص:\n// يعتبر الشات هو جروب البورتال لو اسمه يحتوي 'بورتال' أو 'portal'\n// أو لو قمت بتحديد الـ JID الخاص بالجروب هنا\n// ====================================================================\nconst TARGET_HUB_JID = ''; // اختياري: ضع معرّف الجروب هنا إن وجد\nconst isHubGroup = (TARGET_HUB_JID && remoteJid === TARGET_HUB_JID) ||\n                   (groupName && /بورتال|portal|مواد|materials/i.test(groupName)) ||\n                   (!TARGET_HUB_JID && isGroup); // يقبل الجروب تلقائياً\n\nconst hasFile = !!fileName || messageType.includes('document') || messageType.includes('image');\n\nreturn [{\n  json: {\n    raw: data,\n    caption: caption.trim(),\n    fileName,\n    mimetype,\n    remoteJid,\n    groupName,\n    isHubGroup,\n    hasFile,\n    base64OrMediaUrl: data.mediaUrl || data.base64 || ''\n  }\n}];"
+      },
+      "id": "76329c29-3079-4db5-9e63-b816ba78e63a",
+      "name": "2. التحقق من جروب البورتال والمرفق",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.isHubGroup }}",
+              "value2": true
+            },
+            {
+              "value1": "={{ $json.hasFile }}",
+              "value2": true
+            }
+          ]
+        },
+        "combineOperation": "all"
+      },
+      "id": "f51ea673-c603-4c91-949e-b9b00cb3341b",
+      "name": "3. هل الرسالة من جروب البورتال وبها ملف؟",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        620,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+        "authentication": "none",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "={{ $env.GEMINI_API_KEY || 'YOUR_GEMINI_API_KEY' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [{\n    \"parts\": [{\n      \"text\": `أنت خبير تصنيف مواد أكاديمية لبورتال حاسبات الزقازيق (الفرقة الثانية - ترم ثاني - قسم ذكاء اصطناعي).\\nقم بتحليل الرسالة التالية واسم الملف واسم المعيد/المرسل لاستخراج البيانات بتنسيق JSON حصراً:\\n\\nنص الرسالة: \"${$json.caption}\"\\nاسم الملف: \"${$json.fileName}\"\\n\\nالمواد المتاحة في البورتال:\\n- computer-architecture (معمارية الحاسوب)\\n- data-structure (هياكل البيانات)\\n- operating-system (نظم التشغيل)\\n- database-systems (نظم قواعد البيانات)\\n- computer-graphics (رسومات الحاسوب)\\n- report-writing (كتابة التقارير الفنية)\\n\\nالمعيدين المعتمدين:\\n- م. أحمد حسام\\n- م. تقى مصطفى\\n- م. أمل مجدي\\n- م. دينا\\n- م. ياسمين\\n\\nالمطلوب إخراج JSON نقي كالتالي:\\n{\\n  \"courseId\": \"computer-architecture\",\\n  \"type\": \"section\" أو \"lecture\" أو \"assignment\",\\n  \"ta\": \"اسم المعيد مسبوقاً بـ م.\",\\n  \"doctor\": \"اسم الدكتور إن كانت محاضرة\",\\n  \"number\": 1,\\n  \"title\": \"عنوان مختصر بالإنجليزية\",\\n  \"arabicTitle\": \"عنوان واضح باللغة العربية\",\\n  \"fileType\": \"pdf\" أو \"pptx\" أو \"docx\",\\n  \"topics\": [\"موضوع 1\", \"موضوع 2\"],\\n  \"notes\": \"ملاحظات موجزة\"\\n}`\n    }]\n  }]\n}",
+        "options": {}
+      },
+      "id": "e6f47702-863f-42e1-88f1-8fcaef74e641",
+      "name": "4. تصنيف المحتوى بذكاء Gemini AI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        840,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// استخراج وتحليل استجابة الذكاء الاصطناعي\nconst aiResponse = $input.first().json;\nlet rawText = '';\ntry {\n  rawText = aiResponse.candidates[0].content.parts[0].text;\n} catch (e) {\n  throw new Error('فشل استخراج الرد من نموذج الذكاء الاصطناعي: ' + e.message);\n}\n\nconst cleanedJsonText = rawText.replace(/```json/gi, '').replace(/```/gi, '').trim();\nlet parsed = {};\ntry {\n  parsed = JSON.parse(cleanedJsonText);\n} catch (e) {\n  const match = cleanedJsonText.match(/\\{[\\s\\S]*\\}/);\n  if (match) parsed = JSON.parse(match[0]);\n  else throw new Error('تعذر تحويل رد الذكاء الاصطناعي إلى JSON: ' + cleanedJsonText);\n}\n\nconst fileInfo = $('2. التحقق من جروب البورتال والمرفق').first().json;\n\n// خريطة بمجلدات Google Drive المعتمدة لكل مادة\nconst DRIVE_COURSE_FOLDERS = {\n  'computer-architecture': '1cw9D5TplznX1HGf1dWh_C_-pu3ZjrJSS',\n  'data-structure': '1r1e8R096dYkU5Fk-qE5bE6b-f49z8n0B',\n  'operating-system': '1j3-T7wJ9oD7Lq58i7vF8tV0eG-u89R0a',\n  'database-systems': '1b-7Fj7uK9zD1p8q3_W4r6eY0t129pL7M',\n  'computer-graphics': '1x-9Fj8uL2qE5m8p3_R4t7eW0y123pK8L',\n  'report-writing': '1q-2Lk8uJ3mE5p8r4_T5y8eQ1w234mP9N'\n};\n\nreturn [{\n  json: {\n    ...parsed,\n    fileName: fileInfo.fileName,\n    mimetype: fileInfo.mimetype,\n    targetDriveFolderId: DRIVE_COURSE_FOLDERS[parsed.courseId] || DRIVE_COURSE_FOLDERS['computer-architecture'],\n    hubRemoteJid: fileInfo.remoteJid\n  }\n}];"
+      },
+      "id": "27db11c2-d39b-4654-8c0c-bbcd38562c1d",
+      "name": "5. تحديد مجلد Google Drive للمعيد",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "fileId": {
+          "__rl": true,
+          "mode": "id"
+        },
+        "name": "={{ $json.arabicTitle || $json.fileName }}",
+        "parents": [
+          "={{ $json.targetDriveFolderId }}"
+        ],
+        "options": {}
+      },
+      "id": "c8a41285-d6d8-4fbb-9ee7-76342817293b",
+      "name": "6. رفع الملف إلى Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1280,
+        280
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// دمج روابط درايف مع بيانات المادة\nconst material = $('5. تحديد مجلد Google Drive للمعيد').first().json;\nconst driveRes = $input.first()?.json || {};\n\n// استخدام رابط درايف المرفوع أو المجلد المعتمد للمعيد تلقائياً\nconst driveId = driveRes.id || driveRes.fileId || material.targetDriveFolderId || '1cw9D5TplznX1HGf1dWh_C_-pu3ZjrJSS';\nconst driveViewUrl = driveRes.webViewLink || `https://drive.google.com/drive/folders/${driveId}`;\nconst drivePreviewUrl = driveRes.webContentLink || driveViewUrl;\nconst driveDownloadUrl = driveRes.webContentLink || driveViewUrl;\n\nreturn [{\n  json: {\n    courseId: material.courseId,\n    type: material.type || 'section',\n    ta: material.ta || 'م. معيد المادة',\n    doctor: material.doctor,\n    number: material.number || 1,\n    title: material.title || material.arabicTitle,\n    arabicTitle: material.arabicTitle || material.title,\n    fileType: material.fileType || 'pdf',\n    size: driveRes.size ? `${Math.round(driveRes.size / 1024)} KB` : 'Google Drive',\n    driveId,\n    driveViewUrl,\n    drivePreviewUrl,\n    driveDownloadUrl,\n    topics: material.topics || [material.arabicTitle],\n    notes: material.notes || `تم الرفع آلياً من واتساب (${material.ta})`,\n    hubRemoteJid: material.hubRemoteJid\n  }\n}];"
+      },
+      "id": "a18efbf4-a21c-4b53-9d41-382a93b4845a",
+      "name": "7. تجهيز Payload المادة وروابط درايف",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1500,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://portal-evolution-api:8080/message/sendText/portal-bot",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "portal_secret_key_2026"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $json.hubRemoteJid }}\",\n  \"text\": `✅ *تم تجهيز السكشن وروابط Google Drive بنجاح!*\n━━━━━━━━━━━━━━━━━━━\n📚 *المادة:* ${$json.courseId}\n👨‍🏫 *المعيد/الدكتور:* ${$json.ta}\n🔢 *النوع:* ${$json.type} رقم ${$json.number}\n🏷️ *العنوان:* ${$json.arabicTitle}\n📁 *رابط درايف:* ${$json.driveViewUrl}\n\n👇 *هل تريد نشر هذا المحتوى على الموقع الآن؟*\n👉 *[اضغط هنا للاعتماد والنشر فوراً]:*\n${$execution.resumeUrl}?action=approve\n\n❌ *[اضغط هنا للإلغاء والتجاهل]:*\n${$execution.resumeUrl}?action=reject`\n}",
+        "options": {}
+      },
+      "id": "b3e0c0a1-77d4-4f2d-88b1-38e211a5bc39",
+      "name": "8. إرسال طلب الاعتماد داخل جروب البورتال",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1720,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "limitWaitTime": {
+          "values": {
+            "maxWaitTime": 48,
+            "maxWaitTimeUnit": "hours"
+          }
+        }
+      },
+      "id": "fa9816da-b78c-48c0-82d8-e7c65c276ee4",
+      "name": "9. انتظار ضغطة زر الاعتماد (Wait Node)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1940,
+        280
+      ],
+      "webhookId": "portal-hub-approval"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.query.action }}",
+              "value2": "approve"
+            }
+          ]
+        }
+      },
+      "id": "8902095f-97d8-4f25-83e9-a2e6f4770211",
+      "name": "10. هل تم الضغط على اعتماد؟",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.github.com/repos/ahm-333/Sem2_portal/dispatches",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github.v3+json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.GITHUB_PAT || 'YOUR_GITHUB_TOKEN' }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"event_type\": \"whatsapp-new-material\",\n  \"client_payload\": {{ JSON.stringify($('7. تجهيز Payload المادة وروابط درايف').first().json) }}\n}",
+        "options": {}
+      },
+      "id": "78d1ef33-5c79-4fa2-bc42-6e21ea80371c",
+      "name": "11. إطلاق GitHub Action وتحديث البورتال",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2380,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://portal-evolution-api:8080/message/sendText/portal-bot",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "portal_secret_key_2026"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $('7. تجهيز Payload المادة وروابط درايف').first().json.hubRemoteJid }}\",\n  \"text\": \"🎉 *تم اعتماد ونشر المحتوى بنجاح!*\nالموقع تم تحديثه الآن وأصبح متاحاً للطلاب في سكاشنهم على الرابط المباشر 🚀\"\n}",
+        "options": {}
+      },
+      "id": "90e2f11a-45c1-4b12-8811-923f14013ef1",
+      "name": "12. إرسال تأكيد النشر في الجروب",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2600,
+        220
+      ]
+    }
+  ],
+  "connections": {
+    "1. WhatsApp Webhook (Evolution API)": {
+      "main": [
+        [
+          {
+            "node": "2. التحقق من جروب البورتال والمرفق",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. التحقق من جروب البورتال والمرفق": {
+      "main": [
+        [
+          {
+            "node": "3. هل الرسالة من جروب البورتال وبها ملف؟",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3. هل الرسالة من جروب البورتال وبها ملف؟": {
+      "main": [
+        [
+          {
+            "node": "4. تصنيف المحتوى بذكاء Gemini AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4. تصنيف المحتوى بذكاء Gemini AI": {
+      "main": [
+        [
+          {
+            "node": "5. تحديد مجلد Google Drive للمعيد",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5. تحديد مجلد Google Drive للمعيد": {
+      "main": [
+        [
+          {
+            "node": "6. رفع الملف إلى Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6. رفع الملف إلى Google Drive": {
+      "main": [
+        [
+          {
+            "node": "7. تجهيز Payload المادة وروابط درايف",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "7. تجهيز Payload المادة وروابط درايف": {
+      "main": [
+        [
+          {
+            "node": "8. إرسال طلب الاعتماد داخل جروب البورتال",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8. إرسال طلب الاعتماد داخل جروب البورتال": {
+      "main": [
+        [
+          {
+            "node": "9. انتظار ضغطة زر الاعتماد (Wait Node)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "9. انتظار ضغطة زر الاعتماد (Wait Node)": {
+      "main": [
+        [
+          {
+            "node": "10. هل تم الضغط على اعتماد؟",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "10. هل تم الضغط على اعتماد؟": {
+      "main": [
+        [
+          {
+            "node": "11. إطلاق GitHub Action وتحديث البورتال",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "11. إطلاق GitHub Action وتحديث البورتال": {
+      "main": [
+        [
+          {
+            "node": "12. إرسال تأكيد النشر في الجروب",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

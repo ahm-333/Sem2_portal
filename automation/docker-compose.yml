@@ -1,0 +1,69 @@
+services:
+  # 1. محرك الأتمتة الرئيسي n8n
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: portal-n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://localhost:5678/
+      - GENERIC_TIMEZONE=Africa/Cairo
+      - TZ=Africa/Cairo
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - portal-net
+
+  # 2. بوابة واتساب Evolution API (الربط بـ QR Code والجروبات)
+  evolution-api:
+    image: evoapicloud/evolution-api:latest
+    container_name: portal-evolution-api
+    restart: unless-stopped
+    ports:
+      - "8085:8080"
+    environment:
+      - SERVER_URL=http://localhost:8085
+      - DOCKER_ENV=true
+      - AUTHENTICATION_TYPE=apikey
+      - AUTHENTICATION_API_KEY=portal_secret_key_2026
+      - DATABASE_ENABLED=true
+      - DATABASE_PROVIDER=postgresql
+      - DATABASE_CONNECTION_URI=postgresql://evolution:evolution_secret@portal-postgres:5432/evolution
+      - DATABASE_SAVE_DATA_INSTANCE=true
+      - DATABASE_SAVE_DATA_NEW_MESSAGE=true
+      - CACHE_REDIS_ENABLED=false
+    volumes:
+      - evolution_instances:/evolution/instances
+    networks:
+      - portal-net
+    depends_on:
+      - postgres
+
+  # 3. قاعدة بيانات خفيفة لبوابة الواتساب
+  postgres:
+    image: postgres:15-alpine
+    container_name: portal-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=evolution
+      - POSTGRES_PASSWORD=evolution_secret
+      - POSTGRES_DB=evolution
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - portal-net
+
+volumes:
+  n8n_data:
+  evolution_instances:
+  postgres_data:
+
+networks:
+  portal-net:
+    driver: bridge

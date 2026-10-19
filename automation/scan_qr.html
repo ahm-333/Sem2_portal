@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ربط الواتساب ببورتال حاسبات الزقازيق</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      max-width: 450px;
+      width: 100%;
+      border: 1px solid #334155;
+    }
+    h1 {
+      font-size: 20px;
+      margin-top: 0;
+      color: #38bdf8;
+    }
+    p {
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .qr-container {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      display: inline-block;
+      margin: 20px 0;
+      min-width: 250px;
+      min-height: 250px;
+    }
+    img {
+      display: block;
+      max-width: 260px;
+      height: auto;
+    }
+    .status {
+      font-size: 13px;
+      font-weight: bold;
+      color: #10b981;
+      margin-top: 10px;
+    }
+    .steps {
+      text-align: right;
+      background: #0f172a;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>📱 امسح الكود لربط الواتساب بالبورتال</h1>
+    <p>افتح الواتساب على موبايلك وامسح الكود الظاهر بالأسفل:</p>
+
+    <div class="qr-container">
+      <img id="qr-image" src="" alt="جاري تحميل كود QR...">
+    </div>
+
+    <div id="status" class="status">جاري تحديث كود الـ QR تلقائياً...</div>
+
+    <div class="steps">
+      <b>📌 الخطوات على موبايلك:</b><br>
+      1. افتح تطبيق <b>واتساب</b>.<br>
+      2. اضغط على القائمة (الثلاث نقاط) أعلى الشاشة.<br>
+      3. اختر <b>الأجهزة المرتبطة (Linked Devices)</b>.<br>
+      4. اضغط <b>ربط جهاز (Link a Device)</b> ووجّه الكاميرا نحو الكود.
+    </div>
+  </div>
+
+  <script>
+    async function fetchQR() {
+      try {
+        const res = await fetch('http://localhost:8085/instance/connect/portal-bot', {
+          headers: { 'apikey': 'portal_secret_key_2026' }
+        });
+        const data = await res.json();
+        if (data.base64) {
+          document.getElementById('qr-image').src = data.base64;
+          document.getElementById('status').innerText = '✅ الكود جاهز للمسح الآن!';
+        } else if (data.instance?.status === 'open' || data.status === 'open') {
+          document.getElementById('status').innerText = '🎉 تم ربط الواتساب بنجاح!';
+          document.getElementById('qr-image').style.display = 'none';
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('status').innerText = 'جاري الاتصال بالخدمة...';
+      }
+    }
+
+    fetchQR();
+    setInterval(fetchQR, 6000);
+  </script>
+</body>
+</html>

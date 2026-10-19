@@ -1,0 +1,14 @@
+# Logs and temp files
+*.log
+*.tmp
+push_err.txt
+push_out.txt
+
+# Generated data dumps
+tools/db_lec2_slides_text.txt
+tools/lecture3_payload.json
+tools/apply_workflow_fix.js
+
+# Raw presentations (slides images are tracked in materials/slides/)
+materials/*.ppt
+

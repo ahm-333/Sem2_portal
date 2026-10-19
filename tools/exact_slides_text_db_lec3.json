@@ -1,0 +1,377 @@
+﻿[
+    {
+        "num":  1,
+        "title":  "Lecture 3 Ch 2\u000b\u000bDatabase System Concepts and Architecture\u000b\u000bDr. Mohamed Maher",
+        "content":  [
+                        "Lecture 3 Ch 2\u000b\u000bDatabase System Concepts and Architecture\u000b\u000bDr. Mohamed Maher"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_1.png"
+    },
+    {
+        "num":  2,
+        "title":  "Chapter 2 Outline",
+        "content":  [
+                        "Chapter 2 Outline",
+                        "Data Models, Schemas, and Instances",
+                        "Three-Schema Architecture and Data Independence"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_2.png"
+    },
+    {
+        "num":  3,
+        "title":  "Data Models, Schemas, and Instances",
+        "content":  [
+                        "Data Models, Schemas, and Instances",
+                        "Data abstraction",
+                        "Suppression of details of data organization and storage",
+                        "Highlighting of the essential features for an improved understanding of data"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_3.png"
+    },
+    {
+        "num":  4,
+        "title":  "Data Models, Schemas, and Instances (cont\u0027d.)",
+        "content":  [
+                        "Data Models, Schemas, and Instances (cont\u0027d.)",
+                        "Data model",
+                        "Collection of concepts that describe the structure of a database",
+                        "Provides means to achieve data abstraction",
+                        "Basic operations",
+                        "Specify retrievals and updates on the database",
+                        "the dynamic aspect or behavior of a database application.",
+                        "This allows the database designer to specify a set of valid user-defined operations that are allowed on the database objects. An example of a user-defined operation could be COMPUTE_GPA, which can be applied to a STUDENT object."
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_4.png"
+    },
+    {
+        "num":  5,
+        "title":  "Categories of Data Models",
+        "content":  [
+                        "Categories of Data Models",
+                        "High-level or conceptual data models",
+                        "Close to the way many users perceive data",
+                        "Low-level or physical data models",
+                        "Describe the details of how data is stored on computer storage media",
+                        "Representational data models",
+                        "Easily understood by end users",
+                        "Also similar to how data organized in computer storage"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_5.png"
+    },
+    {
+        "num":  6,
+        "title":  "High-level or Conceptual data models",
+        "content":  [
+                        "High-level or Conceptual data models",
+                        "Entity",
+                        "Represents a real-world object or concept",
+                        "Attribute",
+                        "Represents some property of interest",
+                        "Further describes an entity",
+                        "Relationship among two or more entities",
+                        "Represents an association among the entities",
+                        "Entity-Relationship model"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_6.png"
+    },
+    {
+        "num":  7,
+        "title":  "Slide 7",
+        "content":  [
+
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_7.png"
+    },
+    {
+        "num":  8,
+        "title":  "Categories of Data Models (cont\u0027d.)",
+        "content":  [
+                        "Categories of Data Models (cont\u0027d.)",
+                        "Relational data model",
+                        "Used most frequently in traditional commercial DBMSs",
+                        "Represent data by using record structures and hence are sometimes called record-based data models."
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_8.png"
+    },
+    {
+        "num":  9,
+        "title":  "Slide 9",
+        "content":  [
+
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_9.png"
+    },
+    {
+        "num":  10,
+        "title":  "Object data model",
+        "content":  [
+                        "Object data model",
+                        "New family of higher-level implementation data models Closer to conceptual data models (UML)"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_10.png"
+    },
+    {
+        "num":  11,
+        "title":  "Categories of Data Models (cont\u0027d.)",
+        "content":  [
+                        "Categories of Data Models (cont\u0027d.)",
+                        "Physical data models",
+                        "Describe how data is stored as files in the computer by representing information such as record formats, record orderings, and access paths",
+                        "Access path",
+                        "Structure that makes the search for particular database records efficient",
+                        "Index",
+                        "Example of an access path",
+                        "Allows direct access to data using an index term or a keyword"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_11.png"
+    },
+    {
+        "num":  12,
+        "title":  "Schemas, Instances, and Database State",
+        "content":  [
+                        "Schemas, Instances, and Database State",
+                        "Database schema",
+                        "Description of a database which is specified during database design.",
+                        "is not expected to change frequently",
+                        "Schema diagram",
+                        "Displayed schema",
+                        "The diagram displays the structure of each record type but not the actual instances of records.",
+                        "Schema construct",
+                        "Each object in the schema such as STUDENT or COURSE",
+                        "Database state or snapshot",
+                        "Data in database at a particular moment in time"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_12.png"
+    },
+    {
+        "num":  13,
+        "title":  "Schemas, Instances, and Database State (cont\u0027d.)",
+        "content":  [
+                        "Schemas, Instances, and Database State (cont\u0027d.)"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_13.png"
+    },
+    {
+        "num":  14,
+        "title":  "Database Schema vs. Database State",
+        "content":  [
+                        "Database Schema vs. Database State",
+                        "Database State:",
+                        "Refers to the content of a database at a moment in time.",
+                        "The actual data stored in a database at a particular moment in time. This includes the collection of all the data in the database.",
+                        "Also called database instance (or occurrence or snapshot).",
+                        "The term instance  is also applied to individual database components, e.g. record instance, table instance",
+                        "Initial Database State:",
+                        "Refers to the database state when it is initially loaded into the system.",
+                        "Every time an update operation is applied to the database, we get another database state",
+                        "Valid State:",
+                        "A state that satisfies the structure and constraints of the database."
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_14.png"
+    },
+    {
+        "num":  15,
+        "title":  "Slide 15",
+        "content":  [
+
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_15.png"
+    },
+    {
+        "num":  16,
+        "title":  "Schemas, Instances, and Database State (cont\u0027d.)",
+        "content":  [
+                        "Schemas, Instances, and Database State (cont\u0027d.)",
+                        "Schema evolution",
+                        "Changes applied to schema as application requirements change",
+                        "Distinction",
+                        "The database schema changes very infrequently.",
+                        "The database state changes every time the database is updated",
+                        "Schema is also called intension.",
+                        "State is also called extension"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_16.png"
+    },
+    {
+        "num":  17,
+        "title":  "Example of a database state",
+        "content":  [
+                        "Example of a database state"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_17.png"
+    },
+    {
+        "num":  18,
+        "title":  "Three-Schema Architecture and Data Independence",
+        "content":  [
+                        "Three-Schema Architecture and Data Independence",
+                        "The goal of the three-schema architecture is to separate the user applications from the physical database.",
+                        "Internal level",
+                        "Describes physical storage structure of the database.",
+                        "The internal schema uses a physical data model and describes the complete details of data storage and access paths for the database.",
+                        "Conceptual level",
+                        "has a conceptual schema",
+                        "Describes structure of the whole database for a community of users",
+                        "The conceptual schema hides the details of physical storage structures and concentrates on describing entities, data types, relationships, user operations, and constraints.",
+                        "External or view level",
+                        "Describes part of the database that a particular user group is interested in and hides the rest of the database from that user group."
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_18.png"
+    },
+    {
+        "num":  19,
+        "title":  "Three-Schema Architecture and Data Independence (cont\u0027d.)",
+        "content":  [
+                        "Three-Schema Architecture and Data Independence (cont\u0027d.)"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_19.png"
+    },
+    {
+        "num":  20,
+        "title":  "Three-Schema Architecture\u000band Data Independence (cont\u0027d.)",
+        "content":  [
+                        "Three-Schema Architecture\u000band Data Independence (cont\u0027d.)"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_20.png"
+    },
+    {
+        "num":  21,
+        "title":  "Three-Schema Architecture",
+        "content":  [
+                        "Three-Schema Architecture",
+                        "Mappings among schema levels are needed to transform requests and data.",
+                        "Programs refer to an external schema, and are mapped by the DBMS to the internal schema for execution.",
+                        "Data extracted from the internal DBMS level is reformatted to match the user’s external view (e.g. formatting the results of an SQL query for display in a Web page)",
+                        "Slide 2- 21"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_21.png"
+    },
+    {
+        "num":  22,
+        "title":  "Data Independence",
+        "content":  [
+                        "Data Independence",
+                        "Capacity to change the schema at one level of a database system",
+                        "Without having to change the schema at the next higher level",
+                        "Types:",
+                        "Logical data independence is the capacity to change the conceptual schema without having to change external schemas or application programs",
+                        "Physical data independence is the capacity to change the internal schema without having to change the conceptual schema. Hence, the external schemas need not be changed as well."
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_22.png"
+    },
+    {
+        "num":  23,
+        "title":  "DBMS Languages",
+        "content":  [
+                        "DBMS Languages",
+                        "Data definition language (DDL)",
+                        "Defines both schemas",
+                        "Storage definition language (SDL)",
+                        "Specifies the internal schema",
+                        "View definition language (VDL)",
+                        "Specifies user views/mappings to conceptual schema",
+                        "Data manipulation language (DML)",
+                        "Allows retrieval, insertion, deletion, modification"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_23.png"
+    },
+    {
+        "num":  24,
+        "title":  "Centralized and Client/Server Architectures for DBMSs",
+        "content":  [
+                        "Centralized and Client/Server Architectures for DBMSs",
+                        "Centralized DBMSs Architecture",
+                        "All DBMS functionality, application program execution, and user interface processing carried out on one machine"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_24.png"
+    },
+    {
+        "num":  25,
+        "title":  "Slide 25",
+        "content":  [
+
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_25.png"
+    },
+    {
+        "num":  26,
+        "title":  "Basic Client/Server Architectures",
+        "content":  [
+                        "Basic Client/Server Architectures",
+                        "Servers with specific functionalities",
+                        "File server",
+                        "Maintains the files of the client machines.",
+                        "Printer server",
+                        "Connected to various printers; all print requests by the clients are forwarded to this machine",
+                        "Web servers or e-mail servers"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_26.png"
+    },
+    {
+        "num":  27,
+        "title":  "Basic Client/Server Architectures (cont\u0027d.)",
+        "content":  [
+                        "Basic Client/Server Architectures (cont\u0027d.)",
+                        "Client machines",
+                        "Provide user with:",
+                        "Appropriate interfaces to utilize these servers",
+                        "Local processing power to run local applications"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_27.png"
+    },
+    {
+        "num":  28,
+        "title":  "Slide 28",
+        "content":  [
+
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_28.png"
+    },
+    {
+        "num":  29,
+        "title":  "Basic Client/Server Architectures (cont\u0027d.)",
+        "content":  [
+                        "Basic Client/Server Architectures (cont\u0027d.)",
+                        "Client",
+                        "User machine that provides user interface capabilities and local processing",
+                        "Server",
+                        "System containing both hardware and software",
+                        "Provides services to the client machines",
+                        "Such as file access, printing, archiving, or database access"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_29.png"
+    },
+    {
+        "num":  30,
+        "title":  "Two-Tier Client/Server Architectures for DBMSs",
+        "content":  [
+                        "Two-Tier Client/Server Architectures for DBMSs",
+                        "Server handles",
+                        "Query and transaction functionality related to SQL processing",
+                        "Client handles",
+                        "User interface programs and application programs"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_30.png"
+    },
+    {
+        "num":  31,
+        "title":  "Three-Tier and n-Tier Architectures for Web Applications",
+        "content":  [
+                        "Three-Tier and n-Tier Architectures for Web Applications",
+                        "Application server or Web server",
+                        "Adds intermediate layer between client and the database server",
+                        "Runs application programs and stores business rules",
+                        "N-tier",
+                        "Divide the layers between the user and the stored data further into finer components"
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_31.png"
+    },
+    {
+        "num":  32,
+        "title":  "Slide 32",
+        "content":  [
+
+                    ],
+        "imagePath":  "materials/slides/db-lec3/slide_32.png"
+    }
+]
