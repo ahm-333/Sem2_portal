@@ -496,3 +496,43 @@ code, pre, .font-mono {
   border-color: #fde68a;
 }
 
+/* ==============================================================================
+   صناديق تفكيك المخططات والرسومات (Diagram Deconstruction Box)
+   ============================================================================== */
+.study-diagram-box {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+  border: 1px solid rgba(14, 165, 233, 0.35);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.05);
+}
+
+[data-theme="light"] .study-diagram-box {
+  background: #f0f9ff !important;
+  border-color: #bae6fd !important;
+}
+
+[data-theme="reading"] .study-diagram-box {
+  background: #fefce8 !important;
+  border-color: #fef08a !important;
+}
+
+/* ==============================================================================
+   صناديق المقارنات المباشرة (Comparisons Box)
+   ============================================================================== */
+.study-comparison-box {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(236, 72, 153, 0.08) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.05);
+}
+
+[data-theme="light"] .study-comparison-box {
+  background: #faf5ff !important;
+  border-color: #e9d5ff !important;
+}
+
+[data-theme="reading"] .study-comparison-box {
+  background: #fffbeb !important;
+  border-color: #fde68a !important;
+}
+

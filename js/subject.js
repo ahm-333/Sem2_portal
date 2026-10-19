@@ -779,6 +779,84 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
       ` : '';
 
+      // تفكيك الرسم أو المخطط قطعة قطعة (Diagram Deconstruction)
+      const diagramHtml = s.diagramDeconstruction ? `
+        <div class="study-diagram-box p-4 sm:p-5 rounded-2xl border border-sky-500/35 space-y-3.5">
+          <div class="flex items-center gap-2 text-sky-600 dark:text-sky-400 font-extrabold text-xs sm:text-sm">
+            <i data-lucide="layers" class="w-4 h-4"></i>
+            <span>🧩 ${s.diagramDeconstruction.title || "تفكيك الرسم والمخطط حتة حتة (Diagram Deconstruction):"}</span>
+          </div>
+          ${s.diagramDeconstruction.overview ? `
+            <p class="text-xs sm:text-sm text-[var(--text-main)] font-semibold leading-relaxed bg-[var(--bg-surface)] p-3 rounded-xl border border-sky-500/20">
+              ${s.diagramDeconstruction.overview}
+            </p>
+          ` : ""}
+          <div class="grid grid-cols-1 gap-2.5">
+            ${(s.diagramDeconstruction.parts || []).map(part => `
+              <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] flex flex-col sm:flex-row sm:items-start gap-3">
+                <div class="flex items-center gap-2 sm:flex-col sm:items-start flex-shrink-0">
+                  <span class="px-2.5 py-1 rounded-lg bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-500/30 font-mono font-black text-xs">
+                    ${part.symbol || part.label}
+                  </span>
+                  ${part.type ? `
+                    <span class="text-[10px] text-[var(--text-dim)] font-medium font-mono">${part.type}</span>
+                  ` : ""}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h6 class="text-xs sm:text-sm font-extrabold text-[var(--text-main)] mb-1">${part.role || part.title}</h6>
+                  <p class="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed mb-1.5">${part.meaning}</p>
+                  ${part.example ? `
+                    <div class="text-[11px] font-medium text-sky-600 dark:text-sky-300 bg-sky-500/10 px-2.5 py-1 rounded-lg inline-block">
+                      💡 <strong>تطبيق عملي:</strong> ${part.example}
+                    </div>
+                  ` : ""}
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      ` : "";
+
+      // مقارنات مباشرة وسريعة (Comparisons: X vs Y)
+      const comparisonHtml = s.comparison ? `
+        <div class="study-comparison-box p-4 sm:p-5 rounded-2xl border border-purple-500/35 space-y-3">
+          <div class="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-extrabold text-xs sm:text-sm">
+            <i data-lucide="git-compare" class="w-4 h-4"></i>
+            <span>⚖️ ${s.comparison.title || "مقارنة هامة في الامتحان (Comparison):"}</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            ${(s.comparison.items || []).map(item => `
+              <div class="p-3.5 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] space-y-1.5">
+                <span class="px-2.5 py-1 rounded-lg bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/30 font-bold text-xs inline-block">
+                  ${item.name}
+                </span>
+                <p class="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed font-medium">${item.desc}</p>
+                ${item.example ? `
+                  <div class="text-[11px] text-[var(--text-dim)] mt-1">📌 <strong>مثال:</strong> ${item.example}</div>
+                ` : ""}
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      ` : "";
+
+      // مثال عملي واقعي يرسخ المفهوم (Real-world practical example)
+      const realLifeHtml = s.realLifeExample ? `
+        <div class="p-3.5 sm:p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 text-emerald-950 dark:text-emerald-200">
+          <div class="flex items-start gap-2.5">
+            <span class="text-lg flex-shrink-0">🏢</span>
+            <div class="flex-1 min-w-0">
+              <strong class="text-xs sm:text-sm font-extrabold text-emerald-700 dark:text-emerald-300 block mb-1">
+                ${s.realLifeExample.title || "مثال واقعي من الحياة العملية:"}
+              </strong>
+              <p class="text-xs sm:text-sm leading-relaxed text-[var(--text-main)] font-medium">
+                ${s.realLifeExample.desc}
+              </p>
+            </div>
+          </div>
+        </div>
+      ` : "";
+
       // شفرة الامتحان: لو شوفت كذا اختار كذا
       const triggersHtml = s.triggers && s.triggers.length > 0 ? `
         <div class="study-cheat-box space-y-2.5">
@@ -924,6 +1002,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
               ` : ""}
             </div>
+
+            <!-- تفكيك الرسم والمخطط بالتفصيل إن وجد -->
+            ${diagramHtml}
+
+            <!-- المقارنات المباشرة إن وجدت -->
+            ${comparisonHtml}
+
+            <!-- المثال العملي الواقعي إن وجد -->
+            ${realLifeHtml}
 
             <!-- 2. شفرة الامتحان (لو شوفت كذا اختار كذا) -->
             ${triggersHtml}

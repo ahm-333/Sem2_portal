@@ -725,29 +725,29 @@ const COURSES_DATA = [
       },
       {
         id: 3,
-        chapter: "Chapter 3",
-        title: "Data Modeling Using the Entity-Relationship (ER) Model",
-        arabicTitle: "نمذجة البيانات ومخطط الكيانات والعلاقات (ERD)",
-        doctor: "سلايدات موحدة للدفعة",
-        doctorNote: "B1 • B2 • B3",
+        chapter: "Chapter 2",
+        title: "Database System Concepts and Architecture",
+        arabicTitle: "معمارية نظم قواعد البيانات، نماذج البيانات، ومستويات Schema الثلاثة (د. محمد ماهر)",
+        doctor: "د. محمد ماهر (Dr. Mohamed Maher)",
+        doctorNote: "سلايدات موحدة للدفعة",
         week: 3,
         date: "المحاضرة 3",
         fileType: "ppt",
-        pages: 44,
-        size: "PowerPoint",
+        pages: 32,
+        size: "32 شريحة (مع شرح تفاعلي ذكي)",
         driveId: "1E84yksi_nJRsjvY5Geh3-oxgS01RiJIm",
         driveViewUrl: "https://drive.google.com/file/d/1E84yksi_nJRsjvY5Geh3-oxgS01RiJIm/view",
         drivePreviewUrl: "https://drive.google.com/file/d/1E84yksi_nJRsjvY5Geh3-oxgS01RiJIm/preview",
         driveDownloadUrl: "https://drive.google.com/uc?export=download&id=1E84yksi_nJRsjvY5Geh3-oxgS01RiJIm",
         pdfUrl: "https://drive.google.com/file/d/1E84yksi_nJRsjvY5Geh3-oxgS01RiJIm/preview",
         topics: [
-          "Conceptual Data Models for Database Design",
-          "Entity Types, Entity Sets, Attributes and Keys",
-          "Relationship Types, Sets, Roles, and Structural Constraints",
-          "Weak Entity Types & Identifying Relationships",
-          "ER Diagrams, Naming Conventions and Design Issues"
+          "Data Models (Conceptual, Representational/Record-based, Physical)",
+          "Schemas, Instances & Database State vs Schema Evolution",
+          "Three-Schema Architecture & Data Independence (Logical vs Physical)",
+          "DBMS Languages (DDL, SDL, VDL, DML)",
+          "DBMS Architectures (Centralized, 2-Tier, 3-Tier Web Architectures)"
         ],
-        notes: "ملف المحاضرة 3 الرسمي المعتمد (lec 3 ch 2.ppt) على Google Drive"
+        notes: "المحاضرة 3 الرسمية المعتمدة (lec 3 ch 2.ppt) لدكتور محمد ماهر مع تفكيك المخططات والشرح التفاعلي الذكي"
       },
       {
         id: 4,
