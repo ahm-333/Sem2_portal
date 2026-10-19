@@ -360,7 +360,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (sectionsCount === 0) {
       sectionsList.innerHTML = createEmptyNotice(
         "شيتات وسكاشن العملي",
-        "المحتوى قيد التجهيز - سيتم رفع شيتات المعيدين وأكواد البرمجة ومستودعات GitHub فور إرسال محتوى المادة."
+        "المحتوى قيد التجهيز - سيتم رفع شيتات المعيدين وأكواد البرمجة فور إرسال محتوى المادة."
       );
     } else {
       sectionsList.innerHTML = course.sections.map((sec) => `

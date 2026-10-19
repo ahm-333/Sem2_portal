@@ -111,25 +111,14 @@ document.addEventListener("DOMContentLoaded", function () {
         <div>
           <!-- شارات الإحصائيات وحالة المحتوى -->
           <div class="flex items-center justify-between text-xs text-[var(--text-dim)] border-t border-[var(--border-subtle)] pt-3 pb-4">
-            <span class="flex items-center gap-1">
+            <span class="flex items-center gap-1.5 font-medium">
               <i data-lucide="video" class="w-3.5 h-3.5 text-indigo-400"></i>
               ${lecturesCount > 0 ? `${lecturesCount} محاضرات` : '<span class="text-indigo-400/90 font-medium">المحاضرات قريباً</span>'}
             </span>
-            <span class="flex items-center gap-1">
+            <span class="flex items-center gap-1.5 font-medium">
               <i data-lucide="code-2" class="w-3.5 h-3.5 text-cyan-400"></i>
               ${sectionsCount > 0 ? `${sectionsCount} سكاشن` : '<span class="text-cyan-400/90 font-medium">السكاشن قريباً</span>'}
             </span>
-            ${course.githubRepo && !course.githubRepo.includes("your-username") ? `
-            <a 
-              href="${course.githubRepo}" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              class="flex items-center gap-1 text-[var(--text-dim)] hover:text-indigo-400 transition-colors"
-              title="مستودع المادة على GitHub"
-            >
-              <i data-lucide="github" class="w-3.5 h-3.5"></i>
-              <span>GitHub</span>
-            </a>` : ""}
           </div>
 
           <!-- أزرار مساري المادة (طريق المحاضرة وطريق السكشن) -->
