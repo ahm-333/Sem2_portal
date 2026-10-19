@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const iconName = iconMap[course.icon] || "book";
   const iconBox = document.getElementById("subject-icon-box");
   if (iconBox) {
-    iconBox.className = `w-16 h-16 rounded-2xl bg-gradient-to-tr ${course.accentColor} flex items-center justify-center text-white shadow-lg flex-shrink-0`;
+    iconBox.className = `w-16 h-16 rounded-2xl bg-gradient-to-tr ${course.accentColor} flex items-center justify-center text-white shadow-lg flex-shrink-0 icon-box-modern`;
     iconBox.innerHTML = `<i data-lucide="${iconName}" class="w-8 h-8"></i>`;
   }
 
@@ -129,12 +129,197 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  // 5.2 رندر شروحات ومصادر المادة وقوائم التشغيل (Video Explanations & Playlists)
+  const videoList = document.getElementById("video-explanations-list");
+  const badgeVideosCount = document.getElementById("badge-videos-count");
+  const videoModal = document.getElementById("video-modal");
+  const videoFrame = document.getElementById("video-modal-frame");
+  const videoTitle = document.getElementById("video-modal-title");
+  const videoSubtitle = document.getElementById("video-modal-subtitle");
+  const videoOpenNew = document.getElementById("video-modal-open-new");
+  const videoClose = document.getElementById("video-modal-close");
+
+  function getYouTubeEmbedUrl(url) {
+    if (!url) return "";
+    if (url.includes("/embed/")) return url;
+    if (url.includes("drive.google.com/file/d/")) {
+      return url.replace(/\/view(\?.*)?$/, "/preview");
+    }
+    const playlistMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+    if (playlistMatch) {
+      return `https://www.youtube.com/embed/videoseries?list=${playlistMatch[1]}&autoplay=1`;
+    }
+    const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+    if (shortMatch) {
+      return `https://www.youtube.com/embed/${shortMatch[1]}?autoplay=1`;
+    }
+    const watchMatch = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+    if (watchMatch) {
+      return `https://www.youtube.com/embed/${watchMatch[1]}?autoplay=1`;
+    }
+    return url;
+  }
+
+  function openVideoModal(url, title, subtitle) {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile || !videoModal || !videoFrame) {
+      window.open(url, "_blank", "noopener");
+      return;
+    }
+    const embedUrl = getYouTubeEmbedUrl(url);
+    videoFrame.src = embedUrl;
+    if (videoTitle) videoTitle.textContent = title || "مشاهدة الشرح";
+    if (videoSubtitle) videoSubtitle.textContent = subtitle || "معاينة مباشرة";
+    if (videoOpenNew) {
+      videoOpenNew.href = url;
+      const isDrive = url.includes("drive.google.com");
+      const span = videoOpenNew.querySelector("span");
+      if (span) span.textContent = isDrive ? "فتح في Google Drive" : "فتح في YouTube";
+    }
+    videoModal.classList.remove("hidden");
+    document.body.classList.add("overflow-hidden");
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function closeVideoModal() {
+    if (!videoModal || !videoFrame) return;
+    videoModal.classList.add("hidden");
+    videoFrame.src = "";
+    document.body.classList.remove("overflow-hidden");
+  }
+
+  if (videoClose) {
+    videoClose.addEventListener("click", closeVideoModal);
+  }
+  if (videoModal) {
+    videoModal.addEventListener("click", function (e) {
+      if (e.target === videoModal) closeVideoModal();
+    });
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && videoModal && !videoModal.classList.contains("hidden")) {
+      closeVideoModal();
+    }
+  });
+
+  const videos = course.videoExplanations || [];
+  if (badgeVideosCount) {
+    badgeVideosCount.textContent = `${videos.length} مصادر شرح`;
+  }
+
+  if (videoList) {
+    if (videos.length === 0) {
+      videoList.innerHTML = createEmptyNotice(
+        "شروحات الفيديو وقوائم التشغيل",
+        "سيتم إضافة المزيد من الشروحات وقوائم التشغيل الخاصة بالمادة قريباً."
+      );
+    } else {
+      videoList.innerHTML = videos.map((vid) => {
+        return `
+          <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-4 card-hover-effect">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold flex items-center gap-1">
+                    <i data-lucide="youtube" class="w-3 h-3"></i>
+                    <span>${vid.typeArabic || "فيديو شرح"}</span>
+                  </span>
+                  <span class="text-[10px] px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold">
+                    ${vid.language || "عربي"}
+                  </span>
+                </div>
+                ${vid.badge ? `<span class="text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium">${vid.badge}</span>` : ""}
+              </div>
+
+              <h4 class="text-sm sm:text-base font-bold text-[var(--text-main)] mb-1 leading-snug">${vid.title}</h4>
+              <p class="text-xs text-[var(--text-muted)] leading-relaxed mb-2">${vid.subtitle || ""}</p>
+              ${vid.author ? `
+                <div class="text-[11px] text-[var(--text-dim)] flex items-center gap-1.5 font-medium mt-1">
+                  <i data-lucide="user-check" class="w-3.5 h-3.5 text-red-400"></i>
+                  <span>المحاضر / المصدر: <strong>${vid.author}</strong></span>
+                </div>
+              ` : ""}
+            </div>
+
+            <div class="flex items-center gap-2 pt-3 border-t border-[var(--border-subtle)]">
+              <button 
+                type="button" 
+                data-play-url="${vid.url}"
+                data-play-title="${vid.title}"
+                data-play-subtitle="${vid.subtitle || ""}"
+                class="btn-play-video flex-1 py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer btn-smooth"
+              >
+                <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                <span>مشاهدة الشرح</span>
+              </button>
+
+              <a 
+                href="${vid.url}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="p-2.5 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-red-600 hover:text-white transition-all flex items-center justify-center btn-smooth"
+                title="فتح في تطبيق YouTube"
+              >
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+              </a>
+
+              <button 
+                type="button" 
+                data-copy-url="${vid.url}"
+                class="btn-copy-link p-2.5 rounded-xl glass-panel border text-xs font-medium text-[var(--text-muted)] hover:text-indigo-400 transition-all flex items-center justify-center btn-smooth"
+                title="نسخ رابط الشرح"
+              >
+                <i data-lucide="copy" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      // إعداد أزرار تشغيل الفيديو
+      videoList.querySelectorAll(".btn-play-video").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const url = this.getAttribute("data-play-url");
+          const title = this.getAttribute("data-play-title");
+          const sub = this.getAttribute("data-play-subtitle");
+          openVideoModal(url, title, sub);
+        });
+      });
+
+      // إعداد أزرار نسخ الرابط
+      videoList.querySelectorAll(".btn-copy-link").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const url = this.getAttribute("data-copy-url");
+          navigator.clipboard.writeText(url).then(() => {
+            const toast = document.getElementById("toast");
+            if (toast) {
+              const span = toast.querySelector("span");
+              const original = span.textContent;
+              span.textContent = "تم نسخ رابط الشرح بنجاح!";
+              toast.classList.remove("opacity-0", "pointer-events-none");
+              setTimeout(() => {
+                toast.classList.add("opacity-0", "pointer-events-none");
+                span.textContent = original;
+              }, 2500);
+            }
+          });
+        });
+      });
+    }
+  }
+
   // 6. رندر محتوى طريق المحاضرة (Lectures & Theory Resources)
   const lecturesCount = course.lectures ? course.lectures.length : 0;
   const badgeLecturesCount = document.getElementById("badge-lectures-count");
   if (badgeLecturesCount) badgeLecturesCount.textContent = `${lecturesCount} محاضرات`;
 
-  // إعداد نافذة معاينة الـ PDF المضمنة
+  // ربط زر مجلد Google Drive الكامل للمادة
+  const courseDriveFolderBtn = document.getElementById("course-drive-folder-link");
+  if (courseDriveFolderBtn) {
+    courseDriveFolderBtn.href = course.driveFolderUrl || (window.PORTAL_CONFIG && window.PORTAL_CONFIG.driveMasterFolder) || "https://drive.google.com/drive/folders/11q-xu1rb5IoIE-lL1pMjHXqfut9Tq2hU";
+  }
+
+  // إعداد نافذة معاينة الـ PDF والمستندات المضمنة
   const pdfModal = document.getElementById("pdf-modal");
   const pdfFrame = document.getElementById("pdf-modal-frame");
   const pdfTitle = document.getElementById("pdf-modal-title");
@@ -143,19 +328,24 @@ document.addEventListener("DOMContentLoaded", function () {
   const pdfDownload = document.getElementById("pdf-modal-download");
   const pdfClose = document.getElementById("pdf-modal-close");
 
-  function openPdfModal(fileUrl, title, subtitle, filename) {
-    // الموبايل مش بيعرض PDF جوه iframe، فنفتحه مباشرة في تاب جديد
+  function openPdfModal(fileUrl, title, subtitle, filename, downloadUrl, viewUrl) {
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile || !pdfModal || !pdfFrame) {
-      window.open(fileUrl, "_blank", "noopener");
+      window.open(viewUrl || fileUrl, "_blank", "noopener");
       return;
     }
-    pdfFrame.src = fileUrl;
+
+    let frameUrl = fileUrl;
+    if (frameUrl.includes("drive.google.com/file/d/") && !frameUrl.includes("/preview")) {
+      frameUrl = frameUrl.replace(/\/view(\?.*)?$/, "/preview");
+    }
+
+    pdfFrame.src = frameUrl;
     if (pdfTitle) pdfTitle.textContent = title || "سلايدات المحاضرة";
     if (pdfSubtitle) pdfSubtitle.textContent = subtitle || "معاينة مباشرة";
-    if (pdfOpenNew) pdfOpenNew.href = fileUrl;
+    if (pdfOpenNew) pdfOpenNew.href = viewUrl || fileUrl;
     if (pdfDownload) {
-      pdfDownload.href = fileUrl;
+      pdfDownload.href = downloadUrl || fileUrl;
       pdfDownload.setAttribute("download", filename || "lecture.pdf");
     }
     pdfModal.classList.remove("hidden");
@@ -191,12 +381,20 @@ document.addEventListener("DOMContentLoaded", function () {
     if (lecturesCount === 0) {
       lecturesList.innerHTML = createEmptyNotice(
         "سجل المحاضرات النظري",
-        "المحتوى قيد التجهيز - سيتم رفع سلايدات الـ PDF وروابط الفيديوهات والشرح فور إرسال محتوى المادة."
+        "المحتوى قيد التجهيز - سيتم إضافة سلايدات المحاضرات وروابط Google Drive فور توفرها."
       );
     } else {
       lecturesList.innerHTML = course.lectures.map((lec) => {
-        const pdfFile = lec.pdfUrl || lec.slidesUrl || "#";
-        const filename = pdfFile.split("/").pop() || `Lecture_${lec.id}.pdf`;
+        const previewUrl = lec.drivePreviewUrl || lec.pdfUrl || lec.slidesUrl || "#";
+        const viewUrl = lec.driveViewUrl || lec.pdfUrl || lec.slidesUrl || "#";
+        const downloadUrl = lec.driveDownloadUrl || lec.pdfUrl || "#";
+        const filename = `${course.name}_Lecture_${lec.id}.${lec.fileType || 'pdf'}`;
+        
+        const fileTypeLabel = (lec.fileType || 'pdf').toUpperCase();
+        const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
+          ? 'bg-red-500/10 text-red-400 border-red-500/20' 
+          : 'bg-orange-500/10 text-orange-400 border-orange-500/20';
+
         const topicsHtml = lec.topics && lec.topics.length > 0 ? `
           <div class="mt-3 pt-3 border-t border-[var(--border-subtle)]">
             <span class="text-[11px] font-bold text-[var(--text-dim)] block mb-1.5 flex items-center gap-1.5">
@@ -212,15 +410,24 @@ document.addEventListener("DOMContentLoaded", function () {
         return `
           <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect">
             <div class="flex items-start gap-3.5">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-600 text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-600 text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono icon-box-modern">
                 <span>L${lec.id}</span>
-                ${lec.chapter ? `<span class="text-[9px] opacity-80">${lec.chapter.replace("Chapter ", "Ch")}</span>` : ""}
+                ${lec.chapter ? `<span class="text-[9px] opacity-80">${lec.chapter.replace("Chapter ", "Ch").replace("Lecture ", "Lec ")}</span>` : ""}
               </div>
 
               <div class="flex-1 min-w-0">
                 <div class="flex flex-wrap items-center gap-2 mb-1.5">
                   <span class="text-xs font-bold text-indigo-400">${lec.date || `المحاضرة ${lec.id}`}</span>
                   <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${lec.week || lec.id}</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold border ${fileTypeBadgeColor}">
+                    ${fileTypeLabel}
+                  </span>
+                  ${lec.driveId ? `
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold flex items-center gap-1">
+                      <i data-lucide="cloud" class="w-3 h-3"></i>
+                      <span>متصل بـ Drive</span>
+                    </span>
+                  ` : ""}
                   ${lec.doctor ? `
                     <span class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold flex items-center gap-1">
                       <i data-lucide="graduation-cap" class="w-3 h-3"></i>
@@ -228,7 +435,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     </span>
                   ` : ""}
                   ${lec.pages ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">${lec.pages} صفحة</span>` : ""}
-                  ${lec.size ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">${lec.size}</span>` : ""}
                 </div>
 
                 <h4 class="text-base font-bold text-[var(--text-main)] mb-1">${lec.title}</h4>
@@ -244,34 +450,38 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- زر المعاينة داخل الصفحة -->
                 <button 
                   type="button"
-                  data-preview-file="${pdfFile}"
+                  data-preview-file="${previewUrl}"
                   data-preview-title="${lec.title}"
                   data-preview-subtitle="${lec.arabicTitle || ""}"
                   data-preview-filename="${filename}"
-                  class="btn-preview-pdf px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer"
+                  data-preview-download="${downloadUrl}"
+                  data-preview-view="${viewUrl}"
+                  class="btn-preview-pdf px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
                 >
                   <i data-lucide="eye" class="w-4 h-4"></i>
                   <span>معاينة السلايدات</span>
                 </button>
 
-                <!-- زر فتح في نافذة مستقلة -->
+                <!-- زر فتح في Google Drive -->
                 <a 
-                  href="${pdfFile}" 
+                  href="${viewUrl}" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm"
-                  title="فتح الـ PDF في نافذة جديدة"
+                  class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
+                  title="فتح في Google Drive في نافذة جديدة"
                 >
                   <i data-lucide="external-link" class="w-3.5 h-3.5 text-indigo-400"></i>
-                  <span>نافذة جديدة</span>
+                  <span>فتح في Drive</span>
                 </a>
 
                 <!-- زر تحميل مباشر للملف -->
                 <a 
-                  href="${pdfFile}" 
+                  href="${downloadUrl}" 
                   download="${filename}"
-                  class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
-                  title="تحميل السلايدات على جهازك"
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
+                  title="تحميل مباشر من Google Drive"
                 >
                   <i data-lucide="download" class="w-3.5 h-3.5"></i>
                   <span>تحميل مباشر</span>
@@ -284,7 +494,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   href="${lec.studyManualUrl}" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  class="px-3.5 py-2 rounded-xl glass-panel border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm"
+                  class="px-3.5 py-2 rounded-xl glass-panel border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
                 >
                   <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
                   <span>موقع الشرح التفاعلي</span>
@@ -302,7 +512,9 @@ document.addEventListener("DOMContentLoaded", function () {
           const title = this.getAttribute("data-preview-title");
           const sub = this.getAttribute("data-preview-subtitle");
           const fname = this.getAttribute("data-preview-filename");
-          openPdfModal(file, title, sub, fname);
+          const dUrl = this.getAttribute("data-preview-download");
+          const vUrl = this.getAttribute("data-preview-view");
+          openPdfModal(file, title, sub, fname, dUrl, vUrl);
         });
       });
     }
@@ -355,6 +567,21 @@ document.addEventListener("DOMContentLoaded", function () {
   const badgeSectionsCount = document.getElementById("badge-sections-count");
   if (badgeSectionsCount) badgeSectionsCount.textContent = `${sectionsCount} سكاشن`;
 
+  // ربط زر مجلد درايف السكاشن (مثل مجلد م. أمل مجدي)
+  const sectionsDriveFolderBtn = document.getElementById("sections-drive-folder-link");
+  const sectionsDriveFolderText = document.getElementById("sections-drive-folder-text");
+  if (sectionsDriveFolderBtn) {
+    if (course.sectionsDriveFolderUrl) {
+      sectionsDriveFolderBtn.href = course.sectionsDriveFolderUrl;
+      if (sectionsDriveFolderText && course.sectionsDriveFolderTitle) {
+        sectionsDriveFolderText.textContent = course.sectionsDriveFolderTitle;
+      }
+      sectionsDriveFolderBtn.classList.remove("hidden");
+    } else {
+      sectionsDriveFolderBtn.classList.add("hidden");
+    }
+  }
+
   const sectionsList = document.getElementById("sections-list");
   if (sectionsList) {
     if (sectionsCount === 0) {
@@ -363,44 +590,167 @@ document.addEventListener("DOMContentLoaded", function () {
         "المحتوى قيد التجهيز - سيتم رفع شيتات المعيدين وأكواد البرمجة فور إرسال محتوى المادة."
       );
     } else {
-      sectionsList.innerHTML = course.sections.map((sec) => `
-        <div class="glass-panel p-5 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 card-hover-effect">
-          <div class="flex items-start gap-3">
-            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 font-bold flex items-center justify-center text-xs flex-shrink-0 border border-cyan-500/20 font-mono">
-              S${sec.id}
+      sectionsList.innerHTML = course.sections.map((sec) => {
+        const previewUrl = sec.drivePreviewUrl || sec.sheetUrl || "#";
+        const viewUrl = sec.driveViewUrl || sec.sheetUrl || "#";
+        const downloadUrl = sec.driveDownloadUrl || sec.sheetUrl || "#";
+        const filename = `${course.name}_Section_${sec.id}.${sec.fileType || 'pptx'}`;
+        const fileTypeLabel = (sec.fileType || 'pptx').toUpperCase();
+        const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
+          ? 'bg-red-500/10 text-red-400 border-red-500/20' 
+          : 'bg-orange-500/10 text-orange-400 border-orange-500/20';
+
+        const topicsHtml = sec.topics && sec.topics.length > 0 ? `
+          <div class="mt-3 pt-3 border-t border-[var(--border-subtle)]">
+            <span class="text-[11px] font-bold text-[var(--text-dim)] block mb-1.5 flex items-center gap-1.5">
+              <i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i>
+              المواضيع والتطبيقات المغطاة في هذا السكشن:
+            </span>
+            <div class="flex flex-wrap gap-1.5">
+              ${sec.topics.map(t => `<span class="text-[11px] px-2.5 py-0.5 rounded-lg bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-subtle)]">${t}</span>`).join("")}
             </div>
-            <div>
-              <div class="flex items-center gap-2 mb-1">
-                <span class="text-xs font-bold text-cyan-400">سكشن عملي ${sec.id}</span>
-                <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${sec.week || sec.id}</span>
+          </div>
+        ` : "";
+
+        return `
+          <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect">
+            <div class="flex items-start gap-3.5">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 to-teal-500 text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono icon-box-modern">
+                <span>S${sec.id}</span>
+                <span class="text-[9px] opacity-80">Sec ${sec.id}</span>
               </div>
-              <h4 class="text-sm font-bold text-[var(--text-main)] mb-1">${sec.title}</h4>
-              <p class="text-xs text-[var(--text-muted)] mb-2">${sec.arabicTitle || ""}</p>
-              ${sec.notes ? `<p class="text-xs text-[var(--text-dim)] italic">ملاحظات المعيد: ${sec.notes}</p>` : ""}
+
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                  <span class="text-xs font-bold text-cyan-400">${sec.date || `السكشن ${sec.id}`}</span>
+                  <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${sec.week || sec.id}</span>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold border ${fileTypeBadgeColor}">
+                    ${fileTypeLabel}
+                  </span>
+                  ${sec.driveId ? `
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold flex items-center gap-1">
+                      <i data-lucide="cloud" class="w-3 h-3"></i>
+                      <span>متصل بـ Drive</span>
+                    </span>
+                  ` : ""}
+                  ${sec.ta ? `
+                    <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold flex items-center gap-1">
+                      <i data-lucide="user-check" class="w-3 h-3"></i>
+                      <span>المعيد: ${sec.ta}</span>
+                    </span>
+                  ` : ""}
+                  ${sec.videoUrl ? `
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold flex items-center gap-1 animate-pulse">
+                      <i data-lucide="video" class="w-3 h-3"></i>
+                      <span>فيديو شرح مسجل</span>
+                    </span>
+                  ` : ""}
+                  ${sec.size ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-gray-500/10 text-[var(--text-muted)] border border-gray-500/20 font-mono">${sec.size}</span>` : ""}
+                </div>
+
+                <h4 class="text-base font-bold text-[var(--text-main)] mb-1">${sec.title}</h4>
+                <p class="text-xs font-semibold text-[var(--text-muted)] mb-2">${sec.arabicTitle || ""}</p>
+                ${sec.notes ? `<p class="text-xs text-[var(--text-dim)] bg-[var(--bg-surface)] p-2.5 rounded-xl border border-[var(--border-subtle)] leading-relaxed">💡 <strong>ملاحظة المعيد:</strong> ${sec.notes}</p>` : ""}
+                ${topicsHtml}
+              </div>
+            </div>
+
+            <!-- أزرار المعاينة وفيديو الشرح والتحميل -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
+              <div class="flex flex-wrap items-center gap-2">
+                <!-- زر معاينة السلايدات -->
+                <button 
+                  type="button"
+                  data-preview-file="${previewUrl}"
+                  data-preview-title="${sec.title}"
+                  data-preview-subtitle="${sec.arabicTitle || ""}"
+                  data-preview-filename="${filename}"
+                  data-preview-download="${downloadUrl}"
+                  data-preview-view="${viewUrl}"
+                  class="btn-preview-pdf px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
+                >
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                  <span>معاينة السلايدات</span>
+                </button>
+
+                <!-- زر مشاهدة فيديو الشرح إن وجد -->
+                ${sec.videoUrl ? `
+                  <button 
+                    type="button"
+                    data-play-url="${sec.videoUrl}"
+                    data-play-title="${sec.videoTitle || `شرح ${sec.title}`}"
+                    data-play-subtitle="${sec.videoSubtitle || (sec.ta ? `تقديم المعيدة: ${sec.ta}` : '')}"
+                    class="btn-play-video px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
+                  >
+                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                    <span>مشاهدة فيديو الشرح</span>
+                  </button>
+                ` : ""}
+
+                <!-- زر فتح في Google Drive -->
+                <a 
+                  href="${viewUrl}" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-cyan-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
+                  title="فتح الملف في Google Drive"
+                >
+                  <i data-lucide="external-link" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>فتح في Drive</span>
+                </a>
+
+                <!-- زر تحميل مباشر -->
+                <a 
+                  href="${downloadUrl}" 
+                  download="${filename}"
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
+                  title="تحميل مباشر من Google Drive"
+                >
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                  <span>تحميل مباشر</span>
+                </a>
+
+                ${sec.codeUrl ? `
+                  <a 
+                    href="${sec.codeUrl}" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    class="px-3.5 py-2 rounded-xl glass-panel border border-emerald-500/30 text-emerald-400 text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
+                  >
+                    <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                    <span>الكود البرمجي</span>
+                  </a>
+                ` : ""}
+              </div>
             </div>
           </div>
+        `;
+      }).join("");
 
-          <div class="flex flex-wrap items-center gap-2 pt-3 md:pt-0 border-t md:border-t-0 border-[var(--border-subtle)]">
-            <a 
-              href="${sec.sheetUrl}" 
-              target="_blank" 
-              class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold flex items-center gap-1.5 hover:bg-cyan-600 hover:text-white transition-all shadow-sm"
-            >
-              <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-cyan-400"></i>
-              <span>شيت السكشن</span>
-            </a>
+      // ربط أزرار معاينة السلايدات في السكاشن
+      sectionsList.querySelectorAll(".btn-preview-pdf").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const file = this.getAttribute("data-preview-file");
+          const title = this.getAttribute("data-preview-title");
+          const sub = this.getAttribute("data-preview-subtitle");
+          const fname = this.getAttribute("data-preview-filename");
+          const dUrl = this.getAttribute("data-preview-download");
+          const vUrl = this.getAttribute("data-preview-view");
+          openPdfModal(file, title, sub, fname, dUrl, vUrl);
+        });
+      });
 
-            <a 
-              href="${sec.codeUrl}" 
-              target="_blank" 
-              class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold flex items-center gap-1.5 hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
-            >
-              <i data-lucide="code" class="w-3.5 h-3.5 text-emerald-400"></i>
-              <span>الكود البرمجي</span>
-            </a>
-          </div>
-        </div>
-      `).join("");
+      // ربط أزرار تشغيل فيديو السكشن
+      sectionsList.querySelectorAll(".btn-play-video").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const url = this.getAttribute("data-play-url");
+          const title = this.getAttribute("data-play-title");
+          const sub = this.getAttribute("data-play-subtitle");
+          openVideoModal(url, title, sub);
+        });
+      });
     }
   }
 
@@ -463,14 +813,60 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // بنك أسئلة العملي ونماذج الكويزات
+  // بنك أسئلة العملي ونماذج الكويزات وأدوات اللاب
   const practicalResourcesList = document.getElementById("practical-resources-list");
   if (practicalResourcesList) {
-    practicalResourcesList.className = "";
-    practicalResourcesList.innerHTML = createEmptyNotice(
-      "نماذج اختبارات العملي وأسئلة اللاب",
-      "المحتوى قيد التجهيز - سيتم إضافة نماذج امتحانات العملي السابقة وأكواد التجارب قريباً."
-    );
+    if (!course.practicalResources || course.practicalResources.length === 0) {
+      practicalResourcesList.className = "";
+      practicalResourcesList.innerHTML = createEmptyNotice(
+        "نماذج اختبارات العملي وأسئلة اللاب",
+        "المحتوى قيد التجهيز - سيتم إضافة نماذج امتحانات العملي السابقة وأكواد التجارب قريباً."
+      );
+    } else {
+      practicalResourcesList.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
+      practicalResourcesList.innerHTML = course.practicalResources.map((res) => `
+        <div class="glass-panel p-5 rounded-2xl border flex items-center justify-between gap-4 card-hover-effect">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xs flex-shrink-0 border border-cyan-500/20 icon-box-modern">
+              <i data-lucide="cpu" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">
+                  ${res.type || "أداة عملي"}
+                </span>
+                ${res.badge ? `<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">${res.badge}</span>` : ""}
+              </div>
+              <h4 class="text-xs sm:text-sm font-bold text-[var(--text-main)] mb-1">${res.title}</h4>
+              <p class="text-xs text-[var(--text-muted)] line-clamp-2">${res.notes || ""}</p>
+              ${res.licenseKey ? `<span class="text-[10px] text-amber-400 block mt-1 font-mono font-bold">🔑 ${res.licenseKey}</span>` : ""}
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 flex-shrink-0">
+            ${res.folderUrl ? `
+              <a 
+                href="${res.folderUrl}" 
+                target="_blank" 
+                class="p-2.5 rounded-xl glass-panel border text-xs font-bold flex items-center justify-center hover:bg-cyan-600 hover:text-white transition-all btn-smooth"
+                title="فتح مجلد الأداة في Google Drive"
+              >
+                <i data-lucide="folder" class="w-4 h-4 text-cyan-400"></i>
+              </a>
+            ` : ""}
+            <a 
+              href="${res.fileUrl}" 
+              target="_blank" 
+              class="px-3 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm btn-smooth"
+              title="تحميل مباشر"
+            >
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>تحميل</span>
+            </a>
+          </div>
+        </div>
+      `).join("");
+    }
   }
 
   // 8. تحديث معلومات الدكتور والمعيد والجدول بناءً على بروفايل الطالب

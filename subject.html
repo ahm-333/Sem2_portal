@@ -30,7 +30,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <!-- التنسيقات المخصصة والأوضاع الثلاثة والمسارين -->
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="css/style.css?v=10">
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -53,6 +53,13 @@
           <span class="text-sm sm:text-base font-bold text-[var(--text-main)]" id="nav-subject-name">جارٍ التحميل...</span>
           <p class="text-[11px] text-[var(--text-muted)] font-mono" id="nav-subject-code">---</p>
         </div>
+      </div>
+
+      <!-- شارة مطور المنصة Eng. Ahmed Amir -->
+      <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border border-indigo-500/25 bg-indigo-500/5 text-xs shadow-sm creator-pill">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-[var(--text-dim)] font-medium">Developed by</span>
+        <span class="creator-name-gradient">Eng. Ahmed Amir</span>
       </div>
 
       <!-- أزرار الأوضاع ومشاركة الرابط وتخصيص المجموعة -->
@@ -121,7 +128,7 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
         
         <div class="flex items-start gap-4">
-          <div id="subject-icon-box" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-lg flex-shrink-0">
+          <div id="subject-icon-box" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-lg flex-shrink-0 icon-box-modern">
             <i data-lucide="book" class="w-8 h-8" id="subject-main-icon"></i>
           </div>
           <div>
@@ -167,9 +174,9 @@
         <!-- زر طريق المحاضرة -->
         <button 
           data-track="lecture" 
-          class="track-btn active-track-lecture p-4 sm:p-5 rounded-2xl border text-right flex items-center gap-4 transition-all"
+          class="track-btn active-track-lecture p-4 sm:p-5 rounded-2xl border text-right flex items-center gap-4 transition-all btn-smooth"
         >
-          <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center flex-shrink-0 shadow-inner">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center flex-shrink-0 shadow-inner icon-box-modern">
             <i data-lucide="graduation-cap" class="w-6 h-6"></i>
           </div>
           <div>
@@ -184,9 +191,9 @@
         <!-- زر طريق السكشن -->
         <button 
           data-track="section" 
-          class="track-btn p-4 sm:p-5 rounded-2xl border text-right flex items-center gap-4 transition-all border-[var(--border-subtle)] hover:border-cyan-500/40 text-[var(--text-muted)]"
+          class="track-btn p-4 sm:p-5 rounded-2xl border text-right flex items-center gap-4 transition-all border-[var(--border-subtle)] hover:border-cyan-500/40 text-[var(--text-muted)] btn-smooth"
         >
-          <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 shadow-inner">
+          <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center flex-shrink-0 shadow-inner icon-box-modern">
             <i data-lucide="terminal" class="w-6 h-6"></i>
           </div>
           <div>
@@ -255,7 +262,7 @@
               id="exp-main-btn" 
               target="_blank" 
               rel="noopener noreferrer" 
-              class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-indigo-600 to-cyan-600 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-indigo-500/25 transition-all"
+              class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-indigo-600 to-cyan-600 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-indigo-500/25 transition-all btn-smooth"
             >
               <span>فتح موقع الشرح التفاعلي</span>
               <i data-lucide="external-link" class="w-4 h-4"></i>
@@ -263,7 +270,7 @@
 
             <button 
               id="toggle-preview-btn" 
-              class="w-full py-3 px-4 rounded-2xl glass-panel border text-xs sm:text-sm font-medium text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center gap-2"
+              class="w-full py-3 px-4 rounded-2xl glass-panel border text-xs sm:text-sm font-medium text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center gap-2 btn-smooth"
             >
               <i data-lucide="eye" class="w-4 h-4"></i>
               <span>معاينة الموقع داخل الصفحة</span>
@@ -289,17 +296,59 @@
         </div>
       </div>
 
+      <!-- سكشن شروحات الفيديو وقوائم التشغيل المعتمدة -->
+      <div class="glass-panel rounded-3xl p-6 sm:p-8 border shadow-lg" id="video-explanations-section">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border-subtle)]">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center flex-shrink-0 border border-red-500/20 shadow-sm">
+              <i data-lucide="youtube" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-0.5">
+                <h3 class="text-lg font-extrabold text-[var(--text-main)]">شروحات ومصادر المادة وقوائم التشغيل</h3>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold">YouTube Playlists</span>
+              </div>
+              <p class="text-xs text-[var(--text-muted)]">أفضل قنوات وشروحات الفيديو وقوائم التشغيل الموصى بها للمادة مرتبة ومنسقة</p>
+            </div>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full glass-panel border text-red-400 font-mono font-bold self-start sm:self-auto" id="badge-videos-count">0 مصادر شرح</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="video-explanations-list">
+          <!-- يتم الملء عبر JS -->
+        </div>
+      </div>
+
       <!-- سجل المحاضرات والسلايدات النظري -->
       <div class="glass-panel rounded-3xl p-6 sm:p-8 border shadow-lg">
-        <div class="flex items-center justify-between mb-6 pb-3 border-b border-[var(--border-subtle)]">
-          <div>
-            <h3 class="text-lg font-bold text-[var(--text-main)] flex items-center gap-2">
-              <i data-lucide="book-open" class="w-5 h-5 text-indigo-400"></i>
-              سجل محاضرات وسلايدات المادة
-            </h3>
-            <p class="text-xs text-[var(--text-muted)]">سلايدات الـ PDF والتسجيلات الخاصة بمحاضرات الدكتور</p>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border-subtle)]">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center flex-shrink-0 border border-indigo-500/20 shadow-sm">
+              <i data-lucide="book-open" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-0.5">
+                <h3 class="text-lg font-extrabold text-[var(--text-main)]">سجل محاضرات وسلايدات المادة</h3>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold">موحدة للدفعة</span>
+              </div>
+              <p class="text-xs text-[var(--text-muted)]">المحاضرات متصلة مباشرة بسحابة Google Drive لجميع المجموعات والدكاترة</p>
+            </div>
           </div>
-          <span class="text-xs px-3 py-1 rounded-full glass-panel border text-indigo-400 font-mono font-bold" id="badge-lectures-count">0 محاضرات</span>
+
+          <div class="flex items-center gap-2 self-start sm:self-auto">
+            <span class="text-xs px-3 py-1.5 rounded-xl glass-panel border text-indigo-400 font-mono font-bold" id="badge-lectures-count">0 محاضرات</span>
+            <a 
+              id="course-drive-folder-link" 
+              href="#" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-md"
+              title="تصفح مجلد المحاضرات بالكامل على Google Drive"
+            >
+              <i data-lucide="folder-symlink" class="w-3.5 h-3.5"></i>
+              <span>مجلد Google Drive</span>
+            </a>
+          </div>
         </div>
 
         <div class="space-y-4" id="lectures-list">
@@ -351,15 +400,28 @@
 
       <!-- سكاشن العملي وشيتات التطبيق والأكواد -->
       <div class="glass-panel rounded-3xl p-6 sm:p-8 border shadow-lg">
-        <div class="flex items-center justify-between mb-6 pb-3 border-b border-[var(--border-subtle)]">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-3 border-b border-[var(--border-subtle)]">
           <div>
             <h3 class="text-lg font-bold text-[var(--text-main)] flex items-center gap-2">
               <i data-lucide="code-2" class="w-5 h-5 text-cyan-400"></i>
               سكاشن العملي والشيتات والأكواد
             </h3>
-            <p class="text-xs text-[var(--text-muted)]">تحميل شيتات المعيدين، أكواد التطبيق العملي، ومفكرات Google Colab</p>
+            <p class="text-xs text-[var(--text-muted)]">تحميل شيتات وسلايدات المعيدين، أكواد التطبيق العملي، ومصادر الشرح</p>
           </div>
-          <span class="text-xs px-3 py-1 rounded-full glass-panel border text-cyan-400 font-mono font-bold" id="badge-sections-count">0 سكاشن</span>
+          <div class="flex items-center gap-2">
+            <span class="text-xs px-3 py-1 rounded-full glass-panel border text-cyan-400 font-mono font-bold" id="badge-sections-count">0 سكاشن</span>
+            <a 
+              id="sections-drive-folder-link" 
+              href="#" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="hidden px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-md btn-smooth"
+              title="تصفح مجلد سكاشن المعيد على Google Drive"
+            >
+              <i data-lucide="folder-symlink" class="w-3.5 h-3.5"></i>
+              <span id="sections-drive-folder-text">مجلد درايف السكاشن</span>
+            </a>
+          </div>
         </div>
 
         <div class="space-y-4" id="sections-list">
@@ -448,26 +510,88 @@
     </div>
   </div>
 
-  <!-- تذييل الصفحة -->
-  <footer class="border-t py-8 glass-header mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
-      <div class="flex items-center gap-2">
-        <a href="index.html" class="hover:text-indigo-400 font-bold">العودة للصفحة الرئيسية</a>
-        <span>•</span>
-        <span>بوابة الترم الثاني - قسم الذكاء الاصطناعي</span>
+  <!-- نافذة منبثقة لمعاينة فيديو اليوتيوب -->
+  <div id="video-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm hidden" role="dialog" aria-modal="true">
+    <div class="relative w-full max-w-4xl h-[75vh] glass-panel rounded-3xl border border-[var(--border-subtle)] shadow-2xl flex flex-col overflow-hidden bg-[var(--bg-card)]">
+      <!-- رأس نافذة الفيديو -->
+      <div class="p-4 border-b border-[var(--border-subtle)] flex items-center justify-between gap-3 bg-[var(--bg-surface)]">
+        <div class="flex items-center gap-3 overflow-hidden">
+          <div class="w-10 h-10 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center flex-shrink-0 font-bold border border-red-500/20">
+            <i data-lucide="youtube" class="w-5 h-5"></i>
+          </div>
+          <div class="truncate">
+            <h3 id="video-modal-title" class="text-sm font-bold text-[var(--text-main)] truncate">مشاهدة الشرح</h3>
+            <p id="video-modal-subtitle" class="text-[11px] text-[var(--text-muted)] truncate">مشاهدة مباشرة داخل المنصة</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <a id="video-modal-open-new" href="#" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-red-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">فتح في YouTube</span>
+          </a>
+          <button id="video-modal-close" class="w-9 h-9 rounded-xl glass-panel border text-[var(--text-muted)] hover:text-red-400 hover:border-red-400/30 flex items-center justify-center transition-all" title="إغلاق">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
       </div>
-      <div>
-        <span>2026 © جميع الحقوق محفوظة</span>
+      <!-- محتوى الفيديو iframe -->
+      <div class="flex-1 w-full h-full bg-black relative">
+        <iframe id="video-modal-frame" src="" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
       </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- تذييل الصفحة (Footer) -->
+  <!-- ========================================== -->
+  <footer class="border-t py-12 glass-header mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <!-- كارت توقيع المطور Eng. Ahmed Amir -->
+      <div class="glass-panel p-5 sm:p-6 rounded-3xl border border-indigo-500/25 flex flex-col md:flex-row items-center justify-between gap-5 bg-gradient-to-r from-indigo-500/5 via-cyan-500/5 to-purple-500/5 shadow-lg">
+        <div class="flex items-center gap-4 text-right">
+          <div class="w-13 h-13 p-3.5 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-500 flex items-center justify-center text-white font-black text-base shadow-lg shadow-indigo-500/25 flex-shrink-0 icon-box-modern">
+            AA
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-xs text-[var(--text-dim)] font-medium">تصميم وبرمجة:</span>
+              <span class="creator-name-gradient text-sm sm:text-base font-extrabold">Eng. Ahmed Amir (أحمد أمير)</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono font-bold">Creator & Developer</span>
+            </div>
+            <p class="text-xs text-[var(--text-muted)]">تم إعداد المنصة لخدمة طلاب كلية الحاسبات والمعلومات وقسم الذكاء الاصطناعي (AI 2026)</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="px-4 py-2 rounded-xl glass-panel border border-indigo-500/30 text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2 shadow-sm btn-smooth">
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            <span>جميع المواد</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)]">
+        <div class="flex items-center gap-2">
+          <i data-lucide="terminal" class="w-4 h-4 text-indigo-400"></i>
+          <span>بوابة مواد الترم الثاني • قسم الذكاء الاصطناعي - جامعة الزقازيق 2026</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-[var(--text-dim)]">
+          <span>صُنعت بكل إتقان</span>
+          <span class="text-rose-500">♥</span>
+          <span>بواسطة Eng. Ahmed Amir للدفعة</span>
+        </div>
+      </div>
+
     </div>
   </footer>
 
   <!-- ملفات الجافاسكربت -->
-  <script src="js/theme.js?v=5"></script>
-  <script src="js/courses-data.js?v=5"></script>
-  <script src="js/schedule-data.js?v=5"></script>
-  <script src="js/profile-modal.js?v=5"></script>
-  <script src="js/subject.js?v=5"></script>
+  <script src="js/theme.js?v=10"></script>
+  <script src="js/courses-data.js?v=10"></script>
+  <script src="js/schedule-data.js?v=10"></script>
+  <script src="js/profile-modal.js?v=10"></script>
+  <script src="js/subject.js?v=10"></script>
   <script>
     lucide.createIcons();
   </script>

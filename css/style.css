@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 /* ==============================================================================
    متغيرات الأنماط البصرية الثلاثة (Dark / Light / Reading Mode)
@@ -6,21 +6,22 @@
 
 :root,
 [data-theme="dark"] {
-  --bg-main: #090d16;
+  --bg-main: #0a0f1d;
   --bg-surface: #0f172a;
-  --bg-card: rgba(15, 23, 42, 0.75);
+  --bg-card: rgba(15, 23, 42, 0.72);
   --bg-card-hover: rgba(30, 41, 59, 0.85);
-  --bg-input: #1e293b;
+  --bg-input: #131d35;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --text-dim: #64748b;
   --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-accent: rgba(99, 102, 241, 0.3);
-  --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
-  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --border-accent: rgba(99, 102, 241, 0.35);
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);
   --accent-glow: 0 0 25px rgba(99, 102, 241, 0.25);
   --badge-bg: rgba(99, 102, 241, 0.12);
   --badge-text: #a5b4fc;
+  --icon-ring: rgba(255, 255, 255, 0.15);
 }
 
 [data-theme="light"] {
@@ -28,17 +29,18 @@
   --bg-surface: #ffffff;
   --bg-card: #ffffff;
   --bg-card-hover: #f1f5f9;
-  --bg-input: #f8fafc;
+  --bg-input: #f1f5f9;
   --text-main: #0f172a;
   --text-muted: #475569;
   --text-dim: #94a3b8;
   --border-subtle: #e2e8f0;
   --border-accent: rgba(79, 70, 229, 0.35);
-  --primary-gradient: linear-gradient(135deg, #4338ca 0%, #0284c7 100%);
+  --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
   --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
-  --accent-glow: 0 0 20px rgba(67, 56, 202, 0.12);
+  --accent-glow: 0 0 20px rgba(79, 70, 229, 0.15);
   --badge-bg: #eef2ff;
   --badge-text: #4338ca;
+  --icon-ring: rgba(0, 0, 0, 0.08);
 }
 
 /* وضع القراءة الهادئ (Sepia / Eye-Comfort) */
@@ -58,6 +60,7 @@
   --accent-glow: 0 0 20px rgba(180, 83, 9, 0.15);
   --badge-bg: #faeed7;
   --badge-text: #92400e;
+  --icon-ring: rgba(180, 83, 9, 0.15);
 }
 
 /* ==============================================================================
@@ -75,13 +78,15 @@ body {
   color: var(--text-main);
   min-height: 100vh;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 code, pre, .font-mono {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* بطاقات وتأثيرات زجاجية */
+/* بطاقات وتأثيرات زجاجية ناعمة */
 .glass-panel {
   background-color: var(--bg-card);
   backdrop-filter: blur(16px);
@@ -96,8 +101,8 @@ code, pre, .font-mono {
 
 .glass-header {
   background-color: var(--bg-surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -121,9 +126,10 @@ code, pre, .font-mono {
 .hero-explanation-card {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.12) 0%, rgba(6, 182, 212, 0.08) 100%);
   border: 1.5px solid rgba(99, 102, 241, 0.35);
-  box-shadow: 0 15px 35px -10px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 15px 35px -10px rgba(99, 102, 241, 0.18);
+  border-radius: 1.5rem;
 }
 
 [data-theme="reading"] .hero-explanation-card {
@@ -132,15 +138,83 @@ code, pre, .font-mono {
   box-shadow: 0 15px 35px -10px rgba(180, 83, 9, 0.15);
 }
 
-/* تأثير التوهج للبطاقات عند التمرير */
+/* تأثير التمرير الانسيابي السلس للبطاقات */
 .card-hover-effect {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
 }
 
 .card-hover-effect:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.35);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.3);
   border-color: var(--border-accent);
+}
+
+/* ==============================================================================
+   ستايلات الأيقونات الاحترافية (Modern Aesthetic Icons)
+   ============================================================================== */
+
+.icon-box-modern {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.125rem;
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.25), inset 0 1px 1px 0 var(--icon-ring);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.group:hover .icon-box-modern,
+.icon-box-modern:hover {
+  transform: scale(1.08) rotate(-3deg);
+  box-shadow: 0 12px 28px -4px rgba(99, 102, 241, 0.4), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.icon-box-modern i,
+.icon-box-modern svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: transform 0.25s ease;
+}
+
+/* شارة المطور (Ahmed Amir Creator Badge) */
+.creator-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(6, 182, 212, 0.08) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 15px -3px rgba(99, 102, 241, 0.2);
+  transition: all 0.25s ease;
+}
+
+.creator-pill:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 8px 25px -4px rgba(99, 102, 241, 0.35);
+}
+
+.creator-name-gradient {
+  background: linear-gradient(135deg, #818cf8 0%, #22d3ee 50%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* أزرار سلسة مع تفاعل حركي فخم */
+.btn-smooth {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-smooth:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgba(99, 102, 241, 0.3);
+}
+
+.btn-smooth:active {
+  transform: translateY(0);
 }
 
 /* شريط تمرير أنيق */
@@ -209,4 +283,3 @@ code, pre, .font-mono {
   color: #78350f !important;
   border-color: #d97706 !important;
 }
-

@@ -30,7 +30,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <!-- التنسيقات المخصصة والأوضاع الثلاثة -->
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="css/style.css?v=10">
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -42,7 +42,7 @@
       
       <!-- اللوجو والعنوان -->
       <a href="index.html" class="flex items-center gap-3 group">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform icon-box-modern">
           <i data-lucide="sparkles" class="w-6 h-6"></i>
         </div>
         <div>
@@ -53,6 +53,13 @@
           <p class="text-xs text-[var(--text-muted)]">كلية الحاسبات والمعلومات • قسم الذكاء الاصطناعي</p>
         </div>
       </a>
+
+      <!-- شارة مطور المنصة Eng. Ahmed Amir -->
+      <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border border-indigo-500/25 bg-indigo-500/5 text-xs shadow-sm creator-pill">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-[var(--text-dim)] font-medium">Developed by</span>
+        <span class="creator-name-gradient">Eng. Ahmed Amir</span>
+      </div>
 
       <!-- أزرار اختيار المجموعة والسكشن والأوضاع البصرية -->
       <div class="flex items-center gap-2 sm:gap-3">
@@ -103,9 +110,11 @@
 
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         
-        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold mb-4 glass-panel text-[var(--text-muted)] border font-mono">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-4 glass-panel text-[var(--text-muted)] border border-indigo-500/20 font-mono shadow-sm">
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Official Semester 2 Portal • Faculty of AI 2026
+          <span>Semester 2 Academic Hub • Faculty of AI 2026</span>
+          <span class="text-[var(--text-dim)] hidden sm:inline">•</span>
+          <span class="hidden sm:inline">إعداد وبرمجة: <strong class="creator-name-gradient">Eng. Ahmed Amir (أحمد أمير)</strong></span>
         </div>
 
         <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-4 text-[var(--text-main)] leading-tight">
@@ -232,24 +241,54 @@
   <!-- ========================================== -->
   <!-- 5. التذييل (Footer) -->
   <!-- ========================================== -->
-  <footer class="border-t py-8 glass-header mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
-      <div class="flex items-center gap-2">
-        <i data-lucide="terminal" class="w-4 h-4 text-indigo-400"></i>
-        <span>بوابة مذاكرة مواد الذكاء الاصطناعي - جامعة الزقازيق 2026.</span>
+  <footer class="border-t py-10 glass-header mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <!-- كارت توقيع المطور Eng. Ahmed Amir -->
+      <div class="glass-panel p-5 sm:p-6 rounded-3xl border border-indigo-500/25 flex flex-col md:flex-row items-center justify-between gap-5 bg-gradient-to-r from-indigo-500/5 via-cyan-500/5 to-purple-500/5 shadow-lg">
+        <div class="flex items-center gap-4 text-right">
+          <div class="w-13 h-13 p-3.5 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-500 flex items-center justify-center text-white font-black text-base shadow-lg shadow-indigo-500/25 flex-shrink-0 icon-box-modern">
+            AA
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2 mb-1">
+              <span class="text-xs text-[var(--text-dim)] font-medium">تصميم وبرمجة:</span>
+              <span class="creator-name-gradient text-sm sm:text-base font-extrabold">Eng. Ahmed Amir (أحمد أمير)</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono font-bold">Creator & Developer</span>
+            </div>
+            <p class="text-xs text-[var(--text-muted)]">تم إعداد المنصة لخدمة طلاب كلية الحاسبات والمعلومات وقسم الذكاء الاصطناعي (AI 2026)</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="px-3.5 py-1.5 rounded-xl glass-panel border border-indigo-500/20 text-xs font-semibold text-indigo-400 flex items-center gap-1.5 shadow-sm">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>الدفعة الرسمية 2026</span>
+          </span>
+        </div>
       </div>
-      <div>
-        <span>جميع الحقوق محفوظة للدفعة © 2026</span>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)]">
+        <div class="flex items-center gap-2">
+          <i data-lucide="terminal" class="w-4 h-4 text-indigo-400"></i>
+          <span>بوابة مواد الترم الثاني • قسم الذكاء الاصطناعي - جامعة الزقازيق 2026</span>
+        </div>
+        <div class="flex items-center gap-1.5 text-[var(--text-dim)]">
+          <span>صُنعت بكل إتقان</span>
+          <span class="text-rose-500">♥</span>
+          <span>بواسطة Eng. Ahmed Amir للدفعة</span>
+        </div>
       </div>
+
     </div>
   </footer>
 
   <!-- ملفات الجافاسكربت -->
-  <script src="js/theme.js?v=5"></script>
-  <script src="js/courses-data.js?v=5"></script>
-  <script src="js/schedule-data.js?v=5"></script>
-  <script src="js/profile-modal.js?v=5"></script>
-  <script src="js/app.js?v=5"></script>
+  <script src="js/theme.js?v=10"></script>
+  <script src="js/courses-data.js?v=10"></script>
+  <script src="js/schedule-data.js?v=10"></script>
+  <script src="js/profile-modal.js?v=10"></script>
+  <script src="js/app.js?v=10"></script>
   <script>
     lucide.createIcons();
   </script>
