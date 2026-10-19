@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // 1. استخراج معرف المادة والمسار المختار من الرابط
   const urlParams = new URLSearchParams(window.location.search);
   let courseId = urlParams.get("id");
-  let activeTrack = urlParams.get("track") || "lecture"; // إما "lecture" أو "section"
+  let activeTrack = urlParams.get("track") === "section" ? "section" : "lecture";
 
   if (!courseId) {
     courseId = window.COURSES_DATA[0].id;
@@ -105,6 +105,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const closePreviewBtn = document.getElementById("close-preview-btn");
   const expIframe = document.getElementById("exp-iframe");
 
+  if (!window.PortalMedia.canPreviewSite(course.explanationSite.url)) {
+    togglePreviewBtn.hidden = true;
+    expMainBtn.querySelector("span").textContent = "فتح مجلد المادة في Google Drive";
+  }
+
   if (togglePreviewBtn && previewContainer && expIframe) {
     togglePreviewBtn.addEventListener("click", function () {
       const isHidden = previewContainer.classList.contains("hidden");
@@ -132,73 +137,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // 5.2 رندر شروحات ومصادر المادة وقوائم التشغيل (Video Explanations & Playlists)
   const videoList = document.getElementById("video-explanations-list");
   const badgeVideosCount = document.getElementById("badge-videos-count");
-  const videoModal = document.getElementById("video-modal");
-  const videoFrame = document.getElementById("video-modal-frame");
-  const videoTitle = document.getElementById("video-modal-title");
-  const videoSubtitle = document.getElementById("video-modal-subtitle");
-  const videoOpenNew = document.getElementById("video-modal-open-new");
-  const videoClose = document.getElementById("video-modal-close");
-
-  function getYouTubeEmbedUrl(url) {
-    if (!url) return "";
-    if (url.includes("/embed/")) return url;
-    if (url.includes("drive.google.com/file/d/")) {
-      return url.replace(/\/view(\?.*)?$/, "/preview");
-    }
-    const playlistMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-    if (playlistMatch) {
-      return `https://www.youtube.com/embed/videoseries?list=${playlistMatch[1]}&autoplay=1`;
-    }
-    const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
-    if (shortMatch) {
-      return `https://www.youtube.com/embed/${shortMatch[1]}?autoplay=1`;
-    }
-    const watchMatch = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
-    if (watchMatch) {
-      return `https://www.youtube.com/embed/${watchMatch[1]}?autoplay=1`;
-    }
-    return url;
-  }
-
-  function openVideoModal(url, title, subtitle) {
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile || !videoModal || !videoFrame) {
-      window.open(url, "_blank", "noopener");
-      return;
-    }
-    const embedUrl = getYouTubeEmbedUrl(url);
-    videoFrame.src = embedUrl;
-    if (videoTitle) videoTitle.textContent = title || "مشاهدة الشرح";
-    if (videoSubtitle) videoSubtitle.textContent = subtitle || "معاينة مباشرة";
-    if (videoOpenNew) {
-      videoOpenNew.href = url;
-      const isDrive = url.includes("drive.google.com");
-      const span = videoOpenNew.querySelector("span");
-      if (span) span.textContent = isDrive ? "فتح في Google Drive" : "فتح في YouTube";
-    }
-    window.PortalDialog.open(videoModal, { onClose: () => videoFrame.removeAttribute("src") });
-    if (window.lucide) window.lucide.createIcons();
-  }
-
-  function closeVideoModal() {
-    if (!videoModal || !videoFrame) return;
-    window.PortalDialog.close(videoModal);
-  }
-
-  if (videoClose) {
-    videoClose.addEventListener("click", closeVideoModal);
-  }
-  if (videoModal) {
-    videoModal.addEventListener("click", function (e) {
-      if (e.target === videoModal) closeVideoModal();
-    });
-  }
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && videoModal && !videoModal.classList.contains("hidden")) {
-      closeVideoModal();
-    }
-  });
-
   const videos = course.videoExplanations || [];
   if (badgeVideosCount) {
     badgeVideosCount.textContent = `${videos.length} مصادر شرح`;
@@ -274,34 +212,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }).join("");
 
       // إعداد أزرار تشغيل الفيديو
-      videoList.querySelectorAll(".btn-play-video").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const url = this.getAttribute("data-play-url");
-          const title = this.getAttribute("data-play-title");
-          const sub = this.getAttribute("data-play-subtitle");
-          openVideoModal(url, title, sub);
-        });
-      });
+
 
       // إعداد أزرار نسخ الرابط
-      videoList.querySelectorAll(".btn-copy-link").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const url = this.getAttribute("data-copy-url");
-          navigator.clipboard.writeText(url).then(() => {
-            const toast = document.getElementById("toast");
-            if (toast) {
-              const span = toast.querySelector("span");
-              const original = span.textContent;
-              span.textContent = "تم نسخ رابط الشرح بنجاح!";
-              toast.classList.remove("opacity-0", "pointer-events-none");
-              setTimeout(() => {
-                toast.classList.add("opacity-0", "pointer-events-none");
-                span.textContent = original;
-              }, 2500);
-            }
-          });
-        });
-      });
+
     }
   }
 
@@ -315,65 +229,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (courseDriveFolderBtn) {
     courseDriveFolderBtn.href = course.driveFolderUrl || (window.PORTAL_CONFIG && window.PORTAL_CONFIG.driveMasterFolder) || "https://drive.google.com/drive/folders/11q-xu1rb5IoIE-lL1pMjHXqfut9Tq2hU";
   }
-
-  // إعداد نافذة معاينة الـ PDF والمستندات المضمنة
-  const pdfModal = document.getElementById("pdf-modal");
-  const pdfFrame = document.getElementById("pdf-modal-frame");
-  const pdfTitle = document.getElementById("pdf-modal-title");
-  const pdfSubtitle = document.getElementById("pdf-modal-subtitle");
-  const pdfOpenNew = document.getElementById("pdf-modal-open-new");
-  const pdfDownload = document.getElementById("pdf-modal-download");
-  const pdfClose = document.getElementById("pdf-modal-close");
-
-  function openPdfModal(fileUrl, title, subtitle, filename, downloadUrl, viewUrl) {
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile || !pdfModal || !pdfFrame) {
-      window.open(viewUrl || fileUrl, "_blank", "noopener");
-      return;
-    }
-
-    let frameUrl = fileUrl;
-    if (frameUrl.includes("drive.google.com/file/d/") && !frameUrl.includes("/preview")) {
-      frameUrl = frameUrl.replace(/\/view(\?.*)?$/, "/preview");
-    }
-
-    pdfFrame.src = frameUrl;
-    if (pdfTitle) pdfTitle.textContent = title || "سلايدات المحاضرة";
-    if (pdfSubtitle) pdfSubtitle.textContent = subtitle || "معاينة مباشرة";
-    if (pdfOpenNew) pdfOpenNew.href = viewUrl || fileUrl;
-    if (pdfDownload) {
-      pdfDownload.href = downloadUrl || fileUrl;
-      pdfDownload.setAttribute("download", filename || "lecture.pdf");
-    }
-    window.PortalDialog.open(pdfModal, { onClose: () => pdfFrame.removeAttribute("src") });
-    if (window.lucide) window.lucide.createIcons();
-  }
-
-  function closePdfModal() {
-    if (!pdfModal || !pdfFrame) return;
-    window.PortalDialog.close(pdfModal);
-  }
-
-  if (pdfClose) {
-    pdfClose.addEventListener("click", closePdfModal);
-  }
-  if (pdfModal) {
-    pdfModal.addEventListener("click", function (e) {
-      if (e.target === pdfModal) {
-        closePdfModal();
-      }
-    });
-  }
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-      if (pdfModal && !pdfModal.classList.contains("hidden")) {
-        closePdfModal();
-      }
-      if (studyModal && !studyModal.classList.contains("hidden")) {
-        closeSmartStudyModal();
-      }
-    }
-  });
 
   // ============================================================================
   // المذاكرة والشرح الذكي للمحاضرات (Smart Lecture Study Modal)
@@ -579,7 +434,7 @@ document.addEventListener("DOMContentLoaded", function () {
                       return `
                         <button 
                           type="button" 
-                          class="full-quiz-opt-btn w-full text-left dir-ltr p-3 rounded-xl border text-xs font-medium transition-all flex items-center justify-between gap-3 ${optClass}"
+                          dir="ltr" class="full-quiz-opt-btn w-full text-left dir-ltr p-3 rounded-xl border text-xs font-medium transition-all flex items-center justify-between gap-3 ${optClass}"
                           data-qid="${q.id}"
                           data-opt-idx="${optIdx}"
                           ${answered ? "disabled" : ""}
@@ -928,7 +783,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ${s.quiz.options.map((opt, optIdx) => `
               <button 
                 type="button" 
-                class="quiz-opt-btn w-full text-left dir-ltr p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-xs font-medium text-[var(--text-main)] hover:border-indigo-500 hover:bg-[var(--bg-card-hover)] transition-all flex items-center justify-between gap-3 group cursor-pointer" 
+                dir="ltr" class="quiz-opt-btn w-full text-left dir-ltr p-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)] text-xs font-medium text-[var(--text-main)] hover:border-indigo-500 hover:bg-[var(--bg-card-hover)] transition-all flex items-center justify-between gap-3 group cursor-pointer" 
                 data-option-index="${optIdx}"
               >
                 <span class="flex-1 font-sans quiz-opt-text">${opt}</span>
@@ -1283,17 +1138,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }).join("");
 
       // ربط أزرار المعاينة بالنافذة المنبثقة
-      lecturesList.querySelectorAll(".btn-preview-pdf").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const file = this.getAttribute("data-preview-file");
-          const title = this.getAttribute("data-preview-title");
-          const sub = this.getAttribute("data-preview-subtitle");
-          const fname = this.getAttribute("data-preview-filename");
-          const dUrl = this.getAttribute("data-preview-download");
-          const vUrl = this.getAttribute("data-preview-view");
-          openPdfModal(file, title, sub, fname, dUrl, vUrl);
-        });
-      });
+
 
       // ربط أزرار المذاكرة الذكية والشرح التفاعلي
       lecturesList.querySelectorAll(".btn-open-smart-study").forEach((btn) => {
@@ -1895,26 +1740,9 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     }).join("");
 
-    sectionsList.querySelectorAll(".btn-preview-pdf").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const file = this.getAttribute("data-preview-file");
-        const title = this.getAttribute("data-preview-title");
-        const sub = this.getAttribute("data-preview-subtitle");
-        const fname = this.getAttribute("data-preview-filename");
-        const dUrl = this.getAttribute("data-preview-download");
-        const vUrl = this.getAttribute("data-preview-view");
-        openPdfModal(file, title, sub, fname, dUrl, vUrl);
-      });
-    });
 
-    sectionsList.querySelectorAll(".btn-play-video").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const url = this.getAttribute("data-play-url");
-        const title = this.getAttribute("data-play-title");
-        const sub = this.getAttribute("data-play-subtitle");
-        openVideoModal(url, title, sub);
-      });
-    });
+
+
 
     if (window.lucide) window.lucide.createIcons();
   }
@@ -2122,17 +1950,7 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     }).join("");
 
-    assignmentsList.querySelectorAll(".btn-preview-pdf").forEach((btn) => {
-      btn.addEventListener("click", function () {
-        const file = this.getAttribute("data-preview-file");
-        const title = this.getAttribute("data-preview-title");
-        const sub = this.getAttribute("data-preview-subtitle");
-        const fname = this.getAttribute("data-preview-filename");
-        const dUrl = this.getAttribute("data-preview-download");
-        const vUrl = this.getAttribute("data-preview-view");
-        openPdfModal(file, title, sub, fname, dUrl, vUrl);
-      });
-    });
+
 
     if (window.lucide) window.lucide.createIcons();
   }
@@ -2290,6 +2108,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const sectionPanel = document.getElementById("track-panel-section");
 
   function switchTrack(trackKey) {
+    trackKey = trackKey === "section" ? "section" : "lecture";
     activeTrack = trackKey;
 
     trackButtons.forEach((btn) => {
@@ -2335,22 +2154,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // التفعيل الأولي للمسار المختار من الرابط
   switchTrack(activeTrack);
 
-  // 10. زر مشاركة الرابط
+  // A single clipboard path handles sharing and every video link.
   const shareBtn = document.getElementById("share-btn");
-  const toast = document.getElementById("toast");
-
-  if (shareBtn && toast) {
-    shareBtn.addEventListener("click", function () {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        toast.classList.remove("opacity-0", "pointer-events-none");
-        setTimeout(() => {
-          toast.classList.add("opacity-0", "pointer-events-none");
-        }, 2500);
-      }).catch(() => {
-        prompt("انسخ الرابط التالي:", window.location.href);
-      });
-    });
-  }
+  if (shareBtn) shareBtn.addEventListener("click", () => window.PortalMedia.copyLink(window.location.href));
 
   // الاستماع لتغيير المجموعة والسكشن وتحديث الصفحة فوراً
   window.addEventListener("studentProfileChanged", function () {
