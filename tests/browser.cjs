@@ -84,6 +84,14 @@ async function main(){
   await scenario('quiz-preserves-other-question-nodes',async({page,go})=>{
     await go('subject.html?id=database-systems');await page.locator('[data-open-study-lecture="2"]').first().click();await page.locator('#lecture-study-modal').waitFor({state:'visible'});await page.locator('#study-tab-btn-quiz').click();await page.evaluate(()=>window.otherQuestion=document.getElementById('full-q-2'));await page.locator('.full-quiz-opt-btn[data-qid="1"]').first().click();assert(await page.evaluate(()=>window.otherQuestion===document.getElementById('full-q-2')));await page.locator('#full-quiz-reset-btn').click();assert.equal(await page.locator('#full-quiz-score-val').innerText(),'0 / 20');
   });
+  await scenario('study-load-retry',async({page,go})=>{
+    let attempts=0;await page.route('**/js/lecture-explanations-data.js*',route=>++attempts===1?route.abort():route.continue());
+    await go('subject.html?id=database-systems');await page.locator('[data-open-study-lecture="2"]').first().click();await page.locator('#study-retry').waitFor({state:'visible'});await page.locator('#study-retry').click();await page.locator('#study-slides-feed img').first().waitFor({state:'attached'});assert.equal(attempts,2);assert.equal(await page.locator('#study-slides-feed img').count(),30);
+  });
+  await scenario('closing-study-cancels-late-render',async({page,go})=>{
+    await page.route('**/js/lecture-explanations-data.js*',async route=>{const response=await route.fetch();await new Promise(resolve=>setTimeout(resolve,700));await route.fulfill({response});});
+    await go('subject.html?id=database-systems');await page.locator('[data-open-study-lecture="2"]').first().click();await page.locator('#study-modal-close').click();await page.waitForTimeout(1000);assert(!await page.locator('#lecture-study-modal').isVisible());assert.equal(await page.locator('#study-slides-feed img').count(),0);
+  });
   fs.writeFileSync(path.join(output,'browser-results.json'),JSON.stringify(results,null,2));
   console.log(`${results.filter(x=>x.passed).length}/${results.length} scenarios passed`);
   if(results.some(x=>!x.passed))process.exitCode=1;
