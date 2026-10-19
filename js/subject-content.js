@@ -40,7 +40,7 @@
 
     let filteredResources = allResources;
     if (theoryFilterMode === "my-ta") {
-      filteredResources = allResources.filter(r => !r.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(r.ta, studentTa)));
+      filteredResources = window.StudentProfile.filterItemsForTa(allResources, "my-ta", studentTa, true);
     }
 
     const hasOtherTaResources = allResources.some(r => r.ta && window.StudentProfile && !window.StudentProfile.isTaMatch(r.ta, studentTa));
@@ -186,20 +186,7 @@
     const staff = getStudentStaff();
     const studentTa = staff.ta;
 
-    let visibleFolders = [];
-    if (course.sectionsDriveFolders && course.sectionsDriveFolders.length > 0) {
-      if (selectedTa === "all") {
-        visibleFolders = course.sectionsDriveFolders;
-      } else if (selectedTa === "my-ta") {
-        visibleFolders = course.sectionsDriveFolders.filter(
-          (f) => !f.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(f.ta, studentTa))
-        );
-      } else {
-        visibleFolders = course.sectionsDriveFolders.filter(
-          (f) => !f.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(f.ta, selectedTa))
-        );
-      }
-    }
+    const visibleFolders = window.StudentProfile.filterItemsForTa(course.sectionsDriveFolders || [], selectedTa, studentTa, true);
 
     let driveButtonsHtml = "";
     if (visibleFolders.length > 0) {
@@ -360,14 +347,7 @@
       return;
     }
 
-    let filteredSections = [];
-    if (selectedTa === "all") {
-      filteredSections = allSections;
-    } else if (selectedTa === "my-ta") {
-      filteredSections = allSections.filter(s => window.StudentProfile && window.StudentProfile.isTaMatch(s.ta, studentTa));
-    } else {
-      filteredSections = allSections.filter(s => window.StudentProfile && window.StudentProfile.isTaMatch(s.ta, selectedTa));
-    }
+    const filteredSections = window.StudentProfile.filterItemsForTa(allSections, selectedTa, studentTa);
 
     renderSectionsDriveFolders(filteredSections.length);
 
@@ -615,14 +595,7 @@
       return;
     }
 
-    let filteredAssignments = [];
-    if (selectedTa === "all") {
-      filteredAssignments = allAssignments;
-    } else if (selectedTa === "my-ta") {
-      filteredAssignments = allAssignments.filter(a => !a.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(a.ta, studentTa)));
-    } else {
-      filteredAssignments = allAssignments.filter(a => !a.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(a.ta, selectedTa)));
-    }
+    const filteredAssignments = window.StudentProfile.filterItemsForTa(allAssignments, selectedTa, studentTa, true);
 
     if (badgeAssignmentsCount) {
       badgeAssignmentsCount.textContent = `${filteredAssignments.length} تكليفات`;
@@ -822,13 +795,7 @@
       return;
     }
 
-    let filteredPractical = allPractical;
-    if (selectedTa === "my-ta") {
-      filteredPractical = allPractical.filter(r => !r.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(r.ta, studentTa)));
-    } else if (selectedTa !== "all") {
-      filteredPractical = allPractical.filter(r => !r.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(r.ta, selectedTa)));
-    }
-
+    const filteredPractical = window.StudentProfile.filterItemsForTa(allPractical, selectedTa, studentTa, true);
 
     if (filteredPractical.length === 0) {
       practicalResourcesList.className = "";

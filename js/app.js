@@ -41,9 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     const allSections = course.sections || [];
-    const mySections = allSections.filter(s => window.StudentProfile && window.StudentProfile.isTaMatch(s.ta, staff.ta));
+    const mySections = window.StudentProfile.filterItemsForTa(allSections, "my-ta", staff.ta);
     const allAssignments = course.assignments || [];
-    const myAssignments = allAssignments.filter(a => !a.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(a.ta, staff.ta)));
+    const myAssignments = window.StudentProfile.filterItemsForTa(allAssignments, "my-ta", staff.ta, true);
 
     return `
       <article class="glass-panel rounded-3xl p-6 border flex flex-col justify-between card-hover-effect relative group">

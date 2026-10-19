@@ -304,6 +304,12 @@ const StudentProfile = {
   },
 
   // دالة لجلب معلومات الدكتور والمعيد الخاصة بمادة معينة بناءً على البروفايل
+  filterItemsForTa(items, selectedTa, studentTa, includeUnassigned = false) {
+    if (selectedTa === "all") return items;
+    const ta = selectedTa === "my-ta" ? studentTa : selectedTa;
+    return items.filter(item => (!item.ta && includeUnassigned) || this.isTaMatch(item.ta, ta));
+  },
+
   getSectionSessions(courseId, section = this.get().section) {
     const value = (SCHEDULE_CONFIG.tasBySection[section] || {})[courseId];
     return (Array.isArray(value) ? value : value ? [value] : []).filter(item => item && item.slot);
