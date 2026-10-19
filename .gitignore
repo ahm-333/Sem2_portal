@@ -8,6 +8,7 @@ push_out.txt
 tools/db_lec2_slides_text.txt
 tools/lecture3_payload.json
 tools/apply_workflow_fix.js
+tools/create_test_drive_wf.js
 
 # Raw presentations (slides images are tracked in materials/slides/)
 materials/*.ppt
