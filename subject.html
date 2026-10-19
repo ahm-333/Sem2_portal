@@ -30,7 +30,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <!-- التنسيقات المخصصة والأوضاع الثلاثة والمسارين -->
-  <link rel="stylesheet" href="css/style.css?v=1792419914689">
+  <link rel="stylesheet" href="css/style.css?v=1792421533463">
 </head>
 <body class="min-h-screen flex flex-col">
 
@@ -609,19 +609,42 @@
         </div>
       </div>
 
-      <!-- مؤشر تقدم القراءة الأفقي -->
-      <div class="w-full bg-[var(--border-subtle)] h-1 flex-shrink-0">
-        <div id="study-progress-bar" class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-400 transition-all duration-200" style="width: 0%;"></div>
+      <!-- شريط التبديل بين الشرح والكويز الشامل (Tabs Bar) -->
+      <div class="px-3 sm:px-5 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] flex items-center justify-between gap-3 flex-shrink-0">
+        <div class="flex items-center gap-2">
+          <button id="study-tab-btn-slides" type="button" class="study-nav-tab active px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-2 transition-all cursor-pointer">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            <span>تفكيك وشرح السلايدات</span>
+          </button>
+          <button id="study-tab-btn-quiz" type="button" class="study-nav-tab px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition-all cursor-pointer">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-amber-500"></i>
+            <span>كويز شامل على المحاضرة</span>
+            <span id="study-full-quiz-badge" class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-amber-500/20 text-amber-500 dark:text-amber-300">20 سؤال</span>
+          </button>
+        </div>
       </div>
 
-      <!-- شريط القفز السريع للشرائح (Slide Quick Jump Bar) -->
-      <div id="study-jump-bar" class="py-2 px-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] flex items-center gap-2 overflow-x-auto flex-shrink-0 no-scrollbar">
-        <!-- يتم تعبئة أزرار الشرائح السريعة عبر JS -->
+      <!-- حاوية تفكيك وشرح السلايدات (Slides Walkthrough View) -->
+      <div id="study-slides-view" class="flex-1 flex flex-col min-h-0 overflow-hidden">
+        <!-- مؤشر تقدم القراءة الأفقي -->
+        <div class="w-full bg-[var(--border-subtle)] h-1 flex-shrink-0">
+          <div id="study-progress-bar" class="h-1 bg-gradient-to-r from-purple-500 via-indigo-500 to-cyan-400 transition-all duration-200" style="width: 0%;"></div>
+        </div>
+
+        <!-- شريط القفز السريع للشرائح (Slide Quick Jump Bar) -->
+        <div id="study-jump-bar" class="py-2 px-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] flex items-center gap-2 overflow-x-auto flex-shrink-0 no-scrollbar">
+          <!-- يتم تعبئة أزرار الشرائح السريعة عبر JS -->
+        </div>
+
+        <!-- المحتوى الرئيسي: التغذية المستمرة للشرائح والشروحات -->
+        <div id="study-slides-feed" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-12 focus:outline-none">
+          <!-- يتم ملء بطاقات الشرائح عبر JS -->
+        </div>
       </div>
 
-      <!-- المحتوى الرئيسي: التغذية المستمرة للشرائح والشروحات -->
-      <div id="study-slides-feed" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-12 focus:outline-none">
-        <!-- يتم ملء بطاقات الشرائح عبر JS -->
+      <!-- حاوية الكويز الشامل على المحاضرة في تاب منفصل (Full Lecture Quiz View) -->
+      <div id="study-full-quiz-view" class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 hidden focus:outline-none">
+        <!-- يتم ملء واجهة الكويز الشامل التفاعلية عبر JS -->
       </div>
 
     </div>
@@ -673,12 +696,12 @@
   </footer>
 
   <!-- ملفات الجافاسكربت -->
-  <script src="js/theme.js?v=1792419914689"></script>
-  <script src="js/courses-data.js?v=1792419914689"></script>
-  <script src="js/schedule-data.js?v=1792419914689"></script>
-  <script src="js/profile-modal.js?v=1792419914689"></script>
-  <script src="js/lecture-explanations-data.js?v=1792419914689"></script>
-  <script src="js/subject.js?v=1792419914689"></script>
+  <script src="js/theme.js?v=1792421533463"></script>
+  <script src="js/courses-data.js?v=1792421533463"></script>
+  <script src="js/schedule-data.js?v=1792421533463"></script>
+  <script src="js/profile-modal.js?v=1792421533463"></script>
+  <script src="js/lecture-explanations-data.js?v=1792421533463"></script>
+  <script src="js/subject.js?v=1792421533463"></script>
   <script>
     lucide.createIcons();
   </script>

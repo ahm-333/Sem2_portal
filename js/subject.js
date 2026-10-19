@@ -389,6 +389,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const studyModalClose = document.getElementById("study-modal-close");
   const studyModalTitle = document.getElementById("study-modal-title");
   const studyModalBadge = document.getElementById("study-modal-progress-badge");
+  const studyTabBtnSlides = document.getElementById("study-tab-btn-slides");
+  const studyTabBtnQuiz = document.getElementById("study-tab-btn-quiz");
+  const studyFullQuizBadge = document.getElementById("study-full-quiz-badge");
+  const studySlidesView = document.getElementById("study-slides-view");
+  const studyFullQuizView = document.getElementById("study-full-quiz-view");
   const studyProgressBar = document.getElementById("study-progress-bar");
   const studyJumpBar = document.getElementById("study-jump-bar");
   const studySlidesFeed = document.getElementById("study-slides-feed");
@@ -398,6 +403,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let isStudyFullscreen = false;
   let currentStudyFontZoom = 0; // 0 = normal, 1 = lg, 2 = xl
+  let activeStudyTab = "slides"; // "slides" or "quiz"
 
   function setStudyFontZoom(level) {
     if (!studySlidesFeed) return;
@@ -416,6 +422,29 @@ document.addEventListener("DOMContentLoaded", function () {
       icon.setAttribute("data-lucide", isStudyFullscreen ? "minimize-2" : "maximize-2");
       if (window.lucide) window.lucide.createIcons();
     }
+  }
+
+  function switchStudyTab(tab) {
+    activeStudyTab = tab;
+    if (tab === "slides") {
+      if (studyTabBtnSlides) studyTabBtnSlides.classList.add("active");
+      if (studyTabBtnQuiz) studyTabBtnQuiz.classList.remove("active");
+      if (studySlidesView) studySlidesView.classList.remove("hidden");
+      if (studyFullQuizView) studyFullQuizView.classList.add("hidden");
+    } else {
+      if (studyTabBtnSlides) studyTabBtnSlides.classList.remove("active");
+      if (studyTabBtnQuiz) studyTabBtnQuiz.classList.add("active");
+      if (studySlidesView) studySlidesView.classList.add("hidden");
+      if (studyFullQuizView) studyFullQuizView.classList.remove("hidden");
+    }
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  if (studyTabBtnSlides) {
+    studyTabBtnSlides.addEventListener("click", () => switchStudyTab("slides"));
+  }
+  if (studyTabBtnQuiz) {
+    studyTabBtnQuiz.addEventListener("click", () => switchStudyTab("quiz"));
   }
 
   if (studyFullscreenBtn) {
@@ -438,6 +467,241 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.classList.remove("overflow-hidden");
   }
 
+  function renderFullQuiz(data) {
+    if (!studyFullQuizView) return;
+    const questions = data.fullQuiz || [];
+    if (questions.length === 0) {
+      studyFullQuizView.innerHTML = `
+        <div class="text-center py-16">
+          <p class="text-sm text-[var(--text-muted)]">جاري إعداد بنك الأسئلة الشامل للمحاضرة قريباً!</p>
+        </div>
+      `;
+      return;
+    }
+
+    let userAnswers = {};
+    let score = 0;
+
+    function buildQuizHtml() {
+      const answeredCount = Object.keys(userAnswers).length;
+      return `
+        <div class="max-w-4xl mx-auto space-y-6">
+          
+          <!-- بطاقة رأس الكويز الشامل وعداد النتيجة -->
+          <div class="glass-panel p-5 sm:p-6 rounded-3xl border border-amber-500/30 bg-gradient-to-r from-amber-500/5 via-indigo-500/5 to-cyan-500/5 shadow-xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center font-bold shadow-lg shadow-amber-500/25 flex-shrink-0 icon-box-modern">
+                  <i data-lucide="award" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <h3 class="text-base sm:text-lg font-black text-[var(--text-main)] flex flex-wrap items-center gap-2">
+                    <span>اختبار التقييم الشامل للمحاضرة كاملة</span>
+                    <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-500 dark:text-amber-300 font-mono font-bold">${questions.length} سؤال امتحاني</span>
+                  </h3>
+                  <p class="text-xs text-[var(--text-muted)] mt-1">أسئلة اختيار من متعدد (MCQ) باللغة الإنجليزية من واقع امتحانات وسلايدات د. محمد ماهر مع تفسير فوري بالعامية ومصطلحات المادة</p>
+                </div>
+              </div>
+
+              <!-- عداد النتيجة الفوري وزر الإعادة -->
+              <div class="flex items-center gap-3 self-end sm:self-auto flex-shrink-0">
+                <div class="glass-panel px-4 py-2 rounded-2xl border border-[var(--border-subtle)] text-center bg-[var(--bg-surface)]">
+                  <span class="text-[10px] text-[var(--text-dim)] font-bold block">الدرجة الحالية</span>
+                  <span id="full-quiz-score-val" class="text-lg font-black text-amber-500 font-mono">${score} / ${questions.length}</span>
+                </div>
+                <button id="full-quiz-reset-btn" type="button" class="px-3.5 py-2.5 rounded-xl glass-panel border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-muted)] hover:text-rose-500 hover:border-rose-500/30 transition-all flex items-center gap-1.5 cursor-pointer" title="إعادة الاختبار من البداية">
+                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                  <span>إعادة</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- شريط الأسئلة السريع للقفز -->
+            <div class="mt-5 pt-4 border-t border-[var(--border-subtle)]">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[11px] font-bold text-[var(--text-muted)]">خريطة الأسئلة (اضغط للقفز لأي سؤال):</span>
+                <span class="text-[10px] font-mono font-bold text-[var(--text-dim)]">${answeredCount} من ${questions.length} تم حله</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                ${questions.map((q) => {
+                  let pillStyle = "glass-panel text-[var(--text-muted)] hover:text-[var(--text-main)] border-[var(--border-subtle)]";
+                  if (userAnswers[q.id] !== undefined) {
+                    pillStyle = userAnswers[q.id] === q.correct 
+                      ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border-emerald-500/40 font-black"
+                      : "bg-rose-500/20 text-rose-600 dark:text-rose-300 border-rose-500/40 font-black";
+                  }
+                  return `
+                    <button 
+                      type="button" 
+                      data-jump-q="full-q-${q.id}" 
+                      class="q-map-pill w-8 h-8 rounded-xl text-xs font-mono font-bold border transition-all flex items-center justify-center cursor-pointer ${pillStyle}"
+                    >
+                      ${q.id}
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          </div>
+
+          <!-- قائمة الأسئلة -->
+          <div class="space-y-6">
+            ${questions.map((q) => {
+              const answered = userAnswers[q.id] !== undefined;
+              const userChoice = userAnswers[q.id];
+              return `
+                <div id="full-q-${q.id}" class="glass-panel p-5 sm:p-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] shadow-md space-y-4" data-qid="${q.id}">
+                  
+                  <!-- هيدر السؤال -->
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[var(--border-subtle)]">
+                    <div class="flex items-center gap-2.5">
+                      <span class="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-500 dark:text-indigo-300 font-mono font-bold text-xs flex items-center justify-center border border-indigo-500/20">
+                        Q${q.id}
+                      </span>
+                      <span class="text-xs font-bold text-[var(--text-main)] font-mono">${q.topic}</span>
+                    </div>
+                    <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 dark:text-indigo-300 font-mono font-bold self-start sm:self-auto border border-indigo-500/20">
+                      Slide #${q.slideNum}
+                    </span>
+                  </div>
+
+                  <!-- نص السؤال بالإنجليزية -->
+                  <div class="p-3.5 rounded-xl bg-[var(--bg-main)] border border-[var(--border-subtle)] text-left dir-ltr">
+                    <p class="text-xs sm:text-sm font-bold text-[var(--text-main)] font-sans leading-relaxed">${q.question}</p>
+                  </div>
+
+                  <!-- خيارات السؤال -->
+                  <div class="space-y-2 quiz-full-options">
+                    ${q.options.map((opt, optIdx) => {
+                      let optClass = "border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-main)] hover:border-indigo-500 cursor-pointer";
+                      if (answered) {
+                        if (optIdx === q.correct) {
+                          optClass = "border-emerald-600 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold cursor-default";
+                        } else if (optIdx === userChoice) {
+                          optClass = "border-rose-600 bg-rose-500/15 text-rose-700 dark:text-rose-300 font-bold cursor-default";
+                        } else {
+                          optClass = "border-[var(--border-subtle)] opacity-50 cursor-default";
+                        }
+                      }
+                      return `
+                        <button 
+                          type="button" 
+                          class="full-quiz-opt-btn w-full text-left dir-ltr p-3 rounded-xl border text-xs font-medium transition-all flex items-center justify-between gap-3 ${optClass}"
+                          data-qid="${q.id}"
+                          data-opt-idx="${optIdx}"
+                          ${answered ? "disabled" : ""}
+                        >
+                          <span class="flex-1 font-sans">${opt}</span>
+                          <span class="w-6 h-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex items-center justify-center text-[11px] font-mono font-bold flex-shrink-0">
+                            ${String.fromCharCode(65 + optIdx)}
+                          </span>
+                        </button>
+                      `;
+                    }).join("")}
+                  </div>
+
+                  <!-- صندوق التفسير الفوري بالعامية المصرية ومصطلحات المادة -->
+                  ${answered ? `
+                    <div class="p-4 rounded-2xl border text-xs sm:text-sm leading-relaxed text-right dir-rtl animate-fade-in ${
+                      userChoice === q.correct
+                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-200"
+                        : "bg-rose-500/10 border-rose-500/30 text-rose-950 dark:text-rose-200"
+                    }">
+                      <div class="flex items-start gap-2.5">
+                        <span class="text-xl flex-shrink-0">${userChoice === q.correct ? "🎉" : "💡"}</span>
+                        <div>
+                          <strong class="font-black block mb-1 ${userChoice === q.correct ? "text-emerald-700 dark:text-emerald-300" : "text-rose-700 dark:text-rose-300"}">
+                            ${userChoice === q.correct ? "إجابة صحيحة يا بطل!" : "ركز في التريكة دي:"}
+                          </strong>
+                          <p class="leading-relaxed font-medium">${q.explanation}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ` : ""}
+
+                </div>
+              `;
+            }).join("")}
+          </div>
+
+          <!-- بطاقة التقييم النهائي للكويز -->
+          <div id="full-quiz-summary-card" class="glass-panel p-6 sm:p-8 rounded-3xl border border-indigo-500/30 text-center space-y-4 bg-gradient-to-b from-indigo-500/5 to-purple-500/10 ${
+            answeredCount === questions.length ? "" : "hidden"
+          }">
+            <div class="w-16 h-16 mx-auto rounded-3xl bg-indigo-500/15 text-indigo-500 flex items-center justify-center text-3xl shadow-inner">
+              🏆
+            </div>
+            <div>
+              <h4 class="text-lg font-black text-[var(--text-main)] mb-1">انتهى الاختبار الشامل للمحاضرة!</h4>
+              <p class="text-xs text-[var(--text-muted)]">إليك تقرير نتيجتك وتقييم فهمك لمحتوى السلايدات:</p>
+            </div>
+            <div class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
+              <span class="text-xs font-bold text-[var(--text-muted)]">الدرجة النهائية:</span>
+              <span class="text-2xl font-black text-indigo-500 font-mono">${score} / ${questions.length}</span>
+              <span class="text-xs font-bold text-emerald-500 font-mono">(${Math.round((score / questions.length) * 100)}%)</span>
+            </div>
+            <p class="text-sm font-bold text-[var(--text-main)] max-w-md mx-auto leading-relaxed">
+              ${score >= 17 ? "عاش جداً يا هندسة! إنت كده هضمت المحاضرة بالكامل ومستعد لأي سؤال ميدتيرم أو فاينل 🚀" : "مستوى كويس جداً! راجع الأسئلة اللي غلطت فيها وخلي بالك من التريكات."}
+            </p>
+          </div>
+
+        </div>
+      `;
+    }
+
+    function attachFullQuizListeners() {
+      studyFullQuizView.querySelectorAll(".full-quiz-opt-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+          const qid = parseInt(this.getAttribute("data-qid"), 10);
+          const optIdx = parseInt(this.getAttribute("data-opt-idx"), 10);
+          const qObj = questions.find(q => q.id === qid);
+          if (!qObj || userAnswers[qid] !== undefined) return;
+
+          userAnswers[qid] = optIdx;
+          if (optIdx === qObj.correct) {
+            score++;
+          }
+
+          studyFullQuizView.innerHTML = buildQuizHtml();
+          attachFullQuizListeners();
+
+          const targetQEl = document.getElementById(`full-q-${qid}`);
+          if (targetQEl) {
+            targetQEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+          if (window.lucide) window.lucide.createIcons();
+        });
+      });
+
+      studyFullQuizView.querySelectorAll(".q-map-pill").forEach(pill => {
+        pill.addEventListener("click", function () {
+          const targetId = this.getAttribute("data-jump-q");
+          const el = document.getElementById(targetId);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+
+      const resetBtn = document.getElementById("full-quiz-reset-btn");
+      if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+          userAnswers = {};
+          score = 0;
+          studyFullQuizView.innerHTML = buildQuizHtml();
+          attachFullQuizListeners();
+          studyFullQuizView.scrollTop = 0;
+          if (window.lucide) window.lucide.createIcons();
+        });
+      }
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    studyFullQuizView.innerHTML = buildQuizHtml();
+    attachFullQuizListeners();
+  }
+
   function openSmartStudyModal(courseId, lectureId) {
     if (!studyModal || !studySlidesFeed) return;
     const allExp = window.LECTURE_EXPLANATIONS || (typeof LECTURE_EXPLANATIONS !== "undefined" ? LECTURE_EXPLANATIONS : null);
@@ -453,6 +717,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (studyModalBadge) {
       studyModalBadge.textContent = `${data.totalSlides} شريحة`;
     }
+    if (studyFullQuizBadge && data.fullQuiz) {
+      studyFullQuizBadge.textContent = `${data.fullQuiz.length} سؤال`;
+    }
+
+    // إعادة التبويب الافتراضي لتاب الشرح
+    switchStudyTab("slides");
 
     // بناء شريط القفز السريع للشرائح
     if (studyJumpBar) {
@@ -509,6 +779,31 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
       ` : '';
 
+      // شفرة الامتحان: لو شوفت كذا اختار كذا
+      const triggersHtml = s.triggers && s.triggers.length > 0 ? `
+        <div class="study-cheat-box space-y-2.5">
+          <div class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-extrabold text-xs sm:text-sm">
+            <i data-lucide="target" class="w-4 h-4"></i>
+            <span>🎯 شفرة الامتحان (لو شوفت كذا اختار كذا):</span>
+          </div>
+          <div class="grid grid-cols-1 gap-2">
+            ${s.triggers.map(tr => `
+              <div class="study-cheat-item flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2 text-xs text-[var(--text-main)] font-medium">
+                  <span class="text-emerald-500 font-bold">👈</span>
+                  <span>${tr.trigger}</span>
+                </div>
+                <div class="self-start sm:self-auto flex-shrink-0">
+                  <span class="text-xs font-black px-2.5 py-1 rounded-xl bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 font-mono inline-block">
+                    ${tr.choose}
+                  </span>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      ` : "";
+
       // الكلمات المفتاحية والمصطلحات
       const keywordsHtml = s.keywords && s.keywords.length > 0 ? `
         <div class="p-3.5 rounded-2xl glass-panel border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
@@ -541,7 +836,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
       ` : "";
 
-      // الكويز باللغة الإنجليزية
+      // الكويز باللغة الإنجليزية مع التفسير بالعامية المصرية ومصطلحات المادة
       const quizHtml = s.quiz ? `
         <div class="p-4 sm:p-5 rounded-2xl glass-panel border border-indigo-500/30 bg-[var(--bg-surface)] quiz-card" data-correct-idx="${s.quiz.correct}">
           <div class="flex items-center justify-between gap-2 mb-3">
@@ -572,7 +867,7 @@ document.addEventListener("DOMContentLoaded", function () {
               </button>
             `).join("")}
           </div>
-          <div class="quiz-feedback hidden mt-3 p-3.5 rounded-xl text-xs leading-relaxed border transition-all" data-explanation="${encodeURIComponent(s.quiz.explanation || "")}"></div>
+          <div class="quiz-feedback hidden mt-3 p-3.5 rounded-xl text-xs leading-relaxed border transition-all text-right dir-rtl" data-explanation="${encodeURIComponent(s.quiz.explanation || "")}"></div>
         </div>
       ` : "";
 
@@ -614,29 +909,32 @@ document.addEventListener("DOMContentLoaded", function () {
           <!-- الشرح تحت السلايد مباشرة -->
           <div class="space-y-4 pt-1">
             
-            <!-- 1. الشرح وتوضيح الشريحة بتنسيق مريح ومنظم -->
+            <!-- 1. الشرح وتوضيح الشريحة بالعامية المصرية ومصطلحات المادة -->
             <div class="p-4 sm:p-5 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
               <div class="flex items-center gap-2 mb-2 text-indigo-600 dark:text-indigo-400 font-extrabold text-xs sm:text-sm">
                 <i data-lucide="book-open" class="w-4 h-4"></i>
-                <span>الشرح وتوضيح الشريحة:</span>
+                <span>شرح السلايد بالعامية المصرية ومصطلحات المقرر:</span>
               </div>
               ${introText ? `<p class="text-xs sm:text-sm text-[var(--text-main)] leading-relaxed font-semibold mb-2.5">${introText}</p>` : ""}
               ${pointsHtml}
               ${s.coreSummary ? `
                 <div class="mt-3 pt-3 border-t border-[var(--border-subtle)] text-[11px] sm:text-xs text-[var(--text-muted)] flex items-start gap-2">
                   <i data-lucide="info" class="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 flex-shrink-0 mt-0.5"></i>
-                  <span><strong>الخلاصة الأكاديمية:</strong> ${s.coreSummary}</span>
+                  <span><strong>الخلاصة السريعة:</strong> ${s.coreSummary}</span>
                 </div>
               ` : ""}
             </div>
 
-            <!-- 2. الكلمات المفتاحية والمصطلحات -->
+            <!-- 2. شفرة الامتحان (لو شوفت كذا اختار كذا) -->
+            ${triggersHtml}
+
+            <!-- 3. الكلمات المفتاحية والمصطلحات -->
             ${keywordsHtml}
 
-            <!-- 3. تريكات وفخاخ الامتحان عالية التباين -->
+            <!-- 4. تريكات وفخاخ الامتحان عالية التباين -->
             ${tricksHtml}
 
-            <!-- 4. الكويز التدريبي باللغة الإنجليزية -->
+            <!-- 5. الكويز التدريبي باللغة الإنجليزية مع التفسير بالعامية -->
             ${quizHtml}
 
           </div>
@@ -644,7 +942,7 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     }).join("");
 
-    // تفاعل الكويزات
+    // تفاعل الكويزات داخل السلايدات مع التفسير بالعامية المصرية ومصطلحات المادة
     studySlidesFeed.querySelectorAll(".quiz-card").forEach((card) => {
       const correctIdx = parseInt(card.getAttribute("data-correct-idx"), 10);
       const feedbackEl = card.querySelector(".quiz-feedback");
@@ -672,13 +970,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (feedbackEl) {
               feedbackEl.classList.remove("hidden");
-              feedbackEl.className = "quiz-feedback mt-3 p-3.5 rounded-xl text-xs leading-relaxed border bg-emerald-500/10 border-emerald-500/30 text-emerald-900 dark:text-emerald-200";
+              feedbackEl.className = "quiz-feedback mt-3 p-4 rounded-2xl text-xs sm:text-sm leading-relaxed border bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-200 text-right dir-rtl animate-fade-in";
               feedbackEl.innerHTML = `
                 <div class="flex items-start gap-2.5">
-                  <span class="text-base flex-shrink-0">🎉</span>
-                  <div class="dir-ltr text-left flex-1 font-sans">
-                    <strong class="font-bold text-emerald-800 dark:text-emerald-300 block mb-0.5">Correct Answer!</strong>
-                    <span>${rawExplanation}</span>
+                  <span class="text-xl flex-shrink-0">🎉</span>
+                  <div class="flex-1">
+                    <strong class="font-extrabold text-emerald-800 dark:text-emerald-300 block mb-1">إجابة صحيحة وممتازة!</strong>
+                    <p class="leading-relaxed font-medium">${rawExplanation}</p>
                   </div>
                 </div>
               `;
@@ -699,13 +997,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (feedbackEl) {
               feedbackEl.classList.remove("hidden");
-              feedbackEl.className = "quiz-feedback mt-3 p-3.5 rounded-xl text-xs leading-relaxed border bg-rose-500/10 border-rose-500/30 text-rose-900 dark:text-rose-200";
+              feedbackEl.className = "quiz-feedback mt-3 p-4 rounded-2xl text-xs sm:text-sm leading-relaxed border bg-rose-500/10 border-rose-500/30 text-rose-950 dark:text-rose-200 text-right dir-rtl animate-fade-in";
               feedbackEl.innerHTML = `
                 <div class="flex items-start gap-2.5">
-                  <span class="text-base flex-shrink-0">💡</span>
-                  <div class="dir-ltr text-left flex-1 font-sans">
-                    <strong class="font-bold text-rose-800 dark:text-rose-300 block mb-0.5">Exam Review Note:</strong>
-                    <span>${rawExplanation}</span>
+                  <span class="text-xl flex-shrink-0">💡</span>
+                  <div class="flex-1">
+                    <strong class="font-extrabold text-rose-800 dark:text-rose-300 block mb-1">توضيح وتريكة الامتحان:</strong>
+                    <p class="leading-relaxed font-medium">${rawExplanation}</p>
                   </div>
                 </div>
               `;
@@ -715,7 +1013,10 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    // تتبع التمرير لمؤشر التقدم
+    // بناء وتشغيل الكويز الشامل في تاب منفصل
+    renderFullQuiz(data);
+
+    // تتبع التمرير لمؤشر التقدم في تغذية السلايدات
     studySlidesFeed.onscroll = function () {
       const scrollTop = studySlidesFeed.scrollTop;
       const scrollHeight = studySlidesFeed.scrollHeight - studySlidesFeed.clientHeight;
