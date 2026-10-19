@@ -7,6 +7,7 @@
 [hidden] { display: none !important; }
 .dir-ltr, [dir="ltr"] { direction: ltr; }
 .dir-rtl, [dir="rtl"] { direction: rtl; }
+#full-quiz-score-val, #full-quiz-final-score, #full-quiz-percent { direction: ltr; unicode-bidi: isolate; display: inline-block; }
 body { width: 100%; min-width: 0; margin: 0; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
   outline: 2px solid #6366f1;

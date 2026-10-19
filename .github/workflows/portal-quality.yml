@@ -19,4 +19,4 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npx --no-install playwright install --with-deps chromium
       - run: npm run verify
-      - run: git diff --exit-code -- css/tailwind.css js/vendor
+      - run: git diff --exit-code -- css js/vendor js/study-catalog.js

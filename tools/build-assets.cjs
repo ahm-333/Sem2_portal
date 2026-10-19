@@ -6,6 +6,7 @@ const crypto = require('node:crypto');
 const root = path.resolve(__dirname,'..');
 const result = spawnSync(process.execPath,[require.resolve('tailwindcss/lib/cli.js'),'-c','tailwind.config.cjs','-i','css/tailwind-input.css','-o','css/tailwind.css','--minify'],{cwd:root,stdio:'inherit'});
 if (result.status !== 0) process.exit(result.status || 1);
+fs.copyFileSync(path.join(path.dirname(require.resolve('tailwindcss/package.json')),'LICENSE'),path.join(root,'css/TAILWIND-LICENSE'));
 const vendor = path.join(root,'js/vendor');
 fs.mkdirSync(vendor,{recursive:true});
 const lucide = path.dirname(require.resolve('lucide/package.json'));
