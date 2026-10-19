@@ -33,7 +33,7 @@ test('all profile schedules return valid days and finite chronological order',()
   for(const group of Object.values(context.SCHEDULE_CONFIG.groups))for(const section of group.sections){
     context.StudentProfile.set(group.id,section);
     for(const day of context.StudentProfile.getWeeklySchedule()){
-      const starts=day.items.map(x=>context.StudentProfile.startMinutes(x.time));
+      const starts=Array.from(day.items,x=>context.StudentProfile.startMinutes(x.time));
       assert(starts.every(Number.isFinite));assert.deepEqual(starts,[...starts].sort((a,b)=>a-b));
     }
   }
