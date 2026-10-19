@@ -38,12 +38,14 @@ const COURSES_DATA = [
       {
         title: "درايف م. أمل مجدي",
         url: "https://drive.google.com/drive/folders/1YGFJKH5JSPEBVDfu9LjFobj4H9WOUkwa",
-        color: "from-cyan-600 to-blue-600"
+        color: "from-cyan-600 to-blue-600",
+        ta: "م. أمل مجدي"
       },
       {
         title: "درايف م. تقى مصطفى",
         url: "https://drive.google.com/drive/folders/1szFwBUCE8t9-iRjzInLvHtoqUuA_UgQi",
-        color: "from-teal-600 to-emerald-600"
+        color: "from-teal-600 to-emerald-600",
+        ta: "م. تقى مصطفى"
       }
     ],
 
@@ -178,7 +180,7 @@ const COURSES_DATA = [
           "Point-to-Point Interconnect (QPI)",
           "PCI Express"
         ],
-        notes: "سلايدات المحاضرة المعتمدة الرسمية على Google Drive • ملحوظة دراسية: لفهم أعمق لمعمارية المعالج والمسجلات (8086)، يتوفر في مسار السكشن شرح م. تقى مصطفى المفصل (46 صفحة) للشرح المتعمق كما يُشرح في السكشن، والملف المختصر لتلخيص فائدة كل Register."
+        notes: "سلايدات المحاضرة المعتمدة الرسمية على Google Drive • ملحوظة دراسية: لفهم أعمق لمعمارية المعالج والمسجلات (8086)، يتوفر في مسار السكشن مذكرات وشروحات مفصلة لمسجلات 8086 وكيفية التعامل معها عملياً ومسائل حساب العناوين."
       },
       {
         id: 3,
@@ -381,6 +383,7 @@ const COURSES_DATA = [
         title: "مذكرة معمارية وسجلات 8086 التفصيلية (الشرح الشامل)",
         type: "مذكرة تفصيلية",
         year: "م. تقى مصطفى (46 صفحة)",
+        ta: "م. تقى مصطفى",
         size: "223 KB",
         notes: "دي تفصيلية اوي هتفيدكم لو عايزين تفهمو كويس زي ما بيتشرح في السكشن بالتفصيل",
         fileUrl: "https://drive.google.com/file/d/1oU0ZrkmZbdnGEIWzSVZt_xDT-3O0Ji01/view"
@@ -390,6 +393,7 @@ const COURSES_DATA = [
         title: "ملخص وظائف مسجلات 8086 السريع (فائدة كل Register)",
         type: "ملخص سريع",
         year: "م. تقى مصطفى (22 صفحة)",
+        ta: "م. تقى مصطفى",
         size: "497 KB",
         notes: "وفي دي مختصرة شوية لو بس عايزين فايدة كل register",
         fileUrl: "https://drive.google.com/file/d/1mC9dcWW78kOPXeu6mI1scey7FbrKDG-N/view"
@@ -692,56 +696,32 @@ const COURSES_DATA = [
     // محاضرات المادة على Google Drive
     lectures: [
       {
-        id: 1,
-        chapter: "Chapter 1",
-        title: "Databases and Database Users",
-        arabicTitle: "مقدمة قواعد البيانات والمستخدمين ومكونات الـ DBMS",
-        doctor: "سلايدات موحدة للدفعة",
-        doctorNote: "B1 • B2 • B3",
-        week: 1,
-        date: "المحاضرة 1",
-        fileType: "ppt",
-        pages: 35,
-        size: "PowerPoint",
-        driveId: "13UfB_WbVKRPdsfFYXjM0iDDLN_RveU_q",
-        driveViewUrl: "https://drive.google.com/file/d/13UfB_WbVKRPdsfFYXjM0iDDLN_RveU_q/view",
-        drivePreviewUrl: "https://drive.google.com/file/d/13UfB_WbVKRPdsfFYXjM0iDDLN_RveU_q/preview",
-        driveDownloadUrl: "https://drive.google.com/uc?export=download&id=13UfB_WbVKRPdsfFYXjM0iDDLN_RveU_q",
-        pdfUrl: "https://drive.google.com/file/d/13UfB_WbVKRPdsfFYXjM0iDDLN_RveU_q/preview",
-        topics: [
-          "Database and DBMS Definition",
-          "Traditional File Processing vs DBMS",
-          "Characteristics of the Database Approach",
-          "Database Users, Actors on the Scene & Workers Behind",
-          "When NOT to use a DBMS"
-        ],
-        notes: "ملف المحاضرة 1 الرسمي المعتمد (DBLec1.ppt) على Google Drive"
-      },
-      {
         id: 2,
-        chapter: "Chapter 1-2",
-        title: "Database System Concepts and Architecture",
-        arabicTitle: "مفاهيم وبنية نظم قواعد البيانات والمعمارية ثلاثية الطبقات",
-        doctor: "سلايدات موحدة للدفعة",
-        doctorNote: "B1 • B2 • B3",
+        chapter: "Chapter 1",
+        title: "Lecture 2: Databases and Database Users",
+        arabicTitle: "مقدمة قواعد البيانات، أنواع النظم، وتصنيفات المستخدمين",
+        doctor: "د. محمد ماهر",
+        doctorNote: "سلايدات موحدة",
         week: 2,
         date: "المحاضرة 2",
         fileType: "ppt",
         pages: 30,
-        size: "30 شريحة (مع شرح تفاعلي)",
+        size: "30 شريحة (مع شرح تفاعلي ذكي)",
         driveId: "1pPnSfUyBRANVkDT2DYa32ZaNe2Zo6Txa",
         driveViewUrl: "https://drive.google.com/file/d/1pPnSfUyBRANVkDT2DYa32ZaNe2Zo6Txa/view",
         drivePreviewUrl: "https://drive.google.com/file/d/1pPnSfUyBRANVkDT2DYa32ZaNe2Zo6Txa/preview",
         driveDownloadUrl: "https://drive.google.com/uc?export=download&id=1pPnSfUyBRANVkDT2DYa32ZaNe2Zo6Txa",
         pdfUrl: "https://drive.google.com/file/d/1pPnSfUyBRANVkDT2DYa32ZaNe2Zo6Txa/preview",
         topics: [
-          "Data Models, Schemas, and Instances",
-          "Three-Schema Architecture & Data Independence",
-          "Logical vs Physical Data Independence",
-          "DBMS Languages (DDL, DML, DCL)",
-          "Classification of Database Management Systems"
+          "Types of Databases and Database Applications (Traditional vs Recent)",
+          "Basic Definitions (Data, Database, Mini-world, DBMS, Database System)",
+          "Typical DBMS Functionality (Defining, Meta-data, Querying & Transactions)",
+          "Example of a Database (UNIVERSITY Conceptual Model)",
+          "Main Characteristics of the Database Approach (Catalog, Abstraction, Concurrency, OLTP)",
+          "Types of Database Users (Actors on the Scene vs Behind the Scene)",
+          "Advantages of Using the Database Approach (Normalization, Standards, Security)"
         ],
-        notes: "ملف المحاضرة 2 الرسمي المعتمد (DBLec2 ch 1.ppt) متوفر بشرح تفاعلي ذكي لكل شريحة وتريكات الامتحان وكويزات فورية."
+        notes: "سلايدات المحاضرة 2 المعتمدة (د. محمد ماهر) متوفرة بشرح تفاعلي ذكي لكل شريحة مع كويزات وتريكات الامتحان."
       },
       {
         id: 3,
@@ -821,7 +801,8 @@ const COURSES_DATA = [
       {
         title: "درايف م.م. أحمد حسام (السكاشن والتاسكات)",
         url: "https://drive.google.com/drive/folders/1p1zE6XWM2uYRn7_MnnkN51IL_HWirf-m",
-        color: "from-amber-600 to-orange-600"
+        color: "from-amber-600 to-orange-600",
+        ta: "م.م. أحمد حسام"
       }
     ],
 
@@ -1147,6 +1128,7 @@ const COURSES_DATA = [
         title: "سلايدات مراجعة وتأسيس C++ (Revision Slides)",
         type: "سلايدات مراجعة",
         year: "م.م. أحمد حسام",
+        ta: "م.م. أحمد حسام",
         size: "86 KB",
         notes: "سلايدات تمهيدية ومراجعة مكثفة لقواعد لغة C++ الأساسية لسكاشن تراكيب البيانات",
         fileUrl: "https://drive.google.com/file/d/1C-7-6sPIecltpupe99XMNw88JQEzIlQp/view",
@@ -1158,6 +1140,7 @@ const COURSES_DATA = [
         title: "شيت المهام والتكليفات العملية (20 Progressive Array Tasks)",
         type: "شيت تكليفات",
         year: "م.م. أحمد حسام (5 صفحات)",
+        ta: "م.م. أحمد حسام",
         size: "77 KB",
         notes: "شيت الـ 20 مسألة العملية المتدرجة على المصفوفات في C++ (المستويات الأربعة)",
         fileUrl: "https://drive.google.com/file/d/1rLUdeP0zDuERtcxUG-MUc0ur0LQmCClW/view",

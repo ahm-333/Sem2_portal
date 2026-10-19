@@ -1,0 +1,416 @@
+﻿[
+    {
+        "num":  1,
+        "title":  "Dr. Mohamed Maher",
+        "content":  [
+                        "Dr. Mohamed Maher",
+                        "Lecture 2",
+                        "Databases and Database Users",
+                        "Slide 1- 1"
+                    ]
+    },
+    {
+        "num":  2,
+        "title":  "OUTLINE",
+        "content":  [
+                        "OUTLINE",
+                        "Types of Databases and Database Applications",
+                        "Basic Definitions",
+                        "Typical DBMS Functionality",
+                        "Example of a Database (UNIVERSITY)",
+                        "Main Characteristics of the Database Approach",
+                        "Types of Database Users",
+                        "Advantages of Using the Database Approach",
+                        "Historical Development of Database Technology",
+                        "Extending Database Capabilities",
+                        "When Not to Use Databases",
+                        "Slide 1- 2"
+                    ]
+    },
+    {
+        "num":  3,
+        "title":  "Types of Databases and Database Applications",
+        "content":  [
+                        "Types of Databases and Database Applications",
+                        "Traditional Applications:",
+                        "Numeric and Textual Databases",
+                        "More Recent Applications:",
+                        "Multimedia Databases",
+                        "Geographic Information Systems (GIS)",
+                        "Biological and Genome Databases",
+                        "Data Warehouses",
+                        "Mobile databases",
+                        "Real-time and Active Databases",
+                        "Bigdata",
+                        "Our course focuses on traditional applications",
+                        "Slide 1- 3"
+                    ]
+    },
+    {
+        "num":  4,
+        "title":  "Recent Developments (1)",
+        "content":  [
+                        "Recent Developments (1)",
+                        "Social Networks started capturing a lot of information about people and about communications among people-posts, tweets, photos, videos in systems such as:",
+                        "- Facebook",
+                        "- Twitter",
+                        "- Linked-In",
+                        "All of the above constitutes data",
+                        "Search Engines- Google, Bing, Yahoo : collect their own repository of web pages for searching purposes",
+                        "Slide 1- 4"
+                    ]
+    },
+    {
+        "num":  5,
+        "title":  "Basic Definitions",
+        "content":  [
+                        "Basic Definitions",
+                        "Database:",
+                        "A collection of related data.",
+                        "Data:",
+                        "Known facts that can be recorded and have an implicit meaning.",
+                        "Mini-world (universe of discourse (UoD)).:",
+                        "Some part of the real world about which data is stored in a database. For example, student grades and transcripts at a university.",
+                        "Changes to the miniworld are reflected in the database.",
+                        "Database Management System (DBMS):",
+                        "A software package/ system to facilitate the creation and maintenance of a computerized database.",
+                        "Database System:",
+                        "The DBMS software together with the data itself.  Sometimes, the applications are also included.",
+                        "Slide 1- 5"
+                    ]
+    },
+    {
+        "num":  6,
+        "title":  "Basic Definitions",
+        "content":  [
+                        "Basic Definitions",
+                        "Defining a database",
+                        "Specify the data types, structures, and constraints of the data to be stored",
+                        "Meta-data",
+                        "Database definition or descriptive information",
+                        "Stored by the DBMS in the form of a database catalog or dictionary",
+                        "Manipulating a database",
+                        "Retrieval: Querying, generating reports",
+                        "Modification: Insertions, deletions and updates to its content",
+                        "Accessing the database through Web applications",
+                        "Slide 1- 6"
+                    ]
+    },
+    {
+        "num":  7,
+        "title":  "Basic Definitions",
+        "content":  [
+                        "Basic Definitions",
+                        "Sharing a database",
+                        "Allow multiple users and programs to access the database simultaneously",
+                        "Application program",
+                        "Accesses database by sending queries to DBMS",
+                        "Query",
+                        "Causes some data to be retrieved",
+                        "Slide 1- 7"
+                    ]
+    },
+    {
+        "num":  8,
+        "title":  "Application Activities Against a Database",
+        "content":  [
+                        "Application Activities Against a Database",
+                        "Applications interact with a database by generating",
+                        "- Queries: that access different parts of data and formulate the result of a request",
+                        "- Transactions: that may read some data and “update” certain values or generate new data and store that in the database",
+                        "Applications must not allow unauthorized users to access data",
+                        "Applications must keep up with changing user requirements against the database",
+                        "Slide 1- 8"
+                    ]
+    },
+    {
+        "num":  9,
+        "title":  "Additional DBMS Functionality",
+        "content":  [
+                        "Additional DBMS Functionality",
+                        "Protection includes:",
+                        "System protection",
+                        "against hardware or software malfunction (or crashes)",
+                        "security protection",
+                        "against unauthorized or malicious access.",
+                        "Maintain the database system",
+                        "Allow the system to evolve as requirements change over time",
+                        "Applications must keep up with changing user requirements against the database",
+                        "Slide 1- 9"
+                    ]
+    },
+    {
+        "num":  10,
+        "title":  "Simplified database system environment",
+        "content":  [
+                        "Simplified database system environment",
+                        "Slide 1- 10"
+                    ]
+    },
+    {
+        "num":  11,
+        "title":  "Example of a Database\u000b(with a Conceptual Data Model)",
+        "content":  [
+                        "Example of a Database\u000b(with a Conceptual Data Model)",
+                        "Mini-world for the example:",
+                        "Part of a UNIVERSITY environment.",
+                        "Some mini-world entities:",
+                        "STUDENTs",
+                        "COURSEs",
+                        "SECTIONs (of COURSEs)",
+                        "(academic) DEPARTMENTs",
+                        "INSTRUCTORs",
+                        "Slide 1- 11"
+                    ]
+    },
+    {
+        "num":  12,
+        "title":  "Example of a Database\u000b(with a Conceptual Data Model)",
+        "content":  [
+                        "Example of a Database\u000b(with a Conceptual Data Model)",
+                        "Some mini-world relationships:",
+                        "SECTIONs are of specific COURSEs",
+                        "STUDENTs take SECTIONs",
+                        "COURSEs have  prerequisite COURSEs",
+                        "INSTRUCTORs teach  SECTIONs",
+                        "COURSEs are offered by  DEPARTMENTs",
+                        "STUDENTs major in  DEPARTMENTs",
+                        "Note: The above entities and relationships are typically expressed in a conceptual data model, such as the ENTITY-RELATIONSHIP data model",
+                        "Slide 1- 12"
+                    ]
+    },
+    {
+        "num":  13,
+        "title":  "Example of a simple database",
+        "content":  [
+                        "Example of a simple database",
+                        "Slide 1- 13"
+                    ]
+    },
+    {
+        "num":  14,
+        "title":  "Main Characteristics of the Database Approach",
+        "content":  [
+                        "Main Characteristics of the Database Approach",
+                        "Self-describing nature of a database system:",
+                        "A DBMS catalog stores the description of a particular database (e.g. data structures, types, and constraints)",
+                        "The description is called meta-data*.",
+                        "This allows the DBMS software to work with different database applications.",
+                        "Insulation between programs and data:",
+                        "Called program-data independence.",
+                        "Allows changing data structures and storage organization without having to change the DBMS access programs.",
+                        "-----------------------------------------------------------------------------",
+                        "Slide 1- 14"
+                    ]
+    },
+    {
+        "num":  15,
+        "title":  "Example of a simplified database catalog",
+        "content":  [
+                        "Example of a simplified database catalog",
+                        "Slide 1- 15"
+                    ]
+    },
+    {
+        "num":  16,
+        "title":  "Main Characteristics of the Database Approach (continued)",
+        "content":  [
+                        "Main Characteristics of the Database Approach (continued)",
+                        "Data Abstraction:",
+                        "allows program-data independence and program-operation independence",
+                        "Program-data independence",
+                        "Structure of data files is stored in DBMS catalog separately from access programs",
+                        "Program-operation independence",
+                        "Operations specified in two parts:",
+                        "Interface includes operation name and data types of its arguments",
+                        "Implementation can be changed without affecting the interface",
+                        "DBMS provides users with a conceptual representation of data that does not include many of the details of how the data is stored or how the operations are implemented.",
+                        "Slide 1- 16"
+                    ]
+    },
+    {
+        "num":  17,
+        "title":  "Main Characteristics of the Database Approach (continued)",
+        "content":  [
+                        "Main Characteristics of the Database Approach (continued)",
+                        "Data Abstraction:",
+                        "A data model is used to hide storage details and present the users with a conceptual view  of the database.",
+                        "Programs refer to the data model constructs rather than data storage details",
+                        "Support of multiple views of the data:",
+                        "Each user may see a different view of the database, which describes only the data of interest to that user.",
+                        "Slide 1- 17"
+                    ]
+    },
+    {
+        "num":  18,
+        "title":  "Main Characteristics of the Database Approach (continued)",
+        "content":  [
+                        "Main Characteristics of the Database Approach (continued)",
+                        "Sharing of data and multi-user transaction processing:",
+                        "Allowing a set of concurrent users to retrieve from and to update the database.",
+                        "Concurrency control within the DBMS guarantees that each transaction is correctly executed or aborted",
+                        "Recovery subsystem ensures each completed transaction has its effect permanently recorded in the database",
+                        "OLTP (Online Transaction Processing) is a major part of database applications. This allows hundreds of concurrent transactions to execute per second.",
+                        "Slide 1- 18"
+                    ]
+    },
+    {
+        "num":  19,
+        "title":  "Database Users",
+        "content":  [
+                        "Database Users",
+                        "Users may be divided into",
+                        "Those who actually use and control the database content, and those who design, develop and maintain database applications (called “Actors on the Scene”), and",
+                        "Those who design and develop the DBMS software and related tools, and the computer systems operators (called “Workers Behind the Scene”).",
+                        "Slide 1- 19"
+                    ]
+    },
+    {
+        "num":  20,
+        "title":  "Database Users – Actors on the Scene",
+        "content":  [
+                        "Database Users – Actors on the Scene",
+                        "Actors on the scene",
+                        "Database administrators:",
+                        "Responsible for authorizing access to the database, for coordinating and monitoring its use, acquiring software and hardware resources, controlling its use and monitoring efficiency of operations.",
+                        "Database Designers:",
+                        "Responsible to define the content, the structure, the constraints, and functions or transactions against the database. They must communicate with the end-users and understand their needs.",
+                        "Slide 1- 20"
+                    ]
+    },
+    {
+        "num":  21,
+        "title":  "Database End Users",
+        "content":  [
+                        "Database End Users",
+                        "Actors on the scene (continued)",
+                        "End-users: They use the data for queries, reports and some of them update the database content. End-users can be categorized into:",
+                        "Casual: access database occasionally when needed",
+                        "Naïve or Parametric: they make up a large section of the end-user population.",
+                        "They use previously well-defined functions in the form of  “canned transactions” against the database.",
+                        "Users of Mobile Apps mostly fall in this category",
+                        "Bank-tellers or reservation clerks are parametric users who do this activity for an entire shift of operations.",
+                        "Social Media Users post and read information from websites",
+                        "Slide 1- 21"
+                    ]
+    },
+    {
+        "num":  22,
+        "title":  "Database End Users (continued)",
+        "content":  [
+                        "Database End Users (continued)",
+                        "Sophisticated:",
+                        "Others these include business analysts, scientists, engineers, thoroughly familiar with the system capabilities.",
+                        "Many use tools in the form of software packages that work closely with the stored database.",
+                        "Stand-alone:",
+                        "Mostly maintain personal databases using ready-to-use packaged applications.",
+                        "An example is the user of a tax program that creates its own internal database.",
+                        "Another example is a user that maintains a database of personal photos and videos.",
+                        "Slide 1- 22"
+                    ]
+    },
+    {
+        "num":  23,
+        "title":  "Database Users – Actors on the Scene (continued)",
+        "content":  [
+                        "Database Users – Actors on the Scene (continued)",
+                        "System Analysts and Application Developers",
+                        "This category currently accounts for a very large proportion of the IT work force.",
+                        "System Analysts: They understand the user requirements of naïve and sophisticated users and design applications including canned  transactions to meet those requirements.",
+                        "Application Programmers: Implement the specifications developed by analysts and test and debug them before deployment.",
+                        "Business Analysts: There is an increasing need for such people who can analyze vast amounts of business data and real-time data (“Big Data”) for better decision making related to planning, advertising, marketing etc.",
+                        "Slide 1- 23"
+                    ]
+    },
+    {
+        "num":  24,
+        "title":  "Database Users – Actors behind the Scene",
+        "content":  [
+                        "Database Users – Actors behind the Scene",
+                        "System Designers and Implementors: Design and implement DBMS packages in the form of modules and interfaces and test and debug them. The DBMS must interface with applications, language compilers, operating system components, etc.",
+                        "Tool Developers: Design and implement software systems called  tools for modeling and designing databases, performance monitoring, prototyping, test data generation, user interface creation, simulation etc. that facilitate building of applications and allow using database effectively.",
+                        "Operators and Maintenance Personnel: They manage the actual running and maintenance of the database system hardware and software environment.",
+                        "Slide 1- 24"
+                    ]
+    },
+    {
+        "num":  25,
+        "title":  "Advantages of Using the Database Approach",
+        "content":  [
+                        "Advantages of Using the Database Approach",
+                        "Controlling redundancy in data storage and in development and maintenance efforts.",
+                        "each logical data item—such as a student’s name or birth date—is stored in only one place in the database. This is known as data normalization, and it ensures consistency and saves storage space",
+                        "Restricting unauthorized access to data. Only the DBA staff uses privileged commands and facilities.",
+                        "Slide 1- 25"
+                    ]
+    },
+    {
+        "num":  26,
+        "title":  "Advantages of Using the Database Approach (continued)",
+        "content":  [
+                        "Advantages of Using the Database Approach (continued)",
+                        "Providing persistent storage for program Objects",
+                        "E.g., Object-oriented DBMSs make program objects persistent.",
+                        "Providing Storage Structures and Search Techniques for Efficient Query Processing.",
+                        "The query processing and optimization module of the DBMS is responsible for choosing an efficient query execution plan for each query based on the existing storage structures. (e.g. indexes)",
+                        "Providing backup and recovery services.",
+                        "Providing multiple user interfaces",
+                        "Slide 1- 26"
+                    ]
+    },
+    {
+        "num":  27,
+        "title":  "Advantages of Using the Database Approach (continued)",
+        "content":  [
+                        "Advantages of Using the Database Approach (continued)",
+                        "Representing complex relationships among data.",
+                        "Enforcing integrity constraints on the database.",
+                        "Drawing inferences and actions from the stored data using deductive and active rules and triggers.",
+                        "Slide 1- 27"
+                    ]
+    },
+    {
+        "num":  28,
+        "title":  "Additional Implications of Using the Database Approach",
+        "content":  [
+                        "Additional Implications of Using the Database Approach",
+                        "Potential for enforcing standards:",
+                        "This is very crucial for the success of database applications in large organizations. Standards refer to data item names, display formats, screens, report structures, meta-data (description of data), Web page layouts, etc.",
+                        "Reduced application development time:",
+                        "Incremental time to add each new application is reduced.",
+                        "Slide 1- 28"
+                    ]
+    },
+    {
+        "num":  29,
+        "title":  "Additional Implications of Using the Database Approach (continued)",
+        "content":  [
+                        "Additional Implications of Using the Database Approach (continued)",
+                        "Flexibility to change data structures:",
+                        "Database structure may evolve as new requirements are defined.",
+                        "Availability of current information:",
+                        "Extremely important for on-line transaction systems such as shopping, airline, hotel, car reservations.",
+                        "Economies of scale:",
+                        "Wasteful overlap of resources and personnel can be avoided by consolidating data and applications across departments.",
+                        "Slide 1- 29"
+                    ]
+    },
+    {
+        "num":  30,
+        "title":  "Lecture Summary",
+        "content":  [
+                        "Lecture Summary",
+                        "Types of Databases and Database Applications",
+                        "Basic Definitions",
+                        "Typical DBMS Functionality",
+                        "Example of a Database (UNIVERSITY)",
+                        "Main Characteristics of the Database Approach",
+                        "Types of Database Users",
+                        "Advantages of Using the Database Approach",
+                        "Historical Development of Database Technology",
+                        "Extending Database Capabilities",
+                        "When Not to Use Databases",
+                        "Slide 1- 30"
+                    ]
+    }
+]

@@ -234,7 +234,61 @@ const StudentProfile = {
   set(group, section) {
     const data = { group: String(group), section: parseInt(section, 10) };
     localStorage.setItem(this.KEY, JSON.stringify(data));
-    window.dispatchEvent(new CustomEvent("studentProfileChanged", { detail: data }));
+    if (typeof window !== "undefined" && typeof window.dispatchEvent === "function" && typeof CustomEvent !== "undefined") {
+      window.dispatchEvent(new CustomEvent("studentProfileChanged", { detail: data }));
+    }
+  },
+
+  // دالة لتنظيف وتوحيد أسماء المعيدين والألقاب لتسهيل المطابقة الدقيقة
+  normalizeArabic(text) {
+    if (!text) return "";
+    return text
+      .replace(/[أإآ]/g, "ا")
+      .replace(/ة/g, "ه")
+      .replace(/ى/g, "ي")
+      .replace(/[\u064B-\u065F\u0670]/g, "") // remove diacritics
+      .replace(/م\.م\./g, "")
+      .replace(/م\./g, "")
+      .replace(/د\./g, "")
+      .replace(/أ\.د\./g, "")
+      .replace(/مهندس[ة]?/g, "")
+      .replace(/دكتور[ة]?/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  },
+
+  // دالة للتحقق من مطابقة اسم المعيد الخاص بالسكشن مع معيد الملف أو السكشن
+  isTaMatch(itemTa, studentTa) {
+    if (!itemTa || !studentTa) return false;
+    if (itemTa === "all" || studentTa === "all") return true;
+
+    const n1 = this.normalizeArabic(itemTa);
+    const n2 = this.normalizeArabic(studentTa);
+
+    if (n1 === n2 || n1.includes(n2) || n2.includes(n1)) return true;
+
+    // معالجة الكلمات المميزة الخاصة بكل معيد لمنع تداخل الأسماء المتشابهة (مثل أحمد حسام مقابل أحمد شكري)
+    const distinctiveNames = [
+      { key: "تقي", check: (s) => s.includes("تقي") },
+      { key: "امل", check: (s) => s.includes("امل") },
+      { key: "شاهده", check: (s) => s.includes("شاهده") },
+      { key: "احمد حسام", check: (s) => s.includes("حسام") || (s.includes("احمد") && s.includes("حسام")) },
+      { key: "احمد شكري", check: (s) => s.includes("شكري") || (s.includes("احمد") && s.includes("شكري")) },
+      { key: "هاجر", check: (s) => s.includes("هاجر") },
+      { key: "فاطمه", check: (s) => s.includes("فاطمه") },
+      { key: "شيماء", check: (s) => s.includes("شيماء") },
+      { key: "ميرنا", check: (s) => s.includes("ميرنا") },
+      { key: "صومع", check: (s) => s.includes("صومع") },
+      { key: "حسن", check: (s) => s.includes("حسن") },
+      { key: "ايه", check: (s) => s.includes("ايه") },
+      { key: "رحمه", check: (s) => s.includes("رحمه") }
+    ];
+
+    for (const item of distinctiveNames) {
+      if (item.check(n1) && item.check(n2)) return true;
+    }
+
+    return false;
   },
 
   // دالة لجلب معلومات الدكتور والمعيد الخاصة بمادة معينة بناءً على البروفايل
@@ -324,8 +378,11 @@ const StudentProfile = {
   }
 };
 
-// تصدير للـ Window
+// تصدير للـ Window و Node.js
 if (typeof window !== "undefined") {
   window.SCHEDULE_CONFIG = SCHEDULE_CONFIG;
   window.StudentProfile = StudentProfile;
+}
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { SCHEDULE_CONFIG, StudentProfile };
 }

@@ -42,6 +42,11 @@ document.addEventListener("DOMContentLoaded", function () {
       sectionRoom: "المعمل"
     };
 
+    const allSections = course.sections || [];
+    const mySections = allSections.filter(s => window.StudentProfile && window.StudentProfile.isTaMatch(s.ta, staff.ta));
+    const allAssignments = course.assignments || [];
+    const myAssignments = allAssignments.filter(a => !a.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(a.ta, staff.ta)));
+
     return `
       <article class="glass-panel rounded-3xl p-6 border flex flex-col justify-between card-hover-effect relative group">
         
@@ -118,11 +123,15 @@ document.addEventListener("DOMContentLoaded", function () {
             </span>
             <span class="flex items-center gap-1.5 font-medium">
               <i data-lucide="terminal" class="w-3.5 h-3.5 text-cyan-400"></i>
-              ${sectionsCount > 0 ? `${sectionsCount} سكاشن عملي (Drive)` : (videosCount > 0 ? `${videosCount} مصادر شرح` : '<span class="text-cyan-400/90 font-medium">السكاشن قريباً</span>')}
+              ${mySections.length > 0 
+                ? `${mySections.length} سكاشن (معيد سكشنك)` 
+                : (allSections.length > 0 
+                    ? `${allSections.length} سكاشن (معيدين آخرين)` 
+                    : (videosCount > 0 ? `${videosCount} مصادر شرح` : '<span class="text-cyan-400/90 font-medium">السكاشن قريباً</span>'))}
             </span>
           </div>
 
-          ${assignmentsCount > 0 ? `
+          ${myAssignments.length > 0 ? `
             <a 
               href="subject.html?id=${course.id}&track=section#assignments-section-panel"
               class="mb-3 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 flex items-center justify-between text-xs transition-all"
@@ -130,11 +139,23 @@ document.addEventListener("DOMContentLoaded", function () {
             >
               <span class="text-amber-400 font-bold flex items-center gap-1.5">
                 <i data-lucide="clipboard-check" class="w-3.5 h-3.5"></i>
-                <span>تاسك السكشن متاح ومطلوب</span>
+                <span>تاسك سكشنك متاح ومطلوب</span>
               </span>
-              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">${assignmentsCount} تكليف</span>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">${myAssignments.length} تكليف</span>
             </a>
-          ` : ""}
+          ` : (allAssignments.length > 0 ? `
+            <a 
+              href="subject.html?id=${course.id}&track=section#assignments-section-panel"
+              class="mb-3 px-3 py-1.5 rounded-xl bg-amber-500/5 hover:bg-amber-500/15 border border-amber-500/15 flex items-center justify-between text-xs transition-all"
+              title="عرض تكليفات معيدي السكاشن الأخرى للتمرن"
+            >
+              <span class="text-amber-400/90 font-medium flex items-center gap-1.5 text-[11px]">
+                <i data-lucide="clipboard" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>تاسك متاح للتمرن (سكاشن أخرى)</span>
+              </span>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300/80">${allAssignments.length} تكليف</span>
+            </a>
+          ` : "")}
 
           <!-- أزرار مساري المادة (طريق المحاضرة وطريق السكشن) -->
           <div class="grid grid-cols-2 gap-2">

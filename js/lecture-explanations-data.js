@@ -13,1303 +13,1724 @@
 
 const LECTURE_EXPLANATIONS = {
   // ============================================================================
-  // مادة قواعد البيانات (database-systems) - المحاضرة 2
+  // مادة قواعد البيانات (database-systems) - المحاضرة 2 (د. محمد ماهر)
   // ============================================================================
   "database-systems": {
     2: {
       courseId: "database-systems",
       lectureId: 2,
       courseName: "Database Systems (IS211)",
-      lectureTitle: "Database System Concepts and Architecture",
-      lectureArabicTitle: "مفاهيم وهيكلية أنظمة قواعد البيانات ومعمارية الـ Three-Schema",
+      lectureTitle: "Lecture 2: Databases and Database Users",
+      lectureArabicTitle: "قواعد البيانات، مستخدمي النظم، وأساسيات معمارية DBMS (د. محمد ماهر)",
       totalSlides: 30,
       slides: [
-        {
-          num: 1,
-          title: "Database systems - Course Overview",
-          arabicTitle: "غلاف المحاضرة وبيانات المادة",
-          image: "materials/slides/db-lec2/slide_1.png",
-          coreSummary: "المحاضرة تقديم د. أسماء حنفي علي غنيمي - أستاذ مساعد بقسم نظم المعلومات بكلية الحاسبات والمعلومات جامعة الزقازيق.",
-          explanationIntro: "شريحة الافتتاح والتعريف بالمقرر؛ مادة أنظمة قواعد البيانات هي الأساس الجوهري لأي مهندس برمجيات أو متخصص في الذكاء الاصطناعي، إذ لا يمكن بناء أي نظام ذكي أو تطبيق عملي دون إدارة وتخزين بياناته بكفاءة وموثوقية.",
-          points: [
-            {
-              badge: "Course",
-              title: "طبيعة المقرر وأهميته",
-              desc: "المقرر يربط بين الفهم المعماري النظري لكيفية عمل محركات قواعد البيانات، وبين التطبيق العملي للغة SQL وتصميم المخططات."
-            },
-            {
-              badge: "Department",
-              title: "القسم الأكاديمي المشرف",
-              desc: "قسم نظم المعلومات (Information Systems) بكلية الحاسبات والمعلومات - جامعة الزقازيق."
-            }
-          ],
-          keywords: [
-            { en: "Information Systems", ar: "نظم المعلومات" },
-            { en: "Database Systems", ar: "أنظمة قواعد البيانات" }
-          ],
-          tricks: "المفاهيم النظرية في هذا الفصل هي محل أسئلة الـ Multiple Choice وأسئلة الصح والخطأ في امتحانات الميدتيرم والفاينل، خاصة الفروق بين المصطلحات الأساسية.",
-          quiz: {
-            question: "Which academic department is responsible for delivering this Database Systems course?",
-            options: [
-              "Information Systems Department (IS)",
-              "Computer Science Department (CS)",
-              "Basic Science Department"
-            ],
-            correct: 0,
-            explanation: "The course is presented by the Information Systems Department (IS) at the Faculty of Computers and Informatics."
-          }
-        },
-        {
-          num: 2,
-          title: "Database Concepts & Course Objectives",
-          arabicTitle: "أهداف المقرر والمفاهيم الأساسية",
-          image: "materials/slides/db-lec2/slide_2.png",
-          coreSummary: "المقرر يركز على أساسيات تصميم ونمذجة وتطبيق أنظمة قواعد البيانات، لغات الـ DBMS والـ Data Models، وتقنيات تنفيذ الأنظمة.",
-          explanationIntro: "توضح الدكتورة هنا الأهداف التعليمية للمقرر؛ الهدف ليس مجرد كتابة استعلامات SQL عادية، بل فهم كيفية تصميم قاعدة البيانات من الصفر واختيار النموذج الأنسب واستيعاب تقنيات المعالجة الداخلية للمحرك.",
-          points: [
-            {
-              badge: "1. Modeling",
-              title: "نمذجة البيانات (Data Modeling)",
-              desc: "تحويل متطلبات العالم الحقيقي إلى مخططات مفاهيمية مثل مخطط الكيانات والعلاقات (ERD)."
-            },
-            {
-              badge: "2. Design",
-              title: "التصميم والتطبيع (Database Design & Normalization)",
-              desc: "هيكلة الجداول بطريقة تمنع تكرار البيانات وتضمن تكاملها وسلامتها المنطقية."
-            },
-            {
-              badge: "3. Implementation",
-              title: "تقنيات التنفيذ (Implementation Techniques)",
-              desc: "فهم كيفية عمل الـ Storage، والـ Indexing، ومعالجة المعاملات (Transactions) والأمان."
-            }
-          ],
-          keywords: [
-            { en: "Database Modeling", ar: "نمذجة قواعد البيانات" },
-            { en: "Database Design", ar: "تصميم قواعد البيانات" },
-            { en: "Implementation Techniques", ar: "تقنيات التنفيذ والتطبيق" }
-          ],
-          tricks: "ركز على أن Database Design يسبق مرحلة الـ Implementation، وأي خطأ في مرحلة التصميم يكلف وقتاً كبيراً في مرحلة التشغيل الفعلي.",
-          quiz: {
-            question: "What is the primary prerequisite step before implementing a database in a DBMS?",
-            options: [
-              "Database Modeling and Conceptual Design",
-              "Writing backend application code",
-              "Purchasing dedicated server hardware"
-            ],
-            correct: 0,
-            explanation: "Conceptual modeling and proper database design must always precede database implementation and deployment."
-          }
-        },
-        {
-          num: 3,
-          title: "Fundamental Database Definitions",
-          arabicTitle: "المفاهيم والتعريفات الخمسة الأساسية",
-          image: "materials/slides/db-lec2/slide_3.png",
-          coreSummary: "التعريفات الجوهرية الخمسة: Data، و Database، و Mini-world (UoD)، و DBMS، و Database System.",
-          explanationIntro: "هذه الشريحة من أهم شرائح المحاضرة على الإطلاق، وتتكرر منها أسئلة المصطلحات وأسئلة الصح والخطأ؛ إليك تفكيك كل مفهوم بدقة:",
-          points: [
-            {
-              badge: "1. Data",
-              title: "البيانات (Data)",
-              desc: "حقائق معروفة ومسجلة ولها معنى ضمني (Known facts that can be recorded and have implicit meaning)."
-            },
-            {
-              badge: "2. Database",
-              title: "قاعدة البيانات (Database)",
-              desc: "مجموعة من البيانات المترابطة منطقياً (Collection of logically related data) لخدمة غرض محدد."
-            },
-            {
-              badge: "3. Mini-world",
-              title: "العالم المصغر (Mini-world / UoD)",
-              desc: "الجزء من العالم الحقيقي الذي نمثله ونخزن بياناته في النظام (مثل بيانات طلاب جامعة الزقازيق)."
-            },
-            {
-              badge: "4. DBMS",
-              title: "نظام إدارة قواعد البيانات (DBMS)",
-              desc: "حزمة برمجية متكاملة تتيح إنشاء وصيانة وتحديث قاعدة البيانات والتحكم في الوصول إليها."
-            },
-            {
-              badge: "5. Database System",
-              title: "نظام قاعدة البيانات المتكامل (Database System)",
-              desc: "المعادلة الشاملة: برنامج الـ DBMS + البيانات المخزنة + التطبيقات البرمجية التابعة لها."
-            }
-          ],
-          keywords: [
-            { en: "Data", ar: "حقائق مسجلة ذات معنى ضمني" },
-            { en: "Database", ar: "مجموعة بيانات مترابطة منطقياً" },
-            { en: "Mini-world (UoD)", ar: "العالم المصغر الممثل في النظام" },
-            { en: "DBMS", ar: "حزمة برمجيات إدارة قاعدة البيانات" },
-            { en: "Database System", ar: "نظام قاعدة البيانات المتكامل" }
-          ],
-          tricks: "انتبه لصيغة الأسئلة: لو قال لك مجموعة بيانات عشوائية ليست Database لأن شرطها 'Logically Related Data'، ولو قال لك Data بدون معنى تكون معلومة ناقصة لأن تعريفها 'Implicit Meaning'.",
-          quiz: {
-            question: "According to Elmasri & Navathe, which of the following best defines 'Data'?",
-            options: [
-              "Known facts that can be recorded and have an implicit meaning",
-              "Any random collection of numbers without context",
-              "A software package used to facilitate queries",
-              "A compiled programming binary"
-            ],
-            correct: 0,
-            explanation: "Data is formally defined as known facts that can be recorded and that have an implicit meaning."
-          }
-        },
-        {
-          num: 4,
-          title: "Simplified Database System Environment",
-          arabicTitle: "البيئة المبسطة لنظام قواعد البيانات",
-          image: "materials/slides/db-lec2/slide_4.png",
-          coreSummary: "المخطط الهيكلي يوضح تفاعل المستخدمين والبرامج مع الـ DBMS، ومكونات الـ Software، والـ Stored Database Definition (Catalog) وقاعدة البيانات المخزنة.",
-          explanationIntro: "يوضح هذا المخطط المعماري كيفية سريان الطلبات والاستعلامات داخل النظام من المستخدم وحتى وسائط التخزين:",
-          points: [
-            {
-              badge: "Layer 1",
-              title: "المستخدمون والتطبيقات (Users / Application Programs)",
-              desc: "الطبقة الخارجية التي ترسل استعلامات ومعاملات (Queries & Transactions) للتعامل مع البيانات."
-            },
-            {
-              badge: "Layer 2",
-              title: "برمجيات الـ DBMS (DBMS Software)",
-              desc: "تتضمن معالج الاستعلامات (Query Processor) وبرمجيات الوصول إلى البيانات وتطبيق شروط الأمان والتكامل."
-            },
-            {
-              badge: "Layer 3",
-              title: "فهرس النظام وقاعدة البيانات المخزنة (Catalog & Stored DB)",
-              desc: "فصل هيكل ومخطط البيانات (System Catalog / Metadata) عن ملفات البيانات الفعلية المخزنة على القرص."
-            }
-          ],
-          keywords: [
-            { en: "System Catalog", ar: "فهرس النظام (Metadata)" },
-            { en: "Stored Database", ar: "قاعدة البيانات المخزنة" },
-            { en: "Query Processing", ar: "معالجة الاستعلامات" }
-          ],
-          tricks: "فهرس النظام (Catalog) هو المكان الذي يخزن فيه الـ DBMS وصف البيانات (Metadata). الـ DBMS يقرأ الـ Catalog أولاً قبل أن يصل للبيانات الفعلية.",
-          quiz: {
-            question: "Where does the DBMS store the schema definitions, data types, and structural constraints?",
-            options: [
-              "In the Stored System Catalog (Metadata)",
-              "Directly inside the application source code",
-              "In operating system registry keys"
-            ],
-            correct: 0,
-            explanation: "The DBMS stores complete schema definitions and constraints in the system catalog (metadata repository)."
-          }
-        },
-        {
-          num: 5,
-          title: "A Typical University Database Example",
-          arabicTitle: "مثال تطبيقي: قاعدة بيانات الجامعة",
-          image: "materials/slides/db-lec2/slide_5.png",
-          coreSummary: "نموذج توضيحي لقاعدة بيانات جامعية تحتوي على 5 ملفات/جداول مترابطة: STUDENT، COURSE، SECTION، GRADE_REPORT، PREREQUISITE.",
-          explanationIntro: "تطرح الدكتورة هذا المثال الكلاسيكي لتجسيد فكرة ترابط البيانات المنطقية في العالم الحقيقي؛ فالجامعة هي Mini-world يضم الكيانات والعلاقات التالية:",
-          points: [
-            {
-              badge: "STUDENT",
-              title: "جدول الطلاب (Student Record)",
-              desc: "يخزن الاسم ورقم الطالب والتخصص والفرقة الدراسية (Name, Student_number, Class, Major)."
-            },
-            {
-              badge: "COURSE & SECTION",
-              title: "المقررات والشعب (Course & Section)",
-              desc: "بيانات المواد وأرقام المقررات والشعب المنعقدة خلال الفصول الدراسية والقاعات وأسماء المحاضرين."
-            },
-            {
-              badge: "GRADE_REPORT & PREREQUISITE",
-              title: "سجل الدرجات والمتطلبات السابقة",
-              desc: "ربط كل طالب بالدرجة التي حصل عليها في شعبة معينة، وتحديد المواد المشترطة قبل التسجيل."
-            }
-          ],
-          keywords: [
-            { en: "Logical Relationships", ar: "العلاقات المنطقية بين الجداول" },
-            { en: "Entity Records", ar: "سجلات الكيانات" },
-            { en: "Referential Integrity", ar: "التكامل المرجعي للعلاقات" }
-          ],
-          tricks: "لاحظ أن العلاقة بين الطالب ودرجته لا يمكن أن توجد بدون وجود رقم طالب صحيح ورقم شعبة صحيح؛ هذا يمهد لمفهوم التكامل المرجعي (Foreign Keys).",
-          quiz: {
-            question: "In the University database example, which entity connects a student to a specific grade in a course section?",
-            options: [
-              "GRADE_REPORT",
-              "PREREQUISITE",
-              "DEPARTMENT"
-            ],
-            correct: 0,
-            explanation: "The GRADE_REPORT entity associates a student with a specific course section and records their letter grade."
-          }
-        },
-        {
-          num: 6,
-          title: "Main Characteristics of the Database Approach",
-          arabicTitle: "الخصائص الأربع الرئيسية لمنهج قواعد البيانات",
-          image: "materials/slides/db-lec2/slide_6.png",
-          coreSummary: "المقارنة الجوهرية بين نظام الملفات التقليدي ومنهج الـ Database؛ وتلخص في 4 ركائز تمنح الـ DBMS تفوقه الكاسح.",
-          explanationIntro: "شريحة محورية جداً تحدد الفارق بين البرمجة القديمة القائمة على الملفات (Traditional File Processing) وبين منهج قواعد البيانات الحديث:",
-          points: [
-            {
-              badge: "1. Self-describing",
-              title: "الطبيعة ذاتية الوصف (Self-Describing Nature)",
-              desc: "النظام يحتوي على الكتالوج (Metadata) الذي يصف هيكل البيانات وقيودها ذاتياً."
-            },
-            {
-              badge: "2. Independence",
-              title: "فصل البرامج عن البيانات (Program-Data Independence)",
-              desc: "تغيير طريقة تخزين البيانات لا يفرض إعادة كتابة وتعديل البرامج والتطبيقات."
-            },
-            {
-              badge: "3. Multiple Views",
-              title: "دعم وجهات نظر متعددة (Multiple Views)",
-              desc: "كل فئة من المستخدمين ترى فقط البيانات المصرح لها بها والملائمة لطبيعة عملها."
-            },
-            {
-              badge: "4. Multi-user OLTP",
-              title: "المشاركة ومعالجة المعاملات (Multi-user & Concurrency)",
-              desc: "التحكم في وصول مئات المستخدمين لنفس البيانات في نفس اللحظة دون تعارض أو أخطاء."
-            }
-          ],
-          keywords: [
-            { en: "Database Approach", ar: "منهج قواعد البيانات" },
-            { en: "Program-Data Independence", ar: "استقلالية البرامج عن البيانات" },
-            { en: "Multiple Views", ar: "وجهات النظر المتعددة" },
-            { en: "Concurrency Control", ar: "التحكم في التزامن" }
-          ],
-          tricks: "في نظام الملفات القديم، لو غيرت نوع حقل في ملف يجب أن تعيد تعديل كل البرامج التي تقرأه، أما في الـ DBMS فالبرامج معزولة ومستقلة تماماً.",
-          quiz: {
-            question: "Which of the following is NOT one of the main characteristics of the database approach?",
-            options: [
-              "Tight coupling of data structures inside application program code",
-              "Self-describing nature of a database system",
-              "Insulation between programs and data",
-              "Support of multiple views of the data"
-            ],
-            correct: 0,
-            explanation: "Tight coupling between programs and data structures is a flaw of traditional file processing, not the database approach."
-          }
-        },
-        {
-          num: 7,
-          title: "Characteristic 1: Self-Describing Nature of a Database System",
-          arabicTitle: "الخاصية الأولى: الطبيعة ذاتية الوصف وفهرس النظام",
-          image: "materials/slides/db-lec2/slide_7.png",
-          coreSummary: "نظام الـ DBMS لا يخزن البيانات فقط، بل يخزن تعريفاً ووصفاً شاملاً لها داخل الـ DBMS Catalog (البيانات الوصفية - Meta-data).",
-          explanationIntro: "ما يميز الـ DBMS أنه ذكي ومكتفٍ بذاته؛ فهو يمتلك خريطة كاملة لما يحتويه دون الرجوع لكود البرامج الخارجية:",
-          points: [
-            {
-              badge: "Definition",
-              title: "ما هو الـ System Catalog؟",
-              desc: "مستودع داخلي يخزن بنية الجداول، أسماء الحقول، أنواع البيانات، العلاقات، ومحددات الأمان والقيود."
-            },
-            {
-              badge: "Meta-data",
-              title: "البيانات الوصفية (Data About Data)",
-              desc: "المصطلح العلمي الأكثر تكراراً: البيانات التي تصف طبيعة وهيكل البيانات الأخرى المخزنة."
-            },
-            {
-              badge: "Universality",
-              title: "مرونة محرك الـ DBMS العام",
-              desc: "نفس برنامج الـ DBMS يستطيع إدارة مستشفى أو بنك أو جامعة، لأن الاختلاف يكون في الـ Meta-data فقط."
-            }
-          ],
-          keywords: [
-            { en: "Meta-data", ar: "بيانات عن البيانات (الوصف الهيكلي)" },
-            { en: "System Catalog", ar: "فهرس ومستودع النظام" },
-            { en: "Schema Description", ar: "وصف المخطط" }
-          ],
-          tricks: "سؤال امتحان كلاسيكي: 'Meta-data is defined as...' الإجابة النموذجية هي: Data about data (description of the database structure and constraints).",
-          quiz: {
-            question: "What term describes the database structure and constraint information stored in the DBMS catalog?",
-            options: [
-              "Meta-data",
-              "Transient memory state",
-              "Raw binary payloads",
-              "Application bytecode"
-            ],
-            correct: 0,
-            explanation: "Meta-data is defined as 'data about data', which describes the structure, types, and constraints of the stored database."
-          }
-        },
-        {
-          num: 8,
-          title: "Characteristic 2: Insulation Between Programs and Data",
-          arabicTitle: "الخاصية الثانية: استقلالية البرامج عن البيانات والعمليات",
-          image: "materials/slides/db-lec2/slide_8.png",
-          coreSummary: "استقلالية البرامج عن بنية البيانات وطريقة تخزينها (Program-Data Independence) واستقلاليتها عن خوارزميات العمليات (Program-Operation Independence).",
-          explanationIntro: "في هذا المفهوم المعماري الحاسم، يضمن النظام عزل طبقة الكود البرمجي عن طبقة التخزين المادي:",
-          points: [
-            {
-              badge: "Data Independence",
-              title: "استقلالية البرامج عن البيانات (Program-Data Independence)",
-              desc: "هيكل ملف البيانات مخزن في الكتالوج بشكل منفصل عن برامج الوصول؛ لو قمت بإضافة عمود جديد أو تغيير نوع التخزين لا تتوقف البرامج."
-            },
-            {
-              badge: "Operation Independence",
-              title: "استقلالية العمليات (Program-Operation Independence)",
-              desc: "تحديد واجهة العملية (Interface: اسمها ومدخلاتها) مفصول تماماً عن خوارزمية تنفيذها الداخلية (Implementation)."
-            },
-            {
-              badge: "Data Abstraction",
-              title: "تجريد البيانات (Data Abstraction)",
-              desc: "المفهوم الشامل الذي يتيح إخفاء تفاصيل التخزين الداخلية المعقدة وعرض رؤية مفاهيمية مبسطة للمطورين."
-            }
-          ],
-          keywords: [
-            { en: "Program-Data Independence", ar: "استقلالية البرامج عن البيانات" },
-            { en: "Data Abstraction", ar: "تجريد البيانات وإخفاء تعقيد التخزين" },
-            { en: "Interface vs Implementation", ar: "فصل الواجهة عن التنفيذ" }
-          ],
-          tricks: "تذكر دائماً أن Data Abstraction هي المظلة الكبرى التي تحقق خاصيتي Program-Data Independence و Program-Operation Independence.",
-          quiz: {
-            question: "Which characteristic allows changing internal storage structures without modifying application programs?",
-            options: [
-              "Program-data independence",
-              "Data redundancy",
-              "Single-view restriction",
-              "Static schema compilation"
-            ],
-            correct: 0,
-            explanation: "Program-data independence ensures that changes to data storage organization do not require altering application programs."
-          }
-        },
-        {
-          num: 9,
-          title: "Characteristic 3: Support of Multiple Views of the Data",
-          arabicTitle: "الخاصية الثالثة: دعم وجهات النظر المتعددة للمستخدمين",
-          image: "materials/slides/db-lec2/slide_9.png",
-          coreSummary: "توفر الـ Views رؤى مخصصة ومصغرة لقاعدة البيانات؛ بحيث يرى كل مستخدم أو قسم ما يخصه فقط، مع إخفاء باقي البيانات لأسباب أمنية وتشغيلية.",
-          explanationIntro: "في أي مؤسسة كبيرة لا يحتاج الجميع لرؤية كل شيء، ومن هنا جاءت فكرة الـ Multiple Views:",
-          points: [
-            {
-              badge: "View Concept",
-              title: "ما هي الـ View؟",
-              desc: "جدول افتراضي أو منظور مخصص (Subset of database) يتم بناؤه من البيانات الأساسية لتلبية احتياج مجموعة معينة."
-            },
-            {
-              badge: "Security & Privacy",
-              title: "الأمان وحماية الخصوصية",
-              desc: "المحاسب يرى المرتبات والرسوم، بينما مسؤول شؤون الطلاب يرى الحضور والغياب؛ كل طرف محجوب عنه تفاصيل الطرف الآخر."
-            },
-            {
-              badge: "Virtual / Derived",
-              title: "بيانات مشتقة غير مخزنة فيزيائياً",
-              desc: "يمكن للـ View أن تعرض حقولاً محسوبة لحظياً (مثل حساب السن من تاريخ الميلاد أو حساب الـ GPA التراكمي)."
-            }
-          ],
-          keywords: [
-            { en: "View", ar: "واجهة عرض افتراضية مخصصة" },
-            { en: "Virtual Table", ar: "جدول افتراضي مشتق" },
-            { en: "Access Control", ar: "التحكم في وصول البيانات" }
-          ],
-          tricks: "الـ View لا تخزن البيانات مرتين على القرص، بل هي مجرد استعلام مخزن ينتج نتائج افتراضية عند استدعائه (Virtual Data).",
-          quiz: {
-            question: "A 'View' in a database system is best described as:",
-            options: [
-              "A subset or virtual representation of the database tailored to specific users",
-              "A permanent physical replica of raw database storage",
-              "A backup archive stored on magnetic tape",
-              "A hardware display configuration"
-            ],
-            correct: 0,
-            explanation: "A view is a virtual table or customized subset of data that presents a tailored perspective to a specific user group."
-          }
-        },
-        {
-          num: 10,
-          title: "Characteristic 4: Sharing of Data & Multiuser Transaction Processing",
-          arabicTitle: "الخاصية الرابعة: مشاركة البيانات ومعالجة المعاملات المتزامنة",
-          image: "materials/slides/db-lec2/slide_10.png",
-          coreSummary: "معمارية المعالجة المتزامنة تضمن قدرة آلاف المستخدمين على الاستعلام والتحديث معاً بأمان عبر Concurrency Control ومفهوم الـ Transaction.",
-          explanationIntro: "تخيل نظام حجز طيران أو حجز قطارات: آلاف المستخدمين يحاولون حجز نفس المقعد في نفس الثانية؛ كيف يمنع الـ DBMS الكوارث؟",
-          points: [
-            {
-              badge: "Concurrency",
-              title: "التحكم في التزامن (Concurrency Control)",
-              desc: "برمجيات داخل الـ DBMS تضمن ألا يكتب مستخدمان فوق بعضهما أو يحجزا نفس المورد في نفس اللحظة."
-            },
-            {
-              badge: "Transaction",
-              title: "مفهوم المعاملة (The Transaction)",
-              desc: "مجموعة عمليات يتم تنفيذها كوحدة واحدة لا تتجزأ (إما تنفذ كاملة أو تُلغى كاملة: All or Nothing)."
-            },
-            {
-              badge: "OLTP",
-              title: "معالجة المعاملات الفورية (Online Transaction Processing)",
-              desc: "الأنظمة التي تدعم آلاف المعاملات في الثانية الواحدة مثل البنوك ومنصات التجارة الإلكترونية."
-            }
-          ],
-          keywords: [
-            { en: "Concurrency Control", ar: "التحكم في التزامن وتضارب البيانات" },
-            { en: "Transaction", ar: "المعاملة المنطقية الموحدة" },
-            { en: "Isolation", ar: "عزل المعاملات المتزامنة" }
-          ],
-          tricks: "سؤال متكرر: لو لم تكن هناك Concurrency Control، لحدث ما يسمى بالـ Lost Update (أحد التحديثين يمسح الآخر).",
-          quiz: {
-            question: "What subsystem in a DBMS ensures that concurrent transactions do not interfere with each other?",
-            options: [
-              "Concurrency Control Software",
-              "Graphic User Interface module",
-              "Code compiler optimizer",
-              "Disk defragmentation utility"
-            ],
-            correct: 0,
-            explanation: "Concurrency control software guarantees that simultaneous user updates maintain data consistency without interference."
-          }
-        },
-        {
-          num: 11,
-          title: "Database Users: Overview",
-          arabicTitle: "تصنيف مستخدمي قواعد البيانات: في المشهد وخلف الكواليس",
-          image: "materials/slides/db-lec2/slide_11.png",
-          coreSummary: "ينقسم مستخدمو بيئة قواعد البيانات إلى فئتين رئيسيتين: ممثلون على المسرح (Actors on the Scene) وعمال خلف الكواليس (Workers Behind the Scene).",
-          explanationIntro: "في هذه الشريحة تقدم الدكتورة التقسيم الهيكلي لجميع الأشخاص المعنيين بمنظومة قواعد البيانات:",
-          points: [
-            {
-              badge: "Category 1",
-              title: "الممثلون في المشهد (Actors on the Scene)",
-              desc: "الأشخاص الذين يتعاملون مع قاعدة البيانات المحددة للشركة أو الجامعة بشكل مباشر يومياً (DBA، المصممون، المستخدمون، ومطورو البرامج)."
-            },
-            {
-              badge: "Category 2",
-              title: "العاملون خلف الكواليس (Workers Behind the Scene)",
-              desc: "الأشخاص الذين يصنعون ويطورون برمجيات الـ DBMS نفسها وأدواتها، ولا يهتمون بمحتوى بيانات الشركة."
-            }
-          ],
-          keywords: [
-            { en: "Actors on the Scene", ar: "المتعاملون المباشرون مع قاعدة البيانات" },
-            { en: "Workers Behind the Scene", ar: "مطورو ومصنعو محركات الـ DBMS" }
-          ],
-          tricks: "احفظ هذا التصنيف جيداً: مهندس شركة Oracle الذي يبرمج محرك الـ DBMS هو Worker Behind the Scene، أما مهندس الشركة الذي يدير قاعدة بياناتها فهو Actor on the Scene.",
-          quiz: {
-            question: "Database administrators, database designers, and end users are categorized as:",
-            options: [
-              "Actors on the Scene",
-              "Workers Behind the Scene",
-              "System Compiler Architects"
-            ],
-            correct: 0,
-            explanation: "Users who directly design, manage, and query specific database content are designated as Actors on the Scene."
-          }
-        },
-        {
-          num: 12,
-          title: "Actors on the Scene: Database Administrators (DBA)",
-          arabicTitle: "مدير قاعدة البيانات (DBA) - المهام والمسؤوليات",
-          image: "materials/slides/db-lec2/slide_12.png",
-          coreSummary: "الـ DBA هو المسؤول الأول عن إدارة المورد الحيوي لقاعدة البيانات؛ وتتضمن أدواره منح الصلاحيات ومراقبة الأداء وشراء السيرفرات وعمل النسخ الاحتياطية.",
-          explanationIntro: "وظيفة الـ Database Administrator (DBA) هي واحدة من أعلى الوظائف أجراً ومسؤولية في قطاع تكنولوجيا المعلومات؛ إليك أبرز مهامه:",
-          points: [
-            {
-              badge: "1. Access Control",
-              title: "منح الصلاحيات والأمان (Authorizing Access)",
-              desc: "تحديد من يدخل إلى أي جدول، وتشفير البيانات، وحمايتها من الاختراق والوصول غير المصرح به."
-            },
-            {
-              badge: "2. Performance",
-              title: "مراقبة الأداء وضبط الكفاءة (Monitoring Use)",
-              desc: "متابعة زمن تنفيذ الاستعلامات وبناء الفهارس (Indexes) وتسريع النظام."
-            },
-            {
-              badge: "3. Hardware & Software",
-              title: "إدارة الموارد والترقيات (Acquiring Resources)",
-              desc: "تحديد سعة التخزين والذاكرة المطلوبة وشراء تراخيص وتحديثات برمجيات الـ DBMS."
-            },
-            {
-              badge: "4. Recovery",
-              title: "النسخ الاحتياطي والتعافي من الكوارث (Backup & Recovery)",
-              desc: "وضع خطط استعادة النظام في دقائق حال حدوث عطل مفاجئ أو حريق في السيرفرات."
-            }
-          ],
-          keywords: [
-            { en: "Database Administrator (DBA)", ar: "مدير ومسؤول قاعدة البيانات" },
-            { en: "Authorizing Access", ar: "إدارة وتصريح أذونات الوصول" },
-            { en: "Performance Monitoring", ar: "مراقبة ورفع كفاءة الأداء" }
-          ],
-          tricks: "الـ DBA لا يصمم منطق الجداول والعلاقات في البداية (هذه مهمة الـ Database Designer)، بل يدير النظام ويحميه ويوفر موارده ويمنح الصلاحيات.",
-          quiz: {
-            question: "Which role is primarily responsible for authorizing access, monitoring performance, and performing database backups?",
-            options: [
-              "Database Administrator (DBA)",
-              "Casual End User",
-              "Graphic Designer",
-              "System Hardware Vendor"
-            ],
-            correct: 0,
-            explanation: "The DBA is responsible for user authorization, performance monitoring, security, and backup/recovery procedures."
-          }
-        },
-        {
-          num: 13,
-          title: "Actors on the Scene: Database Designers",
-          arabicTitle: "مصممو قواعد البيانات (Database Designers) - الأدوار والمهام",
-          image: "materials/slides/db-lec2/slide_13.png",
-          coreSummary: "مصمم قاعدة البيانات مسؤول عن تحديد البيانات الواجب تخزينها، واختيار التراكيب المناسبة، والتواصل مع المستخدمين لتحديد الـ Views والقيود.",
-          explanationIntro: "الـ Database Designer هو المعماري الذي يضع المخطط الهندسي لقاعدة البيانات قبل بنائها:",
-          points: [
-            {
-              badge: "Requirement Analysis",
-              title: "دراسة وتحديد متطلبات البيانات (Identifying Data)",
-              desc: "الجلوس مع إدارات الشركة لفهم كافة البيانات المطلوب تسجيلها وحجمها المتوقع."
-            },
-            {
-              badge: "Structure & Modeling",
-              title: "اختيار تراكيب البيانات ونمذجتها",
-              desc: "تحديد الجداول والمفاتيح الأساسية (Primary Keys) والمفاتيح الأجنبية (Foreign Keys) والعلاقات."
-            },
-            {
-              badge: "Views Specification",
-              title: "تصميم واجهات العرض (Views Definition)",
-              desc: "تحديد شكل واجهات البيانات لكل فئة مستخدمين لضمان سهولة التعامل والأمان."
-            }
-          ],
-          keywords: [
-            { en: "Database Designer", ar: "مهندس ومصمم قاعدة البيانات" },
-            { en: "Data Modeling", ar: "نمذجة هياكل البيانات" },
-            { en: "Views Specification", ar: "تحديد وجهات النظر للمستخدمين" }
-          ],
-          tricks: "المصمم يتفاعل مع المستخدمين 'قبل' وأثناء بناء قاعدة البيانات، ومسؤوليته تنتهي أو تقل بمجرد تسليم التصميم وبدء مرحلة التشغيل التي يتولاها الـ DBA.",
-          quiz: {
-            question: "Who is responsible for communicating with all prospective users to understand their data requirements and create conceptual schema designs?",
-            options: [
-              "Database Designers",
-              "Hardware Technicians",
-              "Standalone End Users",
-              "Operating System Vendors"
-            ],
-            correct: 0,
-            explanation: "Database designers specialize in requirements analysis, conceptual data modeling, and schema specification."
-          }
-        },
-        {
-          num: 14,
-          title: "Actors on the Scene: End Users Categories",
-          arabicTitle: "فئات المستخدمين النهائيين الأربعة (End Users)",
-          image: "materials/slides/db-lec2/slide_14.png",
-          coreSummary: "ينقسم المستخدمون النهائيون إلى 4 فئات رئيسية: Casual و Naive/Parametric و Sophisticated و Standalone.",
-          explanationIntro: "هذه الشريحة من أكثر شرائح الامتحان تكراراً في أسئلة المقارنات والمطابقة؛ إليك الفروق الجوهرية بين الفئات الأربع:",
-          points: [
-            {
-              badge: "1. Casual",
-              title: "المستخدم العارض (Casual End User)",
-              desc: "يدخل النظام بشكل متقطع وغير منتظم (مثل المدير التنفيذي الذي يطلب تقريراً جديداً كل فترة عبر استعلامات متقدمة)."
-            },
-            {
-              badge: "2. Naive / Parametric",
-              title: "المستخدم الموجه (Naive or Parametric End User)",
-              desc: "يمثل الشريحة الأكبر؛ يكرر نفس المعاملات اليومية المحفوظة عبر واجهة بسيطة (مثل موظف حجز التذاكر أو كاشير البنك)."
-            },
-            {
-              badge: "3. Sophisticated",
-              title: "المستخدم المتمرس والخبير (Sophisticated End User)",
-              desc: "مهندسون وباحثون وعلماء بيانات يفهمون قدرات الـ DBMS ويكتبون استعلامات معقدة ومخصصة لتحليل البيانات."
-            },
-            {
-              badge: "4. Standalone",
-              title: "المستخدم المستقل (Standalone End User)",
-              desc: "يستخدم حزم برمجية جاهزة لإدارة قاعدة بياناته الشخصية الخاصة به وحده (مثل برنامج محاسبي لمحل تجاري صغير)."
-            }
-          ],
-          keywords: [
-            { en: "Casual Users", ar: "مستخدمون عارضون باحتياجات متغيرة" },
-            { en: "Naive / Parametric Users", ar: "مستخدمون نمطيون بمعاملات محددة مسبقاً" },
-            { en: "Sophisticated Users", ar: "مستخدمون متمرسون ومحللو بيانات" },
-            { en: "Standalone Users", ar: "مستخدمو برامج شخصية مستقلة" }
-          ],
-          tricks: "ركز على مسمى 'Canned Transactions' (المعاملات المعلبة الجاهزة)؛ هي مرتبطة حصرياً بـ Naive / Parametric Users (مثل موظف حجز الطيران).",
-          quiz: {
-            question: "Bank tellers and airline reservation agents who constantly run predefined 'canned transactions' are classified as:",
-            options: [
-              "Naive or Parametric End Users",
-              "Sophisticated End Users",
-              "Database Designers",
-              "Workers Behind the Scene"
-            ],
-            correct: 0,
-            explanation: "Naive or Parametric end users execute standard, preprogrammed queries and canned transactions on a routine basis."
-          }
-        },
-        {
-          num: 15,
-          title: "Actors on the Scene: System Analysts and Application Programmers",
-          arabicTitle: "محللو النظم ومطورو البرامج والتطبيقات",
-          image: "materials/slides/db-lec2/slide_15.png",
-          coreSummary: "محللو النظم يحددون متطلبات الـ Naive Users، ومبرمجو التطبيقات يكتبون الكود واختبار المعاملات الجاهزة (Canned Transactions).",
-          explanationIntro: "فريق هندسة البرمجيات الذي يبني التطبيقات التي تتصل بقاعدة البيانات:",
-          points: [
-            {
-              badge: "System Analysts",
-              title: "محللو النظم (System Analysts)",
-              desc: "يدرسون متطلبات المستخدمين النهائيين النمطيين ويصممون شكل وتدفق المعاملات المطلوبة لتسهيل عملهم."
-            },
-            {
-              badge: "Application Programmers",
-              title: "مبرمجو التطبيقات (Software Engineers)",
-              desc: "يطورون البرامج بواجهات الويب والموبايل ويكتبون أكواد الاتصال بقاعدة البيانات واختبارها وتصحيحها."
-            }
-          ],
-          keywords: [
-            { en: "System Analysts", ar: "محللو النظم ومتطلبات الأعمال" },
-            { en: "Application Programmers", ar: "مبرمجو التطبيقات البرمجية" },
-            { en: "Canned Transactions", ar: "المعاملات البرمجية المجهزة مسبقاً" }
-          ],
-          tricks: "المبرمجون هنا هم مبرمجو التطبيقات (Application Programmers) وليسوا مبرمجي محرك الـ DBMS نفسه.",
-          quiz: {
-            question: "Who is responsible for determining the requirements of naive end users and designing canned transactions?",
-            options: [
-              "System Analysts",
-              "Hardware Maintenance Crew",
-              "Casual Users",
-              "Database Vendors"
-            ],
-            correct: 0,
-            explanation: "System analysts analyze business workflows and determine the exact requirements for end-user transactions."
-          }
-        },
-        {
-          num: 16,
-          title: "Workers Behind the Scene",
-          arabicTitle: "العاملون خلف الكواليس: صناع ومطورو برمجيات الـ DBMS",
-          image: "materials/slides/db-lec2/slide_16.png",
-          coreSummary: "الفئات الثلاث التي تبني بيئة الـ DBMS التحتية: مصممو برمجيات الـ DBMS، مطورو الأدوات، ومشغلو الصيانة والأجهزة.",
-          explanationIntro: "هؤلاء هم الجنود المجهولون الذين لا يتعاملون مع قاعدة بيانات بعينها، بل يصنعون البرمجيات والأنظمة الأساسية التي يعمل عليها الجميع:",
-          points: [
-            {
-              badge: "1. Engine Designers",
-              title: "مصممو ومنفذو برمجيات الـ DBMS",
-              desc: "المهندسون الذين يكتبون كود نظام الـ DBMS نفسه (كود محرك الاستعلامات، المترجم، وتراكيب التخزين مثل مهندسي Oracle و Microsoft)."
-            },
-            {
-              badge: "2. Tool Developers",
-              title: "مطورو الأدوات المساعدة (Tool Developers)",
-              desc: "بناء أدوات التصميم والمراقبة والـ GUI (مثل برامج SQL Workbench، pgAdmin، وأدوات تصميم الـ ERD)."
-            },
-            {
-              badge: "3. Operators & Maintenance",
-              title: "مشغلو الصيانة والدعم الفني",
-              desc: "مسؤولو بيئة السيرفرات والأجهزة ونظام التشغيل الذي يعمل عليه الـ DBMS."
-            }
-          ],
-          keywords: [
-            { en: "DBMS Implementers", ar: "مطورو ومبرمجو كود محرك الـ DBMS" },
-            { en: "Tool Developers", ar: "مطورو أدوات التصميم والمراقبة" },
-            { en: "Operators", ar: "مهندسو تشغيل السيرفرات والأجهزة" }
-          ],
-          tricks: "لو سألك في الامتحان: هل مهندس برمجة أدوات الـ GUI للـ DBMS يعتبر Actor on the scene؟ الإجابة قطعاً: لا، هو Worker Behind the Scene.",
-          quiz: {
-            question: "Software engineers who design and implement the core DBMS query processor engine are:",
-            options: [
-              "Workers Behind the Scene",
-              "Actors on the Scene",
-              "Parametric End Users",
-              "Database Designers"
-            ],
-            correct: 0,
-            explanation: "Engineers who build the internal DBMS modules and tools operate 'Behind the Scene' rather than interacting with user databases."
-          }
-        },
-        {
-          num: 17,
-          title: "Advantages of Using the DBMS Approach",
-          arabicTitle: "المزايا الجوهرية لمنهج إدارة قواعد البيانات (الجزء 1)",
-          image: "materials/slides/db-lec2/slide_17.png",
-          coreSummary: "المزايا الأربع الأولى: السيطرة على تكرار البيانات، تقييد الوصول غير المصرح به، التخزين الدائم للبرمجيات، وتوفير النسخ الاحتياطي.",
-          explanationIntro: "لماذا تضحي الشركات بآلاف الدولارات لشراء أنظمة DBMS بدلاً من ملفات Excel العادية؟ إليك الإجابة الحاسمة:",
-          points: [
-            {
-              badge: "1. Redundancy",
-              title: "السيطرة على التكرار (Controlling Redundancy)",
-              desc: "منع تكرار نفس المعلومة في أكثر من مكان لتوفير المساحة وتجنب تناقض البيانات (Inconsistency)."
-            },
-            {
-              badge: "2. Security",
-              title: "تقييد الوصول غير المصرح (Restricting Unauthorized Access)",
-              desc: "تطبيق مستويات صلاحيات دقيقة وكلمات سر وتشفير لكل جدول ولكل مستخدم."
-            },
-            {
-              badge: "3. Persistence",
-              title: "التخزين الدائم للبيانات البرمجية (Persistent Storage)",
-              desc: "حفظ الكائنات البرمجية والبيانات المعقدة بصورة مستقرة وممتدة على وسائط التخزين الدائمة."
-            },
-            {
-              badge: "4. Backup & Recovery",
-              title: "توفير النسخ الاحتياطي والاستعادة الذاتية",
-              desc: "القدرة على استرجاع النظام لحالته الصحيحة تلقائياً في حال انقطاع الكهرباء أو تعطل البرمجيات."
-            }
-          ],
-          keywords: [
-            { en: "Controlling Redundancy", ar: "منع والسيطرة على تكرار البيانات" },
-            { en: "Inconsistency", ar: "تناقض البيانات الناتج عن التكرار" },
-            { en: "Backup and Recovery", ar: "النسخ الاحتياطي واستعادة الأعطال" }
-          ],
-          tricks: "المشكلة الكبرى في تكرار البيانات (Redundancy) ليست فقط إهدار مساحة القرص، بل خطر الـ Inconsistency (أن تعدل العنوان في ملف وتنساه في ملف آخر فتصبح البيانات متناقضة).",
-          quiz: {
-            question: "What is the most severe risk associated with uncontrolled data redundancy?",
-            options: [
-              "Data inconsistency across multiple copies",
-              "Excessive monitor brightness",
-              "Keyboard hardware failure",
-              "Compiler syntax errors"
-            ],
-            correct: 0,
-            explanation: "Redundancy leads to data inconsistency when updates are made to one copy but neglected in others."
-          }
-        },
-        {
-          num: 18,
-          title: "Additional DBMS Advantages & Standards",
-          arabicTitle: "مزايا إضافية: قيود التكامل وتوحيد المعايير ومرونة التطوير",
-          image: "materials/slides/db-lec2/slide_18.png",
-          coreSummary: "فرض قيود التكامل (Integrity Constraints)، تمكين الاستنتاج عبر القواعد، توفير واجهات متعددة، وتقليل وقت تطوير التطبيقات.",
-          explanationIntro: "مزايا أخرى تجعل نظام الـ DBMS يستحق كل مليم ينفق عليه:",
-          points: [
-            {
-              badge: "Integrity Rules",
-              title: "فرض قيود التكامل (Enforcing Integrity Constraints)",
-              desc: "منع إدخال بيانات خاطئة منطقياً (مثل منع تسجيل طالب برقم هاتف فارغ، أو إدخال مرتب بالسالب، أو تكرار الرقم القومي)."
-            },
-            {
-              badge: "Standards",
-              title: "توحيد المعايير القياسية (Enforcing Standards)",
-              desc: "إلزام كل فرق التطوير في المؤسسة بنفس التسميات وصيغ التواريخ وطرق التوثيق."
-            },
-            {
-              badge: "Rapid Development",
-              title: "تقليص زمن تطوير البرمجيات (Reduced Application Development Time)",
-              desc: "المبرمج لا يضيع وقته في كتابة أكواد التخزين والتشفير والأمان؛ الـ DBMS يقدم كل هذه الخدمات جاهزة."
-            }
-          ],
-          keywords: [
-            { en: "Integrity Constraints", ar: "قيود الصحة والسلامة المنطقية" },
-            { en: "Standards Enforcement", ar: "توحيد معايير البيانات في المؤسسة" },
-            { en: "Up-to-date Information", ar: "حداثة وتزامن البيانات لحظياً" }
-          ],
-          tricks: "سؤال متكرر: أين يتم حفظ قيود التكامل (Constraints)؟ في الـ System Catalog، وبالتالي يتولى الـ DBMS فرضها تلقائياً على كل تطبيق يتصل به.",
-          quiz: {
-            question: "Where are data integrity constraints defined and enforced in the database approach?",
-            options: [
-              "Defined once in the DBMS catalog and enforced automatically for all programs",
-              "Hardcoded manually by every individual frontend developer",
-              "Maintained verbally by system users",
-              "Controlled by internet service providers"
-            ],
-            correct: 0,
-            explanation: "Constraints are stored centrally in the DBMS catalog and enforced automatically on all application queries."
-          }
-        },
-        {
-          num: 19,
-          title: "When NOT to Use a DBMS",
-          arabicTitle: "متى يُمنع أو لا يُنصح باستخدام نظام إدارة قواعد البيانات؟",
-          image: "materials/slides/db-lec2/slide_19.png",
-          coreSummary: "حالات عدم الجدوى: التكلفة الابتدائية العالية، متطلبات الزمن الحقيقي الصارمة (Strict Real-time)، التطبيقات البسيطة لشخص واحد، ومحدودية الموارد.",
-          explanationIntro: "سؤال امتحان كلاسيكي ومفضل لأساتذة المادة: هل استخدام الـ DBMS مفيد دائماً في كل الحالات؟ الإجابة: لا!",
-          points: [
-            {
-              badge: "1. High Overhead",
-              title: "التكلفة والعبء الزائد (Overhead Costs)",
-              desc: "شراء تراخيص الـ DBMS وسيرفرات باهظة وتعيين DBA ذو راتب عالي قد لا يناسب المشاريع الصغيرة جداً."
-            },
-            {
-              badge: "2. Real-time Systems",
-              title: "أنظمة الزمن الحقيقي الحرج (Strict Real-time Constraints)",
-              desc: "الأنظمة التي تحتاج استجابة في أجزاء من المايكروثانية (مثل توجيه الصواريخ أو أجهزة التنفس الصناعي)؛ طبقات أمان الـ DBMS تسبب تأخيراً غير مقبول."
-            },
-            {
-              badge: "3. Simple Single-User",
-              title: "التطبيقات البسيطة الفردية (Single-User Applications)",
-              desc: "تطبيق بسيط لمستخدم واحد لا يحتاج إلى مزايا المشاركة والأمان المعقدة."
-            },
-            {
-              badge: "4. Static Data",
-              title: "البيانات الثابتة التي لا تتغير",
-              desc: "إذا كانت البيانات ثابتة تماماً بدون تحديثات ولا تتطلب وصولاً متعدد المستخدمين."
-            }
-          ],
-          keywords: [
-            { en: "Overhead", ar: "العبء الإضافي في الموارد والتكلفة" },
-            { en: "Strict Real-Time", ar: "الأنظمة اللحظية ذات التوقيت الحرج" },
-            { en: "Single-User Systems", ar: "الأنظمة الفردية البسيطة" }
-          ],
-          tricks: "احفظ كلمة (Strict Real-Time Constraints)؛ لأن الـ DBMS يضيف طبقات حماية وتزامن تستهلك وقتاً (Overhead) لا تتحمله الأنظمة اللحظية الصارمة.",
-          quiz: {
-            question: "Under which of the following circumstances is using a full-fledged DBMS NOT recommended?",
-            options: [
-              "Embedded systems with strict, microsecond real-time performance constraints",
-              "Online banking with millions of concurrent transactions",
-              "National healthcare records tracking",
-              "Global airline ticketing systems"
-            ],
-            correct: 0,
-            explanation: "Strict real-time systems cannot tolerate the processing overhead introduced by DBMS security and concurrency layers."
-          }
-        },
-        {
-          num: 20,
-          title: "Data Models: Concept and Constructs",
-          arabicTitle: "نماذج البيانات (Data Models): المفاهيم والمكونات",
-          image: "materials/slides/db-lec2/slide_20.png",
-          coreSummary: "نموذج البيانات هو مجموعة من المفاهيم لوصف بنية قاعدة البيانات وعملياتها وقيودها؛ وتوفر وسيلة التجريد الأساسية للبيانات.",
-          explanationIntro: "تنتقل المحاضرة هنا إلى أساس التصميم المعماري: ما هو نموذج البيانات (Data Model)؟",
-          points: [
-            {
-              badge: "Definition",
-              title: "تعريف الـ Data Model",
-              desc: "مجموعة من المفاهيم والرموز التي تتيح وصف بنية قاعدة البيانات (Data Structure) ونوعياتها وعلاقاتها بصورة تجريدية مفهومة."
-            },
-            {
-              badge: "Constructs",
-              title: "المكونات البنائية (Constructs)",
-              desc: "العناصر الأساسية لتمثيل البيانات (مثل الكيانات Entities، السمات Attributes، والعلاقات Relationships)."
-            },
-            {
-              badge: "Operations",
-              title: "العمليات (Model Operations)",
-              desc: "العمليات المحددة لقراءة وتحديث البيانات (Insert, Delete, Update, Retrieve) ومحددات سلوك النظام."
-            }
-          ],
-          keywords: [
-            { en: "Data Model", ar: "نموذج وهيكل تمثيل البيانات" },
-            { en: "Constructs", ar: "المكونات التأسيسية للنموذج" },
-            { en: "Model Operations", ar: "العمليات المسموح بها في النموذج" }
-          ],
-          tricks: "نموذج البيانات ليس مجرد جداول صامتة؛ بل يتكون دائماً من 3 أركان: تراكيب (Constructs) + عمليات (Operations) + قيود (Constraints).",
-          quiz: {
-            question: "What are the core components that comprise a complete Data Model?",
-            options: [
-              "Data structures (constructs), operations, and constraints",
-              "Monitor display drivers and CPU clock speeds",
-              "Network cable categories and router protocols"
-            ],
-            correct: 0,
-            explanation: "A data model provides constructs for defining structure, permitted operations, and consistency constraints."
-          }
-        },
-        {
-          num: 21,
-          title: "Categories of Data Models",
-          arabicTitle: "تصنيفات نماذج البيانات: المفاهيمي والتطبيقي والفيزيائي",
-          image: "materials/slides/db-lec2/slide_21.png",
-          coreSummary: "تصنيف مستويات النماذج الثلاثة: Conceptual (عالي المستوى)، Representational/Implementation (مستوى تمثيلي وسيط)، و Physical (منخفض المستوى).",
-          explanationIntro: "مقارنة منهجية هامة جداً بين مستويات التجريد الثلاثة لنماذج البيانات:",
-          points: [
-            {
-              badge: "1. Conceptual / High-Level",
-              title: "النموذج المفاهيمي (Conceptual Data Model)",
-              desc: "أقرب ما يكون لطريقة تفكير المستخدم البشري؛ يصف الكيانات والسمات والعلاقات بدون الدخول في أي تفاصيل تخزين حاسوبية (مثل مخطط ERD)."
-            },
-            {
-              badge: "2. Representational",
-              title: "النموذج التمثيلي / التطبيقي (Implementation Model)",
-              desc: "المستوى الوسيط المستخدم في معظم محركات الـ DBMS التجارية؛ يفهمه المستخدم ويدعمه الحاسوب (مثل Relational Model القائم على الجداول)."
-            },
-            {
-              badge: "3. Physical / Low-Level",
-              title: "النموذج الفيزيائي (Physical Data Model)",
-              desc: "يصف كيفية تخزين البيانات فعلياً على القرص الصلب وتنسيق السجلات (Record formats) ومسارات الوصول والفهرسة (Access paths)."
-            }
-          ],
-          keywords: [
-            { en: "Conceptual Model", ar: "نموذج مفاهيمي عالي المستوى (قريب للمستخدم)" },
-            { en: "Representational Model", ar: "نموذج تمثيلي تطبيقي (مثل النموذج العلائقي)" },
-            { en: "Physical Model", ar: "نموذج فيزيائي منخفض المستوى (تخزين القرص)" }
-          ],
-          tricks: "الـ Entity-Relationship (ER) model يصنف كـ Conceptual Model، بينما الـ Relational model (الجداول ذات الصفوف والأعمدة) يصنف كـ Representational / Implementation Model.",
-          quiz: {
-            question: "The Relational Model (tables, rows, columns) used in MySQL and Oracle belongs to which category?",
-            options: [
-              "Representational (Implementation) Data Model",
-              "Physical Low-Level Data Model",
-              "Purely Conceptual High-Level Model"
-            ],
-            correct: 0,
-            explanation: "Relational models are classified as Representational or Implementation models, bridging concepts with computer representations."
-          }
-        },
-        {
-          num: 22,
-          title: "Schemas, Instances, and Database State",
-          arabicTitle: "المخطط (Schema) مقابل الحالة اللحظية (Instance / State)",
-          image: "materials/slides/db-lec2/slide_22.png",
-          coreSummary: "الفرق الحاسم بين الـ Schema (الوصف الهيكلي الثابت نادراً) والـ Database State / Instance (محتوى البيانات الفعلي في لحظة زمنية معينة والمتغير باستمرار).",
-          explanationIntro: "هذه الشريحة تمثل أحد الأسئلة المضمونة في الامتحان؛ الفرق بين الهيكل والبيانات الفعلية:",
-          points: [
-            {
-              badge: "Database Schema",
-              title: "مخطط قاعدة البيانات (The Schema)",
-              desc: "الوصف الهيكلي والتصميمي لقاعدة البيانات؛ يحدد أسماء الجداول والأعمدة والقيود، ونادراً جداً ما يتغير بعد إطلاقه (Intension)."
-            },
-            {
-              badge: "Database State / Instance",
-              title: "حالة قاعدة البيانات (Database State or Snapshot)",
-              desc: "مجموعة البيانات الفعلية المخزنة داخل الجداول في لحظة زمنية معينة؛ تتغير باستمرار مع كل عملية إضافة أو تعديل أو حذف (Extension)."
-            },
-            {
-              badge: "Schema Evolution",
-              title: "تطور وتعديل المخطط (Schema Evolution)",
-              desc: "التعديل النادر على هيكل المخطط نفسه عند ظهور متطلبات أعمال جديدة في المؤسسة."
-            }
-          ],
-          keywords: [
-            { en: "Database Schema (Intension)", ar: "مخطط وهيكل قاعدة البيانات العام" },
-            { en: "Database State (Extension)", ar: "حالة البيانات اللحظية المخزنة" },
-            { en: "Database Instance / Snapshot", ar: "لقطة البيانات في لحظة زمنية محددة" }
-          ],
-          tricks: "المخطط يسمى علمياً (Intension) وهو ثابت نادراً ما يتغير، بينما حالة البيانات تسمى (Extension) وتتغير آلاف المرات في اليوم.",
-          quiz: {
-            question: "The actual data stored in a database at a specific moment in time is termed the:",
-            options: [
-              "Database State (or Instance / Snapshot)",
-              "Database Schema",
-              "Static Catalog Specification",
-              "Compilation Artifact"
-            ],
-            correct: 0,
-            explanation: "The database state (or instance) represents the actual snapshot of data populated in the database at a given moment."
-          }
-        },
-        {
-          num: 23,
-          title: "The Three-Schema Architecture",
-          arabicTitle: "معمارية المخططات الثلاثية (Three-Schema Architecture)",
-          image: "materials/slides/db-lec2/slide_23.png",
-          coreSummary: "المعمارية القياسية لشركة ANSI/SPARC لفصل مستويات النظام الثلاثة: Internal Level، Conceptual Level، و External/View Level بهدف تحقيق استقلالية البيانات.",
-          explanationIntro: "أشهر معمارية في تاريخ علم قواعد البيانات (ANSI/SPARC Framework)؛ صممت لغرض رئيسي: فصل تطبيقات المستخدم عن قواعد البيانات الفيزيائية:",
-          points: [
-            {
-              badge: "1. Internal Level",
-              title: "المستوى الداخلي (Internal / Physical Schema)",
-              desc: "يصف تفاصيل التخزين الفيزيائي الحقيقي للملفات على الهارد ديسك ومسارات الفهرسة السريعة."
-            },
-            {
-              badge: "2. Conceptual Level",
-              title: "المستوى المفاهيمي (Conceptual Schema)",
-              desc: "قلب النظام؛ يصف هيكل قاعدة البيانات بالكامل لجميع المستخدمين (الكيانات، العلاقات، القيود) دون ذكر تفاصيل التخزين الفيزيائي."
-            },
-            {
-              badge: "3. External Level",
-              title: "المستوى الخارجي (External Schema / Views)",
-              desc: "المستوى الأقرب للمستخدم؛ يصف واجهات العرض المتعددة (Views) الخاصة بكل فئة من المستخدمين."
-            }
-          ],
-          keywords: [
-            { en: "Three-Schema Architecture", ar: "معمارية المستويات والمخططات الثلاثية" },
-            { en: "Internal Level", ar: "المستوى الداخلي الفيزيائي للتخزين" },
-            { en: "Conceptual Level", ar: "المستوى المفاهيمي الشامل لقاعدة البيانات" },
-            { en: "External Level", ar: "المستوى الخارجي لوجهات نظر المستخدمين" }
-          ],
-          tricks: "الهدف الجوهري الأسمى لمعمارية الـ Three-Schema هو دعم وتحقيق خاصية استقلالية البيانات (Data Independence).",
-          quiz: {
-            question: "Which schema level in the Three-Schema Architecture describes the structure of the entire database for a community of users while hiding physical storage details?",
-            options: [
-              "Conceptual Schema",
-              "Internal Schema",
-              "External Schema",
-              "Physical Device Driver"
-            ],
-            correct: 0,
-            explanation: "The Conceptual Schema describes whole-database entities, types, and constraints while concealing physical storage."
-          }
-        },
-        {
-          num: 24,
-          title: "Data Independence in Three-Schema Architecture",
-          arabicTitle: "استقلالية البيانات المنطقية والفيزيائية (Logical vs Physical)",
-          image: "materials/slides/db-lec2/slide_24.png",
-          coreSummary: "المقارنة الذهبية: استقلالية البيانات المنطقية (تغيير الـ Conceptual Schema دون تغيير الـ External) مقابل الفيزيائية (تغيير الـ Internal دون تغيير الـ Conceptual).",
-          explanationIntro: "هذه الشريحة هي المصدر الأول لأسئلة الاختيارات والصح والخطأ في امتحانات قواعد البيانات في كل جامعات العالم:",
-          points: [
-            {
-              badge: "Logical Independence",
-              title: "استقلالية البيانات المنطقية (Logical Data Independence)",
-              desc: "القدرة على تعديل المخطط المفاهيمي (Conceptual Schema) مثل إضافة جدول أو حقل جديد دون الحاجة لتعديل الـ External Schemas أو التطبيقات القائمة."
-            },
-            {
-              badge: "Physical Independence",
-              title: "استقلالية البيانات الفيزيائية (Physical Data Independence)",
-              desc: "القدرة على تغيير تراكيب التخزين الداخلية والفهارس (Internal Schema) لتسريع الأداء دون الحاجة لتعديل المخطط المفاهيمي (Conceptual Schema)."
-            },
-            {
-              badge: "Difficulty Comparison",
-              title: "أيهما أصعب وأكثر تعقيداً؟",
-              desc: "تحقيق الاستقلالية المنطقية (Logical) أصعب بكثير من الاستقلالية الفيزيائية (Physical) لأن البرامج تعتمد بشكل مباشر على المنطق."
-            }
-          ],
-          keywords: [
-            { en: "Logical Data Independence", ar: "استقلالية البيانات المنطقية (أصعب في التطبيق)" },
-            { en: "Physical Data Independence", ar: "استقلالية البيانات الفيزيائية (أسهل وأكثر شيوعاً)" },
-            { en: "Schema Mapping", ar: "التحويل والربط بين مستويات المعمارية" }
-          ],
-          tricks: "سؤال متكرر جداً: 'Logical data independence is harder to achieve than physical data independence' -> الإجابة: True دائماً وأبداً!",
-          quiz: {
-            question: "The capacity to modify the internal schema (e.g., adding an index) without having to alter the conceptual schema is known as:",
-            options: [
-              "Physical Data Independence",
-              "Logical Data Independence",
-              "Static View Independence",
-              "Catalog Dependency"
-            ],
-            correct: 0,
-            explanation: "Physical Data Independence allows altering physical storage and indexing structures without modifying conceptual schemas."
-          }
-        },
-        {
-          num: 25,
-          title: "DBMS Languages: DDL and Schema Definition",
-          arabicTitle: "لغات الـ DBMS: لغة تعريف البيانات (DDL) والمخططات",
-          image: "materials/slides/db-lec2/slide_25.png",
-          coreSummary: "لغة تعريف البيانات (DDL - Data Definition Language) ومترجمها (DDL Compiler) واستخداماتها في صياغة الـ Conceptual والـ Internal Schemas.",
-          explanationIntro: "كيف نخاطب الـ DBMS ونخبره بتعريف الجداول والحقول؟ نستخدم عائلة لغات الـ DBMS:",
-          points: [
-            {
-              badge: "DDL Definition",
-              title: "لغة تعريف البيانات (Data Definition Language - DDL)",
-              desc: "اللغة المخصصة لتعريف وتعديل مخططات وهياكل قاعدة البيانات (مثل أوامر CREATE TABLE، ALTER TABLE، DROP TABLE في الـ SQL)."
-            },
-            {
-              badge: "DDL Compiler",
-              title: "مترجم الـ DDL ومخرجاته",
-              desc: "يقوم بمعالجة الأوامر وتسجيل الوصف والتعريفات الناتجة مباشرة داخل مستودع الكتالوج (System Catalog / Meta-data)."
-            },
-            {
-              badge: "SDL & VDL",
-              title: "لغات التخزين وواجهات العرض (SDL & VDL)",
-              desc: "قديماً كانت هناك لغة خاصة بالتخزين (Storage Definition Language - SDL) ولغة لوجهات النظر (View Definition Language - VDL)، واليوم دمجت جميعاً في SQL."
-            }
-          ],
-          keywords: [
-            { en: "DDL", ar: "لغة تعريف المخططات والجداول (CREATE, ALTER)" },
-            { en: "DDL Compiler", ar: "مترجم أوامر تعريف البيانات" },
-            { en: "VDL", ar: "لغة تعريف واجهات العرض (Views)" }
-          ],
-          tricks: "أوامر الـ DDL تتعامل مع 'الهيكل' (Structure) فقط، ولا تتعامل مع البيانات الفردية داخل الصفوف.",
-          quiz: {
-            question: "Which language is utilized by the DBA and database designers to specify the conceptual and internal schemas?",
-            options: [
-              "Data Definition Language (DDL)",
-              "Data Manipulation Language (DML)",
-              "Hypertext Preprocessor (PHP)",
-              "Assembly Instruction Set"
-            ],
-            correct: 0,
-            explanation: "DDL (Data Definition Language) is used to define and modify the conceptual database schema and structures."
-          }
-        },
-        {
-          num: 26,
-          title: "DBMS Languages: DML (High-Level vs Low-Level)",
-          arabicTitle: "لغة معالجة البيانات (DML): اللغات عالية المستوى ومنخفضة المستوى",
-          image: "materials/slides/db-lec2/slide_26.png",
-          coreSummary: "لغة معالجة البيانات (DML - Data Manipulation Language)؛ والفرق الحاسم بين High-Level (Non-procedural / Set-at-a-time) و Low-Level (Procedural / Record-at-a-time).",
-          explanationIntro: "بعد بناء الهيكل، كيف نضيف ونسترجع ونعدل البيانات الفعلية؟ نستخدم لغة الـ DML:",
-          points: [
-            {
-              badge: "DML Purpose",
-              title: "هدف لغة الـ DML",
-              desc: "تتضمن عمليات استرجاع البيانات (Retrieval)، الإدخال (Insertion)، الحذف (Deletion)، والتعديل (Modification)."
-            },
-            {
-              badge: "High-Level / Non-procedural",
-              title: "اللغات عالية المستوى (Declarative / Set-oriented)",
-              desc: "مثل لغة SQL؛ تحدد للنظام 'ماذا تريد' (What data to retrieve) دون أن تحدد 'كيف يجلبه'؛ وتتعامل مع مجموعة سجلات كاملة دفعة واحدة (Set-at-a-time)."
-            },
-            {
-              badge: "Low-Level / Procedural",
-              title: "اللغات منخفضة المستوى (Record-at-a-time)",
-              desc: "تحدد خطوة بخطوة 'كيفية' الوصول للبيانات ويجب تضمينها داخل لغة برمجة عامة للتعامل مع سجل واحد في كل مرة."
-            }
-          ],
-          keywords: [
-            { en: "DML", ar: "لغة معالجة واستعلام البيانات (SELECT, INSERT)" },
-            { en: "Non-procedural DML", ar: "لغة تصريحية عالية المستوى (Set-at-a-time)" },
-            { en: "Procedural DML", ar: "لغة إجرائية منخفضة المستوى (Record-at-a-time)" }
-          ],
-          tricks: "لغة SQL هي High-level Non-procedural DML لأنها تسترجع مجموعة سجلات كاملة بأمر واحد (Set-at-a-time)، وهذا سؤال امتحان شهير جداً.",
-          quiz: {
-            question: "A high-level, non-procedural DML such as SQL can retrieve and process data:",
-            options: [
-              "As a set of records at a time (Set-at-a-time)",
-              "Strictly one single record at a time in loops",
-              "Only after rebooting the operating system"
-            ],
-            correct: 0,
-            explanation: "High-level non-procedural DMLs (like SQL) specify what to retrieve and operate on sets of records at a time."
-          }
-        },
-        {
-          num: 27,
-          title: "DBMS Interfaces and Interaction Styles",
-          arabicTitle: "واجهات المستخدم في أنظمة قواعد البيانات (DBMS Interfaces)",
-          image: "materials/slides/db-lec2/slide_27.png",
-          coreSummary: "أنماط واجهات التعامل مع الـ DBMS: القوائم، النماذج، الواجهات الرسومية (GUI)، اللغات الطبيعية، واجهات المستخدم النمطي، وواجهات الـ DBA.",
-          explanationIntro: "يقدم الـ DBMS واجهات متعددة تناسب الخلفيات التقنية المختلفة لكل مستخدم:",
-          points: [
-            {
-              badge: "Menu-based & Forms",
-              title: "واجهات القوائم والنماذج (Forms-based)",
-              desc: "شاشات تفاعلية مريحة للمستخدمين؛ حيث يملأ الموظف نموذجاً جاهزاً (Form) ويضغط حفظ دون كتابة أي استعلامات."
-            },
-            {
-              badge: "GUI & Natural Language",
-              title: "الواجهات الرسومية واللغات الطبيعية",
-              desc: "الواجهات القائمة على النقر المباشر أو كتابة أسئلة باللغة الإنجليزية العادية ليحولها النظام لاستعلامات."
-            },
-            {
-              badge: "DBA Interfaces",
-              title: "واجهات مدير قاعدة البيانات المتقدمة",
-              desc: "أدوات متخصصة بصلاحيات عليا لإنشاء الحسابات ومراقبة السيرفرات وإدارة النسخ الاحتياطي وضبط الأداء."
-            }
-          ],
-          keywords: [
-            { en: "Forms Interface", ar: "واجهات النماذج والشاشات الجاهزة" },
-            { en: "GUI Interface", ar: "واجهات المستخدم الرسومية" },
-            { en: "DBA Interfaces", ar: "واجهات وأدوات إدارة النظام الممتازة" }
-          ],
-          tricks: "المستخدم النمطي (Naive user) يتعامل دائماً إما مع Forms-based interface أو Menu-driven interface لتقليل احتمالات الخطأ البشري.",
-          quiz: {
-            question: "Which type of DBMS interface is most suitable for naive/parametric users who insert and query routine records daily?",
-            options: [
-              "Forms-based and menu-driven interfaces",
-              "Command-line low-level kernel shells",
-              "Binary memory debuggers"
-            ],
-            correct: 0,
-            explanation: "Forms-based and menu interfaces present simple, guided fields that shield naive users from underlying query syntax."
-          }
-        },
-        {
-          num: 28,
-          title: "Database System Utilities",
-          arabicTitle: "البرمجيات والأدوات المساعدة للنظام (Database Utilities)",
-          image: "materials/slides/db-lec2/slide_28.png",
-          coreSummary: "أدوات المساعدة المتخصصة التي تساعد الـ DBA: برامج التحميل (Loading)، النسخ الاحتياطي (Backup)، إعادة تنظيم التخزين (Reorganization)، والمراقبة (Monitoring).",
-          explanationIntro: "يقدم الـ DBMS مجموعة أدوات خدماتية حيوية لإبقاء قاعدة البيانات سليمة وسريعة طوال الوقت:",
-          points: [
-            {
-              badge: "1. Loading Utility",
-              title: "أداة تحميل واستيراد البيانات (Loading)",
-              desc: "تحويل واستيراد ملفات البيانات القديمة (مثل ملفات Excel أو CSV أو ملفات نصية) وتنسيقها داخل جداول الـ DBMS."
-            },
-            {
-              badge: "2. Backup Utility",
-              title: "أداة النسخ الاحتياطي (Backup)",
-              desc: "إنشاء نسخ أرشيفية كاملة أو تدريجية على وسائط تخزين خارجية أو سحابية للحماية من الكوارث."
-            },
-            {
-              badge: "3. Reorganization",
-              title: "إعادة تنظيم الملفات والفهارس (File Reorganization)",
-              desc: "إعادة ترتيب الملفات على الهارد ديسك وإعادة بناء الفهارس (Rebuilding Indexes) لاستعادة السرعة القصوى."
-            },
-            {
-              badge: "4. Monitoring",
-              title: "أدوات مراقبة الأداء (Performance Monitoring)",
-              desc: "إحصائيات استهلاك المعالج والذاكرة وأبطأ الاستعلامات لمساعدة الـ DBA في اتخاذ قرارات التحسين."
-            }
-          ],
-          keywords: [
-            { en: "Loading Utility", ar: "أداة استيراد وتحميل البيانات الضخمة" },
-            { en: "Backup Utility", ar: "أداة النسخ الاحتياطي وحفظ البيانات" },
-            { en: "Performance Monitoring", ar: "أدوات مراقبة واستهلاك موارد السيرفر" }
-          ],
-          tricks: "لو سئلت عن أداة إعادة بناء الفهارس بعد عمليات الحذف والفرز الكبيرة، فهي الـ Database Storage Reorganization Utility.",
-          quiz: {
-            question: "Which database utility is specifically used to convert and import existing raw data files into the database tables?",
-            options: [
-              "Loading utility",
-              "Compiler linker",
-              "Monitor driver utility",
-              "Audio synthesizer"
-            ],
-            correct: 0,
-            explanation: "The loading utility is designed to parse, format, and load external source files into database tables."
-          }
-        },
-        {
-          num: 29,
-          title: "Centralized and Client/Server DBMS Architectures",
-          arabicTitle: "معماريات الخادم والعميل (Client/Server vs Centralized)",
-          image: "materials/slides/db-lec2/slide_29.png",
-          coreSummary: "تطور معماريات النشر: من الأنظمة المركزية (Centralized)، إلى معمارية الطبقتين (2-Tier Client/Server)، ثم معمارية الثلاث طبقات (3-Tier / n-Tier Architecture) المستخدمة في الويب.",
-          explanationIntro: "كيف يتم توزيع برمجيات قاعدة البيانات والتطبيقات على أجهزة الشبكة في العالم الواقعي؟",
-          points: [
-            {
-              badge: "Centralized",
-              title: "المعمارية المركزية القديمة (Centralized DBMS)",
-              desc: "كل شيء (الـ DBMS، والبيانات، والتطبيقات، وشاشات العرض) يعمل على جهاز حاسوب رئيسي مركزي واحد (Mainframe)."
-            },
-            {
-              badge: "2-Tier Architecture",
-              title: "معمارية الطبقتين (2-Tier Client/Server)",
-              desc: "الـ Client يشغل واجهة التطبيق وكود المعالجة، ويتصل مباشرة بسيرفر قاعدة البيانات (Database Server) عبر شبكة داخلية (ODBC/JDBC)."
-            },
-            {
-              badge: "3-Tier / n-Tier",
-              title: "معمارية الثلاث طبقات (3-Tier Web Architecture)",
-              desc: "المعيار العالمي لتطبيقات الويب والموبايل: Client (متصفح المستخدم) -> Application/Web Server (منطق الأعمال والـ API) -> Database Server (تخزين واسترجاع البيانات)."
-            }
-          ],
-          keywords: [
-            { en: "Centralized Architecture", ar: "المعمارية المركزية لجهاز واحد" },
-            { en: "2-Tier Architecture", ar: "معمارية الطبقتين (Client يتصل مباشرة بـ DB)" },
-            { en: "3-Tier Architecture", ar: "معمارية الثلاث طبقات (Client -> App Server -> DB)" }
-          ],
-          tricks: "الميزة الكبرى في الـ 3-Tier Architecture هي الأمان؛ فالمستخدم العادي في المتصفح لا يستطيع أبداً الاتصال بقاعدة البيانات مباشرة، بل يمر دائماً عبر Application Server وسيط.",
-          quiz: {
-            question: "In a typical 3-Tier Client/Server web architecture, what sits between the user's web browser and the database server?",
-            options: [
-              "Application Server or Web Server (Business Logic Layer)",
-              "Physical Hard Disk Array",
-              "Raw Cable Hub",
-              "Operating System Kernel"
-            ],
-            correct: 0,
-            explanation: "The intermediate Application/Web Server tier executes business logic, processing requests between client browsers and the database."
-          }
-        },
-        {
-          num: 30,
-          title: "Classification of Database Management Systems",
-          arabicTitle: "تصنيف أنظمة إدارة قواعد البيانات (DBMS Classification)",
-          image: "materials/slides/db-lec2/slide_30.png",
-          coreSummary: "المعايير الأربعة المعتمدة لتصنيف أنظمة الـ DBMS: نموذج البيانات (Data Model)، عدد المستخدمين (Number of Users)، عدد المواقع (Number of Sites)، والتكلفة.",
-          explanationIntro: "خاتمة المحاضرة بالمعايير الأكاديمية المعتمدة عالمياً لتصنيف واختيار نظام الـ DBMS المناسب للمشروع:",
-          points: [
-            {
-              badge: "1. Data Model",
-              title: "التصنيف حسب نموذج البيانات (الأهم عالمياً)",
-              desc: "أنظمة علائقية (Relational مثل MySQL و PostgreSQL)، كائنية (Object-oriented)، أو أنظمة غير علائقية حديثة (NoSQL و Graph Databases)."
-            },
-            {
-              badge: "2. Number of Users",
-              title: "التصنيف حسب عدد المستخدمين",
-              desc: "أنظمة مستخدم واحد (Single-user) مثل SQLite و MS Access، أو أنظمة متعددة المستخدمين (Multi-user) تدعم ملايين العملاء."
-            },
-            {
-              badge: "3. Distribution",
-              title: "التصنيف حسب توزيع السيرفرات (Number of Sites)",
-              desc: "أنظمة مركزية (Centralized في سيرفر واحد)، أو أنظمة موزعة (Distributed DBMS عبر عدة دول وسيرفرات متزامنة)، أو سحابية (Cloud-native)."
-            },
-            {
-              badge: "4. Cost & Licensing",
-              title: "التصنيف حسب التكلفة والترخيص",
-              desc: "أنظمة مفتوحة المصدر مجانية (Open-source مثل PostgreSQL) مقابل أنظمة تجارية كبرى مرخصة بملايين الدولارات (مثل Oracle و IBM DB2)."
-            }
-          ],
-          keywords: [
-            { en: "Relational DBMS (RDBMS)", ar: "أنظمة قواعد البيانات العلائقية" },
-            { en: "Distributed DBMS (DDBMS)", ar: "أنظمة قواعد البيانات الموزعة" },
-            { en: "Single-user vs Multi-user", ar: "مستخدم فردي مقابل متعدد المستخدمين" },
-            { en: "Open Source vs Commercial", ar: "مفتوح المصدر مقابل تجاري مدفوع" }
-          ],
-          tricks: "المعيار الرئيسي والأكثر أهمية تاريخياً في تصنيف الـ DBMS هو: 'The Data Model on which the DBMS is based' (النموذج الذي يستند إليه المحرك).",
-          quiz: {
-            question: "Historically and fundamentally, what is the primary criterion used to classify Database Management Systems?",
-            options: [
-              "The underlying Data Model (e.g., Relational, Object-oriented, NoSQL)",
-              "The color of the computer server rack",
-              "The brand of keyboard used by the developer",
-              "The physical size of the computer chassis"
-            ],
-            correct: 0,
-            explanation: "The primary historical criterion for classifying a DBMS is the underlying data model it supports."
-          }
-        }
-      ]
+  {
+    "num": 1,
+    "title": "Lecture 2: Databases and Database Users",
+    "arabicTitle": "غلاف المحاضرة وبيانات المقرر (د. محمد ماهر)",
+    "image": "materials/slides/db-lec2/slide_1.png",
+    "coreSummary": "المحاضرة الثانية من مقرر أنظمة قواعد البيانات بعنوان 'Databases and Database Users' تقديم د. محمد ماهر وتغطي الفصل الأول من المرجع المعتمد.",
+    "explanationIntro": "نبدأ في هذه المحاضرة بدراسة الأساس النظري والعملي لعالم قواعد البيانات مع الدكتور محمد ماهر؛ المحاضرة تؤسس لفهم الفارق بين الملفات العادية ونظم قواعد البيانات الحديثة وتستعرض أنواع التطبيقات والمستخدمين ودور الـ DBMS في إدارة البيانات بكفاءة.",
+    "points": [
+      {
+        "badge": "Lecture Title",
+        "title": "عنوان المحاضرة والمقرر",
+        "desc": "Lecture 2: Databases and Database Users، وهي تغطي المحتوى العلمي للفصل الأول من كتاب Fundamentals of Database Systems."
+      },
+      {
+        "badge": "Instructor",
+        "title": "أستاذ المادة",
+        "desc": "د. محمد ماهر (Dr. Mohamed Maher) - قسم نظم المعلومات."
+      },
+      {
+        "badge": "Core Objective",
+        "title": "الهدف العام للمحاضرة",
+        "desc": "التعرف على المفاهيم الجوهرية (Data, Database, DBMS)، فهم خصائص Database Approach، والتمييز بين فئات المستخدمين ومزايا النظام."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Databases and Database Users",
+        "ar": "قواعد البيانات ومستخدموها"
+      },
+      {
+        "en": "Dr. Mohamed Maher",
+        "ar": "د. محمد ماهر"
+      },
+      {
+        "en": "Database Systems",
+        "ar": "أنظمة قواعد البيانات"
+      }
+    ],
+    "tricks": "المحاضرة الأولى الفعلية للدفعة تبدأ من هذا المحتوى الخاص بالدكتور محمد ماهر؛ كل أسئلة امتحانات الميدتيرم والفاينل تركز على التعريفات الدقيقة الواردة في هذه الشرائح ومقارنات أنواع المستخدمين.",
+    "quiz": {
+      "question": "According to Slide 1, what is the exact title and instructor of this lecture?",
+      "options": [
+        "Lecture 2: Databases and Database Users - Dr. Mohamed Maher",
+        "Lecture 1: Introduction to Computer Architecture - Dr. Ali",
+        "Lecture 3: Advanced Relational Algebra - Dr. Tarek",
+        "Lecture 2: Operating System Internals - Dr. Sara"
+      ],
+      "correct": 0,
+      "explanation": "Slide 1 clearly presents 'Lecture 2: Databases and Database Users' delivered by Dr. Mohamed Maher."
+    }
+  },
+  {
+    "num": 2,
+    "title": "OUTLINE",
+    "arabicTitle": "مخطط موضوعات المحاضرة",
+    "image": "materials/slides/db-lec2/slide_2.png",
+    "coreSummary": "خارطة طريق المحاضرة وتتضمن 10 محاور رئيسية تغطي أنواع قواعد البيانات، التعريفات، وظائف الـ DBMS، المعمارية، والمستخدمين.",
+    "explanationIntro": "تعرض الشريحة الفهرس والمخطط التفصيلي للمحاضرة؛ يمثل هذا المخطط الهيكل المنطقي الذي سيتم تفكيكه خطوة بخطوة طوال الـ 30 شريحة.",
+    "points": [
+      {
+        "badge": "Topic 1-3",
+        "title": "المفاهيم والتطبيقات والوظائف",
+        "desc": "أنواع قواعد البيانات وتطبيقاتها (Types & Applications)، التعريفات الأساسية (Basic Definitions)، ووظائف الـ DBMS المعتادة."
+      },
+      {
+        "badge": "Topic 4-5",
+        "title": "المثال العملي والخصائص المعمارية",
+        "desc": "دراسة نموذج عملي لقاعدة بيانات الجامعة (UNIVERSITY Example)، واستعراض الخصائص الجوهرية لمدخل قواعد البيانات (Main Characteristics)."
+      },
+      {
+        "badge": "Topic 6-7",
+        "title": "المستخدمون والمزايا التنافسية",
+        "desc": "تصنيفات المستخدمين (Types of Database Users)، ومزايا استخدام مدخل قواعد البيانات (Advantages of DB Approach)."
+      },
+      {
+        "badge": "Topic 8-10",
+        "title": "التطور التاريخي والقدرات الممتدة",
+        "desc": "تطور تكنولوجيا البيانات، توسيع إمكانيات النظم، والحالات التي لا يُفضل فيها استخدام نظم قواعد البيانات."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Outline",
+        "ar": "مخطط المحاضرة"
+      },
+      {
+        "en": "Database Applications",
+        "ar": "تطبيقات قواعد البيانات"
+      },
+      {
+        "en": "DBMS Functionality",
+        "ar": "وظائف نظام إدارة قواعد البيانات"
+      },
+      {
+        "en": "Database Users",
+        "ar": "مستخدمو قواعد البيانات"
+      }
+    ],
+    "tricks": "المخطط يحدد نطاق الامتحان؛ لاحظ أن المقرر يركز على التطبيقات التقليدية (Traditional Applications) مع استعراض شامل لخصائص الـ Database Approach.",
+    "quiz": {
+      "question": "Which of the following topics is explicitly listed in the lecture OUTLINE (Slide 2)?",
+      "options": [
+        "Main Characteristics of the Database Approach",
+        "Microprocessor Assembly Instruction Set",
+        "Bresenham's Circle Drawing Algorithm",
+        "CPU Scheduling and Virtual Memory Management"
+      ],
+      "correct": 0,
+      "explanation": "Slide 2 explicitly lists 'Main Characteristics of the Database Approach' as one of the primary lecture topics."
+    }
+  },
+  {
+    "num": 3,
+    "title": "Types of Databases and Database Applications",
+    "arabicTitle": "أنواع قواعد البيانات وتطبيقاتها (تقليدية وحديثة)",
+    "image": "materials/slides/db-lec2/slide_3.png",
+    "coreSummary": "المقارنة بين التطبيقات التقليدية الرقمية/النصية والتطبيقات الحديثة مثل الوسائط والـ GIS والبيانات الحيوية ومستودعات البيانات.",
+    "explanationIntro": "توضح هذه الشريحة تنوع قواعد البيانات؛ فبينما اعتمدت النظم القديمة على نصوص وأرقام، تطورت التكنولوجيا لتشمل الخرائط والوسائط والجينات، إلا أن مقررنا يركز أساساً على التطبيقات التقليدية.",
+    "points": [
+      {
+        "badge": "Traditional",
+        "title": "التطبيقات التقليدية (Traditional Applications)",
+        "desc": "قواعد البيانات الرقمية والنصية (Numeric and Textual Databases)، مثل سجلات الموظفين والطلاب والحسابات المالية."
+      },
+      {
+        "badge": "Modern (1)",
+        "title": "قواعد بيانات الوسائط والخرائط",
+        "desc": "قواعد بيانات الوسائط المتعددة (Multimedia Databases: صور وفيديو وصوت)، ونظم المعلومات الجغرافية (GIS: خرائط ومواقع فضائية)."
+      },
+      {
+        "badge": "Modern (2)",
+        "title": "التطبيقات البيولوجية والمستودعات والبيانات الضخمة",
+        "desc": "قواعد البيانات الجينومية والبيولوجية (Biological & Genome)، مستودعات البيانات (Data Warehouses)، قواعد بيانات الهواتف (Mobile DBs)، النظم اللحظية (Real-time and Active DBs)، والبيانات الضخمة (Bigdata)."
+      },
+      {
+        "badge": "Course Scope",
+        "title": "نطاق وتركيز المقرر الدراسي",
+        "desc": "ملاحظة هامة جداً أسفل السلايد: 'Our course focuses on traditional applications' (تركيز المقرر على التطبيقات التقليدية)."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Traditional Applications",
+        "ar": "تطبيقات تقليدية"
+      },
+      {
+        "en": "Numeric and Textual Databases",
+        "ar": "قواعد بيانات رقمية ونصية"
+      },
+      {
+        "en": "Multimedia Databases",
+        "ar": "قواعد بيانات الوسائط المتعددة"
+      },
+      {
+        "en": "GIS",
+        "ar": "نظم المعلومات الجغرافية"
+      },
+      {
+        "en": "Data Warehouses",
+        "ar": "مستودعات البيانات"
+      },
+      {
+        "en": "Bigdata",
+        "ar": "البيانات الضخمة"
+      }
+    ],
+    "tricks": "فخ امتحاني مؤكد: قد يسألك 'Does this course focus on Big Data and Multimedia databases?' الإجابة هي (False/No)، لأن الشريحة تنص صراحة على أن المقرر يركز على التطبيقات التقليدية (Numeric & Textual).",
+    "quiz": {
+      "question": "According to Slide 3, what is the primary focus of this academic database course?",
+      "options": [
+        "Traditional applications (Numeric and Textual databases)",
+        "Biological and Genome Databases exclusively",
+        "Advanced Mobile Big Data Streaming",
+        "Geographic Information Systems (GIS) mapping"
+      ],
+      "correct": 0,
+      "explanation": "Slide 3 explicitly states at the bottom: 'Our course focuses on traditional applications' (numeric and textual)."
+    }
+  },
+  {
+    "num": 4,
+    "title": "Recent Developments (1)",
+    "arabicTitle": "التطورات الحديثة: شبكات التواصل ومحركات البحث",
+    "image": "materials/slides/db-lec2/slide_4.png",
+    "coreSummary": "كيف غيرت منصات التواصل الاجتماعي ومحركات البحث مفهوم البيانات بجمع مليارات المنشورات والصفحات والصور يومياً.",
+    "explanationIntro": "تستعرض الشريحة ثورة البيانات الحديثة؛ فالبيانات لم تعد مقتصرة على الجداول المألوفة، بل أصبحت تشمل كل تفاعل بشري إلكتروني عبر المنصات العالمية.",
+    "points": [
+      {
+        "badge": "Social Media",
+        "title": "شبكات التواصل الاجتماعي (Social Networks)",
+        "desc": "منصات مثل Facebook و Twitter و Linked-In تلتقط وتخزن كميات غير مسبوقة من منشورات وتغريدات وصور وفيديوهات ومحادثات المستخدمين."
+      },
+      {
+        "badge": "All is Data",
+        "title": "كل التفاعلات هي بيانات (Constitutes Data)",
+        "desc": "جميع المنشورات والتفضيلات والصور والروابط بين الأفراد تُعد بيانات حقيقية تتطلب معالجة وتحليلاً وتخزيناً ضخماً."
+      },
+      {
+        "badge": "Search Engines",
+        "title": "محركات البحث (Search Engines)",
+        "desc": "محركات مثل Google و Bing و Yahoo تجمع وتبني مستودعات وأرشيفات مفهرسة عملاقة لصفحات الويب لخدمة عمليات الاستعلام والبحث الفوري."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Recent Developments",
+        "ar": "التطورات الحديثة"
+      },
+      {
+        "en": "Social Networks",
+        "ar": "شبكات التواصل الاجتماعي"
+      },
+      {
+        "en": "Search Engines",
+        "ar": "محركات البحث"
+      },
+      {
+        "en": "Web Repository",
+        "ar": "مستودع صفحات الويب"
+      }
+    ],
+    "tricks": "منصات التواصل ومحركات البحث تمثل التطبيقات غير التقليدية للبيانات غير المهيكلة (Unstructured Data) التي مهدت لظهور تقنيات الـ NoSQL والـ Big Data.",
+    "quiz": {
+      "question": "Why do search engines such as Google, Bing, and Yahoo collect massive repositories of web pages?",
+      "options": [
+        "For searching and indexing purposes",
+        "To replace traditional computer operating systems",
+        "To eliminate all physical computer memory",
+        "To build video games for smartphones"
+      ],
+      "correct": 0,
+      "explanation": "Slide 4 indicates that search engines collect their own repository of web pages for searching purposes."
+    }
+  },
+  {
+    "num": 5,
+    "title": "Basic Definitions",
+    "arabicTitle": "التعريفات الأساسية: Database, Data, Mini-world, DBMS, DB System",
+    "image": "materials/slides/db-lec2/slide_5.png",
+    "coreSummary": "تعريف المصطلحات الخمسة الجوهرية في علم قواعد البيانات: البيانات، قاعدة البيانات، العالم المصغر (UoD)، نظام الإدارة DBMS، ونظام قاعدة البيانات.",
+    "explanationIntro": "هذه الشريحة من أهم شرائح المقرر على الإطلاق؛ تبني المفردات الدقيقة التي ستستخدمها في كل المحاضرات والامتحانات القادمة.",
+    "points": [
+      {
+        "badge": "Database",
+        "title": "قاعدة البيانات (Database)",
+        "desc": "مجموعة من البيانات المترابطة منطقياً (A collection of related data)."
+      },
+      {
+        "badge": "Data",
+        "title": "البيانات (Data)",
+        "desc": "حقائق معروفة يمكن تسجيلها ولها معنى ضمني محدد (Known facts that can be recorded and have an implicit meaning)."
+      },
+      {
+        "badge": "Mini-world",
+        "title": "العالم المصغر (Mini-world / Universe of Discourse - UoD)",
+        "desc": "جزء من العالم الحقيقي تُخزن بياناته في قاعدة البيانات (مثل درجات وسجلات طلاب جامعة). وأي تغيير في العالم المصغر ينعكس مباشرة في قاعدة البيانات."
+      },
+      {
+        "badge": "DBMS",
+        "title": "نظام إدارة قواعد البيانات (DBMS)",
+        "desc": "حزمة برمجية أو نظام برمجي يسهل إنشاء وصيانة قاعدة بيانات إلكترونية محوسبة (Software package to facilitate creation and maintenance)."
+      },
+      {
+        "badge": "Database System",
+        "title": "نظام قاعدة البيانات (Database System)",
+        "desc": "برمجيات الـ DBMS مع البيانات نفسها (DBMS software together with data itself)، وفي بعض الأحيان يشمل البرامج التطبيقية أيضاً."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Database",
+        "ar": "قاعدة بيانات"
+      },
+      {
+        "en": "Data",
+        "ar": "بيانات"
+      },
+      {
+        "en": "Mini-world / UoD",
+        "ar": "العالم المصغر / فضاء الحوار"
+      },
+      {
+        "en": "DBMS",
+        "ar": "نظام إدارة قواعد البيانات"
+      },
+      {
+        "en": "Database System",
+        "ar": "نظام قاعدة البيانات"
+      }
+    ],
+    "tricks": "انتبه بشدة للمصطلح 'Universe of Discourse' أو 'UoD'؛ هو الاسم العلمي البديل لـ 'Mini-world'. وتذكر أن الـ DBMS هو البرنامج، بينما الـ Database System هو البرنامج + البيانات المخزنة.",
+    "quiz": {
+      "question": "What is the technical definition of 'Data' according to Slide 5?",
+      "options": [
+        "Known facts that can be recorded and have an implicit meaning",
+        "A software package that manages hardware components",
+        "Random electromagnetic signals without meaning",
+        "An interconnected network of computer servers"
+      ],
+      "correct": 0,
+      "explanation": "Slide 5 defines Data as: 'Known facts that can be recorded and have an implicit meaning.'"
+    }
+  },
+  {
+    "num": 6,
+    "title": "Basic Definitions (cont.)",
+    "arabicTitle": "التعريفات الأساسية: التعريف، البيانات الوصفية، والتعامل مع البيانات",
+    "image": "materials/slides/db-lec2/slide_6.png",
+    "coreSummary": "شرح معنى تعريف قاعدة البيانات، مفهوم البيانات الوصفية (Meta-data) والكتالوج، وعمليات معالجة البيانات (الاسترجاع والتعديل).",
+    "explanationIntro": "توضح الشريحة كيف تبدأ دورة حياة قاعدة البيانات بتحديد البنية والأنواع والقيود، ثم تخزين هذا التوصيف كبيانات وصفية، وتوفير آليات استرجاع وتحديث البيانات عبر التطبيقات.",
+    "points": [
+      {
+        "badge": "Defining",
+        "title": "تعريف قاعدة البيانات (Defining a database)",
+        "desc": "تحديد وتخصيص أنواع البيانات (Data types)، الهياكل التخزينية (Structures)، والقيود والشروط (Constraints) للبيانات المراد حفظها."
+      },
+      {
+        "badge": "Meta-data",
+        "title": "البيانات الوصفية (Meta-data)",
+        "desc": "معلومات التوصيف والتعريف الخاصة بقاعدة البيانات (Database definition or descriptive info)؛ وتُخزن داخل الـ DBMS في 'كتالوج أو قاموس قاعدة البيانات' (Catalog or Dictionary)."
+      },
+      {
+        "badge": "Manipulating",
+        "title": "معالجة واستخدام البيانات (Manipulating a database)",
+        "desc": "تشمل: 1) الاسترجاع (Retrieval) عبر الاستعلامات وإنشاء التقارير، 2) التعديل (Modification) كالإضافة والحذف والتحديث، و3) الوصول عبر تطبيقات الويب."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Defining a database",
+        "ar": "تعريف قاعدة البيانات"
+      },
+      {
+        "en": "Meta-data",
+        "ar": "بيانات وصفية"
+      },
+      {
+        "en": "Catalog / Dictionary",
+        "ar": "كتالوج أو قاموس البيانات"
+      },
+      {
+        "en": "Retrieval",
+        "ar": "استرجاع البيانات"
+      },
+      {
+        "en": "Modification",
+        "ar": "تعديل وتحديث"
+      }
+    ],
+    "tricks": "الميتا-داتا (Meta-data) هي 'بيانات تصف البيانات'؛ سؤال امتحان يتكرر دائماً: أين يخزن الـ DBMS هذه البيانات الوصفية؟ الإجابة: في الـ Database Catalog أو Dictionary.",
+    "quiz": {
+      "question": "Where is the descriptive meta-data of a database stored by the DBMS?",
+      "options": [
+        "In the database catalog or dictionary",
+        "Inside the user application source code",
+        "On external paper documentation only",
+        "In the computer monitor hardware"
+      ],
+      "correct": 0,
+      "explanation": "Slide 6 states that Meta-data is stored by the DBMS in the form of a database catalog or dictionary."
+    }
+  },
+  {
+    "num": 7,
+    "title": "Basic Definitions (cont.)",
+    "arabicTitle": "التعريفات الأساسية: مشاركة البيانات، البرامج التطبيقية، والاستعلامات",
+    "image": "materials/slides/db-lec2/slide_7.png",
+    "coreSummary": "مفهوم مشاركة قاعدة البيانات بين مستخدمين متزامنين، ودور البرنامج التطبيقي والاستعلام (Query) في استدعاء البيانات.",
+    "explanationIntro": "تكمل الشريحة التعريفات الأساسية ببيان كيف يتفاعل العالم الخارجي مع قاعدة البيانات من خلال المشاركة المتزامنة والبرامج والاستعلامات الموجهة للمحرك.",
+    "points": [
+      {
+        "badge": "Sharing",
+        "title": "مشاركة قاعدة البيانات (Sharing a database)",
+        "desc": "السماح لعدة مستخدمين وعدة برامج بالوصول المتزامن (Simultaneous Access) إلى قاعدة البيانات في نفس الوقت دون تعارض."
+      },
+      {
+        "badge": "Application",
+        "title": "البرنامج التطبيقي (Application Program)",
+        "desc": "برنامج حاسوبي يصل إلى قاعدة البيانات عبر إرسال استعلامات وأوامر (Queries) إلى نظام إدارة قواعد البيانات DBMS."
+      },
+      {
+        "badge": "Query",
+        "title": "الاستعلام (Query)",
+        "desc": "أمر أو طلب موجه للـ DBMS يتسبب في جلب واسترجاع بيانات محددة من قاعدة البيانات (Causes some data to be retrieved)."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Sharing a database",
+        "ar": "مشاركة قاعدة البيانات"
+      },
+      {
+        "en": "Simultaneous access",
+        "ar": "وصول متزامن"
+      },
+      {
+        "en": "Application program",
+        "ar": "برنامج تطبيقي"
+      },
+      {
+        "en": "Query",
+        "ar": "استعلام"
+      }
+    ],
+    "tricks": "البرنامج التطبيقي (Application) لا يقرأ من القرص الصلب مباشرة، بل هو وسيط يرسل الـ Query إلى الـ DBMS، والـ DBMS هو المسؤول الحصري عن قراءة البيانات وإرجاعها.",
+    "quiz": {
+      "question": "According to Slide 7, what is an 'Application program' in the context of databases?",
+      "options": [
+        "A program that accesses the database by sending queries to the DBMS",
+        "A physical cable connecting the server to the router",
+        "A hardware device used to print database tables",
+        "The operating system kernel itself"
+      ],
+      "correct": 0,
+      "explanation": "Slide 7 defines an application program as one that 'Accesses database by sending queries to DBMS.'"
+    }
+  },
+  {
+    "num": 8,
+    "title": "Application Activities Against a Database",
+    "arabicTitle": "أنشطة التطبيقات على قاعدة البيانات (الاستعلامات والمعاملات)",
+    "image": "materials/slides/db-lec2/slide_8.png",
+    "coreSummary": "التطبيقات تتفاعل مع قاعدة البيانات بنوعين رئيسيين من الأنشطة: الاستعلامات (Queries) والمعاملات (Transactions)، مع حظر غير المصرح لهم ومواكبة المتطلبات.",
+    "explanationIntro": "توضح الشريحة العمليات التي تجريها التطبيقات على البيانات؛ فالأمر ينقسم إما إلى قراءة واسترجاع (Query) أو قراءة وتحديث وتوليد بيانات جديدة (Transaction) مع الالتزام الصارم بالأمان وتطوير النظام.",
+    "points": [
+      {
+        "badge": "Queries",
+        "title": "الاستعلامات (Queries)",
+        "desc": "تصل إلى أجزاء مختلفة من البيانات وتصيغ نتيجة الطلب المطلوب (Access data and formulate the result of a request)."
+      },
+      {
+        "badge": "Transactions",
+        "title": "المعاملات (Transactions)",
+        "desc": "عمليات قد تقرأ بعض البيانات وتقوم بتحديث قيم معينة أو توليد بيانات جديدة وتخزينها في قاعدة البيانات (Read, update values, or generate new data)."
+      },
+      {
+        "badge": "Security",
+        "title": "منع الوصول غير المصرح به",
+        "desc": "يجب على التطبيقات عدم السماح للمستخدمين غير المخولين (Unauthorized users) بالوصول إلى البيانات أو تعديلها."
+      },
+      {
+        "badge": "Evolution",
+        "title": "مواكبة المتطلبات المتغيرة",
+        "desc": "يجب أن تواكب التطبيقات متطلبات المستخدمين التي تتغير وتتطور باستمرار (Keep up with changing user requirements)."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Queries",
+        "ar": "استعلامات"
+      },
+      {
+        "en": "Transactions",
+        "ar": "معاملات"
+      },
+      {
+        "en": "Unauthorized access",
+        "ar": "وصول غير مصرح به"
+      },
+      {
+        "en": "Changing requirements",
+        "ar": "متطلبات متغيرة"
+      }
+    ],
+    "tricks": "الفرق الجوهري: الاستعلام (Query) هو عملية قراءة واسترجاع، أما المعاملة (Transaction) فتشمل قراءة وتعديل (Write/Update) لقيم في قاعدة البيانات.",
+    "quiz": {
+      "question": "Which activity against a database may read data, update certain values, or generate new data to be stored?",
+      "options": [
+        "Transaction",
+        "Simple Query",
+        "Monitor Screen Calibration",
+        "Keyboard Key Mapping"
+      ],
+      "correct": 0,
+      "explanation": "Slide 8 defines Transactions as operations that 'may read some data and update certain values or generate new data and store that in the database.'"
+    }
+  },
+  {
+    "num": 9,
+    "title": "Additional DBMS Functionality",
+    "arabicTitle": "الوظائف الإضافية لنظام الـ DBMS (الحماية، الأمان، والصيانة)",
+    "image": "materials/slides/db-lec2/slide_9.png",
+    "coreSummary": "وظائف الـ DBMS تتجاوز التخزين والاستعلام لتشمل حماية النظام من الأعطال البرمجية والعتادية، والأمان ضد الاختراق، وصيانة النظام وتطويره.",
+    "explanationIntro": "تبين هذه الشريحة المهام الحيوية التي يقوم بها محرك الـ DBMS في الخلفية لضمان بقاء البيانات سليمة ومحمية من الانهيار والسرقة، وقابلة للتطور مع متطلبات المؤسسة.",
+    "points": [
+      {
+        "badge": "System Protection",
+        "title": "حماية النظام (System Protection)",
+        "desc": "الحماية ضد أعطال ومشاكل العتاد (Hardware malfunction) أو انهيار وتوقف البرمجيات المفاجئ (Crashes)."
+      },
+      {
+        "badge": "Security Protection",
+        "title": "الحماية الأمنية (Security Protection)",
+        "desc": "حماية البيانات من الوصول غير المصرح به (Unauthorized) أو الهجمات الخبيثة (Malicious access)."
+      },
+      {
+        "badge": "Maintenance",
+        "title": "صيانة وتطوير النظام (Maintain & Evolve)",
+        "desc": "إتاحة الفرصة للنظام للتطور والتوسع وتعديل الهياكل كلما تغيرت المتطلبات بمرور الزمن."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "System protection",
+        "ar": "حماية النظام من الأعطال"
+      },
+      {
+        "en": "Hardware/Software crashes",
+        "ar": "انهيار العتاد والبرمجيات"
+      },
+      {
+        "en": "Security protection",
+        "ar": "الحماية الأمنية"
+      },
+      {
+        "en": "System evolution",
+        "ar": "تطور وتحديث النظام"
+      }
+    ],
+    "tricks": "احذر الخلط بين System Protection (التعافي من انقطاع الكهرباء وانهيار السيرفرات) و Security Protection (منع المتسللين وتحديد الصلاحيات).",
+    "quiz": {
+      "question": "Protecting the database system against hardware or software malfunctions (crashes) is termed as:",
+      "options": [
+        "System protection",
+        "Graphic rendering",
+        "Network latency",
+        "Data normalization"
+      ],
+      "correct": 0,
+      "explanation": "Slide 9 specifies that System Protection protects against hardware or software malfunction (or crashes)."
+    }
+  },
+  {
+    "num": 10,
+    "title": "Simplified database system environment",
+    "arabicTitle": "معمارية وبيئة نظام قواعد البيانات المبسطة (شكل 1.1)",
+    "image": "materials/slides/db-lec2/slide_10.png",
+    "coreSummary": "مخطط معمارية نظام قواعد البيانات المبسط (شكل 1.1): يوضح مسار الطلب من المستخدم والبرامج مروراً بمحرك الـ DBMS وصولاً لقاعدة البيانات والميتا-داتا.",
+    "explanationIntro": "يعرض هذا الشكل التوضيحي (Figure 1.1) كيف تترابط مكونات نظام قواعد البيانات كطبقات متسلسلة تبدأ من المستخدم وتمر ببرمجيات معالجة الاستعلام والوصول للبيانات.",
+    "points": [
+      {
+        "badge": "Top Layer",
+        "title": "المستخدمون والبرامج (Users & Application Programs)",
+        "desc": "في القمة: المستخدمون والمبرمجون (Users/Programmers) الذين يطلقون استعلامات أو تطبيقات (Application Programs/Queries)."
+      },
+      {
+        "badge": "DBMS Core (1)",
+        "title": "برمجية معالجة الاستعلامات (Software to Process Queries)",
+        "desc": "المكون البرمجي الأول داخل الـ DBMS الذي يستقبل الاستعلام ويفسره ويحوله لخطة تنفيذية."
+      },
+      {
+        "badge": "DBMS Core (2)",
+        "title": "برمجية الوصول للبيانات (Software to Access Stored Data)",
+        "desc": "المكون البرمجي الثاني المسؤول عن التخاطب مع وسائط التخزين لجلب وكتابة السجلات الفعلية."
+      },
+      {
+        "badge": "Storage Layer",
+        "title": "طبقة التخزين المزدوجة (Stored DB & Meta-Data)",
+        "desc": "التخزين ينقسم إلى أسطوانتين: الأولى هي 'Stored Database Definition (Meta-Data)' في الكتالوج، والثانية هي 'Stored Database' التي تحتوي البيانات الحقيقية."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Simplified DB Environment",
+        "ar": "بيئة نظام قواعد البيانات المبسطة"
+      },
+      {
+        "en": "Process Queries/Programs",
+        "ar": "معالجة الاستعلامات والبرامج"
+      },
+      {
+        "en": "Access Stored Data",
+        "ar": "الوصول للبيانات المخزنة"
+      },
+      {
+        "en": "Meta-Data Catalog",
+        "ar": "كتالوج البيانات الوصفية"
+      }
+    ],
+    "tricks": "لاحظ في الرسم: برمجيات الـ DBMS تقرأ من أسطوانة الـ Meta-Data أولاً لمعرفة بنية الجداول ومواقعها، قبل أن تقرأ أو تكتب في أسطوانة الـ Stored Database.",
+    "quiz": {
+      "question": "In the simplified database system environment diagram (Figure 1.1), what two distinct storage components are shown at the bottom?",
+      "options": [
+        "Stored Database Definition (Meta-Data) and Stored Database",
+        "RAM Cache and Optical Disk",
+        "Operating System Kernel and BIOS",
+        "Display Buffer and Printer Queue"
+      ],
+      "correct": 0,
+      "explanation": "Figure 1.1 displays two cylinders at the bottom: 'Stored Database Definition (Meta-Data)' and 'Stored Database'."
+    }
+  },
+  {
+    "num": 11,
+    "title": "Example of a Database (with a Conceptual Data Model)",
+    "arabicTitle": "مثال عملي لقاعدة بيانات جامعية (الكيانات الأساسية)",
+    "image": "materials/slides/db-lec2/slide_11.png",
+    "coreSummary": "مثال لقاعدة بيانات تمثل جزءاً من بيئة جامعية (UNIVERSITY) وتحديد الكيانات الواقعية المستهدفة (STUDENTs, COURSEs, SECTIONs, DEPARTMENTs, INSTRUCTORs).",
+    "explanationIntro": "تبدأ هذه الشريحة في تطبيق المفاهيم النظرية على بيئة واقعية نعيشها جميعاً، وهي بيئة الجامعة، مستعرضة الكيانات التي نحتاج تخزين معلومات عنها.",
+    "points": [
+      {
+        "badge": "Mini-world",
+        "title": "العالم المصغر المختار",
+        "desc": "بيئة الجامعة الأكاديمية (Part of a UNIVERSITY environment)."
+      },
+      {
+        "badge": "Entities (1)",
+        "title": "الطلاب والمقررات",
+        "desc": "كيان الطلاب (STUDENTs) لتخزين البيانات الشخصية والأكاديمية، وكيان المقررات (COURSEs) لتسجيل المواد الدراسية."
+      },
+      {
+        "badge": "Entities (2)",
+        "title": "الشعب والسكاشن (SECTIONs)",
+        "desc": "الشعب والفصول الدراسية المنعقدة لكل مادة في فصل دراسي معين (Sections of courses)."
+      },
+      {
+        "badge": "Entities (3)",
+        "title": "الأقسام والمحاضرون",
+        "desc": "الأقسام الأكاديمية (academic DEPARTMENTs) مثل قسم IS و CS، والمحاضرون وأعضاء هيئة التدريس (INSTRUCTORs)."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Conceptual Data Model",
+        "ar": "نموذج البيانات المفاهيمي"
+      },
+      {
+        "en": "UNIVERSITY environment",
+        "ar": "بيئة الجامعة"
+      },
+      {
+        "en": "Entities",
+        "ar": "الكيانات"
+      },
+      {
+        "en": "STUDENTs, COURSEs, SECTIONs",
+        "ar": "الطلاب، المقررات، الفصول"
+      }
+    ],
+    "tricks": "هذه الكيانات هي الأساس الذي يُبنى عليه النموذج المفاهيمي (Conceptual Model)؛ كل كيان يمثل شيئاً واقعياً موجوداً ومستقلاً في البيئة الجامعية.",
+    "quiz": {
+      "question": "Which of the following is NOT listed as a mini-world entity in the UNIVERSITY example on Slide 11?",
+      "options": [
+        "AEROPLANE flight routes",
+        "STUDENTs",
+        "SECTIONs (of COURSEs)",
+        "INSTRUCTORs"
+      ],
+      "correct": 0,
+      "explanation": "Slide 11 lists STUDENTs, COURSEs, SECTIONs, DEPARTMENTs, and INSTRUCTORs. 'AEROPLANE flight routes' belongs to an airline, not a university."
+    }
+  },
+  {
+    "num": 12,
+    "title": "Example of a Database (with a Conceptual Data Model) - Relationships",
+    "arabicTitle": "العلاقات في قاعدة البيانات الجامعية ونموذج الـ ER",
+    "image": "materials/slides/db-lec2/slide_12.png",
+    "coreSummary": "تحديد العلاقات المنطقية التي تربط كيانات الجامعة ببعضها، والتأكيد على استخدام نموذج الـ Entity-Relationship (ER) للتعبير عنها.",
+    "explanationIntro": "بعد تحديد الكيانات، توضح الشريحة الروابط والعلاقات التي تجمعها معاً (مثل طالب يسجل مادة، دكتور يدرس سكشن)، مشيرة إلى أن مخطط ER هو الأداة المعتمدة لتمثيلها مفاهيمياً.",
+    "points": [
+      {
+        "badge": "Relation 1-2",
+        "title": "علاقات الشعب والتسجيل",
+        "desc": "الشعب والفصول تتبع مقررات محددة (SECTIONs are of specific COURSEs)، والطلاب يسجلون في الشعب (STUDENTs take SECTIONs)."
+      },
+      {
+        "badge": "Relation 3-4",
+        "title": "المتطلبات السابقة والتدريس",
+        "desc": "المقررات قد يكون لها متطلبات سابقة (COURSEs have prerequisite COURSEs)، والمحاضرون يدرسون الشعب (INSTRUCTORs teach SECTIONs)."
+      },
+      {
+        "badge": "Relation 5-6",
+        "title": "طرح المواد والتخصصات",
+        "desc": "المقررات تطرح بواسطة أقسام أكاديمية (COURSEs offered by DEPARTMENTs)، والطلاب يتخصصون في أقسام محددة (STUDENTs major in DEPARTMENTs)."
+      },
+      {
+        "badge": "Model Note",
+        "title": "التعبير عبر نموذج الـ ER",
+        "desc": "ملاحظة هامة: يتم التعبير عن هذه الكيانات والعلاقات عادة باستخدام نموذج مفاهيمي يُدعى ENTITY-RELATIONSHIP (ER) data model."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Relationships",
+        "ar": "العلاقات"
+      },
+      {
+        "en": "Prerequisite",
+        "ar": "متطلب سابق"
+      },
+      {
+        "en": "Major in",
+        "ar": "يتخصص في قسم"
+      },
+      {
+        "en": "ENTITY-RELATIONSHIP (ER) model",
+        "ar": "نموذج الكيانات والعلاقات"
+      }
+    ],
+    "tricks": "سؤال امتحاني جوهري: ما هو النموذج المفاهيمي القياسي لتمثيل الكيانات والعلاقات؟ الإجابة: The Entity-Relationship (ER) data model.",
+    "quiz": {
+      "question": "According to Slide 12, what conceptual data model is typically used to express real-world entities and relationships?",
+      "options": [
+        "ENTITY-RELATIONSHIP (ER) data model",
+        "Binary Hexadecimal Assembly Model",
+        "TCP/IP 4-Layer Network Model",
+        "Von Neumann Computer Architecture Model"
+      ],
+      "correct": 0,
+      "explanation": "Slide 12 specifically states: 'The above entities and relationships are typically expressed in a conceptual data model, such as the ENTITY-RELATIONSHIP data model.'"
+    }
+  },
+  {
+    "num": 13,
+    "title": "Example of a simple database (Tables & Data)",
+    "arabicTitle": "مثال عملي للجداول وسجلات البيانات (شكل 1.2)",
+    "image": "materials/slides/db-lec2/slide_13.png",
+    "coreSummary": "نموذج فعلي لقاعدة بيانات علائقية تضم 4 جداول رئيسية: COURSE و SECTION و GRADE_REPORT و PREREQUISITE وتوضح الربط بالمفاتيح.",
+    "explanationIntro": "ينقلنا هذا الشكل (Figure 1.2) من المفهوم النظري إلى الشكل الفعلي للبيانات المخزنة في جداول ذات صفوف وأعمدة متناسقة.",
+    "points": [
+      {
+        "badge": "COURSE",
+        "title": "جدول المقررات (COURSE)",
+        "desc": "يحتوي على: Course_name (اسم المقرر)، Course_number (رمز المادة مثل CS1310)، Credit_hours (عدد الساعات)، و Department (القسم)."
+      },
+      {
+        "badge": "SECTION",
+        "title": "جدول الشعب الدراسية (SECTION)",
+        "desc": "يحتوي على: Section_identifier (رقم الشعبة الفريد مثل 85)، Course_number، Semester، Year، و Instructor (اسم الدكتور مثل King أو Knuth)."
+      },
+      {
+        "badge": "GRADE_REPORT",
+        "title": "جدول تقارير الدرجات (GRADE_REPORT)",
+        "desc": "يربط بين رقم الطالب (Student_number) ورقم الشعبة (Section_identifier) والدرجة المستحقة (Grade: A, B, C)."
+      },
+      {
+        "badge": "PREREQUISITE",
+        "title": "جدول المتطلبات السابقة (PREREQUISITE)",
+        "desc": "يحدد المادة المطلوبة قبل مادة أخرى عبر زوج من الرموز (Course_number و Prerequisite_number)."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Relational Tables",
+        "ar": "جداول علائقية"
+      },
+      {
+        "en": "COURSE Table",
+        "ar": "جدول المقررات"
+      },
+      {
+        "en": "SECTION Table",
+        "ar": "جدول الشعب"
+      },
+      {
+        "en": "GRADE_REPORT Table",
+        "ar": "جدول تقارير الدرجات"
+      },
+      {
+        "en": "PREREQUISITE Table",
+        "ar": "جدول المتطلبات"
+      }
+    ],
+    "tricks": "لاحظ كيف أن جدول GRADE_REPORT لا يكرر اسم الطالب ولا اسم المادة، بل يكتفي بالأرقام المعرفة (Foreign Keys) لربط السجلات بكفاءة ومنع التكرار.",
+    "quiz": {
+      "question": "In the database tables shown in Figure 1.2 (Slide 13), which table records the relationship between a student number and a section identifier to store a Grade?",
+      "options": [
+        "GRADE_REPORT",
+        "COURSE",
+        "PREREQUISITE",
+        "DEPARTMENT_MASTER"
+      ],
+      "correct": 0,
+      "explanation": "Figure 1.2 shows that GRADE_REPORT contains Student_number, Section_identifier, and Grade."
+    }
+  },
+  {
+    "num": 14,
+    "title": "Main Characteristics of the Database Approach",
+    "arabicTitle": "الخصائص الرئيسية لمدخل قواعد البيانات: الوصف الذاتي واستقلالية البيانات",
+    "image": "materials/slides/db-lec2/slide_14.png",
+    "coreSummary": "خاصيتان جوهريتان تميزان الـ Database Approach عن نظم الملفات التقليدية: الطبيعة ذاتية الوصف (Self-describing) واستقلالية البرامج عن البيانات (Program-data independence).",
+    "explanationIntro": "هذه الشريحة توضح السر الحقيقي لقوة قواعد البيانات مقارنة بالنظم القديمة؛ فالبيانات تصف نفسها داخل كتالوج، وتعديل هيكل البيانات لا يتطلب تعديل أكواد البرامج.",
+    "points": [
+      {
+        "badge": "Self-Describing",
+        "title": "الطبيعة ذاتية الوصف (Self-describing nature)",
+        "desc": "نظام الـ DBMS يحتوي على كتالوج (Catalog) يخزن الوصف الكامل لقاعدة البيانات (هياكل البيانات، أنواعها، والقيود) وهو ما يسمى بالبيانات الوصفية (Meta-data)."
+      },
+      {
+        "badge": "Generality",
+        "title": "عمومية برمجية الـ DBMS",
+        "desc": "وجود الميتا-داتا في الكتالوج يسمح لبرمجية الـ DBMS بالعمل مع أي تطبيق وأي قاعدة بيانات جديدة دون تغيير في كود محرك الـ DBMS نفسه."
+      },
+      {
+        "badge": "Data Independence",
+        "title": "استقلالية البرامج عن البيانات (Program-data independence)",
+        "desc": "عزل كامل بين البرامج والبيانات المخزنة؛ يتيح تغيير هياكل البيانات وتنظيم التخزين دون الحاجة لتعديل برامج الوصول الخاصة بـ DBMS."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Characteristics of DB Approach",
+        "ar": "خصائص مدخل قواعد البيانات"
+      },
+      {
+        "en": "Self-describing nature",
+        "ar": "الطبيعة ذاتية الوصف"
+      },
+      {
+        "en": "DBMS Catalog",
+        "ar": "كتالوج الـ DBMS"
+      },
+      {
+        "en": "Program-data independence",
+        "ar": "استقلالية البرامج عن البيانات"
+      }
+    ],
+    "tricks": "في النظم القديمة (File Systems)، كان شكل الملف مكتوباً داخل كود البرنامج (Hardcoded)، فإذا غيرت حجم حقل في الملف تعطل البرنامج بالكامل؛ قواعد البيانات حلت هذه المشكلة تماماً بفضل الـ Program-data independence.",
+    "quiz": {
+      "question": "What characteristic of the database approach allows changing data structures and storage organization without changing access programs?",
+      "options": [
+        "Program-data independence",
+        "Screen pixel resolution scaling",
+        "Magnetic disk rotation speed",
+        "Network packet routing"
+      ],
+      "correct": 0,
+      "explanation": "Slide 14 defines 'Program-data independence' as allowing changing data structures and storage organization without having to change access programs."
+    }
+  },
+  {
+    "num": 15,
+    "title": "Example of a simplified database catalog",
+    "arabicTitle": "مثال لكتالوج قاعدة البيانات المبسط (شكل 1.3)",
+    "image": "materials/slides/db-lec2/slide_15.png",
+    "coreSummary": "نموذج عملي لكتالوج النظام يوضح كيف يخزن الـ DBMS بياناته الوصفية في جدولين: RELATIONS (أسماء الجداول وعدد الأعمدة) و COLUMNS (الخصائص والأنواع).",
+    "explanationIntro": "يوضح هذا الشكل (Figure 1.3) التطبيق العملي لمفهوم الـ Meta-data؛ حيث يقوم الـ DBMS ببناء جداول داخلية خاصة به لتوثيق كل جدول وعمود ينشئه المستخدم.",
+    "points": [
+      {
+        "badge": "RELATIONS Table",
+        "title": "جدول العلاقات والكيانات (RELATIONS)",
+        "desc": "يخزن اسم كل جدول في النظام (مثل STUDENT, COURSE, SECTION...) وعدد الأعمدة الموجودة به (No_of_columns)."
+      },
+      {
+        "badge": "COLUMNS Table",
+        "title": "جدول تفاصيل الأعمدة (COLUMNS)",
+        "desc": "يخزن اسم العمود (Column_name)، نوع بياناته (Data_type مثل Character(30) أو Integer(1))، والجدول الذي يتبعه (Belongs_to_relation)."
+      },
+      {
+        "badge": "Metadata in Practice",
+        "title": "كيف يرى الـ DBMS قاعدة البيانات؟",
+        "desc": "عندما تطلب أي استعلام، يقوم محرك الـ DBMS بالرجوع لهذا الكتالوج أولاً ليتأكد من صحة أسماء الأعمدة وأنواع البيانات قبل لمس السجلات."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Database catalog",
+        "ar": "كتالوج قاعدة البيانات"
+      },
+      {
+        "en": "RELATIONS catalog table",
+        "ar": "جدول العلاقات في الكتالوج"
+      },
+      {
+        "en": "COLUMNS catalog table",
+        "ar": "جدول الأعمدة في الكتالوج"
+      },
+      {
+        "en": "Data_type",
+        "ar": "نوع البيانات"
+      }
+    ],
+    "tricks": "لاحظ أن الـ DBMS يعامل الكتالوج كأنه جداول عادية ولكنها مخصصة له (System Tables)؛ الميتا-داتا مخزنة بنفس منطق البيانات العادية.",
+    "quiz": {
+      "question": "In the simplified database catalog example (Figure 1.3, Slide 15), what information does the RELATIONS table store?",
+      "options": [
+        "Relation_name and No_of_columns",
+        "Student grades and exam scores",
+        "The professor's salary and office hours",
+        "The operating system version and RAM size"
+      ],
+      "correct": 0,
+      "explanation": "Figure 1.3 clearly shows the RELATIONS table has two columns: 'Relation_name' and 'No_of_columns'."
+    }
+  },
+  {
+    "num": 16,
+    "title": "Main Characteristics (cont.) - Data Abstraction & Operation Independence",
+    "arabicTitle": "تجريد البيانات واستقلالية العمليات والبرامج",
+    "image": "materials/slides/db-lec2/slide_16.png",
+    "coreSummary": "تجريد البيانات (Data Abstraction) يحقق استقلالية البيانات واستقلالية العمليات عبر فصل الواجهة (Interface) عن التنفيذ (Implementation).",
+    "explanationIntro": "تشرح الشريحة المفهوم المتقدم للـ Data Abstraction؛ فالنظام يوفر رؤية مفاهيمية للبيانات تخفي تفاصيل التخزين، ويفصل مواصفات العمليات عن كود تنفيذها الداخلي.",
+    "points": [
+      {
+        "badge": "Data Abstraction",
+        "title": "مفهوم تجريد البيانات (Data Abstraction)",
+        "desc": "تمكين المستخدم من التعامل مع تمثيل مفاهيمي للبيانات (Conceptual Representation) دون الحاجة لمعرفة تفاصيل التخزين الفيزيائي المعقدة على الأقراص."
+      },
+      {
+        "badge": "Independence 1",
+        "title": "استقلالية البرنامج عن البيانات (Program-data independence)",
+        "desc": "هيكل ملفات البيانات يُخزن في كتالوج الـ DBMS بشكل منفصل تماماً عن برامج الوصول."
+      },
+      {
+        "badge": "Independence 2",
+        "title": "استقلالية البرنامج عن العمليات (Program-operation independence)",
+        "desc": "تُحدد العمليات في جزأين: 1) الواجهة (Interface) وتتضمن اسم العملية وأنواع مدخلاتها، 2) التنفيذ (Implementation) الذي يمكن تغييره داخلياً دون المساس بالواجهة."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Data Abstraction",
+        "ar": "تجريد البيانات"
+      },
+      {
+        "en": "Program-operation independence",
+        "ar": "استقلالية البرامج عن العمليات"
+      },
+      {
+        "en": "Interface vs Implementation",
+        "ar": "الواجهة مقابل التنفيذ الداخلي"
+      },
+      {
+        "en": "Conceptual representation",
+        "ar": "تمثيل مفاهيمي"
+      }
+    ],
+    "tricks": "تذكر دائماً أن العمليات تنقسم لـ Interface (الاسم والبارامترات) و Implementation (طريقة الكود)؛ تغيير الـ Implementation لا يؤثر أبداً على البرامج المستدعية طالما ظل الـ Interface ثابتاً.",
+    "quiz": {
+      "question": "In Program-operation independence, what consists of the operation name and the data types of its arguments?",
+      "options": [
+        "The Interface",
+        "The Physical storage track",
+        "The Power supply cable",
+        "The CPU register"
+      ],
+      "correct": 0,
+      "explanation": "Slide 16 explicitly states: 'Interface includes operation name and data types of its arguments.'"
+    }
+  },
+  {
+    "num": 17,
+    "title": "Main Characteristics (cont.) - Conceptual View & Multiple Views",
+    "arabicTitle": "النموذج المفاهيمي ودعم وجهات النظر المتعددة (Multiple Views)",
+    "image": "materials/slides/db-lec2/slide_17.png",
+    "coreSummary": "استخدام نموذج البيانات لتقديم رؤية مفاهيمية وإخفاء التخزين، مع دعم وجهات نظر متعددة (Multiple Views) تناسب كل فئة مستخدمين.",
+    "explanationIntro": "توضح الشريحة كيف يحمي الـ DBMS المستخدمين من تعقيد التخزين باستخدام نماذج البيانات، وكيف يوفر لكل مستخدم زاوية رؤية خاصة به (View) تعرض فقط ما يحتاجه وتحجب ما لا يعنيه.",
+    "points": [
+      {
+        "badge": "Data Model",
+        "title": "دور نموذج البيانات (Data Model)",
+        "desc": "يُستخدم لإخفاء تفاصيل التخزين الفيزيائي وتقديم رؤية مفاهيمية (Conceptual View) للبيانات؛ البرامج تتعامل مع عناصر النموذج وليس مع مسارات القرص الصلب."
+      },
+      {
+        "badge": "Multiple Views",
+        "title": "دعم وجهات نظر متعددة (Support of multiple views)",
+        "desc": "كل فئة من المستخدمين ترى واجهة أو منظوراً مختلفاً لقاعدة البيانات يعرض فقط البيانات التي تهمهم وتخص عملهم (Data of interest)."
+      },
+      {
+        "badge": "Benefits",
+        "title": "فوائد الـ Multiple Views",
+        "desc": "تسهيل العمل لكل موظف وتوفير حماية أمنية قوية بمنع الموظفين العاديين من رؤية البيانات المالية أو السرية لزملائهم."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Conceptual view",
+        "ar": "رؤية مفاهيمية"
+      },
+      {
+        "en": "Data Model constructs",
+        "ar": "تراكيب نموذج البيانات"
+      },
+      {
+        "en": "Multiple views of data",
+        "ar": "وجهات نظر متعددة للبيانات"
+      }
+    ],
+    "tricks": "الـ View في قواعد البيانات ليست مجرد تصميم شاشة، بل هي جدول افتراضي (Virtual Table) يفلتر البيانات ويخصصها؛ طالب الفرقة الثانية يرى درجاته فقط بينما الكنترول يرى درجات الكلية كلها.",
+    "quiz": {
+      "question": "Why does a modern DBMS support multiple views of the data?",
+      "options": [
+        "To allow each user to see only the data of interest to that specific user",
+        "To force all users to use the exact same black and white terminal",
+        "To increase the power consumption of server hardware",
+        "To duplicate all tables ten times across hard drives"
+      ],
+      "correct": 0,
+      "explanation": "Slide 17 states: 'Each user may see a different view of the database, which describes only the data of interest to that user.'"
+    }
+  },
+  {
+    "num": 18,
+    "title": "Main Characteristics (cont.) - Sharing, Concurrency & OLTP",
+    "arabicTitle": "مشاركة البيانات، التحكم في التزامن، والـ OLTP",
+    "image": "materials/slides/db-lec2/slide_18.png",
+    "coreSummary": "المعالجة المتزامنة للمعاملات بين عدة مستخدمين، دور الـ Concurrency Control والـ Recovery Subsystem، وأهمية أنظمة الـ OLTP.",
+    "explanationIntro": "تتناول هذه الشريحة قلب أنظمة قواعد البيانات المؤسسية؛ حيث تتيح لمئات المستخدمين القراءة والكتابة في نفس الوقت دون تلف البيانات، بفضل آليات التحكم في التزامن والتعافي من الأخطاء.",
+    "points": [
+      {
+        "badge": "Sharing & Concurrency",
+        "title": "مشاركة البيانات والمعالجة المتزامنة",
+        "desc": "السماح لمجموعة مستخدمين متزامنين (Concurrent users) باسترجاع وتحديث قاعدة البيانات في اللحظة ذاتها دون تعارض."
+      },
+      {
+        "badge": "Concurrency Control",
+        "title": "التحكم في التزامن (Concurrency Control)",
+        "desc": "آلية داخل الـ DBMS تضمن تنفيذ كل معاملة (Transaction) بشكل صحيح تماماً أو التراجع عنها بالكامل (Aborted) لمنع التضارب."
+      },
+      {
+        "badge": "Recovery Subsystem",
+        "title": "النظام الفرعي للتعافي (Recovery Subsystem)",
+        "desc": "يضمن أن أي معاملة اكتملت بنجاح يتم تسجيل أثرها بشكل دائم وغير قابل للفقد في قاعدة البيانات حتى لو انقطع التيار فوراً."
+      },
+      {
+        "badge": "OLTP",
+        "title": "معالجة المعاملات الفورية (OLTP)",
+        "desc": "Online Transaction Processing: ركن أساسي في تطبيقات التجارة والبنوك يسمح بتنفيذ مئات المعاملات المتزامنة في الثانية الواحدة."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Multi-user transaction processing",
+        "ar": "معالجة المعاملات لعدة مستخدمين"
+      },
+      {
+        "en": "Concurrency control",
+        "ar": "التحكم في التزامن"
+      },
+      {
+        "en": "Recovery subsystem",
+        "ar": "نظام التعافي الفرعي"
+      },
+      {
+        "en": "OLTP",
+        "ar": "معالجة المعاملات الفورية عبر الإنترنت"
+      }
+    ],
+    "tricks": "سؤال كلاسيكي: ما هو النظام المسؤول عن ضمان بقاء أثر المعاملات المكتملة بشكل دائم؟ الإجابة: The Recovery Subsystem. وما هو اختصار OLTP؟ Online Transaction Processing.",
+    "quiz": {
+      "question": "What does the abbreviation 'OLTP' stand for in database systems (Slide 18)?",
+      "options": [
+        "Online Transaction Processing",
+        "Optical Laser Transmission Protocol",
+        "Offline Terminal Protocol",
+        "Operating Logic Track Program"
+      ],
+      "correct": 0,
+      "explanation": "Slide 18 clearly notes that OLTP stands for Online Transaction Processing, allowing hundreds of concurrent transactions per second."
+    }
+  },
+  {
+    "num": 19,
+    "title": "Database Users - Overview",
+    "arabicTitle": "تصنيفات مستخدمي قواعد البيانات (على المسرح وخلف الكواليس)",
+    "image": "materials/slides/db-lec2/slide_19.png",
+    "coreSummary": "تقسيم مستخدمي قواعد البيانات إلى فئتين رئيسيتين: الفاعلون على المسرح (Actors on the Scene) والعاملون خلف الكواليس (Workers Behind the Scene).",
+    "explanationIntro": "تدخل المحاضرة هنا في تصنيف البشر المتعاملين مع أنظمة البيانات؛ فهناك من يتعامل مع محتوى وتطبيقات قاعدة البيانات مباشرة، وهناك من يبني محرك الـ DBMS والأدوات المساندة له.",
+    "points": [
+      {
+        "badge": "Category 1",
+        "title": "الفاعلون على المسرح (Actors on the Scene)",
+        "desc": "الأشخاص الذين يستخدمون محتوى قاعدة البيانات ويتحكمون فيه فعلياً، ومن يصممون ويطورون ويصينون تطبيقاتها المباشرة."
+      },
+      {
+        "badge": "Category 2",
+        "title": "العاملون خلف الكواليس (Workers Behind the Scene)",
+        "desc": "الأشخاص الذين يصممون ويطورون برمجيات الـ DBMS نفسها وأدواتها، بالإضافة لمشغلي أنظمة الحواسب والسيرفرات."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Database Users",
+        "ar": "مستخدمو قواعد البيانات"
+      },
+      {
+        "en": "Actors on the Scene",
+        "ar": "الفاعلون على المسرح"
+      },
+      {
+        "en": "Workers Behind the Scene",
+        "ar": "العاملون خلف الكواليس"
+      }
+    ],
+    "tricks": "قاعدة ذهبية للامتحان: إذا كان الشخص يتعامل مع 'بيانات التطبيق' أو 'بناء التطبيق' فهو (Actor on the scene)، أما إذا كان يبني 'محرك الـ DBMS نفسه' أو أدواته فهو (Worker behind the scene).",
+    "quiz": {
+      "question": "According to Slide 19, those who actually use and control database content or develop database applications are called:",
+      "options": [
+        "Actors on the Scene",
+        "Workers Behind the Scene",
+        "Hardware Manufacturers",
+        "Passive Observers"
+      ],
+      "correct": 0,
+      "explanation": "Slide 19 explicitly defines those who use, control, and develop database applications as 'Actors on the Scene'."
+    }
+  },
+  {
+    "num": 20,
+    "title": "Database Users – Actors on the Scene (DBA & Designers)",
+    "arabicTitle": "الفاعلون على المسرح: مدير قاعدة البيانات (DBA) ومصممو النظم",
+    "image": "materials/slides/db-lec2/slide_20.png",
+    "coreSummary": "مسؤوليات مدير قاعدة البيانات (DBA) في إدارة الصلاحيات والموارد ومراقبة الأداء، ومسؤوليات مصمم قاعدة البيانات في تحديد الهيكل والقيود.",
+    "explanationIntro": "تفصل الشريحة أهم وظيفتين قياديتين في بيئة قواعد البيانات؛ الـ DBA صاحب الصلاحيات والمسؤول عن التشغيل والأمان، والـ Designer المسؤول عن الهيكلة والنمذجة الرياضية.",
+    "points": [
+      {
+        "badge": "DBA",
+        "title": "مسؤول إدارة قاعدة البيانات (Database Administrator - DBA)",
+        "desc": "المسؤول عن تفويض ومنح صلاحيات الوصول، تنسيق ومراقبة الاستخدام، توفير موارد العتاد والبرمجيات، والتحكم في كفاءة وسرعة العمليات."
+      },
+      {
+        "badge": "DB Designers",
+        "title": "مصممو قواعد البيانات (Database Designers)",
+        "desc": "مسؤولون عن تحديد المحتوى، الهيكل الداخلي، القيود والشروط، والمعاملات المطلوبة؛ ويجب عليهم التواصل مع المستخدمين النهائيين لفهم احتياجاتهم."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Database Administrator (DBA)",
+        "ar": "مدير قاعدة البيانات"
+      },
+      {
+        "en": "Authorizing access",
+        "ar": "منح وتفويض الصلاحيات"
+      },
+      {
+        "en": "Database Designers",
+        "ar": "مصممو قواعد البيانات"
+      },
+      {
+        "en": "Constraints and Structure",
+        "ar": "القيود والهياكل"
+      }
+    ],
+    "tricks": "سؤال متكرر: من المسؤول عن 'Authorizing access' وتوفير موارد العتاد؟ الإجابة فوراً: الـ DBA. ومن المسؤول عن 'Define content, structure, constraints'؟ الإجابة: الـ Database Designer.",
+    "quiz": {
+      "question": "Who is responsible for authorizing access to the database, coordinating its use, and acquiring software/hardware resources?",
+      "options": [
+        "Database Administrator (DBA)",
+        "End User",
+        "Operating System Tester",
+        "Computer Hardware Assembler"
+      ],
+      "correct": 0,
+      "explanation": "Slide 20 defines the DBA as responsible for authorizing access, coordinating and monitoring use, and acquiring resources."
+    }
+  },
+  {
+    "num": 21,
+    "title": "Database End Users (Casual & Naïve/Parametric)",
+    "arabicTitle": "المستخدمون النهائيون: العرضيون والوسطاء/البارامتريون",
+    "image": "materials/slides/db-lec2/slide_21.png",
+    "coreSummary": "تصنيف المستخدمين النهائيين إلى نوعين: المستخدمون العرضيون (Casual)، والمستخدمون البارامتريون (Naïve/Parametric) أصحاب المعاملات الجاهزة (Canned Transactions).",
+    "explanationIntro": "تستعرض الشريحة المستخدمين الفعليين للبيانات؛ من يحتاجها نادراً عند الطلب، والشريحة الأضخم في المجتمع التي تنفذ مهام روتينية محددة يومياً كصرافي البنوك ومستخدمي الهواتف.",
+    "points": [
+      {
+        "badge": "Casual Users",
+        "title": "المستخدمون العرضيون (Casual End Users)",
+        "desc": "يصلون إلى قاعدة البيانات من وقت لآخر بصورة متقطعة كلما دعت الحاجة لبيانات معينة (Occasionally when needed)."
+      },
+      {
+        "badge": "Naïve / Parametric",
+        "title": "المستخدمون البارامتريون (Naïve or Parametric Users)",
+        "desc": "يمثلون الشريحة الأكبر من مستخدمي قواعد البيانات في العالم؛ يستخدمون وظائف محددة ومبرمجة مسبقاً تُعرف بالمعاملات الجاهزة (Canned transactions)."
+      },
+      {
+        "badge": "Examples",
+        "title": "أمثلة على الـ Parametric Users",
+        "desc": "صرافو البنوك (Bank tellers)، موظفو حجز تذاكر الطيران، مستخدمو تطبيقات الهواتف الذكية (Mobile Apps)، ومستخدمو وسائل التواصل الاجتماعي."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Casual Users",
+        "ar": "مستخدمون عرضيون"
+      },
+      {
+        "en": "Naïve / Parametric Users",
+        "ar": "مستخدمون بارامتريون / سذج"
+      },
+      {
+        "en": "Canned transactions",
+        "ar": "معاملات مبرمجة جاهزة"
+      },
+      {
+        "en": "Bank tellers",
+        "ar": "صرافو البنوك"
+      }
+    ],
+    "tricks": "مصطلح 'Canned Transactions' علامة مميزة دائماً لـ 'Naïve or Parametric Users'؛ هم لا يكتبون استعلامات ولا يعرفون شيئاً عن SQL، بل ينفذون شاشات معدة مسبقاً بإدخال معطيات محددة فقط.",
+    "quiz": {
+      "question": "Bank tellers and mobile app users who perform predefined 'canned transactions' fall under which category of end-users?",
+      "options": [
+        "Naïve or Parametric users",
+        "Database Administrators",
+        "DBMS Kernel Implementors",
+        "Hardware Circuit Designers"
+      ],
+      "correct": 0,
+      "explanation": "Slide 21 states that Naïve or Parametric users make up a large section of the population and use 'canned transactions' (e.g., bank tellers, mobile app users)."
+    }
+  },
+  {
+    "num": 22,
+    "title": "Database End Users (cont.) - Sophisticated & Stand-alone",
+    "arabicTitle": "المستخدمون النهائيون: المتطورون والمستقلون (Sophisticated & Stand-alone)",
+    "image": "materials/slides/db-lec2/slide_22.png",
+    "coreSummary": "المستخدمون المتطورون (العلماء والمهندسون والمحللون) وقدراتهم المتقدمة، والمستخدمون المستقلون الذين يديرون قواعد بيانات شخصية بحزم جاهزة.",
+    "explanationIntro": "تكمل الشريحة تصنيفات المستخدمين النهائيين بالحديث عن الخبراء الذين يستغلون كامل قدرات النظام البرمجية والتحليلية، والمستخدمين العاديين الذين يمتلكون برامج شخصية محلية كبرامج الضرائب والصور.",
+    "points": [
+      {
+        "badge": "Sophisticated",
+        "title": "المستخدمون المتطورون (Sophisticated End Users)",
+        "desc": "يشملون محللي الأعمال، العلماء، والمهندسين؛ على دراية وخبرة عميقة بكامل إمكانيات النظام، ويستخدمون حزم برمجية متقدمة تتفاعل مباشرة مع قاعدة البيانات."
+      },
+      {
+        "badge": "Stand-alone",
+        "title": "المستخدمون المستقلون (Stand-alone Users)",
+        "desc": "يديرون قواعد بيانات شخصية خاصة بهم باستخدام تطبيقات وحزم برمجية جاهزة للاستخدام (Ready-to-use packaged applications)."
+      },
+      {
+        "badge": "Examples",
+        "title": "أمثلة على الـ Stand-alone Users",
+        "desc": "مستخدم برنامج إعداد الإقرارات الضريبية (Tax program) الذي ينشئ قاعدة بياناته الداخلية، أو شخص يدير قاعدة بيانات لملفات وصور وفيديوهات عائلته الشخصية."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Sophisticated Users",
+        "ar": "مستخدمون متطورون / محترفون"
+      },
+      {
+        "en": "Business Analysts & Scientists",
+        "ar": "محللو الأعمال والعلماء"
+      },
+      {
+        "en": "Stand-alone Users",
+        "ar": "مستخدمون مستقلون"
+      },
+      {
+        "en": "Personal databases",
+        "ar": "قواعد بيانات شخصية"
+      }
+    ],
+    "tricks": "إذا ذكر في السؤال محلل أعمال أو عالم يستخدم حزم برمجية لتحليل البيانات فهو (Sophisticated User)؛ أما إذا ذكر مستخدم برنامج ضرائب أو صور شخصية فهو (Stand-alone User).",
+    "quiz": {
+      "question": "A user who maintains a personal database of family photos using a ready-to-use software package is classified as a:",
+      "options": [
+        "Stand-alone user",
+        "Database Administrator (DBA)",
+        "System Implementor",
+        "Parametric Bank Teller"
+      ],
+      "correct": 0,
+      "explanation": "Slide 22 gives the example of a user maintaining a database of personal photos/videos as a 'Stand-alone user'."
+    }
+  },
+  {
+    "num": 23,
+    "title": "Database Users – Actors on the Scene (cont.) - Analysts & Programmers",
+    "arabicTitle": "الفاعلون على المسرح: محللو النظم، المبرمجون، ومحللو الأعمال",
+    "image": "materials/slides/db-lec2/slide_23.png",
+    "coreSummary": "أدوار محللي النظم في فهم الاحتياجات، مبرمجي التطبيقات في كتابة الأكواد واختبارها، ومحللي الأعمال في استنتاج الرؤى من البيانات الضخمة (Big Data).",
+    "explanationIntro": "تستعرض هذه الشريحة الفئات الهندسية والبرمجية المسؤولة عن بناء التطبيقات في سوق العمل؛ وهم يمثلون الشريحة الأكبر من القوى العاملة في مجال تكنولوجيا المعلومات (IT).",
+    "points": [
+      {
+        "badge": "System Analysts",
+        "title": "محللو النظم (System Analysts)",
+        "desc": "يفهمون متطلبات المستخدمين (البارامتريين والمتطورين) ويصممون مواصفات التطبيقات والمعاملات الجاهزة (Canned transactions) لتلبية تلك الاحتياجات."
+      },
+      {
+        "badge": "Programmers",
+        "title": "مبرمجو التطبيقات (Application Programmers)",
+        "desc": "ينفذون ويكتبون البرامج بناءً على المواصفات التي وضعها محللو النظم، ويقومون باختبارها وتصحيح أخطائها (Test & Debug) قبل نشرها للمستخدمين."
+      },
+      {
+        "badge": "Business Analysts",
+        "title": "محللو الأعمال (Business Analysts)",
+        "desc": "فئة متزايدة الأهمية لتحليل كميات البيانات الضخمة (Big Data) والبيانات اللحظية للمساعدة في اتخاذ قرارات أفضل في التخطيط والإعلانات والتسويق."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "System Analysts",
+        "ar": "محللو النظم"
+      },
+      {
+        "en": "Application Programmers",
+        "ar": "مبرمجو التطبيقات"
+      },
+      {
+        "en": "Business Analysts",
+        "ar": "محللو الأعمال"
+      },
+      {
+        "en": "Big Data decision making",
+        "ar": "اتخاذ القرار بناءً على البيانات الضخمة"
+      }
+    ],
+    "tricks": "المحلل (System Analyst) يضع المواصفات والتصميم، بينما المبرمج (Application Programmer) يكتب الكود البرمجي ويختبره؛ ومحلل الأعمال (Business Analyst) يستخرج الرؤى من البيانات الضخمة.",
+    "quiz": {
+      "question": "Who is responsible for implementing specifications developed by analysts, testing, and debugging them before deployment?",
+      "options": [
+        "Application Programmers",
+        "Stand-alone end users",
+        "Hardware circuit technicians",
+        "Security guards"
+      ],
+      "correct": 0,
+      "explanation": "Slide 23 states that Application Programmers 'Implement the specifications developed by analysts and test and debug them before deployment.'"
+    }
+  },
+  {
+    "num": 24,
+    "title": "Database Users – Actors behind the Scene",
+    "arabicTitle": "الفاعلون خلف الكواليس: مصممو الـ DBMS، مطورو الأدوات، ومشغلو النظم",
+    "image": "materials/slides/db-lec2/slide_24.png",
+    "coreSummary": "العاملون خلف الكواليس الذين لا يتعاملون مع البيانات مباشرة: مصممو حزم الـ DBMS، مطورو أدوات النمذجة والمراقبة، وفريق التشغيل والصيانة.",
+    "explanationIntro": "تختتم الشريحة تصنيفات المستخدمين بالتركيز على 'العاملين خلف الكواليس'؛ وهم المهندسون الذين يصنعون محرك قواعد البيانات والبرمجيات المساعدة التي تمكن باقي المطورين من العمل.",
+    "points": [
+      {
+        "badge": "DBMS Designers",
+        "title": "مصممو ومنفذو حزم الـ DBMS (System Designers & Implementors)",
+        "desc": "يصممون وينفذون برمجيات الـ DBMS ووحداتها وواجهاتها، ويجرون اختباراتها لترتبط بنجاح مع لغات البرمجة وأنظمة التشغيل."
+      },
+      {
+        "badge": "Tool Developers",
+        "title": "مطورو الأدوات (Tool Developers)",
+        "desc": "يصممون ويطورون برمجيات مساندة (Tools) لنمذجة وتصميم قواعد البيانات، ومراقبة الأداء، وتوليد بيانات الاختبار، وبناء الواجهات والمحاكاة."
+      },
+      {
+        "badge": "Operators",
+        "title": "مشغلو النظم وفنيو الصيانة (Operators & Maintenance)",
+        "desc": "مسؤولون عن التشغيل الفعلي والمستمر وصيانة بيئة العتاد والبرمجيات الخاصة بخوادم قواعد البيانات."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Actors behind the Scene",
+        "ar": "الفاعلون خلف الكواليس"
+      },
+      {
+        "en": "System Designers and Implementors",
+        "ar": "مصممو ومنفذو النظم"
+      },
+      {
+        "en": "Tool Developers",
+        "ar": "مطورو الأدوات المساندة"
+      },
+      {
+        "en": "Operators and Maintenance Personnel",
+        "ar": "مسؤولو التشغيل والصيانة"
+      }
+    ],
+    "tricks": "انتبه: مطور أدوات مراقبة الأداء (Tool Developer) ومبرمج محرك الـ DBMS هما 'Behind the Scene'؛ بينما مبرمج التطبيق الخاص بالجامعة أو البنك هو 'On the Scene'.",
+    "quiz": {
+      "question": "Which group of 'Actors behind the Scene' develops software tools for performance monitoring, database modeling, and prototyping?",
+      "options": [
+        "Tool Developers",
+        "Casual End Users",
+        "System Analysts",
+        "Bank Tellers"
+      ],
+      "correct": 0,
+      "explanation": "Slide 24 defines Tool Developers as those who design and implement software tools for modeling, performance monitoring, prototyping, etc."
+    }
+  },
+  {
+    "num": 25,
+    "title": "Advantages of Using the Database Approach",
+    "arabicTitle": "مزايا مدخل قواعد البيانات: التحكم في تكرار البيانات وتقييد الوصول",
+    "image": "materials/slides/db-lec2/slide_25.png",
+    "coreSummary": "الميزة الأولى: التحكم في التكرار وتطبيع البيانات (Normalization) لضمان اتساقها، والميزة الثانية: تقييد الوصول وحظر غير المصرح لهم.",
+    "explanationIntro": "تبدأ المحاضرة في استعراض المزايا التنافسية الكبرى لنظم قواعد البيانات؛ ولعل أهمها التخلص من كارثة تكرار البيانات وتناقضها التي كانت تحدث في الملفات التقليدية.",
+    "points": [
+      {
+        "badge": "Redundancy Control",
+        "title": "التحكم في تكرار البيانات (Controlling Redundancy)",
+        "desc": "تخزين كل معلومة منطقية (مثل اسم الطالب أو تاريخ ميلاده) في مكان واحد فقط داخل قاعدة البيانات، مما يوفر المساحة ويمنع تضارب البيانات."
+      },
+      {
+        "badge": "Normalization",
+        "title": "تطبيع البيانات (Data Normalization)",
+        "desc": "الأسلوب العلمي المتبع لتنظيم الجداول ومنع التكرار، وهو ما يضمن اتساق البيانات (Consistency) وتوفير سعة التخزين."
+      },
+      {
+        "badge": "Access Restriction",
+        "title": "تقييد الوصول غير المصرح به (Restricting Unauthorized Access)",
+        "desc": "حماية البيانات بصلاحيات مشددة بحيث لا يستطيع أحد استخدام الأوامر الحساسة أو التعديل إلا فريق الـ DBA المخول رسمياً."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Controlling redundancy",
+        "ar": "التحكم في التكرار"
+      },
+      {
+        "en": "Data normalization",
+        "ar": "تطبيع وتنظيم البيانات"
+      },
+      {
+        "en": "Data consistency",
+        "ar": "اتساق وتطابق البيانات"
+      },
+      {
+        "en": "Restricting unauthorized access",
+        "ar": "تقييد الوصول غير المصرح به"
+      }
+    ],
+    "tricks": "مصطلح Data Normalization يعني علمياً: تخزين كل معلومة منطقية في مكان واحد فقط لضمان الـ Consistency؛ تكرار البيانات في أنظمة الملفات القديمة كان يؤدي لـ Inconsistency عند تعديل ملف وإهمال الآخر.",
+    "quiz": {
+      "question": "Storing each logical data item in only one place in the database to ensure consistency and save storage space is known as:",
+      "options": [
+        "Data normalization",
+        "Data encryption scrambling",
+        "Screen buffer swapping",
+        "Instruction pipelining"
+      ],
+      "correct": 0,
+      "explanation": "Slide 25 states: 'each logical data item... is stored in only one place in the database. This is known as data normalization, and it ensures consistency and saves storage space.'"
+    }
+  },
+  {
+    "num": 26,
+    "title": "Advantages of Using the Database Approach (cont.)",
+    "arabicTitle": "مزايا مدخل قواعد البيانات: التخزين المستمر، تحسين الاستعلامات، والنسخ الاحتياطي",
+    "image": "materials/slides/db-lec2/slide_26.png",
+    "coreSummary": "توفير التخزين المستمر للكائنات، تقنيات البحث والفهارس لتحسين الاستعلامات بكفاءة، خدمات النسخ الاحتياطي والتعافي، وتعدد الواجهات.",
+    "explanationIntro": "تواصل الشريحة استعراض مزايا قواعد البيانات التقنية؛ من تسريع عمليات البحث بواسطة الفهارس، إلى الحفاظ على كائنات البرمجة دائمية، وضمان عدم ضياع أي بيان بالنسخ الاحتياطي.",
+    "points": [
+      {
+        "badge": "Persistent Storage",
+        "title": "التخزين المستمر لكائنات البرامج (Persistent Storage)",
+        "desc": "مثل قواعد البيانات كائنية التوجه (Object-oriented DBMSs) التي تجعل كائنات لغات البرمجة محفوظة بشكل دائم حتى بعد إغلاق التطبيق."
+      },
+      {
+        "badge": "Query Optimization",
+        "title": "معالجة وتحسين الاستعلامات (Efficient Query Processing)",
+        "desc": "توفير هياكل تخزين وفهارس (Indexes) ومُحسِّن استعلامات يختار أفضل خطة تنفيذية (Execution Plan) لتسريع جلب النتائج."
+      },
+      {
+        "badge": "Backup & Recovery",
+        "title": "خدمات النسخ الاحتياطي والتعافي",
+        "desc": "توفير آليات آلية لعمل نسخ احتياطية واستعادة البيانات دون فقدان في حال حدوث أي عطل بالنظام."
+      },
+      {
+        "badge": "Multiple Interfaces",
+        "title": "توفير واجهات استخدام متعددة (Multiple User Interfaces)",
+        "desc": "تقديم واجهات متنوعة تناسب مختلف المستخدمين (واجهات رسومية GUI للمبتدئين، وواجهات أوامر Command line للمحترفين)."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Persistent storage",
+        "ar": "تخزين دائم ومستمر"
+      },
+      {
+        "en": "Query processing & optimization",
+        "ar": "معالجة وتحسين الاستعلامات"
+      },
+      {
+        "en": "Indexes",
+        "ar": "الفهارس"
+      },
+      {
+        "en": "Backup and recovery services",
+        "ar": "خدمات النسخ الاحتياطي والتعافي"
+      },
+      {
+        "en": "Multiple user interfaces",
+        "ar": "واجهات مستخدم متعددة"
+      }
+    ],
+    "tricks": "المكون المسؤول عن اختيار أفضل مسار لتنفيذ الاستعلام بناءً على الفهارس الموجودة يسمى 'The query processing and optimization module'.",
+    "quiz": {
+      "question": "Which DBMS module is responsible for choosing an efficient execution plan for each query based on existing storage structures (like indexes)?",
+      "options": [
+        "The query processing and optimization module",
+        "The sound card audio driver",
+        "The mechanical cooling fan controller",
+        "The keyboard interrupt handler"
+      ],
+      "correct": 0,
+      "explanation": "Slide 26 mentions: 'The query processing and optimization module of the DBMS is responsible for choosing an efficient query execution plan for each query based on the existing storage structures (e.g. indexes).'"
+    }
+  },
+  {
+    "num": 27,
+    "title": "Advantages of Using the Database Approach (cont.)",
+    "arabicTitle": "مزايا مدخل قواعد البيانات: العلاقات المعقدة، قيود التكامل، والمشغلات (Triggers)",
+    "image": "materials/slides/db-lec2/slide_27.png",
+    "coreSummary": "تمثيل العلاقات المعقدة بين البيانات، فرض قيود التكامل (Integrity Constraints)، واستخدام القواعد الإجرائية والمشغلات (Triggers).",
+    "explanationIntro": "تبرز هذه الشريحة ذكاء نظام قواعد البيانات؛ فهو ليس مجرد مستودع أرقام، بل كيان يفرض قيوداً صارمة لمنع الأخطاء وينفذ استنتاجات وإجراءات تلقائية عند حدوث أحداث معينة.",
+    "points": [
+      {
+        "badge": "Complex Relations",
+        "title": "تمثيل العلاقات المعقدة (Representing Complex Relationships)",
+        "desc": "القدرة على نمذجة علاقات متعددة ومتشابكة بين البيانات بسهولة وبشكل منظم ومترابط."
+      },
+      {
+        "badge": "Integrity Constraints",
+        "title": "فرض قيود التكامل (Enforcing Integrity Constraints)",
+        "desc": "التحقق التلقائي من سلامة البيانات وصحتها (مثل أن تكون أرقام الطلاب فريدة ولا تتكرر، وألا تقل الدرجة عن الصفر) ورفض أي إدخال خاطئ."
+      },
+      {
+        "badge": "Rules & Triggers",
+        "title": "القواعد الاستنتاجية والمشغلات (Deductive Rules & Triggers)",
+        "desc": "استخلاص إجراءات واستنتاجات تلقائية من البيانات المخزنة باستخدام القواعد والمشغلات الفعالة (Active rules and triggers) عند وقوع أحداث معينة."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Complex relationships",
+        "ar": "علاقات معقدة"
+      },
+      {
+        "en": "Integrity constraints",
+        "ar": "قيود التكامل وسلامة البيانات"
+      },
+      {
+        "en": "Deductive rules",
+        "ar": "قواعد استنتاجية"
+      },
+      {
+        "en": "Triggers",
+        "ar": "المشغلات التلقائية"
+      }
+    ],
+    "tricks": "قيود التكامل (Integrity Constraints) تُطبق مركزياً بواسطة الـ DBMS؛ وهذا يعني أنه مهما كتب المبرمج في برنامجه، لن يقبل الـ DBMS أي بيان يخالف القيود الموضوعة مسبقاً في الكتالوج.",
+    "quiz": {
+      "question": "According to Slide 27, what can be used to draw inferences and automated actions from stored data in a database?",
+      "options": [
+        "Deductive and active rules and triggers",
+        "Manual calculations on desktop paper",
+        "Power line voltage fluctuations",
+        "Operating system shut-down signals"
+      ],
+      "correct": 0,
+      "explanation": "Slide 27 states: 'Drawing inferences and actions from the stored data using deductive and active rules and triggers.'"
+    }
+  },
+  {
+    "num": 28,
+    "title": "Additional Implications of Using the Database Approach",
+    "arabicTitle": "تداعيات إضافية: فرض المعايير القياسية وتقليص زمن تطوير التطبيقات",
+    "image": "materials/slides/db-lec2/slide_28.png",
+    "coreSummary": "فرض المعايير القياسية في المؤسسات الكبرى (لتوحيد التسميات والشاشات والتقارير) وتقليص الزمن الإضافي المطلوب لتطوير وبناء تطبيقات جديدة.",
+    "explanationIntro": "تتناول الشريحة التأثير الإداري والمؤسسي لمدخل قواعد البيانات؛ حيث يؤدي لتوحيد بيئة العمل ويسرع بشدة من وتيرة بناء الأنظمة الجديدة بفضل وجود بنية بيانات مركزية جاهزة.",
+    "points": [
+      {
+        "badge": "Enforcing Standards",
+        "title": "فرض المعايير القياسية (Potential for Enforcing Standards)",
+        "desc": "أمر حيوي جداً لنجاح المشروعات في المؤسسات والشركات الكبرى؛ وتشمل المعايير: توحيد أسماء عناصر البيانات، صيغ العرض، الشاشات، هياكل التقارير، والبيانات الوصفية (Meta-data)."
+      },
+      {
+        "badge": "Reduced Dev Time",
+        "title": "تقليص زمن تطوير التطبيقات (Reduced Application Development Time)",
+        "desc": "بمجرد تصميم وإنشاء قاعدة البيانات الرئيسية، يصبح الوقت الإضافي المطلوب لإنشاء أي تطبيق أو شاشة جديدة قصيراً جداً لأن البيانات وبنيتها جاهزة ومفهرسة."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Enforcing standards",
+        "ar": "فرض المعايير القياسية"
+      },
+      {
+        "en": "Display formats & reports",
+        "ar": "صيغ العرض والتقارير"
+      },
+      {
+        "en": "Reduced development time",
+        "ar": "تقليص وقت التطوير"
+      },
+      {
+        "en": "Incremental time",
+        "ar": "الوقت الإضافي المتدرج"
+      }
+    ],
+    "tricks": "المعايير القياسية (Standards) تمنع المشاكل الناتجة عن تسمية الحقل نفسه بأسماء مختلفة بين الأقسام (مثل تكرار حقل رقم الهاتف كـ Tel و Phone)؛ قاعدة البيانات المركزية تفرض اسماً واحداً ومعياراً موحداً للجميع.",
+    "quiz": {
+      "question": "Why is the potential for enforcing standards crucial for database applications in large organizations?",
+      "options": [
+        "It standardizes data item names, display formats, screens, and report structures across departments",
+        "It forces all employees to purchase the exact same brand of laptop",
+        "It prevents all computers from connecting to the internet",
+        "It reduces monitor screen refresh rates to save electricity"
+      ],
+      "correct": 0,
+      "explanation": "Slide 28 explains that standards refer to data item names, display formats, screens, report structures, meta-data, etc., ensuring harmony in large organizations."
+    }
+  },
+  {
+    "num": 29,
+    "title": "Additional Implications (cont.) - Flexibility, Current Info & Economies of Scale",
+    "arabicTitle": "تداعيات إضافية: المرونة، توفر المعلومات اللحظية، والجدوى الاقتصادية",
+    "image": "materials/slides/db-lec2/slide_29.png",
+    "coreSummary": "المرونة العالية في تعديل هياكل البيانات مع تطور المتطلبات، توفر معلومات حية ولحظية للأنظمة الفورية (كالتسوق وحجز الطيران)، وتحقيق الجدوى الاقتصادية (Economies of Scale).",
+    "explanationIntro": "توضح الشريحة المكاسب الاستراتيجية والاقتصادية للمؤسسات؛ فالنظام مرن للتوسع، والمعلومات محدثة في لحظتها لدعم الحجوزات، والموارد مدمجة دون هدر أو تكرار في التكاليف والموظفين.",
+    "points": [
+      {
+        "badge": "Flexibility",
+        "title": "المرونة في تغيير هياكل البيانات (Flexibility to Change Structures)",
+        "desc": "بنية قاعدة البيانات قادرة على التطور والتكيف والتعديل مع ظهور متطلبات واحتياجات جديدة للمؤسسة."
+      },
+      {
+        "badge": "Current Info",
+        "title": "توفر معلومات لحظية ومحدثة (Availability of Current Information)",
+        "desc": "أمر بالغ الأهمية لأنظمة المعاملات الفورية المباشرة (On-line Transaction Systems) مثل مواقع التسوق الإلكتروني، حجوزات الطيران، والفنادق والسيارات."
+      },
+      {
+        "badge": "Economies of Scale",
+        "title": "الجدوى واقتصاديات الحجم (Economies of Scale)",
+        "desc": "تجنب الإهدار والتكرار العقيم في الموارد والأجهزة والموظفين عبر دمج وتوحيد البيانات والتطبيقات عبر كافة أقسام المؤسسة في نظام مركزي واحد."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Flexibility to change data structures",
+        "ar": "مرونة تعديل هياكل البيانات"
+      },
+      {
+        "en": "Current information availability",
+        "ar": "توفر معلومات محدثة ولحظية"
+      },
+      {
+        "en": "Online transaction systems",
+        "ar": "أنظمة المعاملات عبر الإنترنت"
+      },
+      {
+        "en": "Economies of scale",
+        "ar": "اقتصاديات الحجم والجدوى الاقتصادية"
+      }
+    ],
+    "tricks": "مصطلح 'Economies of scale' يعني: بدلاً من أن يشتري كل قسم سيرفراته وبرامجه وموظفيه بشكل مستقل ومهدر، دمج كل شيء في قاعدة بيانات مركزية يوفر التكاليف والمجهود بدرجة هائلة.",
+    "quiz": {
+      "question": "Which implication describes avoiding wasteful overlap of resources and personnel by consolidating data and applications across departments?",
+      "options": [
+        "Economies of scale",
+        "Screen resolution distortion",
+        "Thermal CPU throttling",
+        "Random memory fragmentation"
+      ],
+      "correct": 0,
+      "explanation": "Slide 29 explicitly defines 'Economies of scale' as avoiding wasteful overlap of resources and personnel by consolidating data and applications across departments."
+    }
+  },
+  {
+    "num": 30,
+    "title": "Lecture Summary",
+    "arabicTitle": "الملخص الشامل للمحاضرة ومراجعة المحاور العشرة",
+    "image": "materials/slides/db-lec2/slide_30.png",
+    "coreSummary": "مراجعة شاملة لجميع الموضوعات العشرة التي تم تغطيتها في المحاضرة، من التطبيقات والتعريفات وحتى المعمارية والمستخدمين والمزايا.",
+    "explanationIntro": "نصل هنا إلى شريحة الختام والتلخيص؛ تجمع الشريحة الخريطة المعرفية الكاملة لما تم شرحه طوال المحاضرة لتثبيت المفاهيم الأساسية قبل بدء الفصل القادم.",
+    "points": [
+      {
+        "badge": "Summary 1-3",
+        "title": "المفاهيم والتطبيقات والوظائف",
+        "desc": "استعرضنا أنواع قواعد البيانات (التقليدية والحديثة)، التعريفات الأساسية (Data, Database, Mini-world, DBMS, DB System)، ووظائف الـ DBMS لحماية وإدارة وتطوير البيانات."
+      },
+      {
+        "badge": "Summary 4-6",
+        "title": "النموذج والخصائص والمستخدمون",
+        "desc": "فهمنا نموذج جامعة UNIVERSITY والـ Conceptual ER Model، وخصائص الـ Database Approach (الوصف الذاتي، استقلالية البيانات والعمليات، التجريد، التزامن و OLTP)، وصنفنا المستخدمين على المسرح وخلف الكواليس."
+      },
+      {
+        "badge": "Summary 7-10",
+        "title": "المزايا والتطور وتوسيع النظم",
+        "desc": "أبرزنا مزايا التطبيع (Normalization)، منع التكرار، تقييد الصلاحيات، الفهارس، التخزين المستمر، فرض المعايير، والجدوى الاقتصادية للمؤسسات."
+      }
+    ],
+    "keywords": [
+      {
+        "en": "Lecture Summary",
+        "ar": "ملخص المحاضرة"
+      },
+      {
+        "en": "Database Approach",
+        "ar": "مدخل قواعد البيانات"
+      },
+      {
+        "en": "Data Normalization",
+        "ar": "تطبيع وتنظيم البيانات"
+      },
+      {
+        "en": "Database Users Classification",
+        "ar": "تصنيف مستخدمي قواعد البيانات"
+      },
+      {
+        "en": "OLTP & Concurrency",
+        "ar": "معالجة المعاملات الفورية والتزامن"
+      }
+    ],
+    "tricks": "شريحة التلخيص تكرر الـ 10 محاور المذكورة في شريحة الـ Outline؛ تأكد أنك تستطيع كتابة تعريف كل مصطلح إنجليزي ورد في هذه المحاضرة بدقة لأنها حجر الأساس لكل الميدتيرم والفاينل.",
+    "quiz": {
+      "question": "Which of the following is considered a core advantage of using the database approach discussed throughout this lecture?",
+      "options": [
+        "Controlling data redundancy through normalization and ensuring data consistency",
+        "Disabling all computer networks to save electrical power",
+        "Storing data exclusively in temporary RAM memory that vanishes on power off",
+        "Requiring each employee to reinvent their own file format independently"
+      ],
+      "correct": 0,
+      "explanation": "A cornerstone advantage of the database approach highlighted in the lecture summary is controlling redundancy through normalization and ensuring consistency."
+    }
+  }
+]
     }
   }
 };
