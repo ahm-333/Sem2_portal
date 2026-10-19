@@ -219,24 +219,36 @@ const SCHEDULE_CONFIG = {
 };
 
 // إدارة حالة اختيار الطالب وحفظها في localStorage
+const PROFILE_STORAGE = (typeof window !== "undefined" && window.PortalStorage) ||
+  (typeof require === "function" ? require("./shared/storage.js") : null);
+
 const StudentProfile = {
   KEY: "sem2_student_profile",
 
+  normalize(value) {
+    const object = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    const group = Object.hasOwn(SCHEDULE_CONFIG.groups, object.group) ? object.group : "B1";
+    const sections = SCHEDULE_CONFIG.groups[group].sections;
+    const section = Number(object.section);
+    return { group, section: Number.isInteger(section) && sections.includes(section) ? section : sections[0] };
+  },
+
   get() {
     try {
-      const saved = localStorage.getItem(this.KEY);
-      if (saved) return JSON.parse(saved);
+      const saved = PROFILE_STORAGE.getItem(this.KEY);
+      if (saved) return this.normalize(JSON.parse(saved));
     } catch (e) {}
     // افتراضي: B1 و سكشن 1
     return { group: "B1", section: 1 };
   },
 
   set(group, section) {
-    const data = { group: String(group), section: parseInt(section, 10) };
-    localStorage.setItem(this.KEY, JSON.stringify(data));
+    const data = this.normalize({ group, section });
+    PROFILE_STORAGE.setItem(this.KEY, JSON.stringify(data));
     if (typeof window !== "undefined" && typeof window.dispatchEvent === "function" && typeof CustomEvent !== "undefined") {
       window.dispatchEvent(new CustomEvent("studentProfileChanged", { detail: data }));
     }
+    return data;
   },
 
   // دالة لتنظيف وتوحيد أسماء المعيدين والألقاب لتسهيل المطابقة الدقيقة

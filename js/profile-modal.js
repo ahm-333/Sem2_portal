@@ -190,7 +190,7 @@
         const selectedSection = form.querySelector('input[name="student_section"]:checked')?.value || "1";
 
         window.StudentProfile.set(selectedGroup, selectedSection);
-        localStorage.setItem(FIRST_VISIT_FLAG, "true");
+        window.PortalStorage.setItem(FIRST_VISIT_FLAG, "true");
         updateNavBadge();
         closeModal();
       });
@@ -201,8 +201,9 @@
     if (closeBtn) closeBtn.addEventListener("click", closeModal);
 
     // أزرار فتح النافذة
-    document.querySelectorAll("[data-open-profile-modal]").forEach((btn) => {
-      btn.addEventListener("click", openModal);
+    document.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-open-profile-modal]");
+      if (button) openModal();
     });
 
     // إغلاق عند النقر في الخلفية
@@ -214,7 +215,7 @@
     }
 
     // إذا كانت الزيارة الأولى للطالب، تفتح النافذة تلقائياً لترحيبه وتمكينه من الاختيار
-    if (!localStorage.getItem(FIRST_VISIT_FLAG)) {
+    if (!window.PortalStorage.getItem(FIRST_VISIT_FLAG)) {
       setTimeout(openModal, 600);
     }
   });

@@ -10,7 +10,8 @@
 
   // قراءة الثيم الحالي أو الافتراضي (Dark)
   function getSavedTheme() {
-    return localStorage.getItem(THEME_KEY) || "dark";
+    const saved = window.PortalStorage.getItem(THEME_KEY);
+    return THEMES.includes(saved) ? saved : "dark";
   }
 
   // تطبيق الثيم على وسم <html>
@@ -26,7 +27,7 @@
       root.classList.remove("dark");
     }
 
-    localStorage.setItem(THEME_KEY, theme);
+    window.PortalStorage.setItem(THEME_KEY, theme);
     updateThemeUI(theme);
   }
 
