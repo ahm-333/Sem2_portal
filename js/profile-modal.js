@@ -6,6 +6,7 @@
 
 (function () {
   const FIRST_VISIT_FLAG = "sem2_first_visit_configured";
+  let welcomeTimer;
 
   // توليد كود النافذة المنبثقة وحقنها في الـ DOM
   function injectModalHTML() {
@@ -118,6 +119,7 @@
 
   // فتح وإغلاق النافذة
   function openModal() {
+    clearTimeout(welcomeTimer);
     const modal = document.getElementById("student-profile-modal");
     const box = document.getElementById("profile-modal-box");
     if (!modal) return;
@@ -131,11 +133,9 @@
     // تحديث أزرار السكاشن
     updateSectionRadios(current.group, current.section);
 
-    modal.classList.remove("hidden");
-    setTimeout(() => {
-      modal.classList.remove("opacity-0");
-      if (box) box.classList.remove("scale-95");
-    }, 10);
+    modal.classList.remove("opacity-0");
+    if (box) box.classList.remove("scale-95");
+    window.PortalDialog.open(modal);
 
     if (window.lucide) window.lucide.createIcons();
   }
@@ -145,11 +145,8 @@
     const box = document.getElementById("profile-modal-box");
     if (!modal) return;
 
-    modal.classList.add("opacity-0");
     if (box) box.classList.add("scale-95");
-    setTimeout(() => {
-      modal.classList.add("hidden");
-    }, 300);
+    window.PortalDialog.close(modal);
   }
 
   // تحديث بادج شريط التنقل (Navbar Badge)
@@ -216,7 +213,7 @@
 
     // إذا كانت الزيارة الأولى للطالب، تفتح النافذة تلقائياً لترحيبه وتمكينه من الاختيار
     if (!window.PortalStorage.getItem(FIRST_VISIT_FLAG)) {
-      setTimeout(openModal, 600);
+      welcomeTimer = setTimeout(openModal, 600);
     }
   });
 

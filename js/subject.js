@@ -176,16 +176,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const span = videoOpenNew.querySelector("span");
       if (span) span.textContent = isDrive ? "فتح في Google Drive" : "فتح في YouTube";
     }
-    videoModal.classList.remove("hidden");
-    document.body.classList.add("overflow-hidden");
+    window.PortalDialog.open(videoModal, { onClose: () => videoFrame.removeAttribute("src") });
     if (window.lucide) window.lucide.createIcons();
   }
 
   function closeVideoModal() {
     if (!videoModal || !videoFrame) return;
-    videoModal.classList.add("hidden");
-    videoFrame.src = "";
-    document.body.classList.remove("overflow-hidden");
+    window.PortalDialog.close(videoModal);
   }
 
   if (videoClose) {
@@ -348,16 +345,13 @@ document.addEventListener("DOMContentLoaded", function () {
       pdfDownload.href = downloadUrl || fileUrl;
       pdfDownload.setAttribute("download", filename || "lecture.pdf");
     }
-    pdfModal.classList.remove("hidden");
-    document.body.classList.add("overflow-hidden");
+    window.PortalDialog.open(pdfModal, { onClose: () => pdfFrame.removeAttribute("src") });
     if (window.lucide) window.lucide.createIcons();
   }
 
   function closePdfModal() {
     if (!pdfModal || !pdfFrame) return;
-    pdfModal.classList.add("hidden");
-    pdfFrame.src = "";
-    document.body.classList.remove("overflow-hidden");
+    window.PortalDialog.close(pdfModal);
   }
 
   if (pdfClose) {
@@ -463,8 +457,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function closeSmartStudyModal() {
     if (!studyModal) return;
-    studyModal.classList.add("hidden");
-    document.body.classList.remove("overflow-hidden");
+    window.PortalDialog.close(studyModal);
   }
 
   function renderFullQuiz(data) {
@@ -558,10 +551,10 @@ document.addEventListener("DOMContentLoaded", function () {
                       <span class="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-500 dark:text-indigo-300 font-mono font-bold text-xs flex items-center justify-center border border-indigo-500/20">
                         Q${q.id}
                       </span>
-                      <span class="text-xs font-bold text-[var(--text-main)] font-mono">${q.topic}</span>
+                      ${q.topic ? `<span class="text-xs font-bold text-[var(--text-main)] font-mono">${q.topic}</span>` : ""}
                     </div>
                     <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 dark:text-indigo-300 font-mono font-bold self-start sm:self-auto border border-indigo-500/20">
-                      Slide #${q.slideNum}
+                      ${Number.isInteger(q.slideNum) ? `Slide #${q.slideNum}` : ""}
                     </span>
                   </div>
 
@@ -1113,8 +1106,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     };
 
-    studyModal.classList.remove("hidden");
-    document.body.classList.add("overflow-hidden");
+    window.PortalDialog.open(studyModal);
     studySlidesFeed.scrollTop = 0;
     if (studyProgressBar) studyProgressBar.style.width = "0%";
     if (window.lucide) window.lucide.createIcons();
