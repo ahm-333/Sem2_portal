@@ -4,7 +4,7 @@
    متغيرات الأنماط البصرية الثلاثة (Dark / Light / Reading Mode)
    ============================================================================== */
 
-[hidden], .hidden { display: none !important; }
+[hidden] { display: none !important; }
 .dir-ltr, [dir="ltr"] { direction: ltr; }
 .dir-rtl, [dir="rtl"] { direction: rtl; }
 body { width: 100%; min-width: 0; margin: 0; }

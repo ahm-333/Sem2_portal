@@ -16,6 +16,81 @@
     let userAnswers = {};
     let score = 0;
 
+    function renderQuestion(q) {
+      const answered = userAnswers[q.id] !== undefined;
+      const userChoice = userAnswers[q.id];
+      return `
+        <div id="full-q-${q.id}" class="glass-panel p-5 sm:p-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] shadow-md space-y-4" data-qid="${q.id}">
+
+          <!-- هيدر السؤال -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[var(--border-subtle)]">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-500 dark:text-indigo-300 font-mono font-bold text-xs flex items-center justify-center border border-indigo-500/20">
+                Q${q.id}
+              </span>
+              ${q.topic ? `<span class="text-xs font-bold text-[var(--text-main)] font-mono">${q.topic}</span>` : ""}
+            </div>
+            ${Number.isInteger(q.slideNum) ? `<span class="text-[10px] px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 dark:text-indigo-300 font-mono font-bold self-start sm:self-auto border border-indigo-500/20">Slide #${q.slideNum}</span>` : ""}
+          </div>
+
+          <!-- نص السؤال بالإنجليزية -->
+          <div class="p-3.5 rounded-xl bg-[var(--bg-main)] border border-[var(--border-subtle)] text-left dir-ltr">
+            <p class="text-xs sm:text-sm font-bold text-[var(--text-main)] font-sans leading-relaxed">${q.question}</p>
+          </div>
+
+          <!-- خيارات السؤال -->
+          <div class="space-y-2 quiz-full-options">
+            ${q.options.map((opt, optIdx) => {
+              let optClass = "border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-main)] hover:border-indigo-500 cursor-pointer";
+              if (answered) {
+                if (optIdx === q.correct) {
+                  optClass = "border-emerald-600 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold cursor-default";
+                } else if (optIdx === userChoice) {
+                  optClass = "border-rose-600 bg-rose-500/15 text-rose-700 dark:text-rose-300 font-bold cursor-default";
+                } else {
+                  optClass = "border-[var(--border-subtle)] opacity-50 cursor-default";
+                }
+              }
+              return `
+                <button 
+                  type="button" 
+                  dir="ltr" class="full-quiz-opt-btn w-full text-left dir-ltr p-3 rounded-xl border text-xs font-medium transition-all flex items-center justify-between gap-3 ${optClass}"
+                  data-qid="${q.id}"
+                  data-opt-idx="${optIdx}"
+                  ${answered ? "disabled" : ""}
+                >
+                  <span class="flex-1 font-sans">${opt}</span>
+                  <span class="w-6 h-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex items-center justify-center text-[11px] font-mono font-bold flex-shrink-0">
+                    ${String.fromCharCode(65 + optIdx)}
+                  </span>
+                </button>
+              `;
+            }).join("")}
+          </div>
+
+          <!-- صندوق التفسير الفوري بالعامية المصرية ومصطلحات المادة -->
+          ${answered ? `
+            <div class="p-4 rounded-2xl border text-xs sm:text-sm leading-relaxed text-right dir-rtl animate-fade-in ${
+              userChoice === q.correct
+                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-200"
+                : "bg-rose-500/10 border-rose-500/30 text-rose-950 dark:text-rose-200"
+            }">
+              <div class="flex items-start gap-2.5">
+                <span class="text-xl flex-shrink-0">${userChoice === q.correct ? "🎉" : "💡"}</span>
+                <div>
+                  <strong class="font-black block mb-1 ${userChoice === q.correct ? "text-emerald-700 dark:text-emerald-300" : "text-rose-700 dark:text-rose-300"}">
+                    ${userChoice === q.correct ? "إجابة صحيحة يا بطل!" : "ركز في التريكة دي:"}
+                  </strong>
+                  <p class="leading-relaxed font-medium">${q.explanation}</p>
+                </div>
+              </div>
+            </div>
+          ` : ""}
+
+        </div>
+      `;
+    }
+
     function buildQuizHtml() {
       const answeredCount = Object.keys(userAnswers).length;
       return `
@@ -54,7 +129,7 @@
             <div class="mt-5 pt-4 border-t border-[var(--border-subtle)]">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-[11px] font-bold text-[var(--text-muted)]">خريطة الأسئلة (اضغط للقفز لأي سؤال):</span>
-                <span class="text-[10px] font-mono font-bold text-[var(--text-dim)]">${answeredCount} من ${questions.length} تم حله</span>
+                <span id="full-quiz-answered-count" class="text-[10px] font-mono font-bold text-[var(--text-dim)]">${answeredCount} من ${questions.length} تم حله</span>
               </div>
               <div class="flex items-center gap-1.5 flex-wrap">
                 ${questions.map((q) => {
@@ -80,82 +155,7 @@
 
           <!-- قائمة الأسئلة -->
           <div class="space-y-6">
-            ${questions.map((q) => {
-              const answered = userAnswers[q.id] !== undefined;
-              const userChoice = userAnswers[q.id];
-              return `
-                <div id="full-q-${q.id}" class="glass-panel p-5 sm:p-6 rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] shadow-md space-y-4" data-qid="${q.id}">
-                  
-                  <!-- هيدر السؤال -->
-                  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[var(--border-subtle)]">
-                    <div class="flex items-center gap-2.5">
-                      <span class="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-500 dark:text-indigo-300 font-mono font-bold text-xs flex items-center justify-center border border-indigo-500/20">
-                        Q${q.id}
-                      </span>
-                      ${q.topic ? `<span class="text-xs font-bold text-[var(--text-main)] font-mono">${q.topic}</span>` : ""}
-                    </div>
-                    <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 dark:text-indigo-300 font-mono font-bold self-start sm:self-auto border border-indigo-500/20">
-                      ${Number.isInteger(q.slideNum) ? `Slide #${q.slideNum}` : ""}
-                    </span>
-                  </div>
-
-                  <!-- نص السؤال بالإنجليزية -->
-                  <div class="p-3.5 rounded-xl bg-[var(--bg-main)] border border-[var(--border-subtle)] text-left dir-ltr">
-                    <p class="text-xs sm:text-sm font-bold text-[var(--text-main)] font-sans leading-relaxed">${q.question}</p>
-                  </div>
-
-                  <!-- خيارات السؤال -->
-                  <div class="space-y-2 quiz-full-options">
-                    ${q.options.map((opt, optIdx) => {
-                      let optClass = "border-[var(--border-subtle)] bg-[var(--bg-card)] text-[var(--text-main)] hover:border-indigo-500 cursor-pointer";
-                      if (answered) {
-                        if (optIdx === q.correct) {
-                          optClass = "border-emerald-600 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 font-bold cursor-default";
-                        } else if (optIdx === userChoice) {
-                          optClass = "border-rose-600 bg-rose-500/15 text-rose-700 dark:text-rose-300 font-bold cursor-default";
-                        } else {
-                          optClass = "border-[var(--border-subtle)] opacity-50 cursor-default";
-                        }
-                      }
-                      return `
-                        <button 
-                          type="button" 
-                          dir="ltr" class="full-quiz-opt-btn w-full text-left dir-ltr p-3 rounded-xl border text-xs font-medium transition-all flex items-center justify-between gap-3 ${optClass}"
-                          data-qid="${q.id}"
-                          data-opt-idx="${optIdx}"
-                          ${answered ? "disabled" : ""}
-                        >
-                          <span class="flex-1 font-sans">${opt}</span>
-                          <span class="w-6 h-6 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface)] flex items-center justify-center text-[11px] font-mono font-bold flex-shrink-0">
-                            ${String.fromCharCode(65 + optIdx)}
-                          </span>
-                        </button>
-                      `;
-                    }).join("")}
-                  </div>
-
-                  <!-- صندوق التفسير الفوري بالعامية المصرية ومصطلحات المادة -->
-                  ${answered ? `
-                    <div class="p-4 rounded-2xl border text-xs sm:text-sm leading-relaxed text-right dir-rtl animate-fade-in ${
-                      userChoice === q.correct
-                        ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-950 dark:text-emerald-200"
-                        : "bg-rose-500/10 border-rose-500/30 text-rose-950 dark:text-rose-200"
-                    }">
-                      <div class="flex items-start gap-2.5">
-                        <span class="text-xl flex-shrink-0">${userChoice === q.correct ? "🎉" : "💡"}</span>
-                        <div>
-                          <strong class="font-black block mb-1 ${userChoice === q.correct ? "text-emerald-700 dark:text-emerald-300" : "text-rose-700 dark:text-rose-300"}">
-                            ${userChoice === q.correct ? "إجابة صحيحة يا بطل!" : "ركز في التريكة دي:"}
-                          </strong>
-                          <p class="leading-relaxed font-medium">${q.explanation}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ` : ""}
-
-                </div>
-              `;
-            }).join("")}
+            ${questions.map(renderQuestion).join("")}
           </div>
 
           <!-- بطاقة التقييم النهائي للكويز -->
@@ -171,11 +171,11 @@
             </div>
             <div class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
               <span class="text-xs font-bold text-[var(--text-muted)]">الدرجة النهائية:</span>
-              <span class="text-2xl font-black text-indigo-500 font-mono">${score} / ${questions.length}</span>
-              <span class="text-xs font-bold text-emerald-500 font-mono">(${Math.round((score / questions.length) * 100)}%)</span>
+              <span id="full-quiz-final-score" class="text-2xl font-black text-indigo-500 font-mono">${score} / ${questions.length}</span>
+              <span id="full-quiz-percent" class="text-xs font-bold text-emerald-500 font-mono">(${Math.round((score / questions.length) * 100)}%)</span>
             </div>
-            <p class="text-sm font-bold text-[var(--text-main)] max-w-md mx-auto leading-relaxed">
-              ${score >= 17 ? "عاش جداً يا هندسة! إنت كده هضمت المحاضرة بالكامل ومستعد لأي سؤال ميدتيرم أو فاينل 🚀" : "مستوى كويس جداً! راجع الأسئلة اللي غلطت فيها وخلي بالك من التريكات."}
+            <p id="full-quiz-evaluation" class="text-sm font-bold text-[var(--text-main)] max-w-md mx-auto leading-relaxed">
+              ${score / questions.length >= 0.85 ? "عاش جداً يا هندسة! إنت كده هضمت المحاضرة بالكامل ومستعد لأي سؤال ميدتيرم أو فاينل 🚀" : "مستوى كويس جداً! راجع الأسئلة اللي غلطت فيها وخلي بالك من التريكات."}
             </p>
           </div>
 
@@ -183,57 +183,47 @@
       `;
     }
 
-    function attachFullQuizListeners() {
-      studyFullQuizView.querySelectorAll(".full-quiz-opt-btn").forEach(btn => {
-        btn.addEventListener("click", function () {
-          const qid = parseInt(this.getAttribute("data-qid"), 10);
-          const optIdx = parseInt(this.getAttribute("data-opt-idx"), 10);
-          const qObj = questions.find(q => q.id === qid);
-          if (!qObj || userAnswers[qid] !== undefined) return;
-
-          userAnswers[qid] = optIdx;
-          if (optIdx === qObj.correct) {
-            score++;
-          }
-
-          studyFullQuizView.innerHTML = buildQuizHtml();
-          attachFullQuizListeners();
-
-          const targetQEl = document.getElementById(`full-q-${qid}`);
-          if (targetQEl) {
-            targetQEl.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-          window.PortalUI.icons(studyFullQuizView);
-        });
-      });
-
-      studyFullQuizView.querySelectorAll(".q-map-pill").forEach(pill => {
-        pill.addEventListener("click", function () {
-          const targetId = this.getAttribute("data-jump-q");
-          const el = document.getElementById(targetId);
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        });
-      });
-
-      const resetBtn = document.getElementById("full-quiz-reset-btn");
-      if (resetBtn) {
-        resetBtn.addEventListener("click", () => {
-          userAnswers = {};
-          score = 0;
-          studyFullQuizView.innerHTML = buildQuizHtml();
-          attachFullQuizListeners();
-          studyFullQuizView.scrollTop = 0;
-          window.PortalUI.icons(studyFullQuizView);
-        });
+    // One delegated handler survives question updates and reset without rebinding.
+    studyFullQuizView.onclick = function (event) {
+      const option = event.target.closest(".full-quiz-opt-btn");
+      if (option && studyFullQuizView.contains(option)) {
+        const qid = Number(option.dataset.qid);
+        const choice = Number(option.dataset.optIdx);
+        const question = questions.find(item => item.id === qid);
+        if (!question || userAnswers[qid] !== undefined || !Number.isInteger(choice) || choice < 0 || choice >= question.options.length) return;
+        userAnswers[qid] = choice;
+        if (choice === question.correct) score++;
+        document.getElementById(`full-q-${qid}`).outerHTML = renderQuestion(question);
+        const answered = Object.keys(userAnswers).length;
+        document.getElementById("full-quiz-score-val").textContent = `${score} / ${questions.length}`;
+        document.getElementById("full-quiz-answered-count").textContent = `${answered} من ${questions.length} تم حله`;
+        const pill = studyFullQuizView.querySelector(`[data-jump-q="full-q-${qid}"]`);
+        pill.className = "q-map-pill w-8 h-8 rounded-xl text-xs font-mono font-bold border transition-all flex items-center justify-center cursor-pointer " +
+          (choice === question.correct ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border-emerald-500/40" : "bg-rose-500/20 text-rose-600 dark:text-rose-300 border-rose-500/40");
+        const summary = document.getElementById("full-quiz-summary-card");
+        summary.classList.toggle("hidden", answered !== questions.length);
+        document.getElementById("full-quiz-final-score").textContent = `${score} / ${questions.length}`;
+        document.getElementById("full-quiz-percent").textContent = `(${Math.round(score / questions.length * 100)}%)`;
+        document.getElementById("full-quiz-evaluation").textContent = score / questions.length >= 0.85 ? "ممتاز! راجع النقاط المتبقية واستمر في التدريب." : "راجع الأسئلة التي أخطأت فيها وجرب مرة أخرى.";
+        const card = document.getElementById(`full-q-${qid}`);
+        card.setAttribute("tabindex", "-1");
+        card.focus({preventScroll:true});
+        window.PortalUI.icons(card);
+        return;
       }
-
-      window.PortalUI.icons(studyFullQuizView);
-    }
-
+      if (event.target.closest("#full-quiz-reset-btn")) {
+        userAnswers = {};
+        score = 0;
+        studyFullQuizView.innerHTML = buildQuizHtml();
+        studyFullQuizView.scrollTop = 0;
+        window.PortalUI.icons(studyFullQuizView);
+        return;
+      }
+      const jump = event.target.closest(".q-map-pill");
+      if (jump) document.getElementById(jump.dataset.jumpQ)?.scrollIntoView({behavior:"smooth",block:"start"});
+    };
     studyFullQuizView.innerHTML = buildQuizHtml();
-    attachFullQuizListeners();
+    window.PortalUI.icons(studyFullQuizView);
   }
 
 

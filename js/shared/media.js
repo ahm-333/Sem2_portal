@@ -27,6 +27,15 @@
     const safe = safeURL(value);
     return !!safe && !(new URL(safe).hostname === 'drive.google.com' && new URL(safe).pathname.startsWith('/drive/folders/'));
   }
+  function sanitizeLinks(root) {
+    root.querySelectorAll('a[href]').forEach(link => {
+      if (!safeURL(link.getAttribute('href'))) {
+        link.removeAttribute('href');
+        link.setAttribute('aria-disabled', 'true');
+      }
+      if (link.target === '_blank') link.rel = 'noopener noreferrer';
+    });
+  }
   const isMobile = () => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   function openPreview(kind, value) {
     const source = safeURL(value.url);
@@ -97,5 +106,5 @@
       openPreview('pdf', {url:button.dataset.previewFile,title:button.dataset.previewTitle,subtitle:button.dataset.previewSubtitle,filename:button.dataset.previewFilename,viewUrl:button.dataset.previewView,downloadUrl:button.dataset.previewDownload});
     });
   });
-  window.PortalMedia = {safeURL, embedURL, canPreviewSite, copyLink};
+  window.PortalMedia = {safeURL, embedURL, canPreviewSite, copyLink, sanitizeLinks};
 })();

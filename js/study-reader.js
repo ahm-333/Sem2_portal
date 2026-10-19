@@ -22,6 +22,9 @@
 
   let isStudyFullscreen = false;
   let currentStudyFontZoom = 0; // 0 = normal, 1 = lg, 2 = xl
+  let requestSequence = 0;
+  let currentLecture;
+  let quizRendered = false;
 
   function setStudyFontZoom(level) {
     if (!studySlidesFeed) return;
@@ -49,6 +52,11 @@
       if (studySlidesView) studySlidesView.classList.remove("hidden");
       if (studyFullQuizView) studyFullQuizView.classList.add("hidden");
     } else {
+      if (!currentLecture) return;
+      if (!quizRendered) {
+        renderFullQuiz(currentLecture);
+        quizRendered = true;
+      }
       if (studyTabBtnSlides) studyTabBtnSlides.classList.remove("active");
       if (studyTabBtnQuiz) studyTabBtnQuiz.classList.add("active");
       if (studySlidesView) studySlidesView.classList.add("hidden");
@@ -86,14 +94,38 @@
   const fullQuiz = window.PortalStudyQuiz.create(studyFullQuizView);
   const renderFullQuiz = data => fullQuiz.render(data);
 
-  function openSmartStudyModal(courseId, lectureId) {
+  async function openSmartStudyModal(courseId, lectureId) {
     if (!studyModal || !studySlidesFeed) return;
-    const allExp = window.LECTURE_EXPLANATIONS || (typeof LECTURE_EXPLANATIONS !== "undefined" ? LECTURE_EXPLANATIONS : null);
-    const data = allExp && allExp[courseId] && allExp[courseId][lectureId];
-    if (!data) {
-      alert("عذراً، محتوى الشرح التفاعلي لهذه المحاضرة قيد التجهيز وسيتم إتاحته قريباً!");
+    const sequence = ++requestSequence;
+    currentLecture = undefined;
+    quizRendered = false;
+    studyFullQuizView.replaceChildren();
+    studyTabBtnQuiz.disabled = true;
+    switchStudyTab("slides");
+    studyJumpBar.replaceChildren();
+    studySlidesFeed.innerHTML = '<p role="status" class="py-8 text-center text-sm">جارٍ تحميل شرح المحاضرة…</p>';
+    studyModalTitle.textContent = "شرح المحاضرة";
+    studyModal.setAttribute("aria-busy", "true");
+    window.PortalDialog.open(studyModal, {onClose() {
+      requestSequence++;
+      studyModal.removeAttribute("aria-busy");
+    }});
+    let data;
+    try {
+      const allExp = await window.PortalStudyLoader.load();
+      if (sequence !== requestSequence) return;
+      data = allExp[courseId]?.[lectureId];
+      if (!data) throw new Error("Study lecture unavailable");
+    } catch {
+      if (sequence !== requestSequence) return;
+      studyModal.removeAttribute("aria-busy");
+      studySlidesFeed.innerHTML = '<div role="status" class="py-8 text-center space-y-4"><p>تعذر تحميل الشرح. تحقق من الاتصال وحاول مرة أخرى.</p><button id="study-retry" type="button" class="px-4 py-2 bg-indigo-600 text-white rounded-xl">إعادة المحاولة</button></div>';
+      document.getElementById("study-retry").addEventListener("click", () => openSmartStudyModal(courseId, lectureId));
       return;
     }
+    currentLecture = data;
+    studyTabBtnQuiz.disabled = false;
+    studyModal.removeAttribute("aria-busy");
 
     if (studyModalTitle) {
       studyModalTitle.textContent = `${data.lectureTitle} • ${data.lectureArabicTitle || ""}`;
@@ -484,8 +516,7 @@
       });
     });
 
-    // بناء وتشغيل الكويز الشامل في تاب منفصل
-    renderFullQuiz(data);
+    // The full quiz is built only when its tab is selected.
 
     // تتبع التمرير لمؤشر التقدم في تغذية السلايدات
     studySlidesFeed.onscroll = function () {
@@ -497,7 +528,6 @@
       }
     };
 
-    window.PortalDialog.open(studyModal);
     studySlidesFeed.scrollTop = 0;
     if (studyProgressBar) studyProgressBar.style.width = "0%";
     window.PortalUI.icons(studyModal);

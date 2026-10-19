@@ -4,6 +4,7 @@
     return String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
   }
   function icons(root = document) {
+    if (root) window.PortalMedia?.sanitizeLinks(root);
     if (!window.lucide || !root || !root.querySelector('[data-lucide]')) return;
     window.lucide.createIcons({root});
     root.querySelectorAll('svg[data-lucide]').forEach(icon => icon.removeAttribute('data-lucide'));

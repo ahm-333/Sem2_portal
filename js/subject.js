@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const downloadUrl = lec.driveDownloadUrl || lec.pdfUrl || "#";
         const filename = `${course.name}_Lecture_${lec.id}.${lec.fileType || 'pdf'}`;
         
-        const allExp = window.LECTURE_EXPLANATIONS || (typeof LECTURE_EXPLANATIONS !== "undefined" ? LECTURE_EXPLANATIONS : null);
+        const allExp = window.STUDY_CATALOG;
         const smartStudyData = allExp && allExp[course.id] && allExp[course.id][lec.id];
 
         const fileTypeLabel = (lec.fileType || 'pdf').toUpperCase();

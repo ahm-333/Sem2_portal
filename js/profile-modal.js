@@ -157,11 +157,13 @@
       b.innerHTML = `
         <span class="inline-flex items-center gap-1.5">
           <i data-lucide="user" class="w-3.5 h-3.5 text-cyan-400"></i>
-          <span>مجموعتي: <strong>${profile.group}</strong></span>
+          <span>مجموعتي: <strong data-profile-group></strong></span>
           <span class="opacity-40">•</span>
-          <span>سكشن <strong>${profile.section}</strong></span>
+          <span>سكشن <strong data-profile-section></strong></span>
         </span>
       `;
+      b.querySelector("[data-profile-group]").textContent = profile.group;
+      b.querySelector("[data-profile-section]").textContent = String(profile.section);
     });
     window.PortalUI.icons();
   }
@@ -187,7 +189,18 @@
         const selectedSection = form.querySelector('input[name="student_section"]:checked')?.value || "1";
 
         window.StudentProfile.set(selectedGroup, selectedSection);
-        window.PortalStorage.setItem(FIRST_VISIT_FLAG, "true");
+        const saved = window.PortalStorage.setItem(FIRST_VISIT_FLAG, "true");
+        if (!saved) {
+          let status = document.getElementById("preference-status");
+          if (!status) {
+            status = document.createElement("p");
+            status.id = "preference-status";
+            status.className = "fixed bottom-4 left-4 right-4 z-[150] glass-panel border rounded-xl p-3 text-xs";
+            status.setAttribute("role", "status");
+            document.body.append(status);
+          }
+          status.textContent = "اتطبق اختيارك في الجلسة الحالية، لكن المتصفح منع حفظه للزيارة الجاية.";
+        }
         updateNavBadge();
         closeModal();
       });
@@ -195,7 +208,10 @@
 
     // زر الإغلاق
     const closeBtn = document.getElementById("close-profile-modal");
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (closeBtn) {
+      closeBtn.setAttribute("aria-label", "إغلاق نافذة اختيار المجموعة والسكشن");
+      closeBtn.addEventListener("click", closeModal);
+    }
 
     // أزرار فتح النافذة
     document.addEventListener("click", function (event) {
