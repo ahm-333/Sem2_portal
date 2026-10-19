@@ -219,24 +219,36 @@ const SCHEDULE_CONFIG = {
 };
 
 // إدارة حالة اختيار الطالب وحفظها في localStorage
+const PROFILE_STORAGE = (typeof window !== "undefined" && window.PortalStorage) ||
+  (typeof require === "function" ? require("./shared/storage.js") : null);
+
 const StudentProfile = {
   KEY: "sem2_student_profile",
 
+  normalize(value) {
+    const object = value && typeof value === "object" && !Array.isArray(value) ? value : {};
+    const group = Object.hasOwn(SCHEDULE_CONFIG.groups, object.group) ? object.group : "B1";
+    const sections = SCHEDULE_CONFIG.groups[group].sections;
+    const section = Number(object.section);
+    return { group, section: Number.isInteger(section) && sections.includes(section) ? section : sections[0] };
+  },
+
   get() {
     try {
-      const saved = localStorage.getItem(this.KEY);
-      if (saved) return JSON.parse(saved);
+      const saved = PROFILE_STORAGE.getItem(this.KEY);
+      if (saved) return this.normalize(JSON.parse(saved));
     } catch (e) {}
     // افتراضي: B1 و سكشن 1
     return { group: "B1", section: 1 };
   },
 
   set(group, section) {
-    const data = { group: String(group), section: parseInt(section, 10) };
-    localStorage.setItem(this.KEY, JSON.stringify(data));
+    const data = this.normalize({ group, section });
+    PROFILE_STORAGE.setItem(this.KEY, JSON.stringify(data));
     if (typeof window !== "undefined" && typeof window.dispatchEvent === "function" && typeof CustomEvent !== "undefined") {
       window.dispatchEvent(new CustomEvent("studentProfileChanged", { detail: data }));
     }
+    return data;
   },
 
   // دالة لتنظيف وتوحيد أسماء المعيدين والألقاب لتسهيل المطابقة الدقيقة
@@ -292,20 +304,45 @@ const StudentProfile = {
   },
 
   // دالة لجلب معلومات الدكتور والمعيد الخاصة بمادة معينة بناءً على البروفايل
+  filterItemsForTa(items, selectedTa, studentTa, includeUnassigned = false) {
+    if (selectedTa === "all") return items;
+    const ta = selectedTa === "my-ta" ? studentTa : selectedTa;
+    return items.filter(item => (!item.ta && includeUnassigned) || this.isTaMatch(item.ta, ta));
+  },
+
+  getSectionSessions(courseId, section = this.get().section) {
+    const value = (SCHEDULE_CONFIG.tasBySection[section] || {})[courseId];
+    return (Array.isArray(value) ? value : value ? [value] : []).filter(item => item && item.slot);
+  },
+
+  getUnconfirmedScheduleEntries(section = this.get().section) {
+    const ids = new Set((window.COURSES_DATA || []).map(course => course.id));
+    return Object.entries(SCHEDULE_CONFIG.tasBySection[section] || {})
+      .filter(([key]) => !ids.has(key))
+      .map(([sourceKey, value]) => ({ section: Number(section), sourceKey, ...value }));
+  },
+
+  startMinutes(text) {
+    const match = String(text).match(/(\d{1,2}):(\d{2})/);
+    if (!match) return Number.MAX_SAFE_INTEGER;
+    const hour = Number(match[1]);
+    return (hour < 8 ? hour + 12 : hour) * 60 + Number(match[2]);
+  },
+
   getCourseStaff(courseId) {
     const profile = this.get();
     const groupDoctors = SCHEDULE_CONFIG.doctorsByGroup[courseId] || {};
     const doctorInfo = groupDoctors[profile.group] || {
-      doctor: "د. أستاذ المادة",
-      time: "مواعيد المحاضرة",
-      hall: "المدرج"
+      doctor: "بيانات المحاضر غير متوفرة",
+      time: "موعد المحاضرة غير متوفر",
+      hall: "القاعة غير متوفرة"
     };
 
-    const sectionTAs = SCHEDULE_CONFIG.tasBySection[profile.section] || {};
-    const taInfo = sectionTAs[courseId] || {
-      ta: "م. معيد السكشن",
-      slot: "مواعيد السكشن",
-      room: "المعمل"
+    const sectionSessions = this.getSectionSessions(courseId, profile.section);
+    const taInfo = sectionSessions[0] || {
+      ta: "بيانات المعيد غير متوفرة",
+      slot: "موعد السكشن غير متوفر",
+      room: "المعمل غير متوفر"
     };
 
     return {
@@ -315,8 +352,10 @@ const StudentProfile = {
       lectureTime: doctorInfo.time,
       lectureHall: doctorInfo.hall,
       ta: taInfo.ta,
-      sectionSlot: taInfo.slot,
-      sectionRoom: taInfo.room
+      sectionSlot: sectionSessions.length > 1 ? sectionSessions.map(item => item.slot).join(" / ") : taInfo.slot,
+      sectionRoom: taInfo.room,
+      hasSectionSchedule: sectionSessions.length > 0,
+      sectionSessions
     };
   },
 
@@ -354,9 +393,7 @@ const StudentProfile = {
       }
 
       // إضافة السكاشن حسب السكشن
-      const tasObj = SCHEDULE_CONFIG.tasBySection[profile.section] || {};
-      const taData = tasObj[c.id];
-      if (taData && taData.slot) {
+      this.getSectionSessions(c.id, profile.section).forEach((taData) => {
         const dayMatch = days.find((d) => taData.slot.includes(d.name));
         if (dayMatch) {
           dayMatch.items.push({
@@ -371,9 +408,10 @@ const StudentProfile = {
             accentColor: c.accentColor
           });
         }
-      }
+      });
     });
 
+    days.forEach(day => day.items.sort((a, b) => this.startMinutes(a.time) - this.startMinutes(b.time)));
     return days;
   }
 };

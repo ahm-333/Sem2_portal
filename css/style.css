@@ -1,8 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+/* Fonts are declared once in each HTML document; system fonts remain a fallback. */
 
 /* ==============================================================================
    متغيرات الأنماط البصرية الثلاثة (Dark / Light / Reading Mode)
    ============================================================================== */
+
+[hidden] { display: none !important; }
+.dir-ltr, [dir="ltr"] { direction: ltr; }
+.dir-rtl, [dir="rtl"] { direction: rtl; }
+#full-quiz-score-val, #full-quiz-final-score, #full-quiz-percent { direction: ltr; unicode-bidi: isolate; display: inline-block; }
+body { width: 100%; min-width: 0; margin: 0; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 3px;
+}
+#profile-modal-box { max-height: calc(100dvh - 2rem); overflow-y: auto; }
+#lecture-study-modal { width: 100%; max-width: 100%; min-width: 0; }
+#study-modal-container { min-width: 0; max-width: min(64rem, 100%); max-height: 100dvh; }
+#study-modal-container > div, #study-slides-view, #study-slides-feed, #study-full-quiz-view { min-width: 0; }
+#study-modal-container .truncate { min-width: 0; }
+#study-modal-container p, #study-modal-container li { overflow-wrap: anywhere; }
+#study-modal-container pre { max-width: 100%; overflow-x: auto; }
+@media (max-width: 639px) {
+  header > div { height: auto !important; min-height: 80px; flex-wrap: wrap; gap: .6rem; padding-top: .65rem; padding-bottom: .65rem; }
+  header > div > a { min-width: 0; flex: 1 1 180px; }
+  header > div > div:last-child { min-width: 0; flex: 1 1 280px; justify-content: space-between; }
+  .student-profile-badge { font-size: 11px; }
+  #study-modal-container { width: 100%; height: 100dvh; }
+  #study-modal-container > div:first-child { gap: .4rem; padding: .65rem; }
+  #study-modal-container > div:first-child > div:first-child { min-width: 0; flex: 1; }
+  #study-modal-container > div:nth-child(2) > div { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); width: 100%; }
+  .study-nav-tab { min-width: 0; flex-wrap: wrap; justify-content: center; padding: .5rem; font-size: 11px; gap: .25rem; }
+  .study-nav-tab span { min-width: 0; }
+}
 
 :root,
 [data-theme="dark"] {
@@ -32,7 +61,7 @@
   --bg-input: #f1f5f9;
   --text-main: #0f172a;
   --text-muted: #475569;
-  --text-dim: #94a3b8;
+  --text-dim: #64748b;
   --border-subtle: #e2e8f0;
   --border-accent: rgba(79, 70, 229, 0.35);
   --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #0284c7 100%);
@@ -52,7 +81,7 @@
   --bg-input: #fdf5e6;
   --text-main: #2b2118;
   --text-muted: #6b5742;
-  --text-dim: #99836c;
+  --text-dim: #765e48;
   --border-subtle: #e8d7bb;
   --border-accent: rgba(180, 83, 9, 0.4);
   --primary-gradient: linear-gradient(135deg, #b45309 0%, #d97706 100%);

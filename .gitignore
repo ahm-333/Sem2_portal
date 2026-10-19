@@ -1,6 +1,9 @@
 # Logs and temp files
 *.log
 *.tmp
+node_modules/
+test-results/
+coverage/
 push_err.txt
 push_out.txt
 

@@ -30,8 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
   function createCourseCard(course) {
     const iconName = iconMap[course.icon] || "book";
     const lecturesCount = course.lectures ? course.lectures.length : 0;
-    const sectionsCount = course.sections ? course.sections.length : 0;
-    const assignmentsCount = course.assignments ? course.assignments.length : 0;
     const videosCount = course.videoExplanations ? course.videoExplanations.length : 0;
 
     // استخراج معلومات الدكتور والمعيد الخاصة بالطالب الحالي
@@ -43,9 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     const allSections = course.sections || [];
-    const mySections = allSections.filter(s => window.StudentProfile && window.StudentProfile.isTaMatch(s.ta, staff.ta));
+    const mySections = window.StudentProfile.filterItemsForTa(allSections, "my-ta", staff.ta);
     const allAssignments = course.assignments || [];
-    const myAssignments = allAssignments.filter(a => !a.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(a.ta, staff.ta)));
+    const myAssignments = window.StudentProfile.filterItemsForTa(allAssignments, "my-ta", staff.ta, true);
 
     return `
       <article class="glass-panel rounded-3xl p-6 border flex flex-col justify-between card-hover-effect relative group">
@@ -219,9 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
       resultsCount.textContent = `${filtered.length} مواد متاحة`;
     }
 
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
+    window.PortalUI.icons(coursesGrid);
   }
 
   // رندر جدول المواعيد الأسبوعي المخصص للطالب
@@ -234,6 +230,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const weeklyDays = window.StudentProfile.getWeeklySchedule();
+
+    let notice = document.getElementById("schedule-data-notice");
+    if (!notice) {
+      notice = document.createElement("p");
+      notice.id = "schedule-data-notice";
+      notice.className = "mb-4 rounded-xl border border-amber-500/30 p-3 text-xs text-[var(--text-main)]";
+      notice.setAttribute("role", "status");
+      scheduleGrid.before(notice);
+    }
+    notice.hidden = window.StudentProfile.getUnconfirmedScheduleEntries().length === 0;
+    notice.textContent = "بعض مواعيد هذا السكشن قيد التأكيد. راجع جدول الكلية قبل الاعتماد على الجدول المعروض.";
 
     scheduleGrid.innerHTML = weeklyDays.map((day) => {
       const hasClasses = day.items && day.items.length > 0;
@@ -292,9 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     }).join("");
 
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
+    window.PortalUI.icons(scheduleGrid);
   }
 
   // أحداث البحث

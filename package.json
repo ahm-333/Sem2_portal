@@ -1,0 +1,26 @@
+{
+  "name": "sem2-portal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static semester portal with local development and quality checks",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node tools/serve.cjs",
+    "build": "node tools/build-assets.cjs",
+    "check": "node tools/check-syntax.cjs",
+    "validate": "node tools/check-data.cjs",
+    "lint": "eslint js tests tools/*.cjs *.cjs --max-warnings=0",
+    "test": "node --test tests/*.test.cjs",
+    "test:browser": "node tests/browser.cjs",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=js/shared/*.js tests/*.test.cjs",
+    "verify": "npm run build && npm run check && npm run validate && npm run lint && npm test && npm run test:browser"
+  },
+  "devDependencies": {
+    "eslint": "10.13.0",
+    "lucide": "1.59.0",
+    "playwright": "1.62.1",
+    "tailwindcss": "3.4.17"
+  }
+}

@@ -99,3 +99,48 @@ explanationSite: {
 - **Eng. Ahmed Amir (أحمد أمير)**
 - مخصصة لخدمة طلاب كلية الحاسبات والمعلومات - قسم الذكاء الاصطناعي (AI 2026).
 
+---
+
+## التطوير والتحقق محليًا
+
+الموقع يظل Static، وملفات التنسيق والأيقونات الجاهزة موجودة داخل المستودع. الطالب لا يحتاج تثبيت Node لتصفحه. الشرح التفصيلي يُحمّل عند فتحه، وملفات Drive وYouTube تحتاج اتصالًا بالمزود وإتاحة المشاركة من صاحب المحتوى.
+
+للتطوير استخدم Node 24 أو أحدث:
+
+```powershell
+npm ci --ignore-scripts --no-audit --no-fund
+npm run build
+npm start
+```
+
+ثم افتح `http://127.0.0.1:8765/`. تشغيل الخادم محصور على الجهاز المحلي. يمكنك أيضًا فتح `index.html` مباشرة، وقد اختُبر تحميل المذاكرة بهذا الأسلوب في Chrome.
+
+أوامر التحقق:
+
+```powershell
+npm run check
+npm run validate
+npm run lint
+npm test
+```
+
+لاختبارات المتصفح، إذا كان Chrome مثبتًا على Windows:
+
+```powershell
+$env:PORTAL_BROWSER_CHANNEL = 'chrome'
+npm run test:browser
+```
+
+أو ثبّت متصفح الاختبار المحدد بواسطة نسخة Playwright المثبتة ثم شغّل التحقق الكامل:
+
+```powershell
+npx --no-install playwright install chromium
+npm run verify
+```
+
+الاختبارات تشغّل خادمًا مؤقتًا ومتصفحًا معزولًا، وتختبر أيضًا العمل تحت مسار `/Sem2_portal/` مثل GitHub Pages. الشبكة الخارجية محجوبة في اختبارات السلوك لضمان ثباتها؛ اختبار الروابط ومحتوى المزودين مسألة منفصلة. النتائج المحلية تحفظ في `test-results/`، وهو مستبعد من Git.
+
+بعد تعديل ملفات HTML أو JavaScript التي تتضمن أصناف التنسيق، شغّل `npm run build` لتحديث `css/tailwind.css` وكتالوج الشرح الصغير. نسخ Tailwind وLucide وPlaywright مثبتة في `package-lock.json`؛ رخصة الأيقونات في `js/vendor/LUCIDE-LICENSE`.
+
+التحقق الجديد يميز أخطاء البيانات عن [سجلات الجدول المعلقة](docs/PENDING-TIMETABLE.md). السجلات الثلاثة لم تُصحح بالتخمين، وتظهر رسالة للسكاشن المتأثرة. إعداد CI الجديد خاص بالبورتال، ومنظومة الأتمتة القديمة لم تُعدل.
+

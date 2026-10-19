@@ -6,6 +6,7 @@
 
 (function () {
   const FIRST_VISIT_FLAG = "sem2_first_visit_configured";
+  let welcomeTimer;
 
   // توليد كود النافذة المنبثقة وحقنها في الـ DOM
   function injectModalHTML() {
@@ -118,6 +119,7 @@
 
   // فتح وإغلاق النافذة
   function openModal() {
+    clearTimeout(welcomeTimer);
     const modal = document.getElementById("student-profile-modal");
     const box = document.getElementById("profile-modal-box");
     if (!modal) return;
@@ -131,13 +133,11 @@
     // تحديث أزرار السكاشن
     updateSectionRadios(current.group, current.section);
 
-    modal.classList.remove("hidden");
-    setTimeout(() => {
-      modal.classList.remove("opacity-0");
-      if (box) box.classList.remove("scale-95");
-    }, 10);
+    modal.classList.remove("opacity-0");
+    if (box) box.classList.remove("scale-95");
+    window.PortalDialog.open(modal);
 
-    if (window.lucide) window.lucide.createIcons();
+    window.PortalUI.icons();
   }
 
   function closeModal() {
@@ -145,11 +145,8 @@
     const box = document.getElementById("profile-modal-box");
     if (!modal) return;
 
-    modal.classList.add("opacity-0");
     if (box) box.classList.add("scale-95");
-    setTimeout(() => {
-      modal.classList.add("hidden");
-    }, 300);
+    window.PortalDialog.close(modal);
   }
 
   // تحديث بادج شريط التنقل (Navbar Badge)
@@ -160,13 +157,15 @@
       b.innerHTML = `
         <span class="inline-flex items-center gap-1.5">
           <i data-lucide="user" class="w-3.5 h-3.5 text-cyan-400"></i>
-          <span>مجموعتي: <strong>${profile.group}</strong></span>
+          <span>مجموعتي: <strong data-profile-group></strong></span>
           <span class="opacity-40">•</span>
-          <span>سكشن <strong>${profile.section}</strong></span>
+          <span>سكشن <strong data-profile-section></strong></span>
         </span>
       `;
+      b.querySelector("[data-profile-group]").textContent = profile.group;
+      b.querySelector("[data-profile-section]").textContent = String(profile.section);
     });
-    if (window.lucide) window.lucide.createIcons();
+    window.PortalUI.icons();
   }
 
   // ربط الأحداث
@@ -190,7 +189,18 @@
         const selectedSection = form.querySelector('input[name="student_section"]:checked')?.value || "1";
 
         window.StudentProfile.set(selectedGroup, selectedSection);
-        localStorage.setItem(FIRST_VISIT_FLAG, "true");
+        const saved = window.PortalStorage.setItem(FIRST_VISIT_FLAG, "true");
+        if (!saved) {
+          let status = document.getElementById("preference-status");
+          if (!status) {
+            status = document.createElement("p");
+            status.id = "preference-status";
+            status.className = "fixed bottom-4 left-4 right-4 z-[150] glass-panel border rounded-xl p-3 text-xs";
+            status.setAttribute("role", "status");
+            document.body.append(status);
+          }
+          status.textContent = "اتطبق اختيارك في الجلسة الحالية، لكن المتصفح منع حفظه للزيارة الجاية.";
+        }
         updateNavBadge();
         closeModal();
       });
@@ -198,11 +208,15 @@
 
     // زر الإغلاق
     const closeBtn = document.getElementById("close-profile-modal");
-    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (closeBtn) {
+      closeBtn.setAttribute("aria-label", "إغلاق نافذة اختيار المجموعة والسكشن");
+      closeBtn.addEventListener("click", closeModal);
+    }
 
     // أزرار فتح النافذة
-    document.querySelectorAll("[data-open-profile-modal]").forEach((btn) => {
-      btn.addEventListener("click", openModal);
+    document.addEventListener("click", function (event) {
+      const button = event.target.closest("[data-open-profile-modal]");
+      if (button) openModal();
     });
 
     // إغلاق عند النقر في الخلفية
@@ -214,8 +228,8 @@
     }
 
     // إذا كانت الزيارة الأولى للطالب، تفتح النافذة تلقائياً لترحيبه وتمكينه من الاختيار
-    if (!localStorage.getItem(FIRST_VISIT_FLAG)) {
-      setTimeout(openModal, 600);
+    if (!window.PortalStorage.getItem(FIRST_VISIT_FLAG)) {
+      welcomeTimer = setTimeout(openModal, 600);
     }
   });
 

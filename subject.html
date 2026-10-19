@@ -10,24 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   
-  <!-- مكتبة Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            cairo: ['Cairo', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          }
-        }
-      }
-    }
-  </script>
-
-  <!-- أيقونات Lucide -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Prebuilt assets keep layout and icons available without a CDN. -->
+  <link rel="stylesheet" href="css/tailwind.css">
+  <script src="js/vendor/lucide.min.js"></script>
 
   <!-- التنسيقات المخصصة والأوضاع الثلاثة والمسارين -->
   <link rel="stylesheet" href="css/style.css?v=1792424832344">
@@ -696,14 +681,19 @@
   </footer>
 
   <!-- ملفات الجافاسكربت -->
+  <script src="js/shared/storage.js"></script>
+  <script src="js/shared/dialog.js"></script>
+  <script src="js/shared/ui.js"></script>
+  <script src="js/shared/media.js"></script>
   <script src="js/theme.js?v=1792424832344"></script>
   <script src="js/courses-data.js?v=1792424832344"></script>
   <script src="js/schedule-data.js?v=1792424832344"></script>
   <script src="js/profile-modal.js?v=1792424832344"></script>
-  <script src="js/lecture-explanations-data.js?v=1792424832344"></script>
+  <script src="js/study-catalog.js"></script>
+  <script src="js/study-loader.js"></script>
+  <script src="js/study-quiz.js"></script>
+  <script src="js/study-reader.js"></script>
+  <script src="js/subject-content.js"></script>
   <script src="js/subject.js?v=1792424832344"></script>
-  <script>
-    lucide.createIcons();
-  </script>
 </body>
 </html>
