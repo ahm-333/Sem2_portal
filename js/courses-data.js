@@ -229,7 +229,82 @@ const COURSES_DATA = [
       ]
     },
 
-    lectures: [],
+    lectures: [
+      {
+        id: 1,
+        chapter: "Lecture 1",
+        title: "Introduction to Data Structures, Arrays & Templates",
+        arabicTitle: "مقدمة هياكل البيانات، المصفوفات والـ Templates",
+        doctor: "د. ليلى عبد الفتاح",
+        doctorNote: "سلايدات المحاضرة الرسمية",
+        week: 1,
+        date: "المحاضرة 1",
+        pages: 53,
+        size: "786 KB",
+        pdfUrl: "materials/ds/DS_Lecture_01_Introduction_Arrays_Templates.pdf",
+        topics: [
+          "Definition of Data Structure & Operations",
+          "Abstract Data Types (ADT) - Stack & Queue",
+          "Primitive vs Non-Primitive Data Types",
+          "Linear vs Non-Linear Data Structures",
+          "One-Dimensional Arrays (Declaration, Initialization, Traversal)",
+          "Two-Dimensional & Multidimensional Arrays",
+          "2D Arrays as Function Parameters & Array Computations",
+          "Generic Programming & C++ Function Templates",
+          "C++ Class Templates (Box & Pair Examples)"
+        ],
+        notes: "تأسيس شامل لهياكل البيانات والمصفوفات وبرمجة الـ Templates بلغة C++"
+      },
+      {
+        id: 2,
+        chapter: "Lecture 2",
+        title: "Linked Lists (SLL, DLL, Circular)",
+        arabicTitle: "القوائم المترابطة (Linked Lists)",
+        doctor: "د. ليلى عبد الفتاح",
+        doctorNote: "سلايدات المحاضرة الرسمية",
+        week: 2,
+        date: "المحاضرة 2",
+        pages: 37,
+        size: "1.1 MB",
+        pdfUrl: "materials/ds/DS_Lecture_02_Linked_Lists.pdf",
+        topics: [
+          "Introduction to Linked Lists & Memory Representation",
+          "Singly Linked List (SLL)",
+          "Doubly Linked List (DLL)",
+          "Circular Linked List (CLL)",
+          "Real-World Applications (Browser History)",
+          "Node Structure & LinkedList Class in C++",
+          "Insertion: At Beginning, At End, At Specific Position",
+          "Deletion: From Beginning, From End, From Specific Location",
+          "Traversal & Search Operations (with C++ Code)"
+        ],
+        notes: "شرح تفصيلي لبنية الـ Node وكود C++ لعمليات الإضافة والحذف والتجول والبحث"
+      },
+      {
+        id: 3,
+        chapter: "Lecture 3",
+        title: "Recursion & Backtracking",
+        arabicTitle: "الاستدعاء الذاتي (Recursion) وخوارزمية التراجع",
+        doctor: "د. ليلى عبد الفتاح",
+        doctorNote: "سلايدات المحاضرة الرسمية",
+        week: 3,
+        date: "المحاضرة 3",
+        pages: 41,
+        size: "843 KB",
+        pdfUrl: "materials/ds/DS_Lecture_03_Recursion.pdf",
+        topics: [
+          "Introduction to Recursion & Recursive Definitions",
+          "Base Case vs General Case",
+          "Recursive Functions & Call Stack Execution",
+          "Direct, Indirect, Infinite & Tail Recursion",
+          "Classic Examples: Factorial & Fibonacci Tracing",
+          "Recursion on Data Structures (Largest in Array, Reverse Print Linked List)",
+          "Recursion vs Iteration (Overhead & Efficiency)",
+          "Backtracking & The 8-Queens Puzzle (Tree & Implementation)"
+        ],
+        notes: "تتبع خطوة بخطوة للـ Call Stack ومسألة الـ 8-Queens وخوارزمية الـ Backtracking"
+      }
+    ],
     sections: [],
     assignments: [],
     resources: []
