@@ -408,7 +408,7 @@
             </h3>
             <p class="text-xs text-[var(--text-muted)]">تحميل شيتات وسلايدات المعيدين، أكواد التطبيق العملي، ومصادر الشرح</p>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2" id="sections-drive-folders-container">
             <span class="text-xs px-3 py-1 rounded-full glass-panel border text-cyan-400 font-mono font-bold" id="badge-sections-count">0 سكاشن</span>
             <a 
               id="sections-drive-folder-link" 
@@ -423,6 +423,9 @@
             </a>
           </div>
         </div>
+
+        <!-- أزرار تصفية المعيدات / المعيدين عند تعدد مصادر العملي -->
+        <div id="sections-filter-container" class="mb-5 hidden"></div>
 
         <div class="space-y-4" id="sections-list">
           <!-- يتم الملء عبر JS -->
@@ -587,11 +590,11 @@
   </footer>
 
   <!-- ملفات الجافاسكربت -->
-  <script src="js/theme.js?v=10"></script>
-  <script src="js/courses-data.js?v=10"></script>
-  <script src="js/schedule-data.js?v=10"></script>
-  <script src="js/profile-modal.js?v=10"></script>
-  <script src="js/subject.js?v=10"></script>
+  <script src="js/theme.js?v=11"></script>
+  <script src="js/courses-data.js?v=11"></script>
+  <script src="js/schedule-data.js?v=11"></script>
+  <script src="js/profile-modal.js?v=11"></script>
+  <script src="js/subject.js?v=11"></script>
   <script>
     lucide.createIcons();
   </script>

@@ -34,6 +34,18 @@ const COURSES_DATA = [
     driveFolderId: "1cw9D5TplznX1HGf1dWh_C_-pu3ZjrJSS",
     sectionsDriveFolderUrl: "https://drive.google.com/drive/folders/1YGFJKH5JSPEBVDfu9LjFobj4H9WOUkwa",
     sectionsDriveFolderTitle: "مجلد درايف السكاشن (م. أمل مجدي)",
+    sectionsDriveFolders: [
+      {
+        title: "درايف م. أمل مجدي",
+        url: "https://drive.google.com/drive/folders/1YGFJKH5JSPEBVDfu9LjFobj4H9WOUkwa",
+        color: "from-cyan-600 to-blue-600"
+      },
+      {
+        title: "درايف م. تقى مصطفى",
+        url: "https://drive.google.com/drive/folders/1szFwBUCE8t9-iRjzInLvHtoqUuA_UgQi",
+        color: "from-teal-600 to-emerald-600"
+      }
+    ],
 
     // موقع الشرح المخصص (الأساس)
     explanationSite: {
@@ -166,7 +178,7 @@ const COURSES_DATA = [
           "Point-to-Point Interconnect (QPI)",
           "PCI Express"
         ],
-        notes: "سلايدات المحاضرة المعتمدة الرسمية على Google Drive"
+        notes: "سلايدات المحاضرة المعتمدة الرسمية على Google Drive • ملحوظة دراسية: لفهم أعمق لمعمارية المعالج والمسجلات (8086)، يتوفر في مسار السكشن شرح م. تقى مصطفى المفصل (46 صفحة) للشرح المتعمق كما يُشرح في السكشن، والملف المختصر لتلخيص فائدة كل Register."
       },
       {
         id: 3,
@@ -284,10 +296,105 @@ const COURSES_DATA = [
           "Flags Register & Conditional Operations"
         ],
         notes: "يحتوي هذا السكشن على فيديو شرح مسجل بصوت م. أمل مجدي للمشاهدة المباشرة داخل المنصة"
+      },
+      {
+        id: 4,
+        title: "Lab 1: Introduction to Assembly Language",
+        arabicTitle: "اللاب الأول: مقدمة في لغة التجميع وأنواع لغات البرمجة",
+        ta: "م. تقى مصطفى",
+        week: 1,
+        date: "اللاب 1 (م. تقى)",
+        tag: "Lab 1",
+        subTag: "م. تقى",
+        fileType: "pdf",
+        pages: 19,
+        size: "613 KB",
+        driveId: "1iQC5oJI3nmAb7_KDxiN3eNIi0fm4Zkno",
+        driveViewUrl: "https://drive.google.com/file/d/1iQC5oJI3nmAb7_KDxiN3eNIi0fm4Zkno/view",
+        drivePreviewUrl: "https://drive.google.com/file/d/1iQC5oJI3nmAb7_KDxiN3eNIi0fm4Zkno/preview",
+        driveDownloadUrl: "https://drive.google.com/uc?export=download&id=1iQC5oJI3nmAb7_KDxiN3eNIi0fm4Zkno",
+        sheetUrl: "https://drive.google.com/file/d/1iQC5oJI3nmAb7_KDxiN3eNIi0fm4Zkno/view",
+        topics: [
+          "Introduction to Assembly Language",
+          "Machine Language vs Assembly vs High-Level Languages",
+          "Basic Concepts of 8086 Programming"
+        ],
+        notes: "سلايدات اللاب الأول لمادة معمارية الحاسوب - مدخل إلى لغات الآلة ولغة التجميع 8086 من إعداد م. تقى مصطفى"
+      },
+      {
+        id: 5,
+        title: "The Intel 8086 Microprocessor - Registers & Architecture (Labs 2 & 3)",
+        arabicTitle: "ملخص مسجلات معالج 8086 واستخداماتها (لاب 2 و 3) - النسخة المختصرة",
+        ta: "م. تقى مصطفى",
+        week: 2,
+        date: "اللاب 2 و 3 (م. تقى)",
+        tag: "Lab 2-3",
+        subTag: "مختصر",
+        fileType: "pdf",
+        pages: 22,
+        size: "497 KB",
+        driveId: "1mC9dcWW78kOPXeu6mI1scey7FbrKDG-N",
+        driveViewUrl: "https://drive.google.com/file/d/1mC9dcWW78kOPXeu6mI1scey7FbrKDG-N/view",
+        drivePreviewUrl: "https://drive.google.com/file/d/1mC9dcWW78kOPXeu6mI1scey7FbrKDG-N/preview",
+        driveDownloadUrl: "https://drive.google.com/uc?export=download&id=1mC9dcWW78kOPXeu6mI1scey7FbrKDG-N",
+        sheetUrl: "https://drive.google.com/file/d/1mC9dcWW78kOPXeu6mI1scey7FbrKDG-N/view",
+        topics: [
+          "General Purpose Registers (AX, BX, CX, DX)",
+          "Segment Registers (CS, DS, SS, ES)",
+          "Pointer & Index Registers (SP, BP, SI, DI)",
+          "Flags Register (Status & Control Flags)",
+          "Summary & Purpose of Each 8086 Register"
+        ],
+        notes: "وفي دي مختصرة شوية لو بس عايزين فايدة كل register"
+      },
+      {
+        id: 6,
+        title: "Intel 8086: Memory, Segments, Registers and Instruction Execution",
+        arabicTitle: "معمارية معالج 8086، تقسيم الذاكرة والمسجلات - النسخة التفصيلية الشاملة",
+        ta: "م. تقى مصطفى",
+        week: 2,
+        date: "الشرح التفصيلي (م. تقى)",
+        tag: "Full Ref",
+        subTag: "شرح مفصل",
+        fileType: "pdf",
+        pages: 46,
+        size: "223 KB",
+        driveId: "1oU0ZrkmZbdnGEIWzSVZt_xDT-3O0Ji01",
+        driveViewUrl: "https://drive.google.com/file/d/1oU0ZrkmZbdnGEIWzSVZt_xDT-3O0Ji01/view",
+        drivePreviewUrl: "https://drive.google.com/file/d/1oU0ZrkmZbdnGEIWzSVZt_xDT-3O0Ji01/preview",
+        driveDownloadUrl: "https://drive.google.com/uc?export=download&id=1oU0ZrkmZbdnGEIWzSVZt_xDT-3O0Ji01",
+        sheetUrl: "https://drive.google.com/file/d/1oU0ZrkmZbdnGEIWzSVZt_xDT-3O0Ji01/view",
+        topics: [
+          "8086 Internal Architecture (BIU & EU)",
+          "Memory Segmentation (Code, Data, Stack, Extra)",
+          "Physical Address Calculation (Segment * 10H + Offset)",
+          "Registers in Detail & Functions",
+          "Instruction Fetch & Execution"
+        ],
+        notes: "دي تفصيلية اوي هتفيدكم لو عايزين تفهمو كويس زي ما بيتشرح في السكشن بالتفصيل"
       }
     ],
     assignments: [],
-    resources: [],
+    resources: [
+      {
+        id: 1,
+        title: "مذكرة معمارية وسجلات 8086 التفصيلية (الشرح الشامل)",
+        type: "مذكرة تفصيلية",
+        year: "م. تقى مصطفى (46 صفحة)",
+        size: "223 KB",
+        notes: "دي تفصيلية اوي هتفيدكم لو عايزين تفهمو كويس زي ما بيتشرح في السكشن بالتفصيل",
+        fileUrl: "https://drive.google.com/file/d/1oU0ZrkmZbdnGEIWzSVZt_xDT-3O0Ji01/view"
+      },
+      {
+        id: 2,
+        title: "ملخص وظائف مسجلات 8086 السريع (فائدة كل Register)",
+        type: "ملخص سريع",
+        year: "م. تقى مصطفى (22 صفحة)",
+        size: "497 KB",
+        notes: "وفي دي مختصرة شوية لو بس عايزين فايدة كل register",
+        fileUrl: "https://drive.google.com/file/d/1mC9dcWW78kOPXeu6mI1scey7FbrKDG-N/view"
+      }
+    ],
     practicalResources: [
       {
         id: 1,

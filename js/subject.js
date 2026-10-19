@@ -532,12 +532,12 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       theoryResourcesList.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
       theoryResourcesList.innerHTML = course.resources.map((res) => `
-        <div class="glass-panel p-5 rounded-2xl border flex items-center justify-between gap-4 card-hover-effect">
-          <div class="flex items-center gap-3">
+        <div class="glass-panel p-5 rounded-2xl border flex flex-col justify-between gap-4 card-hover-effect">
+          <div class="flex items-start gap-3">
             <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xs flex-shrink-0 border border-indigo-500/20">
               <i data-lucide="file-check" class="w-5 h-5"></i>
             </div>
-            <div>
+            <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 mb-1">
                 <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold">
                   ${res.type}
@@ -545,18 +545,28 @@ document.addEventListener("DOMContentLoaded", function () {
                 <span class="text-[11px] text-[var(--text-dim)] font-mono">${res.year}</span>
               </div>
               <h4 class="text-xs sm:text-sm font-bold text-[var(--text-main)] mb-1">${res.title}</h4>
+              ${res.notes ? `
+                <div class="my-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-start gap-1.5 leading-relaxed">
+                  <i data-lucide="message-square" class="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                  <span>💡 <strong>ملاحظة:</strong> ${res.notes}</span>
+                </div>
+              ` : ""}
               <span class="text-[11px] text-[var(--text-dim)] font-mono">${res.size || ""}</span>
             </div>
           </div>
 
-          <a 
-            href="${res.fileUrl}" 
-            target="_blank" 
-            class="p-2.5 rounded-xl glass-panel border text-xs font-bold flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-all flex-shrink-0"
-            title="تحميل الملف"
-          >
-            <i data-lucide="download" class="w-4 h-4"></i>
-          </a>
+          <div class="flex items-center gap-2 pt-2 border-t border-[var(--border-subtle)]">
+            <a 
+              href="${res.fileUrl}" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="flex-1 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm btn-smooth"
+              title="فتح الملف في Google Drive"
+            >
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              <span>فتح المذكرة</span>
+            </a>
+          </div>
         </div>
       `).join("");
     }
@@ -567,192 +577,299 @@ document.addEventListener("DOMContentLoaded", function () {
   const badgeSectionsCount = document.getElementById("badge-sections-count");
   if (badgeSectionsCount) badgeSectionsCount.textContent = `${sectionsCount} سكاشن`;
 
-  // ربط زر مجلد درايف السكاشن (مثل مجلد م. أمل مجدي)
-  const sectionsDriveFolderBtn = document.getElementById("sections-drive-folder-link");
-  const sectionsDriveFolderText = document.getElementById("sections-drive-folder-text");
-  if (sectionsDriveFolderBtn) {
-    if (course.sectionsDriveFolderUrl) {
-      sectionsDriveFolderBtn.href = course.sectionsDriveFolderUrl;
-      if (sectionsDriveFolderText && course.sectionsDriveFolderTitle) {
-        sectionsDriveFolderText.textContent = course.sectionsDriveFolderTitle;
-      }
-      sectionsDriveFolderBtn.classList.remove("hidden");
-    } else {
-      sectionsDriveFolderBtn.classList.add("hidden");
+  // ربط أزرار مجلدات درايف السكاشن (م. أمل مجدي و م. تقى مصطفى)
+  const sectionsDriveContainer = document.getElementById("sections-drive-folders-container");
+  if (sectionsDriveContainer) {
+    let driveButtonsHtml = "";
+    if (course.sectionsDriveFolders && course.sectionsDriveFolders.length > 0) {
+      driveButtonsHtml = course.sectionsDriveFolders.map(folder => `
+        <a 
+          href="${folder.url}" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r ${folder.color || 'from-cyan-600 to-emerald-600'} hover:opacity-95 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-md btn-smooth"
+          title="تصفح ${folder.title} على Google Drive"
+        >
+          <i data-lucide="folder-symlink" class="w-3.5 h-3.5"></i>
+          <span>${folder.title}</span>
+        </a>
+      `).join("");
+    } else if (course.sectionsDriveFolderUrl) {
+      driveButtonsHtml = `
+        <a 
+          href="${course.sectionsDriveFolderUrl}" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-md btn-smooth"
+          title="تصفح مجلد السكاشن على Google Drive"
+        >
+          <i data-lucide="folder-symlink" class="w-3.5 h-3.5"></i>
+          <span>${course.sectionsDriveFolderTitle || "مجلد درايف السكاشن"}</span>
+        </a>
+      `;
     }
+
+    const badgeHtml = `<span class="text-xs px-3 py-1 rounded-full glass-panel border text-cyan-400 font-mono font-bold" id="badge-sections-count">${sectionsCount} سكاشن</span>`;
+    sectionsDriveContainer.innerHTML = badgeHtml + driveButtonsHtml;
   }
 
   const sectionsList = document.getElementById("sections-list");
-  if (sectionsList) {
+  const sectionsFilterContainer = document.getElementById("sections-filter-container");
+  let selectedTa = "all";
+
+  function renderSectionsList() {
+    if (!sectionsList) return;
+
     if (sectionsCount === 0) {
       sectionsList.innerHTML = createEmptyNotice(
         "شيتات وسكاشن العملي",
         "المحتوى قيد التجهيز - سيتم رفع شيتات المعيدين وأكواد البرمجة فور إرسال محتوى المادة."
       );
-    } else {
-      sectionsList.innerHTML = course.sections.map((sec) => {
-        const previewUrl = sec.drivePreviewUrl || sec.sheetUrl || "#";
-        const viewUrl = sec.driveViewUrl || sec.sheetUrl || "#";
-        const downloadUrl = sec.driveDownloadUrl || sec.sheetUrl || "#";
-        const filename = `${course.name}_Section_${sec.id}.${sec.fileType || 'pptx'}`;
-        const fileTypeLabel = (sec.fileType || 'pptx').toUpperCase();
-        const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
-          ? 'bg-red-500/10 text-red-400 border-red-500/20' 
-          : 'bg-orange-500/10 text-orange-400 border-orange-500/20';
+      if (window.lucide) window.lucide.createIcons();
+      return;
+    }
 
-        const topicsHtml = sec.topics && sec.topics.length > 0 ? `
-          <div class="mt-3 pt-3 border-t border-[var(--border-subtle)]">
-            <span class="text-[11px] font-bold text-[var(--text-dim)] block mb-1.5 flex items-center gap-1.5">
-              <i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i>
-              المواضيع والتطبيقات المغطاة في هذا السكشن:
-            </span>
-            <div class="flex flex-wrap gap-1.5">
-              ${sec.topics.map(t => `<span class="text-[11px] px-2.5 py-0.5 rounded-lg bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-subtle)]">${t}</span>`).join("")}
+    const filteredSections = selectedTa === "all"
+      ? course.sections
+      : course.sections.filter(s => s.ta === selectedTa);
+
+    if (filteredSections.length === 0) {
+      sectionsList.innerHTML = createEmptyNotice(
+        "شيتات وسكاشن العملي",
+        "لا توجد ملفات متوفرة تحت هذا المعيد حالياً."
+      );
+      if (window.lucide) window.lucide.createIcons();
+      return;
+    }
+
+    sectionsList.innerHTML = filteredSections.map((sec) => {
+      const previewUrl = sec.drivePreviewUrl || sec.sheetUrl || "#";
+      const viewUrl = sec.driveViewUrl || sec.sheetUrl || "#";
+      const downloadUrl = sec.driveDownloadUrl || sec.sheetUrl || "#";
+      const filename = `${course.name}_Section_${sec.id}.${sec.fileType || 'pptx'}`;
+      const fileTypeLabel = (sec.fileType || 'pptx').toUpperCase();
+      const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
+        ? 'bg-red-500/10 text-red-400 border-red-500/20' 
+        : 'bg-orange-500/10 text-orange-400 border-orange-500/20';
+
+      const tagText = sec.tag || `S${sec.id}`;
+      const subTagText = sec.subTag || `Sec ${sec.id}`;
+      const isToqa = sec.ta && sec.ta.includes("تقى");
+      const taBadgeClass = isToqa
+        ? "bg-teal-500/10 text-teal-300 border-teal-500/20"
+        : "bg-cyan-500/10 text-cyan-400 border-cyan-500/20";
+
+      const topicsHtml = sec.topics && sec.topics.length > 0 ? `
+        <div class="mt-3 pt-3 border-t border-[var(--border-subtle)]">
+          <span class="text-[11px] font-bold text-[var(--text-dim)] block mb-1.5 flex items-center gap-1.5">
+            <i data-lucide="list-checks" class="w-3.5 h-3.5 text-cyan-400"></i>
+            المواضيع والتطبيقات المغطاة في هذا السكشن:
+          </span>
+          <div class="flex flex-wrap gap-1.5">
+            ${sec.topics.map(t => `<span class="text-[11px] px-2.5 py-0.5 rounded-lg bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-subtle)]">${t}</span>`).join("")}
+          </div>
+        </div>
+      ` : "";
+
+      return `
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect">
+          <div class="flex items-start gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${isToqa ? 'from-teal-600 to-emerald-500' : 'from-cyan-600 to-teal-500'} text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono icon-box-modern">
+              <span>${tagText}</span>
+              <span class="text-[9px] opacity-80">${subTagText}</span>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                <span class="text-xs font-bold text-cyan-400">${sec.date || `السكشن ${sec.id}`}</span>
+                <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${sec.week || sec.id}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold border ${fileTypeBadgeColor}">
+                  ${fileTypeLabel}
+                </span>
+                ${sec.pages ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">${sec.pages} صفحة</span>` : ""}
+                ${sec.driveId ? `
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold flex items-center gap-1">
+                    <i data-lucide="cloud" class="w-3 h-3"></i>
+                    <span>متصل بـ Drive</span>
+                  </span>
+                ` : ""}
+                ${sec.ta ? `
+                  <span class="text-[11px] px-2.5 py-0.5 rounded-full ${taBadgeClass} border font-bold flex items-center gap-1">
+                    <i data-lucide="user-check" class="w-3 h-3"></i>
+                    <span>المعيدة: ${sec.ta}</span>
+                  </span>
+                ` : ""}
+                ${sec.videoUrl ? `
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold flex items-center gap-1 animate-pulse">
+                    <i data-lucide="video" class="w-3 h-3"></i>
+                    <span>فيديو شرح مسجل</span>
+                  </span>
+                ` : ""}
+                ${sec.size ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-gray-500/10 text-[var(--text-muted)] border border-gray-500/20 font-mono">${sec.size}</span>` : ""}
+              </div>
+
+              <h4 class="text-base font-bold text-[var(--text-main)] mb-1">${sec.title}</h4>
+              <p class="text-xs font-semibold text-[var(--text-muted)] mb-2">${sec.arabicTitle || ""}</p>
+              ${sec.notes ? `
+                <div class="mt-2.5 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-2 leading-relaxed">
+                  <i data-lucide="message-square" class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5"></i>
+                  <div class="text-xs">
+                    <span class="font-bold text-amber-400 block mb-0.5">توجيه وملاحظة ${sec.ta || 'المعيدة'}:</span>
+                    <span class="text-[var(--text-main)] font-semibold">${sec.notes}</span>
+                  </div>
+                </div>
+              ` : ""}
+              ${topicsHtml}
             </div>
           </div>
-        ` : "";
 
-        return `
-          <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect">
-            <div class="flex items-start gap-3.5">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 to-teal-500 text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono icon-box-modern">
-                <span>S${sec.id}</span>
-                <span class="text-[9px] opacity-80">Sec ${sec.id}</span>
-              </div>
+          <!-- أزرار المعاينة وفيديو الشرح والتحميل -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
+            <div class="flex flex-wrap items-center gap-2">
+              <!-- زر معاينة السلايدات -->
+              <button 
+                type="button"
+                data-preview-file="${previewUrl}"
+                data-preview-title="${sec.title}"
+                data-preview-subtitle="${sec.arabicTitle || ""}"
+                data-preview-filename="${filename}"
+                data-preview-download="${downloadUrl}"
+                data-preview-view="${viewUrl}"
+                class="btn-preview-pdf px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
+              >
+                <i data-lucide="eye" class="w-4 h-4"></i>
+                <span>معاينة السلايدات</span>
+              </button>
 
-              <div class="flex-1 min-w-0">
-                <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                  <span class="text-xs font-bold text-cyan-400">${sec.date || `السكشن ${sec.id}`}</span>
-                  <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${sec.week || sec.id}</span>
-                  <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold border ${fileTypeBadgeColor}">
-                    ${fileTypeLabel}
-                  </span>
-                  ${sec.driveId ? `
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold flex items-center gap-1">
-                      <i data-lucide="cloud" class="w-3 h-3"></i>
-                      <span>متصل بـ Drive</span>
-                    </span>
-                  ` : ""}
-                  ${sec.ta ? `
-                    <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold flex items-center gap-1">
-                      <i data-lucide="user-check" class="w-3 h-3"></i>
-                      <span>المعيد: ${sec.ta}</span>
-                    </span>
-                  ` : ""}
-                  ${sec.videoUrl ? `
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold flex items-center gap-1 animate-pulse">
-                      <i data-lucide="video" class="w-3 h-3"></i>
-                      <span>فيديو شرح مسجل</span>
-                    </span>
-                  ` : ""}
-                  ${sec.size ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-gray-500/10 text-[var(--text-muted)] border border-gray-500/20 font-mono">${sec.size}</span>` : ""}
-                </div>
-
-                <h4 class="text-base font-bold text-[var(--text-main)] mb-1">${sec.title}</h4>
-                <p class="text-xs font-semibold text-[var(--text-muted)] mb-2">${sec.arabicTitle || ""}</p>
-                ${sec.notes ? `<p class="text-xs text-[var(--text-dim)] bg-[var(--bg-surface)] p-2.5 rounded-xl border border-[var(--border-subtle)] leading-relaxed">💡 <strong>ملاحظة المعيد:</strong> ${sec.notes}</p>` : ""}
-                ${topicsHtml}
-              </div>
-            </div>
-
-            <!-- أزرار المعاينة وفيديو الشرح والتحميل -->
-            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
-              <div class="flex flex-wrap items-center gap-2">
-                <!-- زر معاينة السلايدات -->
+              <!-- زر مشاهدة فيديو الشرح إن وجد -->
+              ${sec.videoUrl ? `
                 <button 
                   type="button"
-                  data-preview-file="${previewUrl}"
-                  data-preview-title="${sec.title}"
-                  data-preview-subtitle="${sec.arabicTitle || ""}"
-                  data-preview-filename="${filename}"
-                  data-preview-download="${downloadUrl}"
-                  data-preview-view="${viewUrl}"
-                  class="btn-preview-pdf px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
+                  data-play-url="${sec.videoUrl}"
+                  data-play-title="${sec.videoTitle || `شرح ${sec.title}`}"
+                  data-play-subtitle="${sec.videoSubtitle || (sec.ta ? `تقديم المعيدة: ${sec.ta}` : '')}"
+                  class="btn-play-video px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
                 >
-                  <i data-lucide="eye" class="w-4 h-4"></i>
-                  <span>معاينة السلايدات</span>
+                  <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                  <span>مشاهدة فيديو الشرح</span>
                 </button>
+              ` : ""}
 
-                <!-- زر مشاهدة فيديو الشرح إن وجد -->
-                ${sec.videoUrl ? `
-                  <button 
-                    type="button"
-                    data-play-url="${sec.videoUrl}"
-                    data-play-title="${sec.videoTitle || `شرح ${sec.title}`}"
-                    data-play-subtitle="${sec.videoSubtitle || (sec.ta ? `تقديم المعيدة: ${sec.ta}` : '')}"
-                    class="btn-play-video px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
-                  >
-                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-                    <span>مشاهدة فيديو الشرح</span>
-                  </button>
-                ` : ""}
+              <!-- زر فتح في Google Drive -->
+              <a 
+                href="${viewUrl}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-cyan-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
+                title="فتح الملف في Google Drive"
+              >
+                <i data-lucide="external-link" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>فتح في Drive</span>
+              </a>
 
-                <!-- زر فتح في Google Drive -->
+              <!-- زر تحميل مباشر -->
+              <a 
+                href="${downloadUrl}" 
+                download="${filename}"
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
+                title="تحميل مباشر من Google Drive"
+              >
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>تحميل مباشر</span>
+              </a>
+
+              ${sec.codeUrl ? `
                 <a 
-                  href="${viewUrl}" 
+                  href="${sec.codeUrl}" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-cyan-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                  title="فتح الملف في Google Drive"
+                  class="px-3.5 py-2 rounded-xl glass-panel border border-emerald-500/30 text-emerald-400 text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
                 >
-                  <i data-lucide="external-link" class="w-3.5 h-3.5 text-cyan-400"></i>
-                  <span>فتح في Drive</span>
+                  <i data-lucide="code" class="w-3.5 h-3.5"></i>
+                  <span>الكود البرمجي</span>
                 </a>
-
-                <!-- زر تحميل مباشر -->
-                <a 
-                  href="${downloadUrl}" 
-                  download="${filename}"
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                  title="تحميل مباشر من Google Drive"
-                >
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>تحميل مباشر</span>
-                </a>
-
-                ${sec.codeUrl ? `
-                  <a 
-                    href="${sec.codeUrl}" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    class="px-3.5 py-2 rounded-xl glass-panel border border-emerald-500/30 text-emerald-400 text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                  >
-                    <i data-lucide="code" class="w-3.5 h-3.5"></i>
-                    <span>الكود البرمجي</span>
-                  </a>
-                ` : ""}
-              </div>
+              ` : ""}
             </div>
           </div>
-        `;
-      }).join("");
+        </div>
+      `;
+    }).join("");
 
-      // ربط أزرار معاينة السلايدات في السكاشن
-      sectionsList.querySelectorAll(".btn-preview-pdf").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const file = this.getAttribute("data-preview-file");
-          const title = this.getAttribute("data-preview-title");
-          const sub = this.getAttribute("data-preview-subtitle");
-          const fname = this.getAttribute("data-preview-filename");
-          const dUrl = this.getAttribute("data-preview-download");
-          const vUrl = this.getAttribute("data-preview-view");
-          openPdfModal(file, title, sub, fname, dUrl, vUrl);
+    // ربط أزرار معاينة السلايدات في السكاشن
+    sectionsList.querySelectorAll(".btn-preview-pdf").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const file = this.getAttribute("data-preview-file");
+        const title = this.getAttribute("data-preview-title");
+        const sub = this.getAttribute("data-preview-subtitle");
+        const fname = this.getAttribute("data-preview-filename");
+        const dUrl = this.getAttribute("data-preview-download");
+        const vUrl = this.getAttribute("data-preview-view");
+        openPdfModal(file, title, sub, fname, dUrl, vUrl);
+      });
+    });
+
+    // ربط أزرار تشغيل فيديو السكشن
+    sectionsList.querySelectorAll(".btn-play-video").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const url = this.getAttribute("data-play-url");
+        const title = this.getAttribute("data-play-title");
+        const sub = this.getAttribute("data-play-subtitle");
+        openVideoModal(url, title, sub);
+      });
+    });
+
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  // إعداد شريط تصفية المعيدات إذا وُجد أكثر من معيد في السكاشن
+  if (sectionsFilterContainer && course.sections && course.sections.length > 0) {
+    const uniqueTas = [...new Set(course.sections.map(s => s.ta).filter(Boolean))];
+    if (uniqueTas.length > 1) {
+      sectionsFilterContainer.classList.remove("hidden");
+      sectionsFilterContainer.innerHTML = `
+        <div class="flex flex-wrap items-center gap-2 p-2.5 rounded-2xl glass-panel border">
+          <span class="text-xs font-bold text-[var(--text-dim)] px-2 flex items-center gap-1.5">
+            <i data-lucide="filter" class="w-3.5 h-3.5 text-cyan-400"></i>
+            تصفية السكاشن حسب المعيدة:
+          </span>
+          <button type="button" data-ta-filter="all" class="ta-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedTa === 'all' ? 'bg-cyan-600 text-white shadow-sm' : 'glass-panel border text-[var(--text-muted)] hover:text-[var(--text-main)]'}">
+            جميع المعيدات (${course.sections.length})
+          </button>
+          ${uniqueTas.map(ta => {
+            const count = course.sections.filter(s => s.ta === ta).length;
+            const isSelected = selectedTa === ta;
+            return `
+              <button type="button" data-ta-filter="${ta}" class="ta-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${isSelected ? 'bg-cyan-600 text-white shadow-sm' : 'glass-panel border text-[var(--text-muted)] hover:text-[var(--text-main)]'}">
+                ${ta} (${count})
+              </button>
+            `;
+          }).join("")}
+        </div>
+      `;
+
+      sectionsFilterContainer.querySelectorAll(".ta-filter-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+          selectedTa = this.getAttribute("data-ta-filter");
+          renderSectionsList();
+          sectionsFilterContainer.querySelectorAll(".ta-filter-btn").forEach(b => {
+            const match = b.getAttribute("data-ta-filter") === selectedTa;
+            if (match) {
+              b.className = "ta-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-cyan-600 text-white shadow-sm";
+            } else {
+              b.className = "ta-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition-all glass-panel border text-[var(--text-muted)] hover:text-[var(--text-main)]";
+            }
+          });
         });
       });
-
-      // ربط أزرار تشغيل فيديو السكشن
-      sectionsList.querySelectorAll(".btn-play-video").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const url = this.getAttribute("data-play-url");
-          const title = this.getAttribute("data-play-title");
-          const sub = this.getAttribute("data-play-subtitle");
-          openVideoModal(url, title, sub);
-        });
-      });
+    } else {
+      sectionsFilterContainer.classList.add("hidden");
     }
   }
+
+  // الاستدعاء المبدئي لرندر السكاشن
+  renderSectionsList();
 
   // التكليفات والمشاريع
   const assignmentsCount = course.assignments ? course.assignments.length : 0;
