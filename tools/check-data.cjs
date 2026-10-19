@@ -1,0 +1,12 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const {validateData} = require('./data-validation.cjs');
+const root = path.resolve(__dirname,'..');
+const scope = {window:{}};
+vm.createContext(scope);
+for (const name of ['courses-data','schedule-data','lecture-explanations-data']) vm.runInContext(fs.readFileSync(path.join(root,'js',name+'.js'),'utf8'),scope,{filename:name+'.js'});
+const result = validateData({courses:scope.window.COURSES_DATA,schedule:scope.window.SCHEDULE_CONFIG,explanations:scope.window.LECTURE_EXPLANATIONS},file=>fs.existsSync(path.join(root,file)));
+for (const error of result.errors) console.error(error);
+console.log(`Data validation: ${result.errors.length} errors; ${result.pending.length} unchanged timetable records awaiting confirmation.`);
+if (result.errors.length) process.exitCode = 1;

@@ -58,7 +58,7 @@ async function main(){
   },{viewport:{width,height:844},isMobile:true,hasTouch:true,userAgent:'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/155.0.0.0 Mobile Safari/537.36'});
   await scenario('blocked-storage',async({page,go,errors})=>{
     await page.addInitScript(()=>{if(location.hostname==='127.0.0.1'){Storage.prototype.getItem=()=>{throw new Error('blocked')};Storage.prototype.setItem=()=>{throw new Error('blocked')};}});
-    await go('index.html');await page.locator('[data-open-profile-modal]').first().click();await page.locator('input[value="B2"]').locator('..').click();await page.locator('#profile-selection-form button[type="submit"]').click();await page.locator('#student-profile-modal').waitFor({state:'hidden'});
+    await go('index.html');await page.waitForTimeout(650);if(!await page.locator('#student-profile-modal').isVisible())await page.locator('[data-open-profile-modal]').first().click();await page.locator('input[value="B2"]').locator('..').click();await page.locator('#profile-selection-form button[type="submit"]').click();await page.locator('#student-profile-modal').waitFor({state:'hidden'});
     assert.equal(await page.locator('#courses-grid article').count(),6);assert.equal(await page.evaluate(()=>StudentProfile.get().group),'B2');await page.locator('[data-theme-btn="reading"]').click();assert.equal(await page.evaluate(()=>PortalTheme.getTheme()),'reading');assert.deepEqual(errors,[]);
   });
   await scenario('offline-cdn',async({page,go,errors})=>{

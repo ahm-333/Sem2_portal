@@ -234,7 +234,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // المذاكرة والشرح الذكي للمحاضرات (Smart Lecture Study Modal)
   // ============================================================================
   const studyModal = document.getElementById("lecture-study-modal");
-  const studyModalContainer = document.getElementById("study-modal-container");
   const studyModalClose = document.getElementById("study-modal-close");
   const studyModalTitle = document.getElementById("study-modal-title");
   const studyModalBadge = document.getElementById("study-modal-progress-badge");
@@ -252,7 +251,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let isStudyFullscreen = false;
   let currentStudyFontZoom = 0; // 0 = normal, 1 = lg, 2 = xl
-  let activeStudyTab = "slides"; // "slides" or "quiz"
 
   function setStudyFontZoom(level) {
     if (!studySlidesFeed) return;
@@ -274,7 +272,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function switchStudyTab(tab) {
-    activeStudyTab = tab;
     if (tab === "slides") {
       if (studyTabBtnSlides) studyTabBtnSlides.classList.add("active");
       if (studyTabBtnQuiz) studyTabBtnQuiz.classList.remove("active");
@@ -1326,7 +1323,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const sectionsList = document.getElementById("sections-list");
   const assignmentsList = document.getElementById("assignments-list");
   const practicalResourcesList = document.getElementById("practical-resources-list");
-  const badgeSectionsCount = document.getElementById("badge-sections-count");
   const badgeAssignmentsCount = document.getElementById("badge-assignments-count");
   const quickBadgeAssignments = document.getElementById("quick-badge-assignments");
 
@@ -1979,7 +1975,6 @@ document.addEventListener("DOMContentLoaded", function () {
       filteredPractical = allPractical.filter(r => !r.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(r.ta, selectedTa)));
     }
 
-    const hasOtherPractical = allPractical.some(r => r.ta && window.StudentProfile && !window.StudentProfile.isTaMatch(r.ta, studentTa));
 
     if (filteredPractical.length === 0) {
       practicalResourcesList.className = "";

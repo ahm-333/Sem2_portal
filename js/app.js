@@ -30,8 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
   function createCourseCard(course) {
     const iconName = iconMap[course.icon] || "book";
     const lecturesCount = course.lectures ? course.lectures.length : 0;
-    const sectionsCount = course.sections ? course.sections.length : 0;
-    const assignmentsCount = course.assignments ? course.assignments.length : 0;
     const videosCount = course.videoExplanations ? course.videoExplanations.length : 0;
 
     // استخراج معلومات الدكتور والمعيد الخاصة بالطالب الحالي

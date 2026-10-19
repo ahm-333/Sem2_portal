@@ -1,0 +1,22 @@
+name: Portal quality checks
+on:
+  push:
+    paths: ['index.html', 'subject.html', 'js/**', 'css/**', 'tests/**', 'tools/*.cjs', 'tools/pending-schedule.json', '*config.cjs', 'package*.json', '.github/workflows/portal-quality.yml']
+  pull_request:
+    paths: ['index.html', 'subject.html', 'js/**', 'css/**', 'tests/**', 'tools/*.cjs', 'tools/pending-schedule.json', '*config.cjs', 'package*.json', '.github/workflows/portal-quality.yml']
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npx --no-install playwright install --with-deps chromium
+      - run: npm run verify
+      - run: git diff --exit-code -- css/tailwind.css js/vendor
