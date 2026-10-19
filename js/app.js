@@ -235,6 +235,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const weeklyDays = window.StudentProfile.getWeeklySchedule();
 
+    let notice = document.getElementById("schedule-data-notice");
+    if (!notice) {
+      notice = document.createElement("p");
+      notice.id = "schedule-data-notice";
+      notice.className = "mb-4 rounded-xl border border-amber-500/30 p-3 text-xs text-[var(--text-main)]";
+      notice.setAttribute("role", "status");
+      scheduleGrid.before(notice);
+    }
+    notice.hidden = window.StudentProfile.getUnconfirmedScheduleEntries().length === 0;
+    notice.textContent = "بعض مواعيد هذا السكشن قيد التأكيد. راجع جدول الكلية قبل الاعتماد على الجدول المعروض.";
+
     scheduleGrid.innerHTML = weeklyDays.map((day) => {
       const hasClasses = day.items && day.items.length > 0;
 
