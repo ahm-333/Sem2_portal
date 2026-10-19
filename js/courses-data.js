@@ -815,6 +815,15 @@ const COURSES_DATA = [
     icon: "network",
     driveFolderUrl: "https://drive.google.com/drive/folders/1gQrSrTFNGcauZk5Fdf8y3xsDQ466oK84",
     driveFolderId: "1gQrSrTFNGcauZk5Fdf8y3xsDQ466oK84",
+    sectionsDriveFolderUrl: "https://drive.google.com/drive/folders/1p1zE6XWM2uYRn7_MnnkN51IL_HWirf-m",
+    sectionsDriveFolderTitle: "درايف م.م. أحمد حسام",
+    sectionsDriveFolders: [
+      {
+        title: "درايف م.م. أحمد حسام (السكاشن والتاسكات)",
+        url: "https://drive.google.com/drive/folders/1p1zE6XWM2uYRn7_MnnkN51IL_HWirf-m",
+        color: "from-amber-600 to-orange-600"
+      }
+    ],
 
     explanationSite: {
       url: "https://drive.google.com/drive/folders/1gQrSrTFNGcauZk5Fdf8y3xsDQ466oK84",
@@ -1008,9 +1017,154 @@ const COURSES_DATA = [
         notes: "سلايدات المحاضرة 4 الرسمية المعتمدة على Google Drive"
       }
     ],
-    sections: [],
-    assignments: [],
-    resources: []
+    sections: [
+      {
+        id: 1,
+        title: "Introduction to Arrays in C++ - Beginners Teaching",
+        arabicTitle: "السكشن 1: مدخل ومفاهيم مصفوفات C++ وتطبيقاتها العملية",
+        ta: "م.م. أحمد حسام",
+        week: 1,
+        date: "السكشن الأول",
+        fileType: "pptx",
+        size: "79 KB",
+        driveId: "1wk9oInrFML104qGkkFFlhb6gP6jcpOLe",
+        driveViewUrl: "https://drive.google.com/file/d/1wk9oInrFML104qGkkFFlhb6gP6jcpOLe/view",
+        drivePreviewUrl: "https://drive.google.com/file/d/1wk9oInrFML104qGkkFFlhb6gP6jcpOLe/preview",
+        driveDownloadUrl: "https://drive.google.com/uc?export=download&id=1wk9oInrFML104qGkkFFlhb6gP6jcpOLe",
+        sheetUrl: "https://drive.google.com/file/d/1wk9oInrFML104qGkkFFlhb6gP6jcpOLe/view",
+        localFile: "materials/ds/Section_1_Arrays_Beginners_Teaching_Presentation.pptx",
+        hasTask: true,
+        taskTitle: "تاسك 1: 20 مسألة عملية متدرجة على مصفوفات C++",
+        topics: [
+          "Array Declaration, Initialization & Syntax in C++",
+          "Memory Layout, Contiguous Allocation & Indexing",
+          "Accessing, Updating & Traversing Elements with Loops",
+          "Array Operations: Sum, Average, Max, Min & Linear Search",
+          "2D Array (Matrices) Concept & Traversal Introduction"
+        ],
+        notes: "سلايدات الشرح الرسمية للسكشن الأول من إعداد م.م. أحمد حسام. يوجد شيت تاسك عملي مخصص (20 مسألة متدرجة) بقسم التكليفات بالأسفل."
+      },
+      {
+        id: 0,
+        tag: "Rev",
+        subTag: "C++",
+        title: "C++ Foundations & Revision - Beginners Teaching",
+        arabicTitle: "مراجعة وتأسيس لغة C++ لسكاشن تراكيب البيانات",
+        ta: "م.م. أحمد حسام",
+        week: 1,
+        date: "مراجعة تمهيدية",
+        fileType: "pptx",
+        size: "86 KB",
+        driveId: "1C-7-6sPIecltpupe99XMNw88JQEzIlQp",
+        driveViewUrl: "https://drive.google.com/file/d/1C-7-6sPIecltpupe99XMNw88JQEzIlQp/view",
+        drivePreviewUrl: "https://drive.google.com/file/d/1C-7-6sPIecltpupe99XMNw88JQEzIlQp/preview",
+        driveDownloadUrl: "https://drive.google.com/uc?export=download&id=1C-7-6sPIecltpupe99XMNw88JQEzIlQp",
+        sheetUrl: "https://drive.google.com/file/d/1C-7-6sPIecltpupe99XMNw88JQEzIlQp/view",
+        localFile: "materials/ds/CPlusPlus_Revision_Beginners_Teaching_Final.pptx",
+        topics: [
+          "C++ Syntax, Variables, Data Types & Scope",
+          "Input/Output Streams (cin, cout) & Best Practices",
+          "Control Flow: Conditions (if/else, switch) & Loops (for, while)",
+          "Functions & Parameter Passing (Pass-by-value vs Reference)",
+          "Pointers & Direct Memory Addressing Fundamentals"
+        ],
+        notes: "سلايدات مراجعة تأسيسية متكاملة للغة C++ من إعداد م.م. أحمد حسام لتثبيت الأساس البرمجي قبل تراكيب البيانات."
+      }
+    ],
+    assignments: [
+      {
+        id: 1,
+        number: 1,
+        title: "Task 1: 20 Progressive C++ Array Tasks (Array Practice)",
+        arabicTitle: "تاسك السكشن 1: 20 مسألة عملية متدرجة على مصفوفات C++",
+        status: "متاح",
+        deadline: "متابعة مع المعيد في السكشن القادم",
+        ta: "م.م. أحمد حسام",
+        pages: 5,
+        size: "77 KB",
+        fileType: "pdf",
+        driveId: "1rLUdeP0zDuERtcxUG-MUc0ur0LQmCClW",
+        fileUrl: "https://drive.google.com/file/d/1rLUdeP0zDuERtcxUG-MUc0ur0LQmCClW/view",
+        driveViewUrl: "https://drive.google.com/file/d/1rLUdeP0zDuERtcxUG-MUc0ur0LQmCClW/view",
+        drivePreviewUrl: "https://drive.google.com/file/d/1rLUdeP0zDuERtcxUG-MUc0ur0LQmCClW/preview",
+        driveDownloadUrl: "https://drive.google.com/uc?export=download&id=1rLUdeP0zDuERtcxUG-MUc0ur0LQmCClW",
+        localFile: "materials/ds/DS_Section_01_Tasks_Arrays_Practice.pdf",
+        pdfUrl: "https://drive.google.com/file/d/1rLUdeP0zDuERtcxUG-MUc0ur0LQmCClW/preview",
+        details: "شيت عملي شامل من إعداد م.م. أحمد حسام يضم 20 مسألة برمجية متدرجة الصعوبة مقسمة عبر 4 مستويات؛ من المبادئ الأولية والـ Indexing حتى مصفوفات ثنائية الأبعاد (2D Arrays).",
+        rules: "حل جميع المسائل باستخدام مصفوفات C++ العادية وحلقات التكرار (Loops) فقط. لا يُسمح باستخدام vector أو map أو set أو دوال الترتيب الجاهزة (built-in sorting) إلا بتصريح المعيد.",
+        levels: [
+          {
+            level: "Level 1 - Foundations",
+            arabicLevel: "المستوى 1: الأساسيات والتعريف والتكرار (5 مسائل)",
+            tasks: [
+              "1. Weekly temperature tracker (تخزين وطباعة وتعديل حرارة 7 أيام)",
+              "2. First, middle, and last (قراءة 7 أرقام وطباعة الأول والأوسط والأخير بالـ index)",
+              "3. Reverse display (طباعة 10 عناصر بالعكس بدون مصفوفة إضافية)",
+              "4. Transform every value (مضاعفة كل عنصر في 2 وطباعة المصفوفة قبل وبعد)",
+              "5. Simple inventory update (تحديث كميات 8 منتجات بالتحقق من الـ index)"
+            ]
+          },
+          {
+            level: "Level 2 - Calculations and Search",
+            arabicLevel: "المستوى 2: العمليات الحسابية والبحث الخطي (5 مسائل)",
+            tasks: [
+              "6. Sum and average (حساب المجموع والمتوسط الحسابي بنوع كسر عشري)",
+              "7. Maximum and minimum (إيجاد أكبر وأصغر قيمة وموقع أول ظهور لهما)",
+              "8. Even and odd counter (عد العناصر الزوجية والفردية وتحديد الفئة الأكبر)",
+              "9. Search all occurrences (بحث خطي Linear Search وطباعة جميع مواقع ظهور العنصر)",
+              "10. Values above average (حساب القيم التي تفوق المتوسط وعددها)"
+            ]
+          },
+          {
+            level: "Level 3 - Transformations",
+            arabicLevel: "المستوى 3: التكرار والترتيب والفرز (5 مسائل)",
+            tasks: [
+              "11. Second-largest distinct value (إيجاد ثاني أكبر قيمة فريدة بدون ترتيب المصفوفة)",
+              "12. Frequency table (جدول تكرار كل قيمة بدون استخدام Map أو Set)",
+              "13. Unique values only (طباعة القيم الفريدة دون تكرار بنفس ترتيب الظهور الأول)",
+              "14. Rotate right (تدوير عناصر المصفوفة لليمين بمقدار خانة أو أكثر)",
+              "15. Sort and merge (فرز مصفوفتين ودمجهما في مصفوفة مرتبة بدون دوال جاهزة)"
+            ]
+          },
+          {
+            level: "Level 4 - 2D Array Challenges",
+            arabicLevel: "المستوى 4: تحديات المصفوفات ثنائية الأبعاد (5 مسائل)",
+            tasks: [
+              "16. Row and column reports (حساب مجاميع الصفوف والأعمدة لمصفوفة 3x4 وتحديد أكبر صف)",
+              "17. Diagonal analysis (حساب مجموع القطر الرئيسي والثانوي وتحديد الأكبر)",
+              "18. Matrix transpose (تدوير المصفوفة وتحويل الصفوف إلى أعمدة)",
+              "19. Matrix addition (جمع مصفوفتين متطابقتي الأبعاد وتخزين الناتج في مصفوفة ثالثة)",
+              "20. Student grade dashboard (سجل درجات الطلاب: إجمالي ومتوسط كل طالب واختبار، وأعلى درجة)"
+            ]
+          }
+        ]
+      }
+    ],
+    resources: [],
+    practicalResources: [
+      {
+        id: 1,
+        title: "سلايدات مراجعة وتأسيس C++ (Revision Slides)",
+        type: "سلايدات مراجعة",
+        year: "م.م. أحمد حسام",
+        size: "86 KB",
+        notes: "سلايدات تمهيدية ومراجعة مكثفة لقواعد لغة C++ الأساسية لسكاشن تراكيب البيانات",
+        fileUrl: "https://drive.google.com/file/d/1C-7-6sPIecltpupe99XMNw88JQEzIlQp/view",
+        folderUrl: "https://drive.google.com/drive/folders/1p1zE6XWM2uYRn7_MnnkN51IL_HWirf-m",
+        badge: "مراجعة مهمة"
+      },
+      {
+        id: 2,
+        title: "شيت المهام والتكليفات العملية (20 Progressive Array Tasks)",
+        type: "شيت تكليفات",
+        year: "م.م. أحمد حسام (5 صفحات)",
+        size: "77 KB",
+        notes: "شيت الـ 20 مسألة العملية المتدرجة على المصفوفات في C++ (المستويات الأربعة)",
+        fileUrl: "https://drive.google.com/file/d/1rLUdeP0zDuERtcxUG-MUc0ur0LQmCClW/view",
+        folderUrl: "https://drive.google.com/drive/folders/1p1zE6XWM2uYRn7_MnnkN51IL_HWirf-m",
+        badge: "تاسك سكشن 1"
+      }
+    ]
   },
 
   // ============================================================================

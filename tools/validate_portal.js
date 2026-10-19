@@ -57,6 +57,12 @@ window.COURSES_DATA.forEach(course => {
       console.log(`  - [${p.type}] ${p.title} -> ${p.fileUrl}`);
     });
   }
+  console.log(`Assignments count: ${course.assignments ? course.assignments.length : 0}`);
+  if (course.assignments) {
+    course.assignments.forEach(a => {
+      console.log(`  - [Task ${a.number || a.id}] ${a.title} | Status: ${a.status} | Deadline: ${a.deadline} | TA: ${a.ta || 'N/A'}`);
+    });
+  }
 });
 
 console.log("\nALL DATA INTEGRITY CHECKS PASSED!");

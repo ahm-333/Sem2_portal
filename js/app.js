@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <!-- معلومات المحتوى وزر التصفح -->
         <div>
           <!-- شارات الإحصائيات وحالة المحتوى -->
-          <div class="flex items-center justify-between text-xs text-[var(--text-dim)] border-t border-[var(--border-subtle)] pt-3 pb-4">
+          <div class="flex items-center justify-between text-xs text-[var(--text-dim)] border-t border-[var(--border-subtle)] pt-3 pb-3">
             <span class="flex items-center gap-1.5 font-medium">
               <i data-lucide="cloud" class="w-3.5 h-3.5 text-indigo-400"></i>
               ${lecturesCount > 0 ? `${lecturesCount} محاضرات (Drive)` : '<span class="text-indigo-400/90 font-medium">المحاضرات قريباً</span>'}
@@ -121,6 +121,20 @@ document.addEventListener("DOMContentLoaded", function () {
               ${sectionsCount > 0 ? `${sectionsCount} سكاشن عملي (Drive)` : (videosCount > 0 ? `${videosCount} مصادر شرح` : '<span class="text-cyan-400/90 font-medium">السكاشن قريباً</span>')}
             </span>
           </div>
+
+          ${assignmentsCount > 0 ? `
+            <a 
+              href="subject.html?id=${course.id}&track=section#assignments-section-panel"
+              class="mb-3 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 flex items-center justify-between text-xs transition-all"
+              title="عرض تكليفات وتاسكات السكشن"
+            >
+              <span class="text-amber-400 font-bold flex items-center gap-1.5">
+                <i data-lucide="clipboard-check" class="w-3.5 h-3.5"></i>
+                <span>تاسك السكشن متاح ومطلوب</span>
+              </span>
+              <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">${assignmentsCount} تكليف</span>
+            </a>
+          ` : ""}
 
           <!-- أزرار مساري المادة (طريق المحاضرة وطريق السكشن) -->
           <div class="grid grid-cols-2 gap-2">

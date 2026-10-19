@@ -283,3 +283,143 @@ code, pre, .font-mono {
   color: #78350f !important;
   border-color: #d97706 !important;
 }
+
+/* ==============================================================================
+   أنماط نافذة المذاكرة الذكية وقارئ السلايدات (Smart Study Reader)
+   ============================================================================== */
+
+/* وضع تكبير الشاشة (Fullscreen Modal) */
+#lecture-study-modal.is-fullscreen {
+  padding: 0 !important;
+}
+
+#lecture-study-modal.is-fullscreen > #study-modal-container {
+  max-width: 100vw !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  border-radius: 0 !important;
+}
+
+/* تكبير الخط والقراءة داخل النافذة */
+.study-font-lg p,
+.study-font-lg .study-concept-desc,
+.study-font-lg .quiz-opt-text {
+  font-size: 1.05rem !important;
+  line-height: 1.85 !important;
+}
+
+.study-font-xl p,
+.study-font-xl .study-concept-desc,
+.study-font-xl .quiz-opt-text {
+  font-size: 1.15rem !important;
+  line-height: 2 !important;
+}
+
+/* صندوق تريكة الامتحان وفخاخ الأسئلة (عالي التباين وواضح بجميع الأوضاع) */
+.study-trick-box {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1.5px solid rgba(245, 158, 11, 0.4);
+  color: #fef3c7;
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.study-trick-box .trick-title {
+  color: #fbbf24;
+  font-weight: 800;
+}
+
+.study-trick-box .trick-text {
+  color: #fef3c7;
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+[data-theme="light"] .study-trick-box {
+  background: #fffbeb !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.12);
+}
+
+[data-theme="light"] .study-trick-box .trick-title {
+  color: #b45309 !important;
+}
+
+[data-theme="light"] .study-trick-box .trick-text {
+  color: #451a03 !important;
+  font-weight: 600 !important;
+}
+
+[data-theme="reading"] .study-trick-box {
+  background: #fef3c7 !important;
+  border-color: #d97706 !important;
+  box-shadow: 0 4px 12px rgba(180, 83, 9, 0.15);
+}
+
+[data-theme="reading"] .study-trick-box .trick-title {
+  color: #78350f !important;
+}
+
+[data-theme="reading"] .study-trick-box .trick-text {
+  color: #2b1404 !important;
+  font-weight: 600 !important;
+}
+
+/* بطاقات تفكيك عناصر السلايد المنفصلة (Point-by-Point Concept Cards) */
+.study-concept-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  padding: 0.9rem 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.study-concept-item:hover {
+  border-color: var(--border-accent);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .study-concept-item {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+[data-theme="reading"] .study-concept-item {
+  background: #fdf5e6;
+  border-color: #e8d7bb;
+}
+
+/* شارات المصطلحات الإنجليزية والمفاهيم */
+.study-keyword-pill {
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  border-radius: 0.75rem;
+  padding: 0.4rem 0.75rem;
+}
+
+[data-theme="light"] .study-keyword-pill {
+  background: #ecfeff;
+  border-color: #a5f3fc;
+}
+
+[data-theme="light"] .study-keyword-pill .kw-en {
+  color: #0369a1 !important;
+}
+
+[data-theme="light"] .study-keyword-pill .kw-ar {
+  color: #0f172a !important;
+}
+
+[data-theme="reading"] .study-keyword-pill {
+  background: #faeed7;
+  border-color: #e8d7bb;
+}
+
+[data-theme="reading"] .study-keyword-pill .kw-en {
+  color: #78350f !important;
+}
+
+[data-theme="reading"] .study-keyword-pill .kw-ar {
+  color: #2b2118 !important;
+}
+
