@@ -217,9 +217,7 @@ document.addEventListener("DOMContentLoaded", function () {
       resultsCount.textContent = `${filtered.length} مواد متاحة`;
     }
 
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
+    window.PortalUI.icons(coursesGrid);
   }
 
   // رندر جدول المواعيد الأسبوعي المخصص للطالب
@@ -301,9 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
       `;
     }).join("");
 
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
+    window.PortalUI.icons(scheduleGrid);
   }
 
   // أحداث البحث

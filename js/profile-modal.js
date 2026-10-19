@@ -137,7 +137,7 @@
     if (box) box.classList.remove("scale-95");
     window.PortalDialog.open(modal);
 
-    if (window.lucide) window.lucide.createIcons();
+    window.PortalUI.icons();
   }
 
   function closeModal() {
@@ -163,7 +163,7 @@
         </span>
       `;
     });
-    if (window.lucide) window.lucide.createIcons();
+    window.PortalUI.icons();
   }
 
   // ربط الأحداث
