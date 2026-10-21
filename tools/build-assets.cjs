@@ -11,6 +11,12 @@ fs.copyFileSync(path.join(path.dirname(require.resolve('tailwindcss/package.json
 const vendor = path.join(root,'js/vendor');
 fs.mkdirSync(vendor,{recursive:true});
 const lucide = path.dirname(require.resolve('lucide/package.json'));
+try {
+  const lenis = path.dirname(require.resolve('lenis/package.json'));
+  fs.copyFileSync(path.join(lenis,'dist/lenis.min.js'),path.join(vendor,'lenis.min.js'));
+  fs.copyFileSync(path.join(lenis,'dist/lenis.css'),path.join(root,'css/lenis.css'));
+  fs.copyFileSync(path.join(lenis,'LICENSE'),path.join(vendor,'LENIS-LICENSE'));
+} catch {}
 fs.copyFileSync(path.join(lucide,'dist/umd/lucide.min.js'),path.join(vendor,'lucide.min.js'));
 fs.copyFileSync(path.join(lucide,'LICENSE'),path.join(vendor,'LUCIDE-LICENSE'));
 const studySource = fs.readFileSync(path.join(root,'js/lecture-explanations-data.js'),'utf8');
