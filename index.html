@@ -111,22 +111,22 @@
     <!-- 4. قسم جدول المواعيد الأسبوعي المخصص للطالب -->
     <!-- ========================================== -->
     <section id="schedule-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-      <div class="glass-panel rounded-3xl p-6 sm:p-8 border relative overflow-hidden shadow-xl">
+      <div class="glass-panel a1-schedule-shell border relative overflow-hidden">
         
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border-subtle)]">
+        <div class="a1-schedule-header">
           <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-2 font-mono">
-              <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-              جدول الحضور الأسبوعي المعتمد
+            <div class="a1-schedule-badge">
+              <i data-lucide="calendar" class="w-3.5 h-3.5" aria-hidden="true"></i>
+              <span>جدول الحضور الأسبوعي المعتمد</span>
             </div>
-            <h2 class="text-xl sm:text-2xl font-bold text-[var(--text-main)]">
+            <h2 class="a1-schedule-title">
               جدول مواعيد <span id="schedule-target-label" class="text-gradient">مجموعة B1 • سكشن 1</span>
             </h2>
-            <p class="text-xs sm:text-sm text-[var(--text-muted)]">مواعيد محاضراتك وسكاشنك مع أرقام القاعات والمدرجات والمعامل المخصصة لمجموعتك وسكشنك</p>
+            <p class="a1-schedule-subtitle">مواعيد محاضراتك وسكاشنك مع أرقام القاعات والمدرجات والمعامل المخصصة لمجموعتك وسكشنك</p>
           </div>
 
-          <button data-open-profile-modal class="px-4 py-2.5 rounded-xl glass-panel border text-xs font-bold text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2 self-start md:self-auto shadow-sm">
-            <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+          <button data-open-profile-modal class="a1-schedule-change-btn glass-panel border" title="تغيير المجموعة أو السكشن" aria-label="تغيير المجموعة أو السكشن">
+            <i data-lucide="sliders-horizontal" class="w-4 h-4" aria-hidden="true"></i>
             <span>تغيير المجموعة أو السكشن</span>
           </button>
         </div>
@@ -146,7 +146,7 @@
   <footer class="border-t py-10 glass-header mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       
-      <!-- كارت توقيع المطور Eng. Ahmed Amir -->
+      <!-- كارت توقيع المطورين Eng. Ahmed Amir & Eng. Eyad Ahmed -->
       <div class="glass-panel p-5 sm:p-6 rounded-3xl border border-indigo-500/25 flex flex-col md:flex-row items-center justify-between gap-5 bg-gradient-to-r from-indigo-500/5 via-cyan-500/5 to-purple-500/5 shadow-lg">
         <div class="flex items-center gap-4 text-right">
           <div class="w-13 h-13 p-3.5 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-500 flex items-center justify-center text-white font-black text-base shadow-lg shadow-indigo-500/25 flex-shrink-0 icon-box-modern">
@@ -155,8 +155,8 @@
           <div>
             <div class="flex flex-wrap items-center gap-2 mb-1">
               <span class="text-xs text-[var(--text-dim)] font-medium">تصميم وبرمجة:</span>
-              <span class="creator-name-gradient text-sm sm:text-base font-extrabold">Eng. Ahmed Amir (أحمد أمير)</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono font-bold">Creator & Developer</span>
+              <span class="creator-name-gradient text-sm sm:text-base font-extrabold">Eng. Ahmed Amir & Eng. Eyad Ahmed (أحمد أمير وإياد أحمد)</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-mono font-bold">Creators & Developers</span>
             </div>
             <p class="text-xs text-[var(--text-muted)]">تم إعداد المنصة لخدمة طلاب كلية الحاسبات والمعلومات وقسم الذكاء الاصطناعي (AI 2026)</p>
           </div>
@@ -178,7 +178,7 @@
         <div class="flex items-center gap-1.5 text-[var(--text-dim)]">
           <span>صُنعت بكل إتقان</span>
           <span class="text-rose-500">♥</span>
-          <span>بواسطة Eng. Ahmed Amir للدفعة</span>
+          <span>بواسطة Eng. Ahmed Amir &amp; Eng. Eyad Ahmed للدفعة</span>
         </div>
       </div>
 

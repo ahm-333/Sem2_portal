@@ -97,58 +97,70 @@ document.addEventListener("DOMContentLoaded", function () {
 
     scheduleGrid.innerHTML = weeklyDays.map((day) => {
       const hasClasses = day.items && day.items.length > 0;
+      const countLabel = hasClasses
+        ? (day.items.length === 1 ? "فترة واحدة" : day.items.length === 2 ? "فترتان" : `${day.items.length} فترات`)
+        : "إجازة";
 
       return `
-        <div class="glass-panel rounded-2xl p-4 sm:p-5 border flex flex-col justify-between">
+        <article class="glass-panel a1-schedule-day ${hasClasses ? 'has-classes' : 'is-off-day'}" aria-label="جدول يوم ${day.name}">
           <div>
-            <div class="flex items-center justify-between pb-3 mb-3 border-b border-[var(--border-subtle)]">
-              <span class="text-sm font-bold text-[var(--text-main)] flex items-center gap-2">
-                <i data-lucide="calendar" class="w-4 h-4 text-indigo-400"></i>
+            <div class="a1-schedule-day-head">
+              <span class="a1-schedule-day-name">
+                <i data-lucide="calendar" class="w-4 h-4 text-indigo-400" aria-hidden="true"></i>
                 يوم ${day.name}
               </span>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded-full ${hasClasses ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'text-[var(--text-dim)]'}">
-                ${hasClasses ? `${day.items.length} حصص` : 'إجازة / لا توجد فترات'}
+              <span class="a1-schedule-day-pill ${hasClasses ? 'pill-active' : 'pill-off'}">
+                ${countLabel}
               </span>
             </div>
 
             ${hasClasses ? `
-              <div class="space-y-3">
-                ${day.items.map((item) => `
-                  <div class="p-3 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] hover:border-indigo-500/30 transition-all">
-                    <div class="flex items-center justify-between gap-2 mb-1.5">
-                      <span class="text-[10px] px-2 py-0.5 rounded-md font-bold ${item.type === 'lecture' ? 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/20' : 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/20'}">
-                        ${item.typeLabel}
-                      </span>
-                      <span class="text-xs font-mono text-[var(--text-main)] font-semibold flex items-center gap-1">
-                        <i data-lucide="clock" class="w-3 h-3 text-[var(--text-muted)]"></i>
-                        ${item.time}
-                      </span>
-                    </div>
+              <div class="a1-schedule-items-list space-y-3">
+                ${day.items.map((item) => {
+                  const isLecture = item.type === "lecture";
+                  const courseTitle = window.PortalPresentation.byCode(item.code)?.name || item.courseName;
+                  return `
+                    <div class="a1-schedule-card ${isLecture ? 'is-lecture' : 'is-section'}">
+                      <div class="a1-schedule-card-top">
+                        <span class="a1-schedule-type-badge ${isLecture ? 'badge-lecture' : 'badge-section'}">
+                          <i data-lucide="${isLecture ? 'graduation-cap' : 'book-open'}" class="w-3 h-3" aria-hidden="true"></i>
+                          <span>${item.typeLabel}</span>
+                        </span>
+                        <span class="a1-schedule-time">
+                          <i data-lucide="clock" class="w-3 h-3" aria-hidden="true"></i>
+                          <bdi>${item.time}</bdi>
+                        </span>
+                      </div>
 
-                    <h4 class="text-xs font-bold text-[var(--text-main)] mb-1">
-                      <bdi lang="en">${window.PortalPresentation.byCode(item.code)?.name || item.courseName}</bdi><small class="a1-schedule-ar">${item.arabicName}</small>
-                    </h4>
+                      <div class="a1-schedule-card-body">
+                        <h4 class="a1-schedule-course-name">
+                          <bdi lang="en">${courseTitle}</bdi>
+                        </h4>
+                        <small class="a1-schedule-ar">${item.arabicName}</small>
+                      </div>
 
-                    <div class="flex items-center justify-between text-[11px] text-[var(--text-muted)] pt-1 border-t border-[var(--border-subtle)] mt-2">
-                      <span class="truncate flex items-center gap-1 text-[var(--text-dim)]" title="${item.instructor}">
-                        <i data-lucide="${item.type === 'lecture' ? 'graduation-cap' : 'user'}" class="w-3 h-3"></i>
-                        ${item.instructor}
-                      </span>
-                      <span class="px-1.5 py-0.5 rounded bg-black/20 text-indigo-300 font-mono text-[10px] border border-white/5 flex-shrink-0">
-                        ${item.place}
-                      </span>
+                      <div class="a1-schedule-card-footer">
+                        <span class="a1-schedule-instructor truncate" title="${item.instructor}">
+                          <i data-lucide="${isLecture ? 'graduation-cap' : 'user'}" class="w-3.5 h-3.5" aria-hidden="true"></i>
+                          <span>${item.instructor}</span>
+                        </span>
+                        <span class="a1-schedule-room">
+                          <i data-lucide="map-pin" class="w-3 h-3" aria-hidden="true"></i>
+                          <bdi>${item.place}</bdi>
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                `).join("")}
+                  `;
+                }).join("")}
               </div>
             ` : `
-              <div class="py-6 text-center text-xs text-[var(--text-dim)]">
-                <i data-lucide="coffee" class="w-6 h-6 mx-auto mb-2 opacity-50"></i>
-                لا توجد محاضرات أو سكاشن مجدولة لمجموعتك وسكشنك في هذا اليوم.
+              <div class="a1-schedule-empty-state">
+                <i data-lucide="coffee" class="w-5 h-5 opacity-60" aria-hidden="true"></i>
+                <p>لا توجد محاضرات أو سكاشن مجدولة لمجموعتك في هذا اليوم.</p>
               </div>
             `}
           </div>
-        </div>
+        </article>
       `;
     }).join("");
 

@@ -1,3 +1,5 @@
+body.a1 { transition: none !important; }
+@import './enhancements.css';
 /* A1 student journey: choose a course, choose a source, then focus on reading/practice. */
 body.a1 .a1-course {padding:0;min-height:245px}
 .a1-course-link {display:flex;flex-direction:column;min-height:245px;height:100%;padding:23px;border-radius:inherit;color:var(--ink)}
@@ -177,4 +179,542 @@ body.a1 .a1-question-map .q-map-pill[aria-current="step"] {outline:2px solid var
  body.a1 .a1-quiz-main>[data-qid] {padding:20px 15px}
  body.a1 .a1-quiz-main>[data-qid]>.text-left>p {font-size:20px;line-height:1.65}
  body.a1 .a1-quiz-main .full-quiz-opt-btn {font-size:14px;padding:12px}
+}
+
+
+/* ==============================================================================
+   1. College Timetable Schedule Redesign (Simple, Clear & Polished across 3 modes)
+   ============================================================================== */
+.a1-schedule-shell {
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+}
+@media (max-width: 760px) {
+  .a1-schedule-shell {
+    padding: 16px;
+    border-radius: 16px;
+  }
+}
+.a1-schedule-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 768px) {
+  .a1-schedule-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+.a1-schedule-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--soft);
+  color: var(--accent);
+  border: 1px solid var(--line);
+  margin-bottom: 8px;
+}
+.a1-schedule-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 4px;
+  letter-spacing: -0.015em;
+}
+.a1-schedule-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.6;
+}
+.a1-schedule-change-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--soft);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+.a1-schedule-change-btn:hover {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px -2px rgba(35, 87, 174, 0.25);
+}
+
+/* Day Columns */
+.a1-schedule-day {
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.a1-schedule-day.is-off-day {
+  opacity: 0.72;
+  border-style: dashed;
+}
+.a1-schedule-day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.a1-schedule-day-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.a1-schedule-day-pill {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+.pill-active {
+  background: var(--soft);
+  color: var(--accent);
+  border: 1px solid var(--line);
+}
+.pill-off {
+  color: var(--muted);
+  background: transparent;
+}
+
+/* Individual Schedule Card */
+.a1-schedule-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.a1-schedule-card {
+  padding: 13px 14px;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  position: relative;
+  transition: all 0.2s ease;
+}
+.a1-schedule-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.06);
+}
+.a1-schedule-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.a1-schedule-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2.5px 8px;
+  border-radius: 6px;
+}
+.badge-lecture {
+  background: rgba(35, 87, 174, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(35, 87, 174, 0.2);
+}
+.badge-section {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.22);
+}
+.a1-schedule-time {
+  font-size: 11.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 600;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  direction: ltr;
+}
+.a1-schedule-card-body {
+  margin-bottom: 10px;
+}
+.a1-schedule-course-name {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0;
+}
+.a1-schedule-ar {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.a1-schedule-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--muted);
+}
+.a1-schedule-instructor {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.a1-schedule-room {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--soft);
+  color: var(--accent);
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.a1-schedule-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 22px 12px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+.a1-schedule-empty-state p { margin: 0; }
+
+/* Timetable Theme Specifics */
+[data-theme="dark"] .a1-schedule-card { background: rgba(16, 26, 42, 0.6); }
+[data-theme="dark"] .a1-schedule-day.is-off-day { background: rgba(16, 26, 42, 0.35); border-color: rgba(66, 88, 121, 0.4); }
+[data-theme="light"] .a1-schedule-card { background: #f7faff; }
+[data-theme="light"] .a1-schedule-day.is-off-day { background: #f4f8fd; }
+[data-theme="light"] .badge-section { background: #eaf7ef; color: #1b6b3e; border-color: #c3e6cb; }
+[data-theme="reading"] .a1-schedule-card { background: #f5f6f1; }
+[data-theme="reading"] .a1-schedule-day.is-off-day { background: #ebece6; }
+[data-theme="reading"] .badge-section { background: #e7efe9; color: #235f3b; border-color: #c8dcd0; }
+
+/* ==============================================================================
+   2. Course Cards Elevation (Alive, unified, tactile feedback)
+   ============================================================================== */
+/* Neutralize hardcoded blue tint on database-systems */
+[data-theme="light"] body.a1 #course-database-systems,
+[data-theme="dark"] body.a1 #course-database-systems,
+[data-theme="reading"] body.a1 #course-database-systems {
+  background: var(--paper);
+  border-color: var(--line);
+}
+
+body.a1 .a1-course {
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+  overflow: hidden;
+}
+body.a1 .a1-course::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+body.a1 .a1-course:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+body.a1 .a1-course:hover::before {
+  opacity: 1;
+}
+body.a1 .a1-course-icon {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+body.a1 .a1-course:hover .a1-course-icon {
+  transform: scale(1.06);
+}
+body.a1 .a1-course-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em !important;
+  padding: 3px 8px !important;
+  border-radius: 6px !important;
+  background: var(--soft) !important;
+  color: var(--accent) !important;
+  border: 1px solid var(--line) !important;
+}
+body.a1 .a1-course-enter {
+  font-weight: 700;
+  color: var(--accent);
+}
+body.a1 .a1-course-enter svg {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+body.a1 .a1-course:hover .a1-course-enter svg {
+  transform: translateX(-5px);
+}
+[data-theme="dark"] body.a1 .a1-course {
+  background: linear-gradient(180deg, #182538 0%, #141f2e 100%);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.35);
+}
+[data-theme="dark"] body.a1 .a1-course:hover {
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.65), 0 0 20px -4px rgba(171, 202, 255, 0.15);
+}
+[data-theme="light"] body.a1 .a1-course {
+  background: linear-gradient(180deg, #ffffff 0%, #fafdff 100%);
+  box-shadow: 0 3px 12px -2px rgba(22, 43, 75, 0.05), 0 1px 3px rgba(22, 43, 75, 0.03);
+}
+[data-theme="light"] body.a1 .a1-course:hover {
+  box-shadow: 0 14px 30px -4px rgba(35, 87, 174, 0.14), 0 3px 10px -2px rgba(35, 87, 174, 0.08);
+}
+[data-theme="reading"] body.a1 .a1-course {
+  background: linear-gradient(180deg, #fdfefe 0%, #f6f7f2 100%);
+  box-shadow: 0 3px 12px -2px rgba(37, 61, 66, 0.05);
+}
+[data-theme="reading"] body.a1 .a1-course:hover {
+  box-shadow: 0 14px 28px -4px rgba(35, 92, 114, 0.13);
+}
+@media (max-width: 760px) {
+  body.a1 .a1-course h3 { font-size: 18px !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.a1 .a1-course, body.a1 .a1-course:hover { transform: none !important; }
+  body.a1 .a1-course:hover .a1-course-enter svg { transform: none !important; }
+  body.a1 .a1-course:hover .a1-course-icon { transform: none !important; }
+}
+
+/* ==============================================================================
+   3. Site-Wide Aesthetic Polish: Glass navbar, Search bar, Filters, Cards
+   ============================================================================== */
+/* Glass Navbar */
+body.a1 .a1-navbar {
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.04);
+}
+[data-theme="dark"] body.a1 .a1-navbar {
+  background: rgba(25, 38, 58, 0.9);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+}
+[data-theme="light"] body.a1 .a1-navbar {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 4px 18px -2px rgba(22, 43, 75, 0.06);
+}
+[data-theme="reading"] body.a1 .a1-navbar {
+  background: rgba(252, 253, 248, 0.94);
+  box-shadow: 0 4px 16px -2px rgba(37, 61, 66, 0.05);
+}
+
+/* Brand mark vibrant styling (preserves background-color for contrast tests) */
+.a1-brand-mark {
+  background-color: #2357ae !important;
+  background-image: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%) !important;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.a1-brand:hover .a1-brand-mark {
+  transform: scale(1.05) rotate(-2deg);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+}
+
+/* Nav links & header action buttons */
+.a1-header-actions button {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.a1-header-actions button:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+.a1-desktop-nav a {
+  transition: all 0.2s ease;
+}
+.a1-desktop-nav a:hover {
+  transform: translateY(-1px);
+}
+
+/* Hero Section Subtle Atmosphere */
+.a1-welcome {
+  position: relative;
+  text-align: right;
+  padding: 35px 24px 12px !important;
+}
+.a1-welcome::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  inset-inline-start: 0;
+  width: min(500px, 85vw);
+  height: 180px;
+  background: radial-gradient(ellipse at 20% 50%, rgba(37, 99, 235, 0.1), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 0;
+}
+[data-theme="dark"] .a1-welcome::before {
+  background: radial-gradient(ellipse at 20% 50%, rgba(171, 202, 255, 0.12), transparent 70%);
+}
+[data-theme="reading"] .a1-welcome::before {
+  background: radial-gradient(ellipse at 20% 50%, rgba(35, 92, 114, 0.08), transparent 70%);
+}
+.a1-welcome h1 {
+  font-size: 32px !important;
+  font-weight: 800 !important;
+  line-height: 1.4 !important;
+  letter-spacing: -0.02em !important;
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 760px) {
+  .a1-welcome h1 { font-size: 25px !important; }
+}
+.a1-welcome > p {
+  font-size: 14.5px !important;
+  color: var(--muted);
+  max-width: 58ch;
+  margin: 6px 0 0;
+  position: relative;
+  z-index: 1;
+}
+.a1-summary {
+  justify-content: flex-start;
+  gap: 8px 16px !important;
+  margin: 16px 0 22px !important;
+  position: relative;
+  z-index: 1;
+}
+.a1-summary span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  font-size: 12px;
+}
+
+/* Search Bar & Filter Chips */
+.a1-search-area > div:first-child {
+  border-radius: 16px !important;
+  border: 1.5px solid var(--line) !important;
+  background: var(--paper) !important;
+  box-shadow: 0 2px 10px -2px rgba(0, 0, 0, 0.04);
+  transition: all 0.22s ease;
+}
+.a1-search-area > div:first-child:focus-within {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(35, 87, 174, 0.15), 0 6px 20px -4px rgba(35, 87, 174, 0.1) !important;
+}
+[data-theme="dark"] .a1-search-area > div:first-child:focus-within {
+  box-shadow: 0 0 0 3px rgba(171, 202, 255, 0.18), 0 6px 20px -4px rgba(0, 0, 0, 0.5) !important;
+}
+.a1-search-area .filter-chip {
+  border-radius: 10px !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+.a1-search-area .filter-chip:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+.a1-search-area .active-chip {
+  background: var(--accent) !important;
+  color: var(--paper) !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 3px 12px -2px rgba(35, 87, 174, 0.3) !important;
+}
+.a1-search-area .active-chip:hover {
+  transform: translateY(-2px);
+}
+
+/* Courses Grid Header Count */
+#results-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 11px;
+  border-radius: 9999px;
+  background: var(--soft);
+  color: var(--accent);
+  border: 1px solid var(--line);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+/* Material Source Rows Hover Lift */
+body.a1 .a1-source-row {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s ease;
+}
+body.a1 .a1-source-row:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent) !important;
+  box-shadow: 0 8px 20px -4px rgba(35, 87, 174, 0.08);
+}
+[data-theme="dark"] body.a1 .a1-source-row:hover {
+  box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.6), 0 0 14px -4px rgba(171, 202, 255, 0.1);
+}
+body.a1 .a1-source-actions > :is(a, button) {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+body.a1 .a1-source-actions > :is(a, button):hover {
+  transform: translateY(-2px);
+}
+body.a1 .a1-source-actions > .a1-action-primary {
+  box-shadow: 0 3px 12px -2px rgba(35, 87, 174, 0.3) !important;
+}
+body.a1 .a1-source-actions > .a1-action-primary:hover {
+  box-shadow: 0 5px 16px -2px rgba(35, 87, 174, 0.4) !important;
+}
+
+/* Footer modern icon */
+body.a1 footer {
+  border-top: 1px solid var(--line);
+}
+body.a1 footer .icon-box-modern {
+  background-color: #4f46e5 !important;
+  background-image: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%) !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
+  color: #fff !important;
 }
