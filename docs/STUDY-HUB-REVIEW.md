@@ -13,6 +13,8 @@ This is the current implementation handoff. Earlier dated documents describe the
 
 The scientific data, original slide images, source links and timetable records are unchanged. The content hash test accepts Git's LF/CRLF checkout conversion for text files only; binary assets still require their exact original hashes. The separately discussed progress/resume/backup features are not implemented.
 
+The first GitHub CI run exposed two host-dependent UI failures: late theme initialization animated from the default palette, and wider fallback font metrics pushed the first lecture action below a 360×900 viewport. Theme initialization now runs in the head before styles/body paint, and mobile pre-source spacing is smaller while controls and font sizes remain intact. Both failures were reproduced locally before fixing them; regressions include delayed theme loading and Arial fallback metrics.
+
 ## Run and continue work
 
 Use Node.js 24 or newer. From the repository:

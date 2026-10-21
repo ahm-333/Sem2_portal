@@ -177,6 +177,10 @@ async function main() {
   });
   await scenario('a1-journey-saved-theme-and-quiz-reset-focus', async ({page, go}) => {
     await settled(page); await page.addInitScript(() => localStorage.setItem('sem2_portal_theme', 'light'));
+    await page.route('**/js/theme.js*', async route => {
+      await new Promise(resolve => setTimeout(resolve, 200));
+      await route.continue();
+    });
     await go('subject.html?id=database-systems');
     assert.equal(await page.locator('body').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(242, 246, 252)', 'saved light theme must be applied before the content paints');
     await page.locator('[data-open-study-lecture="2"]').first().click(); await page.locator('#study-tab-btn-quiz').click();
@@ -204,7 +208,13 @@ async function main() {
     assert(pill.x >= rail.x - 1 && pill.x + pill.width <= rail.x + rail.width + 1, 'selected slide 13 is visible in its outline');
   }, {viewport: {width: 360, height: 900}});
   await scenario('a1-journey-mobile-primary-material-reachable', async ({page, go}) => {
+    // Exercise the existing fallback on hosts without Windows' Segoe UI too.
+    await page.route('**/*.css*', async route => {
+      const response = await route.fetch();
+      await route.fulfill({response, body: (await response.text()).replaceAll("'Segoe UI'", 'Arial')});
+    });
     await settled(page); await go('subject.html?id=database-systems');
+    await page.evaluate(() => document.fonts.ready);
     const action = await page.locator('[data-open-study-lecture="2"]').boundingBox();
     assert(action && action.y + action.height <= 900, 'the first real lecture action is visible without scrolling through repeated section introductions');
   }, {viewport: {width: 360, height: 900}});

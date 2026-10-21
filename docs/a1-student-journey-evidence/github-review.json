@@ -15,16 +15,38 @@
       "nodeTests": 30,
       "referenceBrowserScenario": "pass"
     },
-    "protectedContent": "Original 77-file manifest retained; LF/CRLF-only text conversion accepted, binary hashes remain exact"
+    "protectedContent": "Original 77-file manifest retained; LF/CRLF-only text conversion accepted, binary hashes remain exact",
+    "fullVerifyScope": "Initial upload passed locally; subsequent host-specific CI findings were reproduced and fixed as recorded in postCiFix.",
+    "postCiFix": {
+      "reproduced": [
+        "Delayed theme initialization produces intermediate palette",
+        "Fallback font wraps lecture title and moves first action below viewport"
+      ],
+      "targetedRed": 2,
+      "targetedGreen": 2,
+      "originalBrowserScenarios": 23,
+      "renderedWidths": [
+        360,
+        390,
+        412,
+        768,
+        1024,
+        1440
+      ],
+      "syntax": "pass",
+      "lint": "pass",
+      "changes": "Initialize theme in the document head; reduce mobile pre-source spacing by 41px without reducing font sizes or touch targets",
+      "githubChecks": "Consult live pull-request checks for the current commit, rather than earlier local evidence."
+    }
   },
   "codeHashesLf": {
-    "css/a1-journey.css": "5ecaa2667a3936d43b237aeb218b2444368de2c15adccf8aa4b10968cf277526",
+    "css/a1-journey.css": "39483dce7f7e6bcb99cf58a19cdf60f29c91f77dd7341bac9678df9326394084",
     "css/a1.css": "68349afb5c360a54d5450f0b83486000d6ae2c4eb8802bb824f00fc10a7637f5",
     "css/fonts/fonts.css": "1333e62cc689deddbd3f3649afef3cd8dc579b931d4d193aa463ea7e463c7aef",
     "css/processor.css": "386b7ad05c71cca63226d7b9bd85e9d31d27b2259b4af83ab1f7c843543717bc",
     "css/style.css": "9c22f4ed5a43e08258b53aac24a0169f2da60a475d26f43a89e908f1432f269d",
     "css/tailwind.css": "344d1332e1f1d3150af1f17c631cef3b8dd7818deda711ab00c5d0363d391f86",
-    "index.html": "2bb1be110161253976313504871b9dcf2076336681901176141101674074c951",
+    "index.html": "e504c95baa3068edfe1e7db1c1c1e63547d326b517c337d8c39df264851407d1",
     "js/a1-cursor.js": "2aca2485118013f417f4b117b73fb9c07d06d55946dd4f0aaea55215c0b4eb45",
     "js/a1-identity.js": "0e4ac4c48ee6fbe5d3f8bba5771135c7dc4fdd19298c3019ac31e02fff5c152c",
     "js/a1-journey.js": "8043457e8da2f51d5539353b183a898975bdaad338555a37289052f568f2d0f7",
@@ -40,7 +62,7 @@
     "js/vendor/gsap/InertiaPlugin.min.js": "5ddbc518fe02e79d66713b8af6fab0b91ee5eb58ef3beaf589b70fdfb824733f",
     "js/vendor/gsap/ScrollTrigger.min.js": "b0b14d67b55b0c43c756ac0b106cfcb09d0879945f6ead64451065b0672916a2",
     "js/vendor/gsap/gsap.min.js": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb",
-    "subject.html": "497ead21b17ba5b821a57ac0e67dbb927836968033aa73bfbfc48e64f6644335"
+    "subject.html": "c6582c63adfef8faea17c8ea4626ecf1de5dc058f187f67154c4c43677749d19"
   },
   "limitations": [
     "External providers blocked by functional tests",

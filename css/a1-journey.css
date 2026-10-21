@@ -122,8 +122,8 @@ body.a1 .a1-question-map .q-map-pill[aria-current="step"] {outline:2px solid var
 .a1-quiz-main #full-quiz-summary-card {margin-top:20px}
 
 @media(max-width:1023px) {
- .a1-course-layout {display:flex;flex-direction:column;gap:15px}
- .a1-course-context {order:-1;position:static;width:100%;padding:12px 16px}
+ .a1-course-layout {display:flex;flex-direction:column;gap:12px}
+ .a1-course-context {order:-1;position:static;width:100%;padding:8px 14px}
  .a1-course-context>summary {min-height:30px;font-size:12px}
  .a1-materials {width:100%}
 }
@@ -133,10 +133,12 @@ body.a1 .a1-question-map .q-map-pill[aria-current="step"] {outline:2px solid var
  .a1-course-link .a1-course-title p {min-height:3.4em}
  body.a1 .a1-course>.a1-assignment-link {padding:9px 13px}
  .a1-course-enter {font-size:12px}
- .a1-course-heading-panel {padding:8px 0 18px!important}
+ .a1-course-breadcrumb {margin-bottom:8px!important;padding-bottom:6px!important}
+ .a1-course-heading-panel {padding:4px 0 10px!important}
  body.a1 .a1-course-title-line h1 {font-size:26px}
  .a1-course-heading-panel #subject-desc {font-size:12px}
- .a1-resource-tabs {gap:2px;padding:4px;margin-bottom:17px}
+ .a1-track-tabs {margin-bottom:10px}
+ .a1-resource-tabs {gap:2px;padding:4px;margin-bottom:12px}
  .a1-resource-tabs button {flex:1 1 auto;font-size:11px;padding:7px 9px}
  body.a1 .a1-family-panel>div:first-child {flex-wrap:wrap}
  body.a1 .a1-family-panel>.a1-family-heading {flex-wrap:nowrap;gap:8px}
