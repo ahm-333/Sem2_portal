@@ -155,3 +155,101 @@ PortalContentNavigation.reveal(key: string, options?: { focus?: boolean }): Prom
   ```javascript
   detail: { courseId: string }
   ```
+
+
+---
+
+## 3. Study 03 — Versioned Study Storage and Safe Multi-Tab Writes
+
+**Owner:** Issue #7 (`[Study 03] Add versioned study storage with failure recovery and safe multi-tab writes`)
+
+### Browser Singleton & Node Factory
+
+- **Browser Globals:** `window.PortalStudyState`, `window.PortalStudySaveStatus`
+- **Node Factory:** `createStudyState({ storage })` exported from `js/shared/study-state.js`.
+
+### Logical Snapshot Schema
+
+```typescript
+interface StudySnapshot {
+  schemaVersion: 1;
+  items: Record<string, StudyItemState>;
+  lastUsed?: {
+    key: string;       // Canonical content key
+    actionId: string;  // e.g. 'internal-study' or resource action id
+    updatedAt: string; // ISO 8601 timestamp
+  } | null;
+}
+
+interface StudyItemState {
+  startedAt?: string;
+  manualComplete?: boolean;
+  reader?: {
+    slideId: number | string;
+    tab: 'explanation' | 'original' | 'quiz';
+    updatedAt: string;
+  };
+  quiz?: {
+    version: string;
+    answers: Record<string, number>;
+    activeQuestionId?: string | number;
+    completedVersions?: string[];
+    lastCompleted?: QuizResultSummary;
+    bestCompleted?: QuizResultSummary;
+    archivedResults?: QuizResultSummary[];
+  };
+  [key: string]: unknown;
+}
+
+interface QuizResultSummary {
+  version: string;
+  score: number;
+  total: number;
+  completedAt: string;
+}
+```
+
+### Physical Storage Representation
+
+- **Physical Namespace:** `sem2_study_v1:`
+  - Metadata: `sem2_study_v1:meta` -> `{ schemaVersion: 1, lastUsed?: ... }`
+  - Item Base Fields: `sem2_study_v1:item:<encodedKey>:base` -> `{ startedAt, manualComplete, ... }`
+  - Item Reader Field: `sem2_study_v1:item:<encodedKey>:reader` -> `{ slideId, tab, updatedAt }`
+  - Item Quiz Field: `sem2_study_v1:item:<encodedKey>:quiz` -> `{ version, answers, ... }`
+- **Collision-Free Isolation:**
+  - Sibling fields (`reader` vs `quiz` vs base properties) live in independent physical subkeys, completely preventing concurrent tabs from clobbering one another's reader/quiz progress.
+  - Same-field concurrent writes resolve deterministically via latest `updatedAt` timestamp and standard storage event reconciliation.
+
+### Public API Methods
+
+```typescript
+PortalStudyState.getStatus(): 'persistent' | 'session' | 'corrupt' | 'unsupported-version';
+
+PortalStudyState.getSnapshot(): StudySnapshot;
+
+PortalStudyState.getItem(key: string): StudyItemState | null;
+
+PortalStudyState.updateItem(key: string, patch: Partial<StudyItemState>): {
+  saved: boolean;
+  reason?: 'session' | 'quota' | 'corrupt' | 'unsupported-version' | 'forbidden_key';
+};
+
+PortalStudyState.setLastUsed(value: { key: string; actionId: string; updatedAt?: string }): {
+  saved: boolean;
+  reason?: string;
+};
+
+PortalStudyState.subscribe(listener: (event: { snapshot: StudySnapshot; status: string }) => void): () => void;
+
+PortalStudyState.replaceAll(candidate: StudySnapshot): {
+  saved: boolean;
+  reason?: string;
+};
+```
+
+### Degradation & Rollback Guarantees
+
+- **Session Fallback:** Quota exhaustion or storage access exceptions gracefully transition status to `'session'`. Writes continue in memory without crashing; `#study-save-status` announces the condition via accessible Arabic live notices.
+- **Corrupt & Unsupported Version Safety:** If existing stored bytes contain invalid JSON or unsupported schema versions, they are preserved untouched without silent overwrites. Writes to storage are blocked.
+- **Atomic Replace & Rollback:** `replaceAll` stages writes and snapshots the prior storage state. Any quota or write failure triggers an immediate rollback of storage and in-memory state.
+- **Prototype Pollution Defense:** Keys such as `__proto__`, `constructor`, and `prototype` are strictly blocked from prototype injection and stripped from returned snapshots.

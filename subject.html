@@ -48,6 +48,7 @@
   <!-- 2. محتوى صفحة المادة -->
   <!-- ========================================== -->
   <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full" id="main-content" tabindex="-1">
+    <div id="study-save-status" class="study-save-status" role="status" aria-live="polite" hidden></div>
     
     <!-- مسار التنقل (Breadcrumbs) والتبديل السريع بين المواد -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[var(--border-subtle)] text-xs">
@@ -716,6 +717,8 @@
   <script src="js/shared/content-catalog.js"></script>
   <script src="js/shared/content-links.js"></script>
   <script src="js/content-navigation.js"></script>
+  <script src="js/shared/study-state.js"></script>
+  <script src="js/study-save-status.js"></script>
   <script src="js/study-loader.js"></script>
   <script src="js/study-quiz.js"></script>
   <script src="js/study-reader.js"></script>

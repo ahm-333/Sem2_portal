@@ -718,3 +718,30 @@ body.a1 footer .icon-box-modern {
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
   color: #fff !important;
 }
+
+
+/* Study Save Status Notice Component */
+.study-save-status {
+  width: 100%;
+  margin: 12px 0;
+}
+.study-save-status-warning .study-save-status-content {
+  background: rgba(245, 158, 11, 0.1);
+  color: #92400e;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+[data-theme="dark"] .study-save-status-warning .study-save-status-content {
+  background: rgba(245, 158, 11, 0.16);
+  color: #fde68a;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+.study-save-status-danger .study-save-status-content {
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+[data-theme="dark"] .study-save-status-danger .study-save-status-content {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.35);
+}
