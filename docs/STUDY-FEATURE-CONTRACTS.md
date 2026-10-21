@@ -86,3 +86,72 @@ interface StudyMetadata {
 - Generated in `js/study-catalog.js` via `npm run build`.
 - Quiz versions are computed by `tools/content-catalog.cjs` using sorted question IDs and normalized LF text across question body, options, and correct index.
 - No quiz question text, answers, or slide content are preloaded on the home page.
+
+
+---
+
+## 2. Study 02 — Content Links and Safe Row Reveal Navigation
+
+**Owner:** Issue #6 (`[Study 02] Resolve item-level links into the correct resource family and row`)
+
+### Browser Singletons & Factory
+
+- **Browser Globals:** `window.PortalContentLinks`, `window.PortalContentNavigation`
+- **Node Factory:** `createContentLinks({catalog})` exported from `js/shared/content-links.js`.
+
+### URL Generation & Parsing
+
+```typescript
+PortalContentLinks.href(key: string, options?: {
+  actionId?: string;
+  slide?: number | string;
+  tab?: 'explanation' | 'original' | 'quiz';
+}): string
+
+PortalContentLinks.parse(urlOrLocation: string | Location | URL): {
+  isValid: boolean;
+  courseId: string | null;
+  track: string | null;
+  kind: string | null;
+  item: string | null;       // Canonical content key
+  actionId: string | null;
+  slide: number | null;
+  tab: 'explanation' | 'original' | 'quiz' | null;
+}
+```
+
+- **Guarantees:**
+  - Same-site relative URLs targeting `subject.html`.
+  - Preserves course ID, track (`lecture` | `section`), and kind (`lectures` | `sections` | `assignments` | `videos` | `resources`).
+  - Canonical item key passed in query parameter `item`.
+  - Safe parsing: malformed or unknown keys return `isValid: false` without throwing errors.
+
+### Content Row Navigation & Revelation
+
+```typescript
+PortalContentNavigation.reveal(key: string, options?: { focus?: boolean }): Promise<{
+  found: boolean;
+  reason?: 'invalid_key' | 'not_found' | 'hidden_by_ta_filter' | 'row_not_found';
+  element?: HTMLElement;
+  ta?: string;
+}>
+```
+
+- **Guarantees:**
+  - Selects the target resource family/track via `PortalJourney.selectFamily(entry.kind)`.
+  - Locates rows by exact `data-content-key` attribute comparison, never by fuzzy title matching.
+  - Scrolls below the measured fixed navbar (`window.pageYOffset + rect.top - navHeight - 16`).
+  - Focuses target element and highlights it temporarily.
+  - If target is hidden by a TA filter, displays an explanatory notice offering a labelled route to the TA/all view without modifying the user's saved profile.
+  - Unknown keys display a recoverable error notice.
+
+### Event Contracts
+
+- `portal:family-changed`: Dispatched after selecting a resource family:
+  ```javascript
+  detail: { kind: string, track: string }
+  ```
+- `portal:content-ready`: Dispatched after rows are rendered or compacted (including after student profile switches):
+  ```javascript
+  detail: { courseId: string }
+  ```

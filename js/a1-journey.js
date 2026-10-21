@@ -81,6 +81,9 @@
     }
     let kind = 'lectures', syncing = false;
     const validKind = value => kinds.some(([name]) => value === name);
+    window.PortalJourney = {
+      selectFamily: (nextKind, options = {}) => show(nextKind, Boolean(options.push))
+    };
     function show(next, push = false) {
       if (!validKind(next)) next = 'lectures';
       const before = window.location.href;
@@ -98,6 +101,7 @@
       const url = new URL(window.location.href); url.searchParams.set('kind', kind);
       if (push && before !== url.href) { window.history.replaceState(null, '', before); window.history.pushState(null, '', url); }
       else window.history.replaceState(null, '', url);
+      window.dispatchEvent(new CustomEvent('portal:family-changed', { detail: { kind, track: desiredTrack } }));
     }
     nav.addEventListener('click', event => { const button = event.target.closest('[data-resource-kind]'); if (button) show(button.dataset.resourceKind, true); });
     trackButtons.forEach(button => button.addEventListener('click', () => { if (!syncing) show(button.dataset.track === 'lecture' ? 'lectures' : 'sections'); }));
@@ -121,6 +125,7 @@
       for (const row of [...list.children]) {
         if (row.dataset.a1Row || !row.querySelector('a[href],button')) continue;
         const title = row.querySelector('h4'); if (!title) continue;
+        const savedKey = row.getAttribute('data-content-key') || row.dataset.contentKey;
         const item = items.find(value => value.title === title.textContent.trim());
         let subtitle = title.nextElementSibling?.tagName === 'P' ? title.nextElementSibling : null;
         if (!subtitle && (item?.arabicTitle || item?.subtitle)) { subtitle = document.createElement('p'); subtitle.textContent = item.arabicTitle || item.subtitle; }
@@ -137,7 +142,7 @@
         meta.textContent = [item?.fileType?.toUpperCase(), item?.ta, internal ? 'شرح داخلي متاح' : null].filter(Boolean).join(' · '); copy.append(meta);
         const details = document.createElement('details'); details.className = 'a1-source-details'; details.innerHTML = '<summary>التفاصيل والمحاور</summary>';
         const original = document.createElement('div'); while (row.firstChild) original.append(row.firstChild); details.append(original);
-        row.className = 'a1-source-row'; row.dataset.a1Row = 'true'; row.append(copy, actions, details);
+        row.className = 'a1-source-row'; row.dataset.a1Row = 'true'; if (savedKey) row.setAttribute('data-content-key', savedKey); row.append(copy, actions, details);
       }
     }
     for (const [id, items] of lists) {
@@ -147,6 +152,7 @@
       window.addEventListener('pageshow', () => observer.observe(list, {childList: true}));
     }
     show(requested());
+    window.dispatchEvent(new CustomEvent('portal:content-ready', { detail: { courseId: course.id } }));
   }
   document.addEventListener('DOMContentLoaded', () => { if (document.body.dataset.page === 'home') home(); else subject(); });
 })();

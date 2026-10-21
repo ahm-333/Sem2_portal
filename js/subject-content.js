@@ -79,8 +79,10 @@
     }
 
     theoryResourcesList.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
-    const resourcesCardsHtml = filteredResources.map((res) => `
-      <div class="glass-panel p-5 rounded-2xl border flex flex-col justify-between gap-4 card-hover-effect">
+    const resourcesCardsHtml = filteredResources.map((res) => {
+      const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "theory-resource", res.id) : JSON.stringify([String(course.id), "theory-resource", String(res.id)]);
+      return `
+      <div class="glass-panel p-5 rounded-2xl border flex flex-col justify-between gap-4 card-hover-effect" data-content-key='${contentKey}'>
         <div class="flex items-start gap-3">
           <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-xs flex-shrink-0 border border-indigo-500/20">
             <i data-lucide="file-check" class="w-5 h-5"></i>
@@ -121,7 +123,8 @@
           </a>
         </div>
       </div>
-    `).join("");
+      `;
+    }).join("");
 
     const switchNoticeHtml = (theoryFilterMode === "all" && hasOtherTaResources) ? `
       <div class="col-span-full p-3 rounded-2xl glass-panel border border-[var(--border-subtle)] flex items-center justify-between gap-3 text-xs">
@@ -397,6 +400,7 @@
     }
 
     sectionsList.innerHTML = filteredSections.map((sec) => {
+      const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "section", sec.id) : JSON.stringify([String(course.id), "section", String(sec.id)]);
       const previewUrl = sec.drivePreviewUrl || sec.sheetUrl || "#";
       const viewUrl = sec.driveViewUrl || sec.sheetUrl || "#";
       const downloadUrl = sec.driveDownloadUrl || sec.sheetUrl || "#";
@@ -437,7 +441,7 @@
       ` : "";
 
       return `
-        <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect">
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect" data-content-key='${contentKey}'>
           <div class="flex items-start gap-3.5">
             <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${iconGradient} text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono icon-box-modern">
               <span>${tagText}</span>
@@ -647,6 +651,7 @@
       const downloadUrl = task.driveDownloadUrl || task.localFile || task.fileUrl || "#";
       const filename = `${course.name}_Task_${task.number || task.id}.${task.fileType || 'pdf'}`;
       const fileTypeLabel = (task.fileType || 'pdf').toUpperCase();
+      const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "assignment", task.id) : JSON.stringify([String(course.id), "assignment", String(task.id)]);
 
       const isMyTask = !task.ta || (window.StudentProfile && window.StudentProfile.isTaMatch(task.ta, studentTa));
 
@@ -683,7 +688,7 @@
       ` : "";
 
       return `
-        <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect">
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect" data-content-key='${contentKey}'>
           <div class="flex items-start gap-3.5">
             <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-orange-500 text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono icon-box-modern">
               <span>Task</span>

@@ -84,6 +84,13 @@ document.addEventListener("DOMContentLoaded", function () {
   expMainBtn.href = course.explanationSite.url;
 
   const expFeatures = document.getElementById("exp-features");
+  const expTitle = document.getElementById("exp-title");
+  if (expTitle && course.explanationSite) {
+    const siteKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "explanation-site", "site") : JSON.stringify([String(course.id), "explanation-site", "site"]);
+    const expPanel = expTitle.closest(".glass-panel");
+    if (expPanel) expPanel.setAttribute("data-content-key", siteKey);
+  }
+
   if (expFeatures && course.explanationSite.features) {
     expFeatures.innerHTML = course.explanationSite.features.map(
       (feat) => `
@@ -146,8 +153,9 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     } else {
       videoList.innerHTML = videos.map((vid) => {
+        const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "video", vid.id) : JSON.stringify([String(course.id), "video", String(vid.id)]);
         return `
-          <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-4 card-hover-effect">
+          <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-4 card-hover-effect" data-content-key='${contentKey}'>
             <div>
               <div class="flex items-center justify-between gap-2 mb-3">
                 <div class="flex items-center gap-2">
@@ -241,6 +249,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const viewUrl = lec.driveViewUrl || lec.pdfUrl || lec.slidesUrl || "#";
         const downloadUrl = lec.driveDownloadUrl || lec.pdfUrl || "#";
         const filename = `${course.name}_Lecture_${lec.id}.${lec.fileType || 'pdf'}`;
+        const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "lecture", lec.id) : JSON.stringify([String(course.id), "lecture", String(lec.id)]);
         
         const allExp = window.STUDY_CATALOG;
         const smartStudyData = allExp && allExp[course.id] && allExp[course.id][lec.id];
@@ -263,7 +272,7 @@ document.addEventListener("DOMContentLoaded", function () {
         ` : "";
 
         return `
-          <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect">
+          <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect" data-content-key='${contentKey}'>
             <div class="flex items-start gap-3.5">
               <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-600 text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono icon-box-modern">
                 <span>L${lec.id}</span>
@@ -498,6 +507,7 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("studentProfileChanged", function () {
     updateStaffAndScheduleInfo();
     content.resetFilters();
+    window.dispatchEvent(new CustomEvent("portal:content-ready", { detail: { courseId: course.id } }));
   });
 
   // التطبيق الأولي
@@ -505,4 +515,5 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   window.PortalUI.icons();
+  window.dispatchEvent(new CustomEvent("portal:content-ready", { detail: { courseId: course.id } }));
 });
