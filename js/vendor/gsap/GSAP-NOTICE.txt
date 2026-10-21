@@ -1,0 +1,1 @@
+GSAP 3.15.0, ScrollTrigger, Draggable and InertiaPlugin. Copyright (c) GreenSock / Webflow. Standard No Charge license: https://gsap.com/standard-license . Original distribution notices retained.

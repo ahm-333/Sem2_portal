@@ -1,0 +1,992 @@
+/* ==============================================================================
+   Study Hub - Senior UI / Motion Polish Pass (Pure CSS Engine)
+   Strict Guardrails: Zero color modification, zero DOM changes, zero JS changes.
+   Fully Accessible (WCAG AA), RTL-Native, Performance-Optimized (transform & opacity).
+   ============================================================================== */
+
+/* ==========================================
+   1. Motion System Tokens & Variables
+   ========================================== */
+:root {
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --ease-soft: cubic-bezier(.4, 0, .2, 1);
+  
+  --dur-instant: 90ms;
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 450ms;
+  --dur-slower: 700ms;
+  
+  --stagger: 60ms;
+  --lift-sm: -1px;
+  --lift-md: -3px;
+  --lift-lg: -5px;
+  
+  --alpha-ring: 28%;
+  --alpha-glow: 18%;
+  --alpha-hover: 10%;
+}
+
+/* ==========================================
+   2. Keyframes & Animation Library
+   ========================================== */
+@keyframes a1-header-enter {
+  from { transform: translateY(-8px); opacity: 0.95; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes a1-fade-up {
+  from { transform: translateY(8px); opacity: 0.95; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes a1-card-stagger {
+  from { transform: translateY(6px); }
+  to { transform: translateY(0); }
+}
+
+@keyframes a1-line-draw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes a1-gradient-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes a1-sun-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(90deg); }
+}
+
+@keyframes a1-moon-tilt {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(-25deg) scale(1.1); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes a1-book-flip {
+  0% { transform: rotateY(0); }
+  50% { transform: rotateY(90deg); }
+  100% { transform: rotateY(0); }
+}
+
+@keyframes a1-float-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes a1-alert-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.82; }
+}
+
+@keyframes a1-dot-ripple {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+@keyframes a1-pop-spring {
+  from { transform: scale(0.6); opacity: 0.7; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes a1-bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+@keyframes a1-heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.18); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.12); }
+  70% { transform: scale(1); }
+}
+
+@keyframes a1-badge-shimmer {
+  0% { transform: translateX(150%); }
+  35%, 100% { transform: translateX(-150%); }
+}
+
+@keyframes a1-scroll-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes a1-dash-move {
+  to { background-position: 28px 0; }
+}
+
+/* ==========================================
+   3. Global Page Layer & Standards
+   ========================================== */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--portal-nav-height, 86px) + 20px);
+}
+
+section[id] {
+  scroll-margin-top: calc(var(--portal-nav-height, 86px) + 20px);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.a1-course-code,
+.a1-schedule-time,
+.a1-schedule-room,
+.a1-quiz-score bdi,
+.study-jump-pill,
+#results-count {
+  font-variant-numeric: tabular-nums;
+}
+
+caret-color {
+  caret-color: var(--accent);
+}
+
+input, textarea, select {
+  accent-color: var(--accent);
+}
+
+::selection {
+  background: var(--soft);
+  color: var(--accent);
+}
+
+/* Custom slim scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Scroll reading progress bar */
+@supports (animation-timeline: scroll()) {
+  body.a1::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2.5px;
+    background: var(--accent);
+    transform-origin: right center;
+    z-index: 9999;
+    animation: a1-scroll-progress auto linear;
+    animation-timeline: scroll();
+  }
+}
+
+/* Universal Accessible Focus-Visible */
+body.a1 :is(button, a, input, select, summary):focus-visible {
+  outline: 2px solid var(--accent) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(35, 87, 174, 0.18) !important;
+  transition: outline-offset var(--dur-instant) ease, box-shadow var(--dur-instant) ease;
+}
+[data-theme="dark"] body.a1 :is(button, a, input, select, summary):focus-visible {
+  box-shadow: 0 0 0 3px rgba(171, 202, 255, 0.24) !important;
+}
+[data-theme="reading"] body.a1 :is(button, a, input, select, summary):focus-visible {
+  box-shadow: 0 0 0 3px rgba(35, 92, 114, 0.2) !important;
+}
+
+/* ==========================================
+   4. Header & Navigation Micro-Interactions
+   ========================================== */
+body.a1 .a1-navbar {
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  animation: a1-header-enter var(--dur-base) var(--ease-out);
+  border-bottom: 1px solid var(--line);
+}
+[data-theme="reading"] body.a1 .a1-navbar {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Brand mark spring hover & halo */
+.a1-brand {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.a1-brand:hover .a1-brand-mark {
+  transform: rotate(-6deg) scale(1.06);
+  box-shadow: 0 0 18px rgba(35, 87, 174, 0.38);
+  transition: transform var(--dur-base) var(--ease-spring), box-shadow var(--dur-base) ease;
+}
+[data-theme="dark"] .a1-brand:hover .a1-brand-mark {
+  box-shadow: 0 0 22px rgba(171, 202, 255, 0.42);
+}
+
+/* Brand title subtle letter-spacing response */
+.a1-brand strong {
+  transition: letter-spacing var(--dur-fast) var(--ease-out);
+}
+.a1-brand:hover strong {
+  letter-spacing: 0.01em;
+}
+
+/* Header Action Buttons */
+.a1-header-actions button,
+.a1-profile,
+#share-btn,
+.a1-theme-cycle {
+  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+.a1-profile:hover,
+#share-btn:hover,
+.a1-theme-cycle:hover {
+  transform: translateY(var(--lift-sm));
+  border-color: var(--accent);
+}
+.a1-profile:active,
+#share-btn:active,
+.a1-theme-cycle:active {
+  transform: scale(0.97);
+}
+
+/* Profile button chevron flip */
+.a1-profile svg.lucide-chevron-down,
+.a1-profile i[data-lucide="chevron-down"] {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+/* Theme Options Switcher */
+.a1-theme-options button {
+  position: relative;
+  transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease, transform var(--dur-fast) var(--ease-out);
+}
+.a1-theme-options button:hover {
+  transform: translateY(var(--lift-sm));
+}
+.a1-theme-options button:active {
+  transform: scale(0.95);
+}
+.a1-theme-options button[data-theme-btn="light"]:active svg,
+#cycle-theme-btn:active svg {
+  animation: a1-sun-spin 400ms var(--ease-out);
+}
+.a1-theme-options button[data-theme-btn="dark"]:active svg {
+  animation: a1-moon-tilt 400ms var(--ease-spring);
+}
+.a1-theme-options button[data-theme-btn="reading"]:active svg {
+  animation: a1-book-flip 400ms var(--ease-out);
+}
+
+/* Segmented desktop control buttons */
+.a1-desktop-nav a {
+  transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+.a1-desktop-nav a:hover {
+  transform: translateY(var(--lift-sm));
+}
+
+/* ==========================================
+   5. Home Page Polish & Hero Experience
+   ========================================== */
+.a1-welcome h1 {
+  position: relative;
+  display: inline-block;
+}
+.a1-welcome h1::after {
+  content: '';
+  display: block;
+  width: 54px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 9999px;
+  margin: 8px auto 0;
+  transform-origin: right center;
+  animation: a1-line-draw 600ms var(--ease-out) both;
+}
+
+/* Stat chips */
+.a1-summary span {
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) ease, border-color var(--dur-fast) ease;
+}
+.a1-summary span:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Search Area & Input */
+.a1-search-area > div:first-child {
+  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+.a1-search-area > div:first-child:focus-within {
+  transform: scale(1.008);
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(35, 87, 174, 0.16), 0 8px 24px -4px rgba(35, 87, 174, 0.12) !important;
+}
+[data-theme="dark"] .a1-search-area > div:first-child:focus-within {
+  box-shadow: 0 0 0 3px rgba(171, 202, 255, 0.22), 0 8px 24px -4px rgba(0, 0, 0, 0.5) !important;
+}
+.a1-search-area > div:first-child:focus-within i[data-lucide="search"],
+.a1-search-area > div:first-child:focus-within svg.lucide-search {
+  transform: scale(1.1);
+  color: var(--accent);
+  transition: transform var(--dur-fast) var(--ease-spring), color var(--dur-fast) ease;
+}
+
+/* Filter Chips */
+.a1-search-area .filter-chip {
+  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) ease, border-color var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.a1-search-area .filter-chip:hover {
+  transform: translateY(var(--lift-sm));
+  border-color: var(--accent);
+}
+.a1-search-area .filter-chip:active {
+  transform: scale(0.96);
+}
+
+/* Course Grid Stagger Entrance */
+body.a1 #courses-grid article:nth-child(1) { animation: a1-card-stagger var(--dur-base) var(--ease-out) 0ms both; }
+body.a1 #courses-grid article:nth-child(2) { animation: a1-card-stagger var(--dur-base) var(--ease-out) 40ms both; }
+body.a1 #courses-grid article:nth-child(3) { animation: a1-card-stagger var(--dur-base) var(--ease-out) 80ms both; }
+body.a1 #courses-grid article:nth-child(4) { animation: a1-card-stagger var(--dur-base) var(--ease-out) 120ms both; }
+body.a1 #courses-grid article:nth-child(5) { animation: a1-card-stagger var(--dur-base) var(--ease-out) 160ms both; }
+body.a1 #courses-grid article:nth-child(6) { animation: a1-card-stagger var(--dur-base) var(--ease-out) 200ms both; }
+
+/* Course Cards Polish */
+body.a1 .a1-course {
+  position: relative;
+  overflow: hidden;
+  contain: layout paint;
+  transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) ease, border-color var(--dur-base) ease;
+}
+body.a1 .a1-course:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+/* Shine Sweep on Hover (Light & Dark) */
+[data-theme="light"] body.a1 .a1-course::after,
+[data-theme="dark"] body.a1 .a1-course::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
+  pointer-events: none;
+  transition: none;
+}
+[data-theme="light"] body.a1 .a1-course:hover::after,
+[data-theme="dark"] body.a1 .a1-course:hover::after {
+  left: 150%;
+  transition: left 700ms var(--ease-out);
+}
+body.a1 .a1-course-icon {
+  transition: transform var(--dur-base) var(--ease-spring);
+}
+body.a1 .a1-course:hover .a1-course-icon {
+  transform: scale(1.08) rotate(-4deg);
+}
+body.a1 .a1-course-enter svg {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+body.a1 .a1-course:hover .a1-course-enter svg {
+  transform: translateX(-6px);
+}
+body.a1 .a1-course-enter span {
+  position: relative;
+}
+body.a1 .a1-course-enter span::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  right: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--accent);
+  transition: width var(--dur-base) var(--ease-out);
+}
+body.a1 .a1-course:hover .a1-course-enter span::after {
+  width: 100%;
+}
+/* Assignment badge alert pulse */
+body.a1 .a1-assignment-link svg {
+  animation: a1-alert-pulse 2.2s infinite ease-in-out;
+}
+
+/* Course Counts (محاضرات وسكاشن) - Elevated Pill Badges */
+.a1-course-counts {
+  display: flex !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+  margin-block: auto 12px !important;
+  padding-top: 6px !important;
+}
+
+.a1-course-counts span {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 3px 9px !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  line-height: 1.5 !important;
+  letter-spacing: normal !important;
+  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+}
+
+/* First badge: Lectures & References (Blue / Accent tone) */
+.a1-course-counts span:first-child {
+  color: var(--accent) !important;
+  background: var(--soft) !important;
+  border: 1px solid var(--line) !important;
+}
+
+.a1-course-counts span:first-child::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  box-shadow: 0 0 5px rgba(35, 87, 174, 0.4);
+}
+
+/* Second badge: Sections (Emerald / Positive tone) */
+.a1-course-counts span:last-child {
+  color: var(--positive) !important;
+  border: 1px solid rgba(33, 103, 65, 0.2) !important;
+}
+
+.a1-course-counts span:last-child::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--positive);
+  flex-shrink: 0;
+  box-shadow: 0 0 5px rgba(33, 103, 65, 0.4);
+}
+
+[data-theme="light"] .a1-course-counts span:last-child {
+  background: #edf7f0 !important;
+  border-color: #cce8d4 !important;
+}
+
+[data-theme="dark"] .a1-course-counts span:last-child {
+  background: rgba(162, 232, 189, 0.1) !important;
+  border-color: rgba(162, 232, 189, 0.25) !important;
+}
+
+[data-theme="reading"] .a1-course-counts span:last-child {
+  background: #eef4f0 !important;
+  border-color: #cfdfd4 !important;
+}
+
+/* Micro-interaction on card hover */
+body.a1 .a1-course:hover .a1-course-counts span {
+  transform: translateY(-1px);
+}
+body.a1 .a1-course:hover .a1-course-counts span:first-child {
+  border-color: var(--accent) !important;
+  box-shadow: 0 2px 8px -2px rgba(35, 87, 174, 0.18);
+}
+body.a1 .a1-course:hover .a1-course-counts span:last-child {
+  border-color: var(--positive) !important;
+  box-shadow: 0 2px 8px -2px rgba(33, 103, 65, 0.18);
+}
+[data-theme="reading"] body.a1 .a1-course:hover .a1-course-counts span {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Grid Spotlight Hover Effect (Desktop only) */
+@media (hover: hover) and (min-width: 1024px) {
+  #courses-grid:has(.a1-course:hover) .a1-course:not(:hover) {
+    opacity: 0.88;
+    transition: opacity var(--dur-fast) ease;
+  }
+}
+
+/* ==========================================
+   6. Breadcrumb & Subject Detail Top
+   ========================================== */
+/* Return to Home Button */
+.a1-back-home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 9px;
+  background: var(--soft);
+  color: var(--accent);
+  border: 1px solid var(--line);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) ease, color var(--dur-fast) ease, border-color var(--dur-fast) ease, box-shadow var(--dur-fast) ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+.a1-back-home-btn:hover {
+  background: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
+  transform: translateX(3px);
+  box-shadow: 0 4px 12px -2px rgba(35, 87, 174, 0.25);
+}
+.a1-back-home-btn:active {
+  transform: scale(0.97);
+}
+.a1-back-home-btn svg {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.a1-back-home-btn:hover svg {
+  transform: translateX(2px);
+}
+[data-theme="dark"] .a1-back-home-btn {
+  background: var(--soft);
+  color: var(--accent);
+  border-color: var(--line);
+}
+[data-theme="dark"] .a1-back-home-btn:hover {
+  background: var(--accent);
+  color: #101a2a;
+}
+[data-theme="reading"] .a1-back-home-btn {
+  background: var(--soft);
+  color: var(--accent);
+}
+[data-theme="reading"] .a1-back-home-btn:hover {
+  background: var(--accent);
+  color: var(--paper);
+  transform: none;
+  box-shadow: none;
+}
+
+.a1-course-breadcrumb a:not(.a1-back-home-btn) {
+  position: relative;
+  transition: color var(--dur-fast) ease;
+}
+.a1-course-breadcrumb a:not(.a1-back-home-btn)::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--accent);
+  transition: width var(--dur-fast) var(--ease-out);
+}
+.a1-course-breadcrumb a:not(.a1-back-home-btn):hover::after {
+  width: 100%;
+}
+#quick-course-select {
+  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) ease;
+}
+#quick-course-select:hover {
+  transform: translateY(var(--lift-sm));
+  border-color: var(--accent);
+}
+body.a1 #subject-icon-box {
+  animation: a1-float-subtle 4s ease-in-out infinite;
+}
+body.a1 .a1-course-code {
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+body.a1 .a1-course-code:hover {
+  transform: scale(1.05);
+}
+.a1-course-overview summary svg,
+.a1-source-details summary svg {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.a1-course-overview[open] summary svg,
+.a1-source-details[open] summary svg {
+  transform: rotate(90deg);
+}
+
+/* ==========================================
+   7. Sidebar Context Card
+   ========================================== */
+.a1-course-context div:hover .lucide-user,
+.a1-course-context div:hover .lucide-graduation-cap {
+  transform: scale(1.1);
+  color: var(--accent);
+  transition: transform var(--dur-fast) var(--ease-spring), color var(--dur-fast) ease;
+}
+.a1-course-context a {
+  position: relative;
+  transition: color var(--dur-fast) ease;
+}
+.a1-course-context a svg {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.a1-course-context a:hover svg {
+  transform: translateX(-4px);
+}
+
+/* ==========================================
+   8. Tabs (Track & Resource Navigators)
+   ========================================== */
+.a1-track-tabs .track-btn {
+  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+.a1-track-tabs .track-btn:hover {
+  transform: translateY(var(--lift-sm));
+}
+.a1-track-tabs .track-btn:active {
+  transform: scale(0.97);
+}
+.a1-resource-tabs button {
+  position: relative;
+  transition: transform var(--dur-fast) var(--ease-out), color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+.a1-resource-tabs button:not([aria-pressed="true"]):hover {
+  background: var(--paper);
+  color: var(--accent);
+}
+.a1-resource-tabs button[aria-pressed="true"]::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  right: 15%;
+  left: 15%;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 9999px;
+  animation: a1-tab-line 220ms var(--ease-out) both;
+}
+@keyframes a1-tab-line {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Horizontal scroll smooth snap on mobile */
+@media (max-width: 760px) {
+  .a1-resource-tabs {
+    scroll-snap-type: x proximity;
+    overscroll-behavior-x: contain;
+  }
+  .a1-resource-tabs button[aria-pressed="true"] {
+    scroll-snap-align: center;
+  }
+}
+
+/* Section Filter Buttons & Green Dot */
+.section-filter-btn {
+  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast) ease;
+}
+.section-filter-btn:hover {
+  transform: translateY(var(--lift-sm));
+  border-color: var(--accent);
+}
+.pulse-dot-green {
+  animation: a1-dot-ripple 2s infinite ease-in-out;
+}
+
+/* ==========================================
+   9. Hero Explanation Card & Features
+   ========================================== */
+#exp-main-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) ease;
+}
+#exp-main-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px -2px rgba(35, 87, 174, 0.35) !important;
+}
+#exp-main-btn:hover svg {
+  transform: translate(-3px, -3px);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+#exp-features > div {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+#exp-features > div:hover {
+  transform: translateX(-4px);
+}
+#exp-features svg {
+  animation: a1-pop-spring 450ms var(--ease-spring) both;
+}
+
+/* ==========================================
+   10. Content Material Cards & Actions
+   ========================================== */
+body.a1 .a1-source-row {
+  position: relative;
+  overflow: clip;
+  contain: layout paint;
+  border-radius: 14px;
+  transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) ease, border-color var(--dur-base) ease;
+}
+/* Right edge accent indicator */
+body.a1 .a1-source-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3.5px;
+  background: var(--accent);
+  border-radius: 0 14px 14px 0;
+  transform: scaleY(0);
+  transform-origin: center top;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+body.a1 .a1-source-row:hover::before,
+body.a1 .a1-source-row:focus-within::before {
+  transform: scaleY(1);
+}
+body.a1 .a1-source-row:hover,
+body.a1 .a1-source-row:focus-within {
+  transform: translateY(var(--lift-md));
+  border-color: var(--accent) !important;
+}
+[data-theme="light"] body.a1 .a1-source-row:hover {
+  box-shadow: 0 10px 24px -4px rgba(35, 87, 174, 0.12);
+}
+[data-theme="dark"] body.a1 .a1-source-row:hover {
+  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.6), 0 0 16px -2px rgba(171, 202, 255, 0.15);
+}
+[data-theme="reading"] body.a1 .a1-source-row:hover {
+  box-shadow: none;
+  border-color: var(--accent) !important;
+}
+
+/* Disclosure open state reinforcement */
+body.a1 .a1-source-row:has(details[open]) {
+  border-color: var(--accent) !important;
+}
+
+/* Action Buttons Unified Interactions */
+body.a1 .a1-source-actions > :is(a, button) {
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) ease, border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+body.a1 .a1-source-actions > :is(a, button):hover {
+  transform: translateY(var(--lift-sm));
+}
+body.a1 .a1-source-actions > :is(a, button):active {
+  transform: scale(0.97);
+}
+body.a1 .a1-source-actions > .a1-action-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 16px -2px rgba(35, 87, 174, 0.38) !important;
+}
+[data-theme="dark"] body.a1 .a1-source-actions > .a1-action-primary:hover {
+  box-shadow: 0 5px 18px -2px rgba(171, 202, 255, 0.4) !important;
+}
+
+/* Icon Bounces on hover */
+body.a1 a[download]:hover svg,
+body.a1 .btn-download:hover svg {
+  animation: a1-bounce-down 400ms var(--ease-spring);
+}
+body.a1 [data-play-url]:hover svg {
+  transform: translateX(-2px);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+body.a1 .btn-preview-pdf:hover svg,
+body.a1 [data-open-study-lecture]:hover svg {
+  transform: scale(1.1);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+
+/* ==========================================
+   11. Footer & Developer Card
+   ========================================== */
+body.a1 footer .icon-box-modern {
+  transition: transform var(--dur-base) var(--ease-spring), box-shadow var(--dur-base) ease;
+}
+body.a1 footer .icon-box-modern:hover {
+  transform: rotate(-6deg) scale(1.06);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35) !important;
+}
+.footer-heart,
+footer .text-red-500,
+footer svg.lucide-heart {
+  display: inline-block;
+  animation: a1-heartbeat 1.6s ease-in-out infinite;
+}
+
+/* ==========================================
+   12. Reading Mode Overrides (Pure Calmness)
+   ========================================== */
+[data-theme="reading"] body.a1 *,
+[data-theme="reading"] body.a1 *::before,
+[data-theme="reading"] body.a1 *::after {
+  animation: none !important;
+  transform: none !important;
+  transition-duration: 120ms !important;
+  box-shadow: none !important;
+}
+[data-theme="reading"] body.a1 .a1-course:hover,
+[data-theme="reading"] body.a1 .a1-source-row:hover {
+  border-color: var(--accent) !important;
+}
+[data-theme="reading"] body.a1 p {
+  line-height: 1.95;
+}
+
+/* ==========================================
+   13. Accessibility & System Preferences
+   ========================================== */
+@media (prefers-reduced-motion: reduce) {
+  body.a1,
+  body.a1 *,
+  body.a1 *::before,
+  body.a1 *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    transform: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  body.a1 .a1-course,
+  body.a1 .a1-source-row,
+  body.a1 .a1-schedule-card,
+  body.a1 .a1-navbar {
+    border-width: 2px !important;
+  }
+}
+
+/* ==========================================
+   14. Mobile Ergonomics & Responsive Guards
+   ========================================== */
+@media (hover: none) {
+  body.a1 .a1-course:hover,
+  body.a1 .a1-source-row:hover,
+  body.a1 .a1-summary span:hover,
+  body.a1 .a1-search-area .filter-chip:hover,
+  body.a1 .a1-schedule-change-btn:hover,
+  body.a1 .a1-schedule-card:hover,
+  body.a1 .a1-back-home-btn:hover {
+    transform: none !important;
+  }
+  body.a1 .a1-source-actions > :is(a, button):active {
+    transform: scale(0.96);
+  }
+}
+
+/* Comprehensive Mobile Phones Optimizations (<= 640px) */
+@media (max-width: 640px) {
+  .a1-header-inner {
+    padding: 10px 14px !important;
+  }
+  .a1-course-breadcrumb {
+    gap: 8px !important;
+    padding-bottom: 12px !important;
+  }
+  .a1-quick-select-wrap {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .a1-quick-select-wrap #quick-course-select {
+    flex: 1;
+    width: 100%;
+    min-height: 40px;
+    font-size: 12px;
+  }
+  .a1-track-tabs {
+    width: 100% !important;
+    display: flex !important;
+    padding: 3px !important;
+  }
+  body.a1 .a1-track-tabs .track-btn {
+    flex: 1 !important;
+    text-align: center !important;
+    justify-content: center !important;
+    min-height: 40px !important;
+    font-size: 12px !important;
+  }
+  body.a1 .a1-source-row {
+    padding: 14px 12px !important;
+    border-radius: 12px !important;
+  }
+  body.a1 .a1-source-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+  body.a1 .a1-source-actions > :is(a, button) {
+    flex: 1 1 calc(50% - 4px) !important;
+    min-height: 44px !important;
+    padding: 8px 8px !important;
+    text-align: center !important;
+    justify-content: center !important;
+    font-size: 11.5px !important;
+  }
+  .a1-schedule-shell {
+    padding: 14px 12px !important;
+  }
+  .a1-schedule-change-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 42px !important;
+  }
+  .a1-schedule-day {
+    padding: 12px 10px !important;
+  }
+  .a1-schedule-card {
+    padding: 11px !important;
+  }
+}
+
+
+/* ==========================================
+   15. Print Styles
+   ========================================== */
+@media print {
+  body.a1 {
+    padding-top: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+  header,
+  footer,
+  .a1-header-actions,
+  .a1-theme-options,
+  .a1-source-actions,
+  .a1-search-area {
+    display: none !important;
+  }
+  .a1-course,
+  .a1-source-row,
+  .a1-schedule-card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    break-inside: avoid;
+  }
+}

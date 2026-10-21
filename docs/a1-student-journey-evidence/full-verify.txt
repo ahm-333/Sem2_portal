@@ -1,0 +1,148 @@
+
+> sem2-portal@1.0.0 verify
+> npm run build && npm run check && npm run validate && npm run lint && npm test && npm run test:browser && npm run test:a1
+
+
+> sem2-portal@1.0.0 build
+> node tools/build-assets.cjs
+
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+Rebuilding...
+
+Done in 1349ms.
+
+> sem2-portal@1.0.0 check
+> node tools/check-syntax.cjs
+
+Syntax checked: 39 files
+
+> sem2-portal@1.0.0 validate
+> node tools/check-data.cjs
+
+Data validation: 0 errors; 3 unchanged timetable records awaiting confirmation.
+
+> sem2-portal@1.0.0 lint
+> eslint js tests tools/*.cjs *.cjs --max-warnings=0
+
+
+> sem2-portal@1.0.0 test
+> node --test tests/*.test.cjs
+
+✔ A1 integration preserves all source data, study content, slides and prior planning notes (31.2883ms)
+✔ study cache version is stable across Windows and Linux line endings (0.7173ms)
+✔ study cache version changes when the source content changes (0.1197ms)
+✔ current data is valid with explicit unconfirmed timetable records (10.8326ms)
+✔ duplicate course ids and unknown new timetable keys fail validation (5.7336ms)
+✔ quiz answer indices and local images are validated (5.703ms)
+✔ missing optional question metadata is allowed but invalid references fail (5.945ms)
+✔ unconfirmed records cannot be edited invisibly (5.2122ms)
+✔ one filtering rule supports my TA, another TA and all materials (3.6887ms)
+✔ general resources remain visible while section-only resources do not (1.7686ms)
+✔ media URLs reject executable schemes but retain local material files (4.0331ms)
+✔ YouTube and Drive IDs produce supported preview URLs (1.8317ms)
+✔ Drive folders and lookalike hosts are not treated as embeddable files (1.4822ms)
+✔ invalid stored profile is normalized: null (3.3121ms)
+✔ invalid stored profile is normalized: {} (1.4148ms)
+✔ invalid stored profile is normalized: [] (1.3699ms)
+✔ invalid stored profile is normalized: 12 (1.7189ms)
+✔ invalid stored profile is normalized: "B1" (1.2897ms)
+✔ invalid stored profile is normalized: {"group":"<b>bad</b>","section":1} (1.3621ms)
+✔ a section from another group uses the first valid section (1.1362ms)
+✔ all twelve valid profiles round trip and dispatch normalized state (1.382ms)
+✔ blocked storage still allows profile changes during this session (1.4702ms)
+✔ write denial cannot resurrect a stale stored profile (1.2248ms)
+✔ theme is usable without persistent storage (1.7558ms)
+✔ unknown group and invalid writes never cross the public seam (1.3122ms)
+✔ Saturday classes for B1/1 are chronological, not course-ordered (4.2044ms)
+✔ multiple confirmed sessions for one course are retained (1.7191ms)
+✔ unconfirmed source records are surfaced without assigning them to a different course (1.2591ms)
+✔ an unavailable section schedule is explicitly marked unavailable (1.87ms)
+✔ all profile schedules return valid days and finite chronological order (1.9752ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 107.1312
+
+> sem2-portal@1.0.0 test:browser
+> node tests/browser.cjs
+
+PASS dynamic-profile-buttons
+PASS profile-dialog-focus
+PASS quiz-metadata-and-direction
+PASS mobile-360
+PASS mobile-390
+PASS mobile-412
+PASS blocked-storage
+PASS offline-cdn
+PASS drive-folder-no-iframe
+PASS invalid-track
+PASS clipboard-fallback
+PASS study-dialog-focus
+PASS lazy-study-data-and-quiz
+PASS quiz-preserves-other-question-nodes
+PASS study-load-retry
+PASS closing-study-cancels-late-render
+PASS all-courses-profile-matrix
+PASS pdf-video-and-dialog-cleanup
+PASS quiz-scoring-completion-and-reset
+PASS copy-success-and-rejection
+PASS file-mode-study
+PASS home-search-filters-and-pending-notice
+PASS corrupt-profile-does-not-break-home
+23/23 scenarios passed
+
+> sem2-portal@1.0.0 test:a1
+> node tests/a1-browser.cjs
+
+PASS a1-shell-and-real-course-actions
+PASS a1-intro-hides-navbar-and-defers-profile
+PASS a1-flex-default-and-native-editing
+PASS a1-action-content-has-visible-contrast
+PASS a1-all-icon-placeholders-resolve
+PASS a1-journey-course-first-home-and-timetable
+PASS a1-journey-one-resource-family-at-a-time
+PASS a1-journey-focused-reader-and-one-question
+PASS a1-journey-default-course-and-real-reader-zoom
+PASS a1-journey-back-and-switch-course-retain-source-kind
+PASS a1-journey-saved-theme-and-quiz-reset-focus
+PASS a1-journey-keyboard-continues-in-current-content
+PASS a1-journey-mobile-outline-follows-current-slide
+PASS a1-journey-mobile-primary-material-reachable
+PASS a1-all-action-states-360-light
+PASS a1-all-action-states-360-dark
+PASS a1-all-action-states-360-reading
+PASS a1-all-action-states-1440-light
+PASS a1-all-action-states-1440-dark
+PASS a1-all-action-states-1440-reading
+PASS a1-dialog-action-states-360-light
+PASS a1-dialog-action-states-360-dark
+PASS a1-dialog-action-states-360-reading
+PASS a1-dialog-action-states-1440-light
+PASS a1-dialog-action-states-1440-dark
+PASS a1-dialog-action-states-1440-reading
+PASS a1-user-button-examples-rendered
+PASS a1-intro-natural-completion-and-return
+PASS a1-processor-real-drag-inertia-keyboard-and-charge
+PASS a1-reference-has-clean-intro-and-flex-selection
+PASS a1-intro-resize-and-reduced-motion-cleanup
+PASS a1-intro-library-failure-is-open
+PASS a1-intro-partial-mount-rollback-1
+PASS a1-intro-partial-mount-rollback-49
+PASS a1-no-intro-for-reduced-motion
+PASS a1-no-intro-with-unavailable-session-storage
+PASS a1-current-source-actions-parity
+PASS a1-header-and-dialog-controls-fit-mobile
+PASS a1-200-percent-reflow-and-keyboard
+PASS a1-rendered-360
+PASS a1-rendered-390
+PASS a1-rendered-412
+PASS a1-rendered-768
+PASS a1-rendered-1024
+PASS a1-rendered-1440

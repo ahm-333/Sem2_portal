@@ -25,6 +25,54 @@
   let requestSequence = 0;
   let currentLecture;
   let quizRendered = false;
+  let currentSlideIndex = 0;
+  let readerMode = "explanation";
+  studyModal.classList.add("a1-reader-workspace");
+  const layout = document.createElement("div"); layout.className = "a1-reader-layout";
+  const outline = document.createElement("aside"); outline.className = "a1-reader-outline";
+  const body = document.createElement("div"); body.className = "a1-reader-body";
+  const modes = studyTabBtnSlides.parentElement; modes.classList.add('a1-reader-modes');
+  studyTabBtnSlides.dataset.readerMode = 'explanation'; studyTabBtnSlides.textContent = 'الشرح';
+  const originalTab = document.createElement('button'); originalTab.type = 'button'; originalTab.className = 'study-nav-tab';
+  originalTab.dataset.readerMode = 'slide'; originalTab.textContent = 'السلايد الأصلي'; originalTab.setAttribute('aria-pressed', 'false');
+  modes.insertBefore(originalTab, studyTabBtnQuiz);
+  const pagination = document.createElement("div"); pagination.className = "a1-reader-pagination";
+  pagination.innerHTML = '<button type="button" data-reader-step="prev">السابق</button><span data-reader-position role="status"></span><button type="button" data-reader-step="next">التالي</button>';
+  outline.append(studyJumpBar); body.append(studySlidesFeed, pagination); layout.append(outline, body); studySlidesView.append(layout);
+  function selectSlide(index, focus = false) {
+    if (!currentLecture) return;
+    currentSlideIndex = Math.max(0, Math.min(currentLecture.slides.length - 1, index));
+    const slide = currentLecture.slides[currentSlideIndex];
+    studySlidesFeed.querySelectorAll('.slide-study-card').forEach(card => { card.hidden = Number(card.dataset.slideNum) !== slide.num; });
+    studyJumpBar.querySelectorAll('button').forEach(button => {
+      const active = button.dataset.jumpTo === 'slide-card-' + slide.num;
+      button.className = 'study-jump-pill' + (active ? ' a1-current-slide' : '');
+      if (active) button.setAttribute('aria-current', 'step'); else button.removeAttribute('aria-current');
+    });
+    const activePill = studyJumpBar.querySelector('[aria-current="step"]');
+    if (activePill) {
+      const viewport = window.matchMedia('(max-width:760px)').matches ? studyJumpBar : outline;
+      const box = viewport.getBoundingClientRect(), pill = activePill.getBoundingClientRect();
+      const left = pill.left < box.left ? pill.left - box.left : pill.right > box.right ? pill.right - box.right : 0;
+      const top = pill.top < box.top ? pill.top - box.top : pill.bottom > box.bottom ? pill.bottom - box.bottom : 0;
+      viewport.scrollBy({left, top, behavior: 'instant'});
+    }
+    pagination.querySelector('[data-reader-position]').textContent = `سلايد ${currentSlideIndex + 1} من ${currentLecture.slides.length}`;
+    pagination.querySelector('[data-reader-step="prev"]').disabled = currentSlideIndex === 0;
+    pagination.querySelector('[data-reader-step="next"]').disabled = currentSlideIndex === currentLecture.slides.length - 1;
+    studyProgressBar.style.width = `${(currentSlideIndex + 1) / currentLecture.slides.length * 100}%`;
+    studySlidesFeed.scrollTop = 0;
+    if (focus) { const card = document.getElementById('slide-card-' + slide.num); card.tabIndex = -1; card.focus({preventScroll: true}); }
+  }
+  function setReaderMode(mode) {
+    readerMode = mode;
+    studySlidesFeed.querySelectorAll('[data-reader-part]').forEach(part => { part.hidden = part.dataset.readerPart !== readerMode; });
+    modes.querySelectorAll('[data-reader-mode]').forEach(button => { button.setAttribute('aria-pressed', String(button.dataset.readerMode === mode)); button.classList.toggle('active', button.dataset.readerMode === mode); });
+    studySlidesFeed.scrollTop = 0;
+  }
+  modes.addEventListener('click', event => { const button = event.target.closest('[data-reader-mode]'); if (button) { switchStudyTab("slides"); setReaderMode(button.dataset.readerMode); } });
+  pagination.addEventListener('click', event => { const button = event.target.closest('[data-reader-step]'); if (button) selectSlide(currentSlideIndex + (button.dataset.readerStep === 'next' ? 1 : -1), true); });
+
 
   function setStudyFontZoom(level) {
     if (!studySlidesFeed) return;
@@ -57,7 +105,7 @@
         renderFullQuiz(currentLecture);
         quizRendered = true;
       }
-      if (studyTabBtnSlides) studyTabBtnSlides.classList.remove("active");
+      modes.querySelectorAll('[data-reader-mode]').forEach(button => { button.classList.remove('active'); button.setAttribute('aria-pressed', 'false'); });
       if (studyTabBtnQuiz) studyTabBtnQuiz.classList.add("active");
       if (studySlidesView) studySlidesView.classList.add("hidden");
       if (studyFullQuizView) studyFullQuizView.classList.remove("hidden");
@@ -98,6 +146,9 @@
     if (!studyModal || !studySlidesFeed) return;
     const sequence = ++requestSequence;
     currentLecture = undefined;
+    currentSlideIndex = 0; readerMode = "explanation";
+    pagination.querySelectorAll("button").forEach(button => { button.disabled = true; });
+    pagination.querySelector("[data-reader-position]").textContent = "";
     quizRendered = false;
     studyFullQuizView.replaceChildren();
     studyTabBtnQuiz.disabled = true;
@@ -159,11 +210,8 @@
 
       studyJumpBar.querySelectorAll(".study-jump-pill").forEach((btn) => {
         btn.addEventListener("click", function () {
-          const targetId = this.getAttribute("data-jump-to");
-          const targetEl = document.getElementById(targetId);
-          if (targetEl) {
-            targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
+          const number = Number(this.dataset.jumpTo.replace('slide-card-', ''));
+          selectSlide(currentLecture.slides.findIndex(slide => slide.num === number), true);
         });
       });
     }
@@ -518,18 +566,13 @@
 
     // The full quiz is built only when its tab is selected.
 
-    // تتبع التمرير لمؤشر التقدم في تغذية السلايدات
-    studySlidesFeed.onscroll = function () {
-      const scrollTop = studySlidesFeed.scrollTop;
-      const scrollHeight = studySlidesFeed.scrollHeight - studySlidesFeed.clientHeight;
-      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-      if (studyProgressBar) {
-        studyProgressBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
-      }
-    };
-
-    studySlidesFeed.scrollTop = 0;
-    if (studyProgressBar) studyProgressBar.style.width = "0%";
+    studySlidesFeed.querySelectorAll('.slide-study-card').forEach(card => {
+      const image = card.querySelector('img');
+      if (image) image.parentElement.dataset.readerPart = 'slide';
+      card.lastElementChild.dataset.readerPart = 'explanation';
+    });
+    setReaderMode('explanation');
+    selectSlide(0);
     window.PortalUI.icons(studyModal);
   }
 

@@ -1,0 +1,16 @@
+{
+  "results": [
+    {
+      "name": "a1-journey-saved-theme-and-quiz-reset-focus",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: saved light theme must be applied before the content paints\n+ actual - expected\n\n+ 'rgb(153, 159, 169)'\n- 'rgb(242, 246, 252)'\n       ^\n\n    at C:\\Users\\Eyad\\Documents\\Codex\\2026-10-20\\new-chat\\work\\Sem2_portal\\tests\\a1-browser.cjs:185:12\n    at async scenario (C:\\Users\\Eyad\\Documents\\Codex\\2026-10-20\\new-chat\\work\\Sem2_portal\\tests\\a1-browser.cjs:22:5)\n    at async main (C:\\Users\\Eyad\\Documents\\Codex\\2026-10-20\\new-chat\\work\\Sem2_portal\\tests\\a1-browser.cjs:178:3)",
+      "errors": []
+    },
+    {
+      "name": "a1-journey-mobile-primary-material-reachable",
+      "passed": false,
+      "error": "AssertionError [ERR_ASSERTION]: the first real lecture action is visible without scrolling through repeated section introductions\n    at scenario.viewport.width (C:\\Users\\Eyad\\Documents\\Codex\\2026-10-20\\new-chat\\work\\Sem2_portal\\tests\\a1-browser.cjs:219:5)\n    at async scenario (C:\\Users\\Eyad\\Documents\\Codex\\2026-10-20\\new-chat\\work\\Sem2_portal\\tests\\a1-browser.cjs:22:5)\n    at async main (C:\\Users\\Eyad\\Documents\\Codex\\2026-10-20\\new-chat\\work\\Sem2_portal\\tests\\a1-browser.cjs:210:3)",
+      "errors": []
+    }
+  ]
+}

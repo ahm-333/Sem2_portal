@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
 const {chromium} = require('playwright');
+const {resource,question} = require('./journey-helpers.cjs');
 const root=path.resolve(__dirname,'..');
 const output=path.resolve(process.env.PORTAL_TEST_OUTPUT || path.join(root,'test-results'));
 fs.mkdirSync(output,{recursive:true});
@@ -14,7 +15,8 @@ async function scenario(name,fn,options={}) {
   if(!filter.test(name))return;
   const context=await browser.newContext({viewport:{width:1440,height:900},...options});
   await context.route('https://**', route => route.abort());
-  await context.addInitScript(()=>{if(location.hostname==='127.0.0.1')localStorage.setItem('sem2_first_visit_configured','true');});
+  // Functional regressions start after onboarding; dedicated A1 cases cover the intro itself.
+  await context.addInitScript(()=>{if(location.hostname==='127.0.0.1'){localStorage.setItem('sem2_first_visit_configured','true');window.sessionStorage.setItem('sem2-a1-processor-intro-v1','seen');}});
   const page=await context.newPage();page.setDefaultTimeout(6000);
   await page.coverage.startJSCoverage({resetOnNavigation:false});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -70,7 +72,7 @@ async function main(){
     assert(!await page.locator('#track-panel-section').isVisible());assert(!await page.locator('#pdf-modal').isVisible());assert.deepEqual(errors,[]);
   });
   await scenario('drive-folder-no-iframe',async({page,go})=>{
-    await go('subject.html?id=computer-graphics');assert(!await page.locator('#toggle-preview-btn').isVisible());assert.equal(await page.locator('#exp-iframe').getAttribute('src'),'');assert((await page.locator('#exp-main-btn').innerText()).includes('مجلد'));
+    await go('subject.html?id=computer-graphics');await resource(page,'resources');assert(!await page.locator('#toggle-preview-btn').isVisible());assert.equal(await page.locator('#exp-iframe').getAttribute('src'),'');assert((await page.locator('#exp-main-btn').innerText()).includes('مجلد'));
   });
   await scenario('invalid-track',async({page,go})=>{
     await go('subject.html?id=computer-architecture&track=bogus#assignments-section-panel');assert(await page.locator('#track-panel-lecture').isVisible());assert(new URL(page.url()).searchParams.get('track')==='lecture');assert(new URL(page.url()).hash==='#assignments-section-panel');
@@ -104,18 +106,18 @@ async function main(){
   });
   await scenario('pdf-video-and-dialog-cleanup',async({page,go})=>{
     await go('subject.html?id=computer-architecture');await page.locator('#lectures-list .btn-preview-pdf').first().click();await page.locator('#pdf-modal').waitFor({state:'visible'});assert((await page.locator('#pdf-modal-frame').getAttribute('src')).endsWith('/preview'));await page.keyboard.press('Escape');assert.equal(await page.locator('#pdf-modal-frame').getAttribute('src'),null);
-    await page.locator('.btn-play-video').first().click();await page.locator('#video-modal').waitFor({state:'visible'});assert((await page.locator('#video-modal-frame').getAttribute('src')).includes('youtube.com/embed/'));await page.locator('#video-modal-close').click();assert.equal(await page.locator('#video-modal-frame').getAttribute('src'),null);
+    await resource(page,'videos');await page.locator('.btn-play-video').first().click();await page.locator('#video-modal').waitFor({state:'visible'});assert((await page.locator('#video-modal-frame').getAttribute('src')).includes('youtube.com/embed/'));await page.locator('#video-modal-close').click();assert.equal(await page.locator('#video-modal-frame').getAttribute('src'),null);
     await page.locator('[data-track="section"]').click();await page.locator('#sections-list .btn-preview-pdf').first().click();await page.locator('#pdf-modal').waitFor({state:'visible'});await page.locator('#pdf-modal-close').click();
-    await go('subject.html?id=data-structure&track=section');await page.locator('#assignments-list .btn-preview-pdf').first().click();assert((await page.locator('#pdf-modal-frame').getAttribute('src')).includes('materials/ds/'));await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>document.body.style.overflow),'');
+    await go('subject.html?id=data-structure&track=section');await resource(page,'assignments');await page.locator('#assignments-list .btn-preview-pdf').first().click();assert((await page.locator('#pdf-modal-frame').getAttribute('src')).includes('materials/ds/'));await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>document.body.style.overflow),'');
   });
   await scenario('quiz-scoring-completion-and-reset',async({page,go})=>{
     await go('subject.html?id=database-systems');await page.locator('[data-open-study-lecture="2"]').first().click();await page.locator('#study-tab-btn-quiz').click();const answers=await page.evaluate(()=>LECTURE_EXPLANATIONS['database-systems'][2].fullQuiz.map(q=>({id:q.id,correct:q.correct})));
-    assert.equal(await page.locator('#full-quiz-score-val').evaluate(x=>getComputedStyle(x).direction),'ltr');for(const q of answers)await page.locator(`.full-quiz-opt-btn[data-qid="${q.id}"][data-opt-idx="${q.correct}"]`).click();assert.equal(await page.locator('#full-quiz-score-val').innerText(),'20 / 20');assert(await page.locator('#full-quiz-summary-card').isVisible());assert.equal(await page.locator('#full-quiz-percent').innerText(),'(100%)');await page.locator('#full-quiz-reset-btn').click();assert.equal(await page.locator('#full-quiz-score-val').innerText(),'0 / 20');assert(!await page.locator('#full-quiz-summary-card').isVisible());
+    assert.equal(await page.locator('#full-quiz-score-val').evaluate(x=>getComputedStyle(x).direction),'ltr');for(const q of answers){await question(page,q.id);await page.locator(`.full-quiz-opt-btn[data-qid="${q.id}"][data-opt-idx="${q.correct}"]`).click();}assert.equal(await page.locator('#full-quiz-score-val').innerText(),'20 / 20');assert(await page.locator('#full-quiz-summary-card').isVisible());assert.equal(await page.locator('#full-quiz-percent').innerText(),'(100%)');await page.locator('#full-quiz-reset-btn').click();assert.equal(await page.locator('#full-quiz-score-val').innerText(),'0 / 20');assert(!await page.locator('#full-quiz-summary-card').isVisible());
     const first=answers[0];await page.locator(`.full-quiz-opt-btn[data-qid="${first.id}"][data-opt-idx="${(first.correct+1)%4}"]`).click();assert.equal(await page.locator('#full-quiz-score-val').innerText(),'0 / 20');assert(await page.locator(`.full-quiz-opt-btn[data-qid="${first.id}"]`).evaluateAll(xs=>xs.every(x=>x.disabled)));
     await page.locator('#study-tab-btn-slides').click();await page.locator('#study-font-zoom-in').click();await page.locator('#study-font-zoom-out').click();await page.locator('#study-modal-fullscreen').click();assert(await page.locator('#lecture-study-modal').evaluate(x=>x.classList.contains('is-fullscreen')));await page.keyboard.press('Escape');
   });
   await scenario('copy-success-and-rejection',async({page,go})=>{
-    await page.addInitScript(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async value=>{window.copiedValue=value;}}}));await go('subject.html?id=computer-architecture');await page.locator('.btn-copy-link').first().click();assert((await page.evaluate(()=>window.copiedValue)).includes('youtu.be/'));assert(!await page.locator('#copy-link-fallback').count());
+    await page.addInitScript(()=>Object.defineProperty(navigator,'clipboard',{value:{writeText:async value=>{window.copiedValue=value;}}}));await go('subject.html?id=computer-architecture');await resource(page,'videos');await page.locator('.btn-copy-link').first().click();assert((await page.evaluate(()=>window.copiedValue)).includes('youtu.be/'));assert(!await page.locator('#copy-link-fallback').count());
     await page.evaluate(()=>navigator.clipboard.writeText=async()=>{throw new Error('denied')});await page.locator('#share-btn').click();await page.locator('#copy-link-fallback').waitFor({state:'visible'});await page.locator('#copy-link-fallback button').click();assert(!await page.locator('#copy-link-fallback').isVisible());
   });
   await scenario('file-mode-study',async({page})=>{
@@ -123,7 +125,7 @@ async function main(){
   });
   await scenario('home-search-filters-and-pending-notice',async({page,go})=>{
     await go('index.html');for(const [category,count]of [['all',6],['CS',4],['IS',1],['General',1]]){await page.locator(`[data-filter="${category}"]`).click();assert.equal(await page.locator('#courses-grid article').count(),count);}await page.locator('[data-filter="all"]').click();for(const term of ['CS221','قواعد البيانات','cache']){await page.locator('#search-input').fill(term);assert.equal(await page.locator('#courses-grid article').count(),1);}await page.locator('#search-input').fill('no-such-course');assert(await page.locator('#no-results').isVisible());await page.locator('#clear-search').click();assert.equal(await page.locator('#courses-grid article').count(),6);
-    await page.evaluate(()=>StudentProfile.set('B2',6));assert(await page.locator('#schedule-data-notice').isVisible());await page.evaluate(()=>StudentProfile.set('B1',1));assert(!await page.locator('#schedule-data-notice').isVisible());
+    await page.locator('.a1-desktop-nav a[href="#schedule-section"]').click();await page.locator('#schedule-section').waitFor({state:'visible'});await page.evaluate(()=>StudentProfile.set('B2',6));assert(await page.locator('#schedule-data-notice').isVisible());await page.evaluate(()=>StudentProfile.set('B1',1));assert(!await page.locator('#schedule-data-notice').isVisible());
   });
   await scenario('corrupt-profile-does-not-break-home',async({page,go,errors})=>{
     await page.addInitScript(()=>{if(location.hostname==='127.0.0.1')localStorage.setItem('sem2_student_profile','null');});await go('index.html');assert.equal(await page.locator('#courses-grid article').count(),6);assert.equal(await page.evaluate(()=>StudentProfile.get().group),'B1');assert.deepEqual(errors,[]);

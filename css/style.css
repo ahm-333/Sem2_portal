@@ -224,6 +224,104 @@ code, pre, .font-mono {
   box-shadow: 0 8px 25px -4px rgba(99, 102, 241, 0.35);
 }
 
+
+/* ==============================================================================
+   بطاقة صناع ومطورو المنصة في الفوتر (Creators & Developers Showcase)
+   ============================================================================== */
+.creators-showcase-card {
+  position: relative;
+  border-radius: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+  transition: all 0.25s ease;
+}
+
+[data-theme="dark"] .creators-showcase-card {
+  background: linear-gradient(145deg, rgba(25, 38, 58, 0.75) 0%, rgba(16, 26, 42, 0.85) 100%);
+  border-color: rgba(66, 88, 121, 0.5);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="light"] .creators-showcase-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f4f7fc 100%);
+  border-color: #ccd9eb;
+  box-shadow: 0 8px 25px -4px rgba(35, 87, 174, 0.08);
+}
+
+[data-theme="reading"] .creators-showcase-card {
+  background: linear-gradient(145deg, #fcfdf8 0%, #eef3f2 100%);
+  border-color: #bfced0;
+  box-shadow: 0 8px 25px -4px rgba(37, 92, 114, 0.08);
+}
+
+.developer-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 0;
+}
+
+[data-theme="dark"] .developer-profile-card {
+  background: rgba(39, 60, 90, 0.45);
+  border-color: rgba(66, 88, 121, 0.5);
+}
+
+[data-theme="light"] .developer-profile-card {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
+[data-theme="reading"] .developer-profile-card {
+  background: rgba(225, 237, 240, 0.55);
+  border-color: #bfced0;
+}
+
+.developer-profile-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-accent);
+  box-shadow: 0 6px 18px -3px rgba(99, 102, 241, 0.15);
+}
+
+.developer-avatar {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.developer-profile-card:hover .developer-avatar {
+  transform: scale(1.06);
+}
+
+/* شريط تكريم المطورين في أعلى الصفحة */
+.creator-top-pill {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  max-width: 100%;
+}
+
+.creator-top-pill:hover {
+  border-color: var(--border-accent);
+  transform: translateY(-1px);
+}
+
 .creator-name-gradient {
   background: linear-gradient(135deg, #818cf8 0%, #22d3ee 50%, #a78bfa 100%);
   -webkit-background-clip: text;
@@ -278,39 +376,39 @@ code, pre, .font-mono {
 
 /* مسار المحاضرة ومسار السكشن */
 .active-track-lecture {
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(99, 102, 241, 0.1) 100%) !important;
-  color: #818cf8 !important;
-  border-color: #6366f1 !important;
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(99, 102, 241, 0.1) 100%);
+  color: #818cf8;
+  border-color: #6366f1;
   box-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
 }
 
 .active-track-section {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%) !important;
-  color: #22d3ee !important;
-  border-color: #06b6d4 !important;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%);
+  color: #22d3ee;
+  border-color: #06b6d4;
   box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
 }
 
 [data-theme="light"] .active-track-lecture {
-  background: #eef2ff !important;
-  color: #4338ca !important;
+  background: #eef2ff;
+  color: #4338ca;
 }
 
 [data-theme="light"] .active-track-section {
-  background: #ecfeff !important;
-  color: #0891b2 !important;
+  background: #ecfeff;
+  color: #0891b2;
 }
 
 [data-theme="reading"] .active-track-lecture {
-  background: #faeed7 !important;
-  color: #92400e !important;
-  border-color: #b45309 !important;
+  background: #faeed7;
+  color: #92400e;
+  border-color: #b45309;
 }
 
 [data-theme="reading"] .active-track-section {
-  background: #fef3c7 !important;
-  color: #78350f !important;
-  border-color: #d97706 !important;
+  background: #fef3c7;
+  color: #78350f;
+  border-color: #d97706;
 }
 
 /* ==============================================================================
@@ -468,22 +566,22 @@ code, pre, .font-mono {
 }
 
 .study-nav-tab.active {
-  background: rgba(99, 102, 241, 0.15) !important;
-  border-color: rgba(99, 102, 241, 0.4) !important;
-  color: #818cf8 !important;
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: #818cf8;
   box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
 }
 
 [data-theme="light"] .study-nav-tab.active {
-  background: #eef2ff !important;
-  border-color: #a5b4fc !important;
-  color: #4338ca !important;
+  background: #eef2ff;
+  border-color: #a5b4fc;
+  color: #4338ca;
 }
 
 [data-theme="reading"] .study-nav-tab.active {
-  background: #fde68a !important;
-  border-color: #d97706 !important;
-  color: #78350f !important;
+  background: #fde68a;
+  border-color: #d97706;
+  color: #78350f;
 }
 
 /* ==============================================================================

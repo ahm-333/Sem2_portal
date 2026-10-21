@@ -1,0 +1,205 @@
+
+> sem2-portal@1.0.0 verify
+> npm run build && npm run check && npm run validate && npm run lint && npm test && npm run test:browser && npm run test:a1 && npm run test:study
+
+
+> sem2-portal@1.0.0 build
+> node tools/build-assets.cjs
+
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+Rebuilding...
+
+Done in 1336ms.
+
+> sem2-portal@1.0.0 check
+> node tools/check-syntax.cjs
+
+Syntax checked: 52 files
+
+> sem2-portal@1.0.0 validate
+> node tools/check-data.cjs
+
+Data validation: 0 errors; 3 unchanged timetable records awaiting confirmation.
+
+> sem2-portal@1.0.0 lint
+> eslint js tests tools/*.cjs *.cjs --max-warnings=0
+
+
+> sem2-portal@1.0.0 test
+> node --test tests/*.test.cjs
+
+✔ A1 integration preserves all source data, study content, slides and prior planning notes (79.353ms)
+✔ study cache version is stable across Windows and Linux line endings (1.1519ms)
+✔ study cache version changes when the source content changes (0.2679ms)
+✔ createCatalog exports and methods (1.7794ms)
+✔ PortalCatalog.key rejects null/undefined but preserves 0 and escapes punctuation (0.5455ms)
+✔ All 6 real courses and 7 source families are indexed correctly (4.2976ms)
+✔ Quiz metadata calculation is deterministic across LF/CRLF and sensitive to changes (3.6353ms)
+✔ PortalContentLinks module exports and methods (1.6167ms)
+✔ PortalContentLinks.href builds canonical same-site URLs preserving id/track/kind (5.8823ms)
+✔ PortalContentLinks.parse extracts and validates query fields safely (2.4279ms)
+✔ current data is valid with explicit unconfirmed timetable records (11.3146ms)
+✔ duplicate course ids and unknown new timetable keys fail validation (6.135ms)
+✔ quiz answer indices and local images are validated (5.9083ms)
+✔ missing optional question metadata is allowed but invalid references fail (5.8137ms)
+✔ unconfirmed records cannot be edited invisibly (5.4383ms)
+✔ one filtering rule supports my TA, another TA and all materials (3.5338ms)
+✔ general resources remain visible while section-only resources do not (1.4521ms)
+✔ media URLs reject executable schemes but retain local material files (4.3334ms)
+✔ YouTube and Drive IDs produce supported preview URLs (2.117ms)
+✔ Drive folders and lookalike hosts are not treated as embeddable files (1.5646ms)
+✔ invalid stored profile is normalized: null (3.8396ms)
+✔ invalid stored profile is normalized: {} (1.4947ms)
+✔ invalid stored profile is normalized: [] (1.4192ms)
+✔ invalid stored profile is normalized: 12 (1.9666ms)
+✔ invalid stored profile is normalized: "B1" (1.2586ms)
+✔ invalid stored profile is normalized: {"group":"<b>bad</b>","section":1} (1.4242ms)
+✔ a section from another group uses the first valid section (1.2626ms)
+✔ all twelve valid profiles round trip and dispatch normalized state (1.3831ms)
+✔ blocked storage still allows profile changes during this session (1.4818ms)
+✔ write denial cannot resurrect a stale stored profile (1.3646ms)
+✔ theme is usable without persistent storage (1.5299ms)
+✔ unknown group and invalid writes never cross the public seam (1.2972ms)
+✔ Saturday classes for B1/1 are chronological, not course-ordered (4.2181ms)
+✔ multiple confirmed sessions for one course are retained (1.7783ms)
+✔ unconfirmed source records are surfaced without assigning them to a different course (1.4145ms)
+✔ an unavailable section schedule is explicitly marked unavailable (2.0327ms)
+✔ all profile schedules return valid days and finite chronological order (2.0368ms)
+▶ PortalStudyState Unit Tests
+  ✔ initial state is empty snapshot with persistent status (3.3835ms)
+  ✔ normal write, read and reload round-trips correctly (0.892ms)
+  ✔ sibling fields: updating reader preserves quiz and vice versa (1.2927ms)
+  ✔ blocked read falls back to session-only memory with session status (0.1961ms)
+  ✔ quota exhaustion transitions to session status and keeps unsaved data in memory (0.2726ms)
+  ✔ malformed JSON in storage results in corrupt status without overwriting bytes (0.1717ms)
+  ✔ unsupported schemaVersion results in unsupported-version status without overwriting bytes (0.2116ms)
+  ✔ prototype pollution keys are safely handled and do not mutate Object prototype (0.2439ms)
+  ✔ two concurrent pages updating different items survive reload (0.3282ms)
+  ✔ two concurrent pages updating sibling fields on the same item survive reload (0.4694ms)
+  ✔ replaceAll validates and commits atomically, rolling back on failure (0.8062ms)
+  ✔ removed-item state round-trips unchanged (0.1534ms)
+  ✔ subscriptions notify with { snapshot, status } and return working unsubscribe (0.2414ms)
+  ✔ setLastUsed updates lastUsed in snapshot and persists (0.2203ms)
+  ✔ defensive snapshots prevent accidental external mutation (0.1517ms)
+✔ PortalStudyState Unit Tests (9.8178ms)
+▶ Study storage acceptance regressions
+  ✔ failed replacement preserves durable bytes and a freshly loaded last source (0.4155ms)
+  ✔ independent base fields survive writes before cross-tab events arrive (0.1522ms)
+  ✔ an item write does not erase another tab latest source (0.1642ms)
+  ✔ replacement refuses corrupt and future-version bytes without mutation (0.1694ms)
+  ✔ a live newer-schema event blocks subsequent writes (1.7017ms)
+  ✔ replacement is observed as one complete state by another tab (0.9257ms)
+  ✔ another-tab replacement removes deleted items and base fields (1.0484ms)
+  ✔ invalid nested state and cyclic candidates fail without mutation or exceptions (0.3355ms)
+  ✔ a same-item write during replacement has a durable serial outcome (0.2983ms)
+  ✔ concurrent same-field ties converge independently of storage key order (0.1575ms)
+  ✔ remote durable updates do not discard local unsaved fields (0.1287ms)
+  ✔ hidden serialization hooks and accessors cannot publish or throw (0.2358ms)
+✔ Study storage acceptance regressions (5.9361ms)
+ℹ tests 64
+ℹ suites 2
+ℹ pass 64
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 164.4593
+
+> sem2-portal@1.0.0 test:browser
+> node tests/browser.cjs
+
+PASS dynamic-profile-buttons
+PASS profile-dialog-focus
+PASS quiz-metadata-and-direction
+PASS mobile-360
+PASS mobile-390
+PASS mobile-412
+PASS blocked-storage
+PASS offline-cdn
+PASS drive-folder-no-iframe
+PASS invalid-track
+PASS clipboard-fallback
+PASS study-dialog-focus
+PASS lazy-study-data-and-quiz
+PASS quiz-preserves-other-question-nodes
+PASS study-load-retry
+PASS closing-study-cancels-late-render
+PASS all-courses-profile-matrix
+PASS pdf-video-and-dialog-cleanup
+PASS quiz-scoring-completion-and-reset
+PASS copy-success-and-rejection
+PASS file-mode-study
+PASS home-search-filters-and-pending-notice
+PASS corrupt-profile-does-not-break-home
+23/23 scenarios passed
+
+> sem2-portal@1.0.0 test:a1
+> node tests/a1-browser.cjs
+
+PASS a1-shell-and-real-course-actions
+PASS a1-intro-hides-navbar-and-defers-profile
+PASS a1-flex-default-and-native-editing
+PASS a1-action-content-has-visible-contrast
+PASS a1-all-icon-placeholders-resolve
+PASS a1-journey-course-first-home-and-timetable
+PASS a1-journey-one-resource-family-at-a-time
+PASS a1-journey-focused-reader-and-one-question
+PASS a1-journey-default-course-and-real-reader-zoom
+PASS a1-journey-back-and-switch-course-retain-source-kind
+PASS a1-journey-saved-theme-and-quiz-reset-focus
+PASS a1-journey-keyboard-continues-in-current-content
+PASS a1-journey-mobile-outline-follows-current-slide
+PASS a1-journey-mobile-primary-material-reachable
+PASS a1-all-action-states-360-light
+PASS a1-all-action-states-360-dark
+PASS a1-all-action-states-360-reading
+PASS a1-all-action-states-1440-light
+PASS a1-all-action-states-1440-dark
+PASS a1-all-action-states-1440-reading
+PASS a1-dialog-action-states-360-light
+PASS a1-dialog-action-states-360-dark
+PASS a1-dialog-action-states-360-reading
+PASS a1-dialog-action-states-1440-light
+PASS a1-dialog-action-states-1440-dark
+PASS a1-dialog-action-states-1440-reading
+PASS a1-user-button-examples-rendered
+PASS a1-intro-natural-completion-and-return
+PASS a1-processor-real-drag-inertia-keyboard-and-charge
+PASS a1-reference-has-clean-intro-and-flex-selection
+PASS a1-intro-resize-and-reduced-motion-cleanup
+PASS a1-intro-library-failure-is-open
+PASS a1-intro-partial-mount-rollback-1
+PASS a1-intro-partial-mount-rollback-49
+PASS a1-no-intro-for-reduced-motion
+PASS a1-no-intro-with-unavailable-session-storage
+PASS a1-current-source-actions-parity
+PASS a1-header-and-dialog-controls-fit-mobile
+PASS a1-200-percent-reflow-and-keyboard
+PASS a1-rendered-360
+PASS a1-rendered-390
+PASS a1-rendered-412
+PASS a1-rendered-768
+PASS a1-rendered-1024
+PASS a1-rendered-1440
+
+> sem2-portal@1.0.0 test:study
+> node tests/study-features-browser.cjs
+
+PASS study-catalog-home-singleton-and-quiz-metadata
+PASS study-catalog-subject-page-resolution
+PASS links-practical-resource-reveals-its-real-keyed-row
+PASS links-direct-lecture-0-reveals-row
+PASS links-direct-section-0-reveals-row
+PASS links-direct-assignment-reveals-row
+PASS links-malformed-or-unknown-key-shows-notice-without-crash
+PASS links-hidden-ta-recovery-preserves-profile
+PASS links-hidden-ta-recovery-covers-each-filtered-source-family
+PASS storage-warning-remains-accessible-in-reader-and-quiz
+PASS storage-concurrent-base-writes-replacement-and-new-schema
+PASS storage-normal-load-and-item-persistence
+PASS storage-session-fallback-warning-when-denied
+PASS storage-cross-tab-item-synchronization
+14/14 study feature scenarios passed
