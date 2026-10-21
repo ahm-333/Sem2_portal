@@ -68,7 +68,7 @@ async function main(){
   });
   await scenario('offline-cdn',async({page,go,errors})=>{
     await page.route('https://**',r=>r.abort());await go('subject.html?id=database-systems');
-    assert.equal(await page.locator('#lectures-list .btn-preview-pdf').count(),3);
+    assert.equal(await page.locator('#lectures-list .btn-preview-pdf').count(),4);
     assert(!await page.locator('#track-panel-section').isVisible());assert(!await page.locator('#pdf-modal').isVisible());assert.deepEqual(errors,[]);
   });
   await scenario('drive-folder-no-iframe',async({page,go})=>{
