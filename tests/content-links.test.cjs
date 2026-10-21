@@ -97,6 +97,12 @@ test('PortalContentLinks.parse extracts and validates query fields safely', () =
   assert.equal(malformed.isValid, false);
   assert.equal(malformed.item, null);
 
+  for (const item of ['["data-structure","lecture","999"]', '["data-structure","lecture",{}]', '["data-structure","lecture",0]']) {
+    assert.equal(links.parse(`http://localhost/subject.html?id=data-structure&item=${encodeURIComponent(item)}`).isValid, false);
+  }
+  assert.equal(links.parse(`http://localhost/subject.html?id=computer-architecture&item=${encodeURIComponent(dsLec0Key)}`).isValid, false);
+  assert.equal(links.parse(rawUrl.replace('slide=3', 'slide=3junk')).slide, null);
+
   // Negative or NaN slide fails safely
   const badSlide = links.parse(`http://localhost/Sem2_portal/subject.html?id=data-structure&item=${encodeURIComponent(dsLec0Key)}&slide=-4`);
   assert.equal(badSlide.slide, null);

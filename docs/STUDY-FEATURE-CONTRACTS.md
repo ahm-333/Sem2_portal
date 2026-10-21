@@ -144,6 +144,7 @@ PortalContentNavigation.reveal(key: string, options?: { focus?: boolean }): Prom
   - Focuses target element and highlights it temporarily.
   - If target is hidden by a TA filter, displays an explanatory notice offering a labelled route to the TA/all view without modifying the user's saved profile.
   - Unknown keys display a recoverable error notice.
+  - The active renderer instance is `PortalSubjectContent.current`; `showForEntry(entry)` reveals a section/assignment/practical target using its TA filter, or reveals all theory resources. It never saves a different student profile. Every practical row carries its canonical key before A1 compaction.
 
 ### Event Contracts
 
@@ -198,7 +199,6 @@ interface StudyItemState {
     bestCompleted?: QuizResultSummary;
     archivedResults?: QuizResultSummary[];
   };
-  [key: string]: unknown;
 }
 
 interface QuizResultSummary {
@@ -211,14 +211,13 @@ interface QuizResultSummary {
 
 ### Physical Storage Representation
 
-- **Physical Namespace:** `sem2_study_v1:`
-  - Metadata: `sem2_study_v1:meta` -> `{ schemaVersion: 1, lastUsed?: ... }`
-  - Item Base Fields: `sem2_study_v1:item:<encodedKey>:base` -> `{ startedAt, manualComplete, ... }`
-  - Item Reader Field: `sem2_study_v1:item:<encodedKey>:reader` -> `{ slideId, tab, updatedAt }`
-  - Item Quiz Field: `sem2_study_v1:item:<encodedKey>:quiz` -> `{ version, answers, ... }`
-- **Collision-Free Isolation:**
-  - Sibling fields (`reader` vs `quiz` vs base properties) live in independent physical subkeys, completely preventing concurrent tabs from clobbering one another's reader/quiz progress.
-  - Same-field concurrent writes resolve deterministically via latest `updatedAt` timestamp and standard storage event reconciliation.
+- **Namespace:** `sem2_study_v1:`; preference keys remain outside it and are never changed.
+- **Read-only legacy input:** `meta` and `item:<encodedKey>:base|reader|quiz` from the unfinished implementation remain readable and byte-for-byte unchanged. Invalid or newer legacy metadata blocks writes rather than being silently migrated or overwritten.
+- **Atomic publication:** new writes append one complete, validated immutable operation at `sem2_study_v1:op:<writer-id>.<sequence>`. Its JSON envelope is `{schemaVersion:1,clock,id,kind,...payload}`. `kind=update` carries `{key,patch}`, `kind=lastUsed` carries `{value}`, and `kind=replace` carries a complete snapshot as `{value}`. Validation and serialization finish in memory before the single `setItem` commit.
+- **Replay/concurrency:** readers validate all inputs, read the legacy baseline, then replay committed operations ordered by Lamport `clock`, with lexicographic unique `id` as a deterministic concurrent-tie breaker. Before a local commit the writer reads current committed operations and advances its clock. This defines a serial outcome even when two tabs have not delivered their storage events. Distinct keys and top-level item fields merge; the later ordered operation wins for the same field. Reader/quiz fields are each whole-field replacements supplied by their owner. `updatedAt` describes an event time; wall-clock skew does not decide commit order.
+- **Replacement:** one operation replaces the whole logical snapshot, including deletions. A failed publication changes no durable byte or in-memory study data. A concurrent update is ordered before or after that complete replacement; there is no multi-key partial replacement or best-effort rollback.
+- **Reconciliation:** storage events reread committed operations; delayed events cannot revive removed fields. Unsaved local operations stay as a session overlay over current durable state and are never automatically reported as saved. Reload discards that overlay, which the Arabic warning states explicitly.
+- **Bounds:** this issue deliberately performs no unsafe journal compaction. Storage grows with use; quota exhaustion invokes session fallback. A future compaction/recovery change must preserve the same atomicity/concurrency guarantees and receive its own reviewed contract.
 
 ### Public API Methods
 
@@ -231,7 +230,7 @@ PortalStudyState.getItem(key: string): StudyItemState | null;
 
 PortalStudyState.updateItem(key: string, patch: Partial<StudyItemState>): {
   saved: boolean;
-  reason?: 'session' | 'quota' | 'corrupt' | 'unsupported-version' | 'forbidden_key';
+  reason?: 'session' | 'quota' | 'corrupt' | 'unsupported-version' | 'invalid_item';
 };
 
 PortalStudyState.setLastUsed(value: { key: string; actionId: string; updatedAt?: string }): {
@@ -251,5 +250,7 @@ PortalStudyState.replaceAll(candidate: StudySnapshot): {
 
 - **Session Fallback:** Quota exhaustion or storage access exceptions gracefully transition status to `'session'`. Writes continue in memory without crashing; `#study-save-status` announces the condition via accessible Arabic live notices.
 - **Corrupt & Unsupported Version Safety:** If existing stored bytes contain invalid JSON or unsupported schema versions, they are preserved untouched without silent overwrites. Writes to storage are blocked.
-- **Atomic Replace & Rollback:** `replaceAll` stages writes and snapshots the prior storage state. Any quota or write failure triggers an immediate rollback of storage and in-memory state.
-- **Prototype Pollution Defense:** Keys such as `__proto__`, `constructor`, and `prototype` are strictly blocked from prototype injection and stripped from returned snapshots.
+- **Atomic replacement:** validation/staging occurs in memory; one immutable append is the publication point. A failed replacement retains the entire previous durable and in-memory state. No compensating write/rollback is needed.
+- **Validation:** accept only documented fields, canonical keys (including ID `0`), dense arrays and valid nested reader/quiz/result/last-used shapes. Reject unsafe keys, non-JSON values and cycles before mutation. All ingress paths use the same validators. Current quiz answer bounds/version membership are additionally checked by their future consumer, not guessed by this storage layer.
+- **Protected bytes:** `replaceAll` also refuses corrupt/unsupported backing state. Explicit recovery authorization and raw-byte export belong to the future backup/recovery contract; it must not bypass this protection implicitly.
+- **Accessible status:** warnings are routed into the active dialog when background `main` is inert, and return to the page region after close. Failure notices never weaken background isolation or take keyboard focus.

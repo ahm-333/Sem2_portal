@@ -36,8 +36,8 @@
         params.set('action', String(options.actionId));
       }
       if (options.slide != null) {
-        const slideNum = parseInt(options.slide, 10);
-        if (!isNaN(slideNum) && slideNum > 0) {
+        const slideNum = Number(options.slide);
+        if (Number.isSafeInteger(slideNum) && slideNum > 0) {
           params.set('slide', String(slideNum));
         }
       }
@@ -87,9 +87,10 @@
       if (rawItem) {
         try {
           const parsed = JSON.parse(rawItem);
-          if (Array.isArray(parsed) && parsed.length === 3 && typeof parsed[0] === 'string' && typeof parsed[1] === 'string') {
+          if (Array.isArray(parsed) && parsed.length === 3 && parsed.every(value => typeof value === 'string' && value.length > 0) && JSON.stringify(parsed) === rawItem) {
             item = rawItem;
-            isValid = true;
+            const entry = getCatalog()?.get(item);
+            isValid = Boolean(entry && entry.courseId === courseId);
           }
         } catch (_) {
           isValid = false;
@@ -100,8 +101,8 @@
       const rawSlide = urlObj.searchParams.get('slide');
       let slide = null;
       if (rawSlide != null) {
-        const num = parseInt(rawSlide, 10);
-        if (!isNaN(num) && num > 0) {
+        const num = Number(rawSlide);
+        if (Number.isSafeInteger(num) && num > 0) {
           slide = num;
         }
       }

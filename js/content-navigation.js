@@ -105,18 +105,7 @@
       const studentTa = staff?.ta;
       if (studentTa && entry.ta !== studentTa) {
         showTaFilterNotice(entry, async () => {
-          if (entry.type === 'section') {
-            if (window.PortalSubjectContent && typeof window.PortalSubjectContent.showTaSections === 'function') {
-              window.PortalSubjectContent.showTaSections(entry.ta);
-            } else {
-              const allBtn = document.querySelector('#sections-filter-container [data-ta-filter="all"]');
-              if (allBtn) allBtn.click();
-            }
-          } else if (entry.type === 'theory-resource') {
-            if (window.PortalSubjectContent && typeof window.PortalSubjectContent.showAllTheory === 'function') {
-              window.PortalSubjectContent.showAllTheory();
-            }
-          }
+          window.PortalSubjectContent?.current?.showForEntry(entry);
           await new Promise(resolve => setTimeout(resolve, 50));
           const revealedRow = findRow(key);
           if (revealedRow) {
@@ -170,7 +159,7 @@
       const parsed = window.PortalContentLinks.parse(window.location);
       if (parsed.isValid && parsed.item) {
         reveal(parsed.item, { focus: true });
-      }
+      } else if (new URLSearchParams(window.location.search).has('item')) showUnavailableNotice(parsed.item);
     }
 
     window.addEventListener('portal:content-ready', () => {

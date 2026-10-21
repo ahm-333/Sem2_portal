@@ -1,6 +1,47 @@
 const assert = require('node:assert/strict');
 
 async function register({ scenario }) {
+  await scenario('storage-warning-remains-accessible-in-reader-and-quiz', async ({page, go}) => {
+    await go('subject.html?id=database-systems');
+    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await page.locator('#study-slides-feed .slide-study-card').first().waitFor();
+    await page.evaluate(() => {
+      const write = Storage.prototype.setItem;
+      Storage.prototype.setItem = function(key, value) {
+        if (key.startsWith('sem2_study_v1:')) throw new window.DOMException('Full', 'QuotaExceededError');
+        return write.call(this, key, value);
+      };
+      window.PortalStudyState.updateItem('["database-systems","lecture","2"]', {manualComplete: true});
+    });
+    const notice = page.locator('#lecture-study-modal [data-study-save-notice]');
+    await notice.waitFor({state: 'visible'});
+    assert.equal(await notice.evaluate(el => !!el.closest('[inert]')), false);
+    assert.equal(await notice.getAttribute('role'), 'status');
+    await page.locator('#study-tab-btn-quiz').click();
+    assert(await notice.isVisible());
+    await page.keyboard.press('Escape');
+    await page.locator('#study-save-status').waitFor({state: 'visible'});
+  });
+
+  await scenario('storage-concurrent-base-writes-replacement-and-new-schema', async ({page, context, go}) => {
+    await go('index.html');
+    const other = await context.newPage(); await other.goto(page.url());
+    const key = '["data-structure","lecture","0"]';
+    await Promise.all([
+      page.evaluate(k => window.PortalStudyState.updateItem(k, {startedAt: '2026-10-21T12:00:00Z'}), key),
+      other.evaluate(k => window.PortalStudyState.updateItem(k, {manualComplete: true}), key)
+    ]);
+    await other.reload();
+    const value = await other.evaluate(k => window.PortalStudyState.getItem(k), key);
+    assert.equal(value.startedAt, '2026-10-21T12:00:00Z'); assert.equal(value.manualComplete, true);
+    await page.evaluate(() => window.PortalStudyState.replaceAll({schemaVersion: 1, items: {}}));
+    await other.waitForFunction(k => window.PortalStudyState.getItem(k) === null, key);
+    await page.evaluate(() => localStorage.setItem('sem2_study_v1:meta', JSON.stringify({schemaVersion: 99})));
+    await other.waitForFunction(() => window.PortalStudyState.getStatus() === 'unsupported-version');
+    assert.equal(await other.evaluate(k => window.PortalStudyState.updateItem(k, {manualComplete: true}).saved, key), false);
+    assert.equal(await other.evaluate(() => JSON.parse(localStorage.getItem('sem2_study_v1:meta')).schemaVersion), 99);
+    await other.close();
+  });
   await scenario('storage-normal-load-and-item-persistence', async ({ page, go }) => {
     await go('index.html');
 

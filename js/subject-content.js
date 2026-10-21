@@ -830,7 +830,7 @@
 
     practicalResourcesList.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
     practicalResourcesList.innerHTML = filteredPractical.map((res) => `
-      <div class="glass-panel p-5 rounded-2xl border flex items-center justify-between gap-4 card-hover-effect">
+      <div class="glass-panel p-5 rounded-2xl border flex items-center justify-between gap-4 card-hover-effect" data-content-key='${window.PortalUI.escapeHtml(window.PortalCatalog.key(course.id, "practical-resource", res.id))}'>
         <div class="flex items-center gap-3">
           <div class="w-11 h-11 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xs flex-shrink-0 border border-cyan-500/20 icon-box-modern">
             <i data-lucide="cpu" class="w-5 h-5"></i>
@@ -889,12 +889,22 @@
   renderAllSectionTrack();
 
 
-    return {resetFilters() {
+    const api = {resetFilters() {
       selectedTa = "my-ta";
       theoryFilterMode = "my-ta";
       renderTheoryResources();
       renderAllSectionTrack();
+    }, showForEntry(entry) {
+      if (entry.courseId !== course.id) return false;
+      if (entry.type === 'theory-resource') {
+        theoryFilterMode = 'all'; renderTheoryResources();
+      } else if (['section', 'assignment', 'practical-resource'].includes(entry.type)) {
+        selectedTa = entry.ta || 'all'; renderAllSectionTrack();
+      } else return false;
+      return true;
     }};
+    window.PortalSubjectContent.current = api;
+    return api;
   }
   window.PortalSubjectContent = {create};
 })();

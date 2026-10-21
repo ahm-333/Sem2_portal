@@ -1,558 +1,232 @@
-/**
- * PortalStudyState - Versioned study state boundary with multi-tab reconciliation
- * and graceful degradation across storage failures.
- *
- * Physical schema:
- *   sem2_study_v1:meta -> { schemaVersion: 1, lastUsed?: { key, actionId, updatedAt } }
- *   sem2_study_v1:item:<encodedKey>:base -> { startedAt, manualComplete, ... }
- *   sem2_study_v1:item:<encodedKey>:reader -> { slideId, tab, updatedAt }
- *   sem2_study_v1:item:<encodedKey>:quiz -> { version, answers, activeQuestionId, completedVersions, ... }
+/* Study-only persistence: validate in memory, publish one immutable operation atomically.
+ * Legacy v1 fields remain read-only input. No preference keys or old bytes are rewritten.
  */
 (function (root, factory) {
-  if (typeof module === 'object' && module.exports) {
-    module.exports = factory();
-  } else {
-    root.PortalStudyState = factory().createStudyState();
-  }
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.PortalStudyState = factory().createStudyState();
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-
   const SCHEMA_VERSION = 1;
   const PREFIX = 'sem2_study_v1:';
-  const META_KEY = PREFIX + 'meta';
-  const ITEM_PREFIX = PREFIX + 'item:';
-
-  function deepClone(value) {
-    if (value === null || typeof value !== 'object') return value;
-    if (Array.isArray(value)) return value.map(deepClone);
-    const result = {};
-    for (const key of Object.keys(value)) {
-      if (key === '__proto__' || key === 'constructor' || key === 'prototype') continue;
-      result[key] = deepClone(value[key]);
+  const OPS = PREFIX + 'op:';
+  const TYPES = ['lecture', 'section', 'assignment', 'video', 'theory-resource', 'practical-resource', 'explanation-site'];
+  const own = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const text = value => typeof value === 'string' && value.length > 0;
+  const integer = value => Number.isSafeInteger(value) && value >= 0;
+  const forbidden = key => ['__proto__', 'constructor', 'prototype'].includes(key);
+  const object = value => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+    const proto = Object.getPrototypeOf(value);
+    return proto === null || Object.getPrototypeOf(proto) === null;
+  };
+  const fields = (value, names) => object(value) && Object.keys(value).every(key => names.includes(key));
+  const optional = (value, key, valid) => !own(value, key) || valid(value[key]);
+  const date = value => text(value) && /^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/.test(value) && Number.isFinite(Date.parse(value));
+  function safeTree(value, seen = new Set()) {
+    if (value === null || ['string', 'boolean'].includes(typeof value)) return true;
+    if (typeof value === 'number') return Number.isFinite(value);
+    if ((!object(value) && !Array.isArray(value)) || seen.has(value)) return false;
+    for (let proto = value; proto; proto = Object.getPrototypeOf(proto)) {
+      if (Object.getOwnPropertyDescriptor(proto, 'toJSON')) return false;
     }
-    return result;
+    const descriptors = Object.getOwnPropertyDescriptors(value);
+    if (Object.getOwnPropertySymbols(value).length || Object.entries(descriptors).some(([key, descriptor]) => key !== 'length' && (!descriptor.enumerable || !own(descriptor, 'value')))) return false;
+    if (Array.isArray(value) && (Object.keys(value).length !== value.length || !Object.keys(value).every((key, i) => key === String(i)))) return false;
+    seen.add(value);
+    const safe = Object.keys(value).every(key => !forbidden(key) && safeTree(value[key], seen));
+    seen.delete(value);
+    return safe;
   }
-
-  function isForbiddenKey(key) {
-    return key === '__proto__' || key === 'constructor' || key === 'prototype';
-  }
-
-  function encodeItemKey(canonicalKey) {
-    return encodeURIComponent(String(canonicalKey));
-  }
-
-  function decodeItemKey(encodedKey) {
+  function stage(value, valid) {
     try {
-      return decodeURIComponent(encodedKey);
-    } catch {
-      return encodedKey;
-    }
+      if (!safeTree(value) || !valid(value)) return null;
+      const normalized = clone(value);
+      return safeTree(normalized) && valid(normalized) ? normalized : null;
+    } catch { return null; }
   }
-
+  function canonical(key) {
+    if (!text(key)) return false;
+    try {
+      const parts = JSON.parse(key);
+      return Array.isArray(parts) && parts.length === 3 && parts.every(text) && TYPES.includes(parts[1]) && JSON.stringify(parts) === key;
+    } catch { return false; }
+  }
+  function result(value) {
+    return fields(value, ['version', 'score', 'total', 'completedAt']) && text(value.version) && integer(value.score) && integer(value.total) && value.score <= value.total && date(value.completedAt);
+  }
+  function reader(value) {
+    return fields(value, ['slideId', 'tab', 'updatedAt']) && (integer(value.slideId) || (text(value.slideId) && /^\d+$/.test(value.slideId))) && ['explanation', 'original', 'quiz'].includes(value.tab) && date(value.updatedAt);
+  }
+  function quiz(value) {
+    return fields(value, ['version', 'answers', 'activeQuestionId', 'completedVersions', 'lastCompleted', 'bestCompleted', 'archivedResults']) &&
+      text(value.version) && object(value.answers) && Object.entries(value.answers).every(([id, choice]) => text(id) && integer(choice)) &&
+      optional(value, 'activeQuestionId', id => text(id) || integer(id)) &&
+      optional(value, 'completedVersions', xs => Array.isArray(xs) && xs.every(text)) &&
+      optional(value, 'lastCompleted', result) && optional(value, 'bestCompleted', result) &&
+      optional(value, 'archivedResults', xs => Array.isArray(xs) && xs.every(result));
+  }
+  function item(value) {
+    return fields(value, ['startedAt', 'manualComplete', 'reader', 'quiz']) &&
+      optional(value, 'startedAt', date) && optional(value, 'manualComplete', x => typeof x === 'boolean') &&
+      optional(value, 'reader', reader) && optional(value, 'quiz', quiz);
+  }
+  function lastUsed(value) {
+    return fields(value, ['key', 'actionId', 'updatedAt']) && canonical(value.key) && text(value.actionId) && date(value.updatedAt);
+  }
+  function snapshot(value) {
+    return fields(value, ['schemaVersion', 'items', 'lastUsed']) && value.schemaVersion === SCHEMA_VERSION &&
+      object(value.items) && Object.entries(value.items).every(([key, state]) => canonical(key) && item(state)) &&
+      optional(value, 'lastUsed', x => x === null || lastUsed(x));
+  }
+  function operation(value, id) {
+    if (!fields(value, ['schemaVersion', 'clock', 'id', 'kind', 'key', 'patch', 'value']) || value.schemaVersion !== SCHEMA_VERSION || !Number.isSafeInteger(value.clock) || value.clock < 1 || value.id !== id) return false;
+    if (value.kind === 'update') return canonical(value.key) && item(value.patch) && !own(value, 'value');
+    if (value.kind === 'lastUsed') return lastUsed(value.value) && !own(value, 'key') && !own(value, 'patch');
+    return value.kind === 'replace' && snapshot(value.value) && !own(value, 'key') && !own(value, 'patch');
+  }
+  function apply(state, op) {
+    if (op.kind === 'replace') return clone(op.value);
+    if (op.kind === 'lastUsed') state.lastUsed = clone(op.value);
+    else state.items[op.key] = {...state.items[op.key], ...clone(op.patch)};
+    return state;
+  }
   function createStudyState(options = {}) {
-    let rawStorage = options.storage;
-    if (!rawStorage) {
-      try {
-        rawStorage = typeof window !== 'undefined' ? window.localStorage : null;
-      } catch {
-        rawStorage = null;
-      }
+    let storage = options.storage;
+    if (!storage) {
+      try { storage = typeof window !== 'undefined' ? window.localStorage : null; }
+      catch { storage = null; }
     }
-
+    const writer = globalThis.crypto?.randomUUID?.() || Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
+    let sequence = 0, clock = 0, status = 'persistent', sessionOnly = false;
+    let committed = {schemaVersion: SCHEMA_VERSION, items: {}}, pending = [];
     const subscribers = new Set();
-    const items = new Map(); // canonicalKey -> itemState
-    let lastUsed = null;
-    let status = 'persistent'; // 'persistent' | 'session' | 'corrupt' | 'unsupported-version'
 
-    function notifySubscribers() {
-      const snap = getSnapshot();
-      for (const sub of subscribers) {
-        try {
-          sub({ snapshot: snap, status });
-        } catch (e) {
-          if (typeof console !== 'undefined' && console.error) {
-            console.error('PortalStudyState subscriber error:', e);
-          }
-        }
-      }
-    }
-
-    // Initialize state from storage
-    function init() {
-      items.clear();
-      lastUsed = null;
-      status = 'persistent';
-
-      if (!rawStorage) {
-        status = 'session';
-        return;
-      }
-
+    function readCommitted() {
+      if (!storage) return {status: 'session'};
       try {
-        const studyKeys = [];
-        const len = rawStorage.length ?? 0;
-        for (let i = 0; i < len; i++) {
-          const k = rawStorage.key(i);
-          if (k && k.startsWith(PREFIX)) {
-            studyKeys.push(k);
-          }
-        }
-
-        // Process meta key first
-        const rawMeta = rawStorage.getItem(META_KEY);
+        const rawMeta = storage.getItem(PREFIX + 'meta');
+        let state = {schemaVersion: SCHEMA_VERSION, items: {}};
+        const ops = [], legacy = [];
+        let maxClock = 0;
         if (rawMeta !== null) {
-          try {
-            const meta = JSON.parse(rawMeta);
-            if (!meta || typeof meta !== 'object' || Array.isArray(meta)) {
-              status = 'corrupt';
-              return;
-            }
-            if (meta.schemaVersion !== SCHEMA_VERSION) {
-              status = 'unsupported-version';
-              return;
-            }
-            if (meta.lastUsed && typeof meta.lastUsed === 'object') {
-              lastUsed = {
-                key: String(meta.lastUsed.key),
-                actionId: String(meta.lastUsed.actionId),
-                updatedAt: String(meta.lastUsed.updatedAt)
-              };
-            }
-          } catch {
-            status = 'corrupt';
-            return;
+          const meta = JSON.parse(rawMeta);
+          if (!object(meta) || !safeTree(meta)) return {status: 'corrupt'};
+          if (meta.schemaVersion !== SCHEMA_VERSION) return {status: 'unsupported-version'};
+          if (!fields(meta, ['schemaVersion', 'lastUsed']) || !optional(meta, 'lastUsed', x => x === null || lastUsed(x))) return {status: 'corrupt'};
+          if (meta.lastUsed) state.lastUsed = clone(meta.lastUsed);
+        }
+        for (let i = 0; i < storage.length; i++) {
+          const physical = storage.key(i);
+          if (!physical?.startsWith(PREFIX) || physical === PREFIX + 'meta') continue;
+          const raw = storage.getItem(physical);
+          if (raw === null) continue;
+          const value = JSON.parse(raw);
+          if (!safeTree(value)) return {status: 'corrupt'};
+          if (physical.startsWith(OPS)) {
+            if (object(value) && own(value, 'schemaVersion') && value.schemaVersion !== SCHEMA_VERSION) return {status: 'unsupported-version'};
+            if (!operation(value, physical.slice(OPS.length))) return {status: 'corrupt'};
+            ops.push(value); maxClock = Math.max(maxClock, value.clock);
+          } else {
+            const match = physical.match(/^sem2_study_v1:item:(.+):(base|reader|quiz)$/);
+            if (!match) return {status: 'corrupt'};
+            const key = decodeURIComponent(match[1]);
+            if (!canonical(key)) return {status: 'corrupt'};
+            const part = match[2] === 'base' ? value : {[match[2]]: value};
+            if (!item(part) || (match[2] === 'base' && Object.keys(part).some(k => !['startedAt', 'manualComplete'].includes(k)))) return {status: 'corrupt'};
+            legacy.push({key, part});
           }
         }
-
-        // Process item keys
-        const itemRegex = /^sem2_study_v1:item:(.+):(base|reader|quiz)$/;
-        for (const k of studyKeys) {
-          const match = k.match(itemRegex);
-          if (!match) continue;
-
-          const rawVal = rawStorage.getItem(k);
-          if (rawVal === null) continue;
-
-          let parsedVal;
-          try {
-            parsedVal = JSON.parse(rawVal);
-          } catch {
-            status = 'corrupt';
-            return;
-          }
-
-          if (parsedVal === null || typeof parsedVal !== 'object') {
-            status = 'corrupt';
-            return;
-          }
-
-          const rawKey = match[1];
-          const fieldType = match[2];
-          const canonicalKey = decodeItemKey(rawKey);
-
-          if (isForbiddenKey(canonicalKey)) continue;
-
-          let currentItem = items.get(canonicalKey);
-          if (!currentItem) {
-            currentItem = Object.create(null);
-            items.set(canonicalKey, currentItem);
-          }
-
-          if (fieldType === 'reader') {
-            currentItem.reader = parsedVal;
-          } else if (fieldType === 'quiz') {
-            currentItem.quiz = parsedVal;
-          } else if (fieldType === 'base') {
-            for (const prop of Object.keys(parsedVal)) {
-              if (!isForbiddenKey(prop)) {
-                currentItem[prop] = parsedVal[prop];
-              }
-            }
-          }
-        }
-      } catch {
-        status = 'session';
+        for (const {key, part} of legacy) state.items[key] = {...state.items[key], ...part};
+        ops.sort((a, b) => a.clock - b.clock || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+        for (const op of ops) state = apply(state, op);
+        return {status: 'persistent', state, maxClock};
+      } catch (error) {
+        return {status: error instanceof SyntaxError || error instanceof URIError ? 'corrupt' : 'session'};
       }
     }
-
-    init();
-
-    // Cross-tab storage listener
+    function refresh() {
+      const read = readCommitted();
+      if (read.state) { committed = read.state; clock = Math.max(clock, read.maxClock); }
+      status = read.status === 'persistent' && sessionOnly ? 'session' : read.status;
+    }
+    function current() {
+      let state = clone(committed);
+      for (const op of pending) state = apply(state, op);
+      return state;
+    }
+    function getSnapshot() { refresh(); return current(); }
+    function getItem(key) {
+      if (!canonical(key)) return null;
+      const state = getSnapshot();
+      return own(state.items, key) ? state.items[key] : null;
+    }
+    function getStatus() { refresh(); return status; }
+    function notify() {
+      const value = current();
+      for (const listener of subscribers) {
+        try { listener({snapshot: clone(value), status}); }
+        catch (error) { console.error('PortalStudyState subscriber error:', error); }
+      }
+    }
+    function publish(kind, payload, replace = false) {
+      refresh();
+      const op = {schemaVersion: SCHEMA_VERSION, clock: ++clock, id: writer + '.' + (++sequence), kind, ...payload};
+      let raw;
+      try {
+        raw = JSON.stringify(op);
+        const serialized = JSON.parse(raw);
+        if (!safeTree(serialized) || !operation(serialized, op.id)) return {saved: false, reason: 'invalid_candidate'};
+      } catch { return {saved: false, reason: 'invalid_candidate'}; }
+      if (status === 'corrupt' || status === 'unsupported-version') {
+        if (!replace) pending.push(op);
+        notify(); return {saved: false, reason: status};
+      }
+      if (storage && (!sessionOnly || replace) && readCommitted().status === 'persistent') {
+        try {
+          // The sole publication point: a failed setItem leaves all active bytes intact.
+          storage.setItem(OPS + op.id, raw);
+          if (replace) {pending = []; sessionOnly = false;}
+          refresh(); notify(); return {saved: true};
+        } catch (error) {
+          if (!replace) pending.push(op);
+          sessionOnly = true; status = 'session';
+          notify(); return {saved: false, reason: error?.name === 'QuotaExceededError' ? 'quota' : 'session'};
+        }
+      }
+      if (!replace) pending.push(op);
+      sessionOnly = true; status = 'session'; notify();
+      return {saved: false, reason: 'session'};
+    }
+    function updateItem(key, patch) {
+      if (key === null || key === undefined) throw new TypeError('PortalStudyState.updateItem: key is required');
+      const prepared = stage(patch, item);
+      if (!canonical(key) || !prepared) return {saved: false, reason: 'invalid_item'};
+      return publish('update', {key, patch: prepared});
+    }
+    function setLastUsed(value) {
+      const prepared = stage(value, v => fields(v, ['key', 'actionId', 'updatedAt']) && canonical(v.key) && text(v.actionId) && optional(v, 'updatedAt', date));
+      if (!prepared) return {saved: false, reason: 'invalid_last_used'};
+      const next = {...prepared, updatedAt: prepared.updatedAt || new Date().toISOString()};
+      if (!lastUsed(next)) return {saved: false, reason: 'invalid_last_used'};
+      return publish('lastUsed', {value: next});
+    }
+    function replaceAll(candidate) {
+      const prepared = stage(candidate, snapshot);
+      if (!prepared) return {saved: false, reason: 'invalid_candidate'};
+      return publish('replace', {value: prepared}, true);
+    }
+    function subscribe(listener) {
+      if (typeof listener !== 'function') throw new TypeError('PortalStudyState.subscribe requires a function');
+      subscribers.add(listener); return () => subscribers.delete(listener);
+    }
+    refresh();
     if (typeof window !== 'undefined' && window.addEventListener) {
       window.addEventListener('storage', event => {
-        if (!event.key) {
-          init();
-          notifySubscribers();
-          return;
-        }
-
-        if (!event.key.startsWith(PREFIX)) return;
-
-        if (event.key === META_KEY) {
-          if (!event.newValue) {
-            lastUsed = null;
-          } else {
-            try {
-              const meta = JSON.parse(event.newValue);
-              if (meta && meta.lastUsed) {
-                lastUsed = meta.lastUsed;
-              }
-            } catch {
-              status = 'corrupt';
-            }
-          }
-          notifySubscribers();
-          return;
-        }
-
-        const match = event.key.match(/^sem2_study_v1:item:(.+):(base|reader|quiz)$/);
-        if (match) {
-          const canonicalKey = decodeItemKey(match[1]);
-          const fieldType = match[2];
-          if (isForbiddenKey(canonicalKey)) return;
-
-          let currentItem = items.get(canonicalKey);
-          if (!event.newValue) {
-            if (currentItem) {
-              if (fieldType === 'reader') delete currentItem.reader;
-              else if (fieldType === 'quiz') delete currentItem.quiz;
-            }
-          } else {
-            try {
-              const parsed = JSON.parse(event.newValue);
-              if (!currentItem) {
-                currentItem = Object.create(null);
-                items.set(canonicalKey, currentItem);
-              }
-              if (fieldType === 'reader') {
-                currentItem.reader = parsed;
-              } else if (fieldType === 'quiz') {
-                currentItem.quiz = parsed;
-              } else if (fieldType === 'base') {
-                for (const prop of Object.keys(parsed)) {
-                  if (!isForbiddenKey(prop)) currentItem[prop] = parsed[prop];
-                }
-              }
-            } catch {
-              status = 'corrupt';
-            }
-          }
-          notifySubscribers();
-        }
+        if (event.key === null || event.key?.startsWith(PREFIX)) {refresh(); notify();}
       });
     }
-
-    function getStatus() {
-      return status;
-    }
-
-    function getSnapshot() {
-      const snap = {
-        schemaVersion: SCHEMA_VERSION,
-        items: {}
-      };
-
-      for (const [key, val] of items.entries()) {
-        if (isForbiddenKey(key)) continue;
-        snap.items[key] = deepClone(val);
-      }
-
-      if (lastUsed) {
-        snap.lastUsed = deepClone(lastUsed);
-      }
-
-      return snap;
-    }
-
-    function getItem(key) {
-      if (key === null || key === undefined) return null;
-      const strKey = String(key);
-      if (isForbiddenKey(strKey)) return null;
-
-      const item = items.get(strKey);
-      return item ? deepClone(item) : null;
-    }
-
-    function persistItemField(canonicalKey, fieldType, data) {
-      if (status !== 'persistent' || !rawStorage) return false;
-      const physicalKey = `${ITEM_PREFIX}${encodeItemKey(canonicalKey)}:${fieldType}`;
-      try {
-        if (data === undefined) {
-          rawStorage.removeItem(physicalKey);
-        } else {
-          rawStorage.setItem(physicalKey, JSON.stringify(data));
-        }
-        return true;
-      } catch (e) {
-        status = 'session';
-        return false;
-      }
-    }
-
-    function persistMeta() {
-      if (status !== 'persistent' || !rawStorage) return false;
-      try {
-        const meta = {
-          schemaVersion: SCHEMA_VERSION,
-          lastUsed: lastUsed || null
-        };
-        rawStorage.setItem(META_KEY, JSON.stringify(meta));
-        return true;
-      } catch {
-        status = 'session';
-        return false;
-      }
-    }
-
-    function updateItem(key, patch) {
-      if (key === null || key === undefined) {
-        throw new TypeError('PortalStudyState.updateItem: key is required');
-      }
-
-      const strKey = String(key);
-      if (isForbiddenKey(strKey)) {
-        return { saved: false, reason: 'forbidden_key' };
-      }
-
-      let currentItem = items.get(strKey);
-      if (!currentItem) {
-        currentItem = Object.create(null);
-        items.set(strKey, currentItem);
-      }
-
-      let hasBaseChange = false;
-      let hasReaderChange = false;
-      let hasQuizChange = false;
-
-      if (patch && typeof patch === 'object') {
-        for (const prop of Object.keys(patch)) {
-          if (isForbiddenKey(prop)) continue;
-          if (prop === 'reader') {
-            currentItem.reader = deepClone(patch.reader);
-            hasReaderChange = true;
-          } else if (prop === 'quiz') {
-            currentItem.quiz = deepClone(patch.quiz);
-            hasQuizChange = true;
-          } else {
-            currentItem[prop] = deepClone(patch[prop]);
-            hasBaseChange = true;
-          }
-        }
-      }
-
-      let allSaved = true;
-      let failReason;
-
-      if (status === 'corrupt' || status === 'unsupported-version') {
-        notifySubscribers();
-        return { saved: false, reason: status };
-      }
-
-      if (status === 'persistent' && rawStorage) {
-        // Ensure meta exists
-        persistMeta();
-
-        if (hasReaderChange) {
-          const ok = persistItemField(strKey, 'reader', currentItem.reader);
-          if (!ok) { allSaved = false; failReason = 'quota'; }
-        }
-        if (hasQuizChange) {
-          const ok = persistItemField(strKey, 'quiz', currentItem.quiz);
-          if (!ok) { allSaved = false; failReason = 'quota'; }
-        }
-        if (hasBaseChange || (!hasReaderChange && !hasQuizChange)) {
-          const baseData = Object.create(null);
-          for (const prop of Object.keys(currentItem)) {
-            if (prop !== 'reader' && prop !== 'quiz' && !isForbiddenKey(prop)) {
-              baseData[prop] = currentItem[prop];
-            }
-          }
-          const ok = persistItemField(strKey, 'base', baseData);
-          if (!ok) { allSaved = false; failReason = 'quota'; }
-        }
-      } else {
-        allSaved = false;
-        failReason = 'session';
-      }
-
-      notifySubscribers();
-      return allSaved ? { saved: true } : { saved: false, reason: failReason || 'session' };
-    }
-
-    function setLastUsed(value) {
-      if (!value || typeof value !== 'object' || !value.key || !value.actionId) {
-        return { saved: false, reason: 'invalid_last_used' };
-      }
-
-      lastUsed = {
-        key: String(value.key),
-        actionId: String(value.actionId),
-        updatedAt: String(value.updatedAt || new Date().toISOString())
-      };
-
-      if (status === 'corrupt' || status === 'unsupported-version') {
-        notifySubscribers();
-        return { saved: false, reason: status };
-      }
-
-      let saved = false;
-      if (status === 'persistent' && rawStorage) {
-        saved = persistMeta();
-      }
-
-      notifySubscribers();
-      return saved ? { saved: true } : { saved: false, reason: 'session' };
-    }
-
-    function subscribe(listener) {
-      if (typeof listener !== 'function') {
-        throw new TypeError('PortalStudyState.subscribe requires a function');
-      }
-      subscribers.add(listener);
-      return function unsubscribe() {
-        subscribers.delete(listener);
-      };
-    }
-
-    function replaceAll(candidate) {
-      if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) {
-        return { saved: false, reason: 'invalid_candidate' };
-      }
-      if (candidate.schemaVersion !== SCHEMA_VERSION) {
-        return { saved: false, reason: 'unsupported_version' };
-      }
-      if (!candidate.items || typeof candidate.items !== 'object' || Array.isArray(candidate.items)) {
-        return { saved: false, reason: 'invalid_items' };
-      }
-
-      // Snapshot storage and in-memory state for atomic rollback
-      const storageSnapshot = new Map();
-      const previousItems = new Map();
-      for (const [k, v] of items.entries()) {
-        previousItems.set(k, deepClone(v));
-      }
-      const previousLastUsed = lastUsed ? deepClone(lastUsed) : null;
-      const previousStatus = status;
-
-      if (rawStorage) {
-        try {
-          const len = rawStorage.length ?? 0;
-          for (let i = 0; i < len; i++) {
-            const k = rawStorage.key(i);
-            if (k && k.startsWith(PREFIX)) {
-              storageSnapshot.set(k, rawStorage.getItem(k));
-            }
-          }
-        } catch {
-          // If we cannot even read storage, fail without mutation
-          return { saved: false, reason: 'storage_denied' };
-        }
-      }
-
-      // Build staging map
-      const stagedWrites = new Map();
-      const candidateMeta = {
-        schemaVersion: SCHEMA_VERSION,
-        lastUsed: candidate.lastUsed ? {
-          key: String(candidate.lastUsed.key),
-          actionId: String(candidate.lastUsed.actionId),
-          updatedAt: String(candidate.lastUsed.updatedAt)
-        } : null
-      };
-      stagedWrites.set(META_KEY, JSON.stringify(candidateMeta));
-
-      for (const [key, itemVal] of Object.entries(candidate.items)) {
-        if (isForbiddenKey(key) || !itemVal || typeof itemVal !== 'object') continue;
-        const encodedKey = encodeItemKey(key);
-
-        const baseData = Object.create(null);
-        for (const prop of Object.keys(itemVal)) {
-          if (prop !== 'reader' && prop !== 'quiz' && !isForbiddenKey(prop)) {
-            baseData[prop] = itemVal[prop];
-          }
-        }
-        stagedWrites.set(`${ITEM_PREFIX}${encodedKey}:base`, JSON.stringify(baseData));
-
-        if (itemVal.reader && typeof itemVal.reader === 'object') {
-          stagedWrites.set(`${ITEM_PREFIX}${encodedKey}:reader`, JSON.stringify(itemVal.reader));
-        }
-        if (itemVal.quiz && typeof itemVal.quiz === 'object') {
-          stagedWrites.set(`${ITEM_PREFIX}${encodedKey}:quiz`, JSON.stringify(itemVal.quiz));
-        }
-      }
-
-      // Apply staged writes atomically
-      try {
-        if (!rawStorage) throw new Error('No storage');
-
-        // Write all staged keys
-        for (const [k, v] of stagedWrites.entries()) {
-          rawStorage.setItem(k, v);
-        }
-
-        // Remove any old study keys not in the staged set
-        for (const k of storageSnapshot.keys()) {
-          if (!stagedWrites.has(k)) {
-            rawStorage.removeItem(k);
-          }
-        }
-
-        // Commit in-memory
-        items.clear();
-        for (const [key, itemVal] of Object.entries(candidate.items)) {
-          if (!isForbiddenKey(key) && itemVal && typeof itemVal === 'object') {
-            items.set(key, deepClone(itemVal));
-          }
-        }
-        lastUsed = candidateMeta.lastUsed;
-        status = 'persistent';
-        notifySubscribers();
-        return { saved: true };
-      } catch (err) {
-        // Rollback storage to snapshot
-        if (rawStorage) {
-          try {
-            // Remove newly added keys
-            for (const k of stagedWrites.keys()) {
-              if (!storageSnapshot.has(k)) {
-                rawStorage.removeItem(k);
-              }
-            }
-            // Restore previous values
-            for (const [k, v] of storageSnapshot.entries()) {
-              rawStorage.setItem(k, v);
-            }
-          } catch {
-            // Best effort rollback
-          }
-        }
-
-        // In-memory state remains untouched
-        items.clear();
-        for (const [k, v] of previousItems.entries()) {
-          items.set(k, v);
-        }
-        lastUsed = previousLastUsed;
-        status = previousStatus;
-
-        return { saved: false, reason: err?.name === 'QuotaExceededError' ? 'quota' : 'denied' };
-      }
-    }
-
-    return {
-      getStatus,
-      getSnapshot,
-      getItem,
-      updateItem,
-      setLastUsed,
-      subscribe,
-      replaceAll,
-      _init: init
-    };
+    return {getSnapshot, getItem, getStatus, updateItem, setLastUsed, replaceAll, subscribe};
   }
-
-  return {
-    createStudyState,
-    SCHEMA_VERSION
-  };
+  return {createStudyState, SCHEMA_VERSION};
 });

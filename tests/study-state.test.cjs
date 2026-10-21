@@ -3,6 +3,8 @@ const assert = require('node:assert/strict');
 
 // We load the module via require or factory
 const { createStudyState } = require('../js/shared/study-state.js');
+const fs = require('node:fs');
+const vm = require('node:vm');
 
 function createMockStorage(initial = {}, options = {}) {
   const store = new Map(Object.entries(initial));
@@ -277,22 +279,19 @@ describe('PortalStudyState Unit Tests', () => {
       }
     };
 
-    const originalSetItem = storage.setItem;
-    let callCount = 0;
-    storage.setItem = (k, v) => {
-      callCount++;
-      if (callCount > 1) {
-        const err = new Error('QuotaExceededError');
-        err.name = 'QuotaExceededError';
-        throw err;
-      }
-      return originalSetItem.call(storage, k, v);
+    const persistentBefore = new Map(storage._store);
+    // A replacement now publishes once; inject failure at that atomic write.
+    storage.setItem = () => {
+      const err = new Error('QuotaExceededError');
+      err.name = 'QuotaExceededError';
+      throw err;
     };
 
     const failRes = state.replaceAll(brokenCandidate);
     assert.equal(failRes.saved, false);
     // State remains previous candidate, not broken candidate
     assert.deepEqual(state.getSnapshot(), candidate);
+    assert.deepEqual(new Map(storage._store), persistentBefore);
     assert.equal(storage.getItem('user_theme'), 'dark');
   });
 
@@ -367,5 +366,184 @@ describe('PortalStudyState Unit Tests', () => {
 
     assert.equal(state.getItem(key).manualComplete, true);
     assert.equal(state.getItem(key).reader.slideId, 1);
+  });
+});
+
+describe('Study storage acceptance regressions', () => {
+  const key = JSON.stringify(['data-structure', 'lecture', '0']);
+  const when = '2026-10-21T12:00:00Z';
+  const last = {key, actionId: 'internal-study', updatedAt: when};
+
+  function watched(storage) {
+    const listeners = [];
+    const context = {module: {exports: {}}, console, window: {localStorage: storage,
+      addEventListener(type, callback) { if (type === 'storage') listeners.push(callback); }}};
+    vm.runInNewContext(fs.readFileSync(require.resolve('../js/shared/study-state.js'), 'utf8'), context);
+    const state = context.module.exports.createStudyState({storage});
+    return {state, fire(event) { listeners.forEach(fn => fn(event)); }};
+  }
+
+  test('failed replacement preserves durable bytes and a freshly loaded last source', () => {
+    const storage = createMockStorage();
+    const state = createStudyState({storage});
+    state.updateItem(key, {manualComplete: true});
+    state.setLastUsed(last);
+    const before = new Map(storage._store);
+    const memory = state.getSnapshot();
+    const write = storage.setItem.bind(storage);
+    storage.setItem = (physical, value) => {
+      if (!physical.endsWith(':meta')) throw new Error('persistent write failure');
+      write(physical, value);
+    };
+    assert.equal(state.replaceAll({schemaVersion: 1, items: {}}).saved, false);
+    assert.deepEqual(new Map(storage._store), before);
+    assert.deepEqual(state.getSnapshot(), memory);
+    assert.deepEqual(createStudyState({storage}).getSnapshot(), memory);
+  });
+
+  test('independent base fields survive writes before cross-tab events arrive', () => {
+    const storage = createMockStorage();
+    const a = createStudyState({storage}), b = createStudyState({storage});
+    a.updateItem(key, {startedAt: when});
+    b.updateItem(key, {manualComplete: true});
+    assert.deepEqual(createStudyState({storage}).getItem(key), {startedAt: when, manualComplete: true});
+  });
+
+  test('an item write does not erase another tab latest source', () => {
+    const storage = createMockStorage();
+    const a = createStudyState({storage}), b = createStudyState({storage});
+    a.setLastUsed(last);
+    b.updateItem(key, {manualComplete: true});
+    assert.deepEqual(createStudyState({storage}).getSnapshot().lastUsed, last);
+  });
+
+  test('replacement refuses corrupt and future-version bytes without mutation', () => {
+    for (const raw of ['broken JSON', JSON.stringify({schemaVersion: 99})]) {
+      const storage = createMockStorage({'sem2_study_v1:meta': raw});
+      const state = createStudyState({storage});
+      const before = new Map(storage._store);
+      assert.equal(state.replaceAll({schemaVersion: 1, items: {}}).saved, false);
+      assert.deepEqual(new Map(storage._store), before);
+    }
+  });
+
+  test('a live newer-schema event blocks subsequent writes', () => {
+    const storage = createMockStorage();
+    const {state, fire} = watched(storage);
+    const raw = JSON.stringify({schemaVersion: 99});
+    storage.setItem('sem2_study_v1:meta', raw);
+    fire({key: 'sem2_study_v1:meta', newValue: raw});
+    assert.equal(state.getStatus(), 'unsupported-version');
+    assert.equal(state.updateItem(key, {manualComplete: true}).saved, false);
+    assert.equal(storage.getItem('sem2_study_v1:meta'), raw);
+  });
+
+  test('replacement is observed as one complete state by another tab', () => {
+    const storage = createMockStorage();
+    const a = createStudyState({storage});
+    a.updateItem(key, {manualComplete: true});
+    const before = a.getSnapshot();
+    const candidate = {schemaVersion: 1, items: {}, lastUsed: last};
+    const observations = [];
+    const write = storage.setItem.bind(storage);
+    storage.setItem = (k, v) => {write(k, v); observations.push(createStudyState({storage}).getSnapshot());};
+    assert.equal(a.replaceAll(candidate).saved, true);
+    for (const value of observations) assert.ok(JSON.stringify(value) === JSON.stringify(before) || JSON.stringify(value) === JSON.stringify(candidate), 'no partial replacement may become visible');
+  });
+
+  test('another-tab replacement removes deleted items and base fields', () => {
+    const storage = createMockStorage();
+    const a = createStudyState({storage});
+    a.updateItem(key, {startedAt: when, manualComplete: true});
+    const {state: b, fire} = watched(storage);
+    const before = new Map(storage._store);
+    a.replaceAll({schemaVersion: 1, items: {}});
+    for (const physical of new Set([...before.keys(), ...storage._store.keys()])) {
+      if (before.get(physical) !== storage.getItem(physical)) fire({key: physical, newValue: storage.getItem(physical)});
+    }
+    assert.equal(b.getItem(key), null);
+  });
+
+  test('invalid nested state and cyclic candidates fail without mutation or exceptions', () => {
+    const storage = createMockStorage();
+    const state = createStudyState({storage});
+    state.updateItem(key, {manualComplete: true});
+    const before = new Map(storage._store);
+    const cyclic = {}; cyclic.self = cyclic;
+    for (const item of [[], {reader: {slideId: -1, tab: 'invalid', updatedAt: when}}, {quiz: {version: 'v1', answers: {'1': -1}}}, {manualComplete: 'yes'}, cyclic]) {
+      let result;
+      assert.doesNotThrow(() => { result = state.replaceAll({schemaVersion: 1, items: {[key]: item}}); });
+      assert.equal(result.saved, false);
+      assert.deepEqual(new Map(storage._store), before);
+    }
+    assert.equal(state.updateItem('not-a-canonical-key', {manualComplete: true}).saved, false);
+    const sparse = {version: 'v1', answers: {}, completedVersions: new Array(2)};
+    assert.equal(state.updateItem(key, {quiz: sparse}).saved, false, 'sparse arrays must not serialize into invalid null entries');
+  });
+
+  test('a same-item write during replacement has a durable serial outcome', () => {
+    const storage = createMockStorage();
+    const a = createStudyState({storage}), b = createStudyState({storage});
+    a.updateItem(key, {manualComplete: true});
+    const original = storage.setItem.bind(storage);
+    let injected = false;
+    storage.setItem = (k, v) => {
+      original(k, v);
+      if (!injected) {injected = true; b.updateItem(key, {reader: {slideId: 3, tab: 'original', updatedAt: when}});}
+    };
+    const candidate = {schemaVersion: 1, items: {[key]: {manualComplete: false}}};
+    assert.equal(a.replaceAll(candidate).saved, true);
+    const result = createStudyState({storage}).getItem(key);
+    assert.equal(result.manualComplete, false);
+    assert.equal(result.reader?.slideId, 3, 'a write after the replacement commit survives');
+  });
+
+  test('concurrent same-field ties converge independently of storage key order', () => {
+    const entries = [
+      ['sem2_study_v1:op:a.1', {schemaVersion: 1, id: 'a.1', clock: 1, kind: 'update', key, patch: {manualComplete: true}}],
+      ['sem2_study_v1:op:b.1', {schemaVersion: 1, id: 'b.1', clock: 1, kind: 'update', key, patch: {manualComplete: false}}]
+    ];
+    for (const order of [entries, [...entries].reverse()]) {
+      const storage = createMockStorage(Object.fromEntries(order.map(([k, v]) => [k, JSON.stringify(v)])));
+      assert.equal(createStudyState({storage}).getItem(key).manualComplete, false);
+    }
+  });
+
+  test('remote durable updates do not discard local unsaved fields', () => {
+    const storage = createMockStorage();
+    const local = createStudyState({storage});
+    const write = storage.setItem.bind(storage);
+    storage.setItem = () => {throw new Error('denied');};
+    local.updateItem(key, {manualComplete: true});
+    storage.setItem = write;
+    createStudyState({storage}).updateItem(key, {startedAt: when});
+    assert.deepEqual(local.getItem(key), {startedAt: when, manualComplete: true});
+    assert.equal(local.getStatus(), 'session', 'a later storage event cannot silently mark unsaved changes as saved');
+  });
+
+  test('hidden serialization hooks and accessors cannot publish or throw', () => {
+    const candidates = [];
+    const hooked = {schemaVersion: 1, items: {}};
+    Object.defineProperty(hooked, 'toJSON', {value() { return []; }});
+    candidates.push(hooked);
+    const getter = {schemaVersion: 1};
+    Object.defineProperty(getter, 'items', {enumerable: true, get() { throw new Error('accessor executed'); }});
+    candidates.push(getter);
+    for (const candidate of candidates) {
+      const storage = createMockStorage();
+      const state = createStudyState({storage});
+      state.updateItem(key, {manualComplete: true});
+      const before = new Map(storage._store), memory = state.getSnapshot();
+      let response;
+      assert.doesNotThrow(() => {response = state.replaceAll(candidate);});
+      assert.equal(response.saved, false);
+      assert.deepEqual(new Map(storage._store), before);
+      assert.deepEqual(createStudyState({storage}).getSnapshot(), memory);
+      assert.equal(state.getStatus(), 'persistent');
+    }
+    const storage = createMockStorage(), state = createStudyState({storage});
+    const patch = {};
+    Object.defineProperty(patch, 'manualComplete', {enumerable: true, get() {throw new Error('getter');}});
+    assert.doesNotThrow(() => assert.equal(state.updateItem(key, patch).saved, false));
   });
 });

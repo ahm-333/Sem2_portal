@@ -1,96 +1,46 @@
-# دليل تسليم ومتابعة العمل (Handoff Guide) — Study 03: Versioned Study Storage
+# Study 03 completion and integration handoff — 21 October 2026
 
-هذا الدليل مخصص لصديقك/المطور الذي سيكمل العمل بعدك على **Issue #7** (`[Study 03] Add versioned study storage with failure recovery and safe multi-tab writes`) وفروع المذاكرة اللاحقة.
+Issue #7 / PR #18 is completed for review. This replaces the earlier WIP handoff; consult live GitHub status for merge/publication state.
 
----
+## Result
 
-## 1. نظرة عامة والفرع الحالي (Current Context)
+- The synchronous PortalStudyState API and logical schema remain available; new writes publish one validated immutable operation atomically under sem2_study_v1:op:.
+- Read-only legacy fields remain compatible. Failed replacement preserves persistent bytes and current state; deterministic replay merges independent tabs without stale base/lastUsed overwrites.
+- Corrupt/future-schema inputs are protected at load, event and write boundaries. Invalid nested values, cycles, accessors and hidden serialization hooks cannot publish a corrupt operation.
+- Session-only edits remain usable and explicitly disappear on reload. Save warnings remain visible and accessible inside active reader/quiz dialogs, without weakening focus/background isolation.
+- A positional mobile CSS regression was repaired with a semantic heading selector. Existing typography, hover behavior, creator cards, schedule styling and real scientific/source content are retained.
+- Cumulative Study 02 defects found during final review were fixed: practical row keys, real TA recovery hooks, and canonical/catalog URL validation. These complete existing link behavior, not later study features.
 
-- **الفرع الحالي (Current Branch):** `study-03-storage`
-- **الفرع الأساسي (Base Branch):** `study-02-item-links`
-- **الهدف (Objective):** توفير طبقة تخزين ومزامنة موحدة وآمنة لحالة المذاكرة (`PortalStudyState`) عبر التبويبات المتعددة والتعامل مع حالات الفشل (انقطاع التخزين، امتلاء المساحة، تلف البيانات، الإصدارات غير المتوافقة) دون التأثير على بيانات المستخدم الأخرى (مثل الثيم والمجموعة).
+## Verification and acceptance
 
----
+| Requirement | Evidence |
+|---|---|
+| Read/write/reload, denied/quota, corrupt/future schema, unsafe input | tests/study-state.test.cjs and tests/study-features/storage.cjs |
+| Different items, base siblings, reader/quiz, lastUsed, same-field conflicts | deterministic Node interleavings plus real two-page browser cases |
+| Atomic replacement / concurrent update / deletion / failure | persistent-byte, fresh-instance and second-page assertions; no best-effort rollback |
+| Accessible warning inside study dialogs | actual reader/quiz quota-failure browser test and warning screenshots |
+| Mobile primary action and hover states | all original 45 A1 scenarios, including four initially failed cases |
+| Existing content/profile/media behavior | original 23 browser scenarios and protected scientific/content hashes |
+| Cumulative source-link recovery | seven link browser scenarios with actual clicks and target visibility |
 
-## 2. ما تم إنجازه واختباره بنجاح (What Was Done & Tested)
+The complete verification passed build, syntax, data, lint, **64 Node tests, 23 original browser scenarios, 45 A1 scenarios and 14 study-feature scenarios**. The same 14 feature scenarios also passed in installed Edge. A fresh independent review rechecked the final fixes with no remaining merge blockers.
 
-### أ. ملف حالة المذاكرة الأساسي (`js/shared/study-state.js`)
-- تم إنشاء كائن عام `window.PortalStudyState` (ودالة المصنع `createStudyState({ storage })` لبيئات Node.js واختبارات الوحدة).
-- **التصميم الفيزيائي الخالي من التعارض (Collision-Free Physical Storage):**
-  - مساحة الأسماء: `sem2_study_v1:`
-  - `sem2_study_v1:meta`: يحتوي على `{ schemaVersion: 1, lastUsed: { key, actionId, updatedAt } }`
-  - `sem2_study_v1:item:<encodedKey>:base`: يحتوي على الخصائص الأساسية (`startedAt`, `manualComplete`)
-  - `sem2_study_v1:item:<encodedKey>:reader`: يحتوي على تقدم القارئ (`slideId`, `tab`, `updatedAt`)
-  - `sem2_study_v1:item:<encodedKey>:quiz`: يحتوي على إجابات ونتائج الكويز (`version`, `answers`, `activeQuestionId`, إلخ)
-  - تقسيم الحقول يمنع التبويبات المفتوحة في نفس الوقت من مسح بيانات بعضها البعض (مثلاً تبويب يحل كويز وتبويب يقرأ سلايد لنفس المحتوى).
-- **التعامل مع حالات التراجع والفشل (Degradation & Failure Modes):**
-  - `persistent`: التخزين المحلي متاح ويعمل بشكل طبيعي.
-  - `session`: التخزين المحلي محظور أو ممتلئ (Quota Exceeded). يستمر التطبيق في الحفظ في الذاكرة لتلك الجلسة دون أي انهيار.
-  - `corrupt`: تم العثور على بيانات غير صالحة برمجياً (Malformed JSON)؛ يتم إيقاف الكتابة لحماية البيانات وعدم الكتابة فوقها بصمت.
-  - `unsupported-version`: إصدار البيانات في التخزين أحدث من الإصدار المدعوم؛ يتم إيقاف الكتابة لحمايتها.
-- **العمليات الذرية والتراجع (Atomic Replace & Rollback):**
-  - دالة `replaceAll(candidate)` تفحص البيانات أولاً، وتأخذ نسخة احتياطية من التخزين الحالي، وتكتب كل المفاتيح، وفي حال حدوث أي خطأ أو امتلاء مساحة تتراجع فورياً وتعيد الحالة الأصلية.
-- **الحماية من Prototype Pollution:**
-  - يتم حجب المفاتيح الخطرة (`__proto__`, `constructor`, `prototype`) تلقائياً.
-- **الاشتراكات والمزامنة:**
-  - دالة `subscribe(listener)` تستقبل التحديثات وترسل `{ snapshot, status }` مع إرجاع دالة إلغاء اشتراك (`unsubscribe`).
-  - الاستماع لأحداث `storage` للمزامنة الفورية بين نوافذ المتصفح المختلفة دون الحاجة لإعادة تحميل الصفحة.
+[Full verification](study03-evidence/full-verify.txt) · [acceptance record](study03-evidence/acceptance.json) · [Edge results](study03-evidence/edge-features.txt).
 
-### ب. مكون التنبيه بالواجهة (`js/study-save-status.js`)
-- مكون يراقب `PortalStudyState` ويظهر رسائل تنبيهية باللغة العربية داخل العنصر `#study-save-status`:
-  - تنبيه الجلسة المؤقتة عند امتلاء التخزين أو حظره.
-  - تنبيه تلف البيانات أو عدم توافق الإصدار لحماية بيانات الطالب.
-  - متوافق مع قارئات الشاشة (`role="status"`, `aria-live="polite"`).
+## Continue development
 
-### ج. توثيق العقود البرمجية (`docs/STUDY-FEATURE-CONTRACTS.md`)
-- توثيق تفصيلي كامل لواجهات `PortalStudyState`، مخطط البيانات، المفاتيح الفيزيائية، وحالات الاسترجاع.
+Read docs/STUDY-FEATURE-CONTRACTS.md before Issue #8 or #9. Consumers use the state API; do not write physical storage keys directly or reimplement conflict handling. No persisted quiz consumer, reader resume, progress dashboard or backup UI was added in this issue.
 
-### د. الاختبارات المؤكدة (Tests & Verification)
-1. **اختبارات الوحدة (`tests/study-state.test.cjs`):**
-   - 15 اختبار وحدة مفصل تغطي: القراءة والكتابة العادية، التحديث الجزئي، عدم مسح الحقول الشقيقة (sibling fields)، حظر التخزين، امتلاء المساحة، تلف البيانات، الإصدارات غير المدعومة، الحماية من Prototype Pollution، تزامن تبويبين لنفس العنصر أو عناصر مختلفة، التراجع الذري لـ `replaceAll`، ودقة الاشتراكات.
-   - جميع الاختبارات (52/52) في المشروع تعمل وتنجح.
-2. **سيناريوهات المتصفح (`tests/study-features/storage.cjs`):**
-   - 3 سيناريوهات متصفح تفاعلية: الحفظ العادي، التراجع إلى وضع الجلسة وإظهار التنبيه بالعربية، وتزامن التبويبات الفوري.
-   - جميع سيناريوهات المذاكرة 10/10 في `npm run test:study` تنجح تماماً.
+The journal deliberately has no automatic compaction. Storage quota switches to the documented session overlay. Explicit restoration over protected corrupt/newer bytes requires a separately reviewed recovery contract; the default replaceAll refuses it. Future backup work must not bypass that guard implicitly.
 
----
+The cumulative main integration preserves the collaborator's commits. The unrelated collaborator/motion-engine-wip branch is excluded. Main is the existing Pages source, so verify publication and the deployed subpath after merge.
 
-## 3. ما تبقى لإكمال الـ Issue وتسليمه (Remaining Tasks & Next Steps)
+## Review captures
 
-إذا أردت أنت أو صديقك إغلاق الـ Issue #7 بشكل كامل، إليكما الخطوات المتبقية بدقة:
+![Current home](study03-evidence/home-1440.png)
 
-1. **فحص الـ Acceptance Checks في Issue #7:**
-   - مراجعة بنود الـ Acceptance criteria في نص الـ Issue والتأكد من تغطية كافة المتطلبات.
-   - التحقق من تفعيل التنبيهات في صفحات `index.html` و `subject.html`.
-2. **ملاحظة بخصوص فحص `tests/a1-browser.cjs`:**
-   - هناك سيناريو اختباري واحد في رحلة A1 القديمة (`a1-journey-mobile-primary-material-reachable`) يفحص أن زر المحاضرة الأولى على شاشة موبايل (عرض 360px وارتفاع 900px) يقع بالكامل قبل 900px عند استبدال خط 'Segoe UI' بخط 'Arial'. في بعض بيئات ويندوز يمتد إلى ~916px بسبب تباين مقاييس خط Arial.
-   - يُنصح بالتأكد من عدم وجود هامش رأسي غير ضروري أو ضبط الحاوية إذا لزم الأمر حتى ينجح `npm run verify` بالكامل.
-3. **الانتقال إلى المراحل التالية في خريطة الطريق (Roadmap):**
-   - **Issue #8 (Study 04):** ربط كويزات المذاكرة بـ `PortalStudyState` لحفظ المحاولات، حساب الدرجات، ومراجعة الأسئلة الخاطئة.
-   - **Issue #9 (Study 05):** استئناف القارئ وحفظ آخر سلايد تم فتحه.
-   - **Issue #10 (Study 06):** احتساب تقدم إكمال المحاضرات والسكاشن بناءً على حالة المذاكرة والمجموعة المحددة.
+![Course on mobile](study03-evidence/course-360.png)
 
----
+![Reader save failure](study03-evidence/reader-warning-360.png)
 
-## 4. أهم الأوامر للتشغيل والاختبار (Commands Cheat Sheet)
-
-```bash
-# تشغيل اختبارات الوحدة الخاصة بالتخزين وحالة المذاكرة:
-node --test tests/study-state.test.cjs tests/profile.test.cjs
-
-# تشغيل سيناريوهات المتصفح لميزات المذاكرة:
-npm run test:study
-
-# تشغيل الفحص اللغوي والتنسيقي:
-npm run lint
-
-# فحص سلامة بناء الجمل والبيانات:
-npm run check
-npm run validate
-
-# تشغيل دورة الفحص الشاملة للمشروع بالكامل:
-npm run verify
-```
-
----
-*تم إعداد هذا الملف كمرجع لضمان تسليم سلس وسريع للفريق.*
+Captures use isolated browser contexts; the quota failure is intentional test injection, not a failure report for real student data. See acceptance.json for actual verification limits.

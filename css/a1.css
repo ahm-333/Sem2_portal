@@ -238,7 +238,7 @@ body.a1 .processor-intro * {transition:none}
   body.a1 #subject-title-en {font-size:28px;overflow-wrap:anywhere}
   body.a1 #main-content {padding-top:21px;padding-bottom:90px}
   body.a1 #subject-icon-box {width:44px;height:44px;flex-shrink:0}
-  body.a1 #main-content>div:nth-child(2) {padding:18px}
+  body.a1 .a1-course-heading-panel {padding:18px}
   body.a1 .track-btn {padding:13px;gap:12px}
   body.a1 .track-btn>div:first-child {width:36px;height:36px}
   body.a1 :is(#pdf-modal,#video-modal,#lecture-study-modal,#student-profile-modal)>.glass-panel {border-radius:0}
