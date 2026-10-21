@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>منصة مواد الترم الثاني | قسم الذكاء الاصطناعي</title>
+  <title>Study Hub | مصادر المواد الدراسية</title>
   
-  <!-- خطوط جوجل (Cairo & JetBrains Mono) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Local A1 font; no required font CDN. -->
+  <link rel="stylesheet" href="css/fonts/fonts.css">
   
   <!-- Prebuilt assets keep layout and icons available without a CDN. -->
   <link rel="stylesheet" href="css/tailwind.css">
@@ -16,102 +14,43 @@
 
   <!-- التنسيقات المخصصة والأوضاع الثلاثة -->
   <link rel="stylesheet" href="css/style.css?v=1792424832344">
+  <link rel="stylesheet" href="css/processor.css">
+  <link rel="stylesheet" href="css/a1.css">
+  <link rel="stylesheet" href="css/a1-journey.css">
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="a1 min-h-screen flex flex-col" data-page="home">
+  <a class="a1-skip" href="#main-content">تخطّي إلى المحتوى</a>
 
   <!-- ========================================== -->
   <!-- 1. شريط التنقل العلوي (Navbar) -->
   <!-- ========================================== -->
-  <header class="sticky top-0 z-50 glass-header border-b">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+  <header class="a1-navbar glass-header" aria-label="التنقل الرئيسي">
+    <div class="a1-header-inner">
+      <a href="index.html" class="a1-brand" aria-label="الرئيسية · Study Hub"><span class="a1-brand-mark"></span><span><strong lang="en"><bdi>Study Hub</bdi></strong><small>موادك ومصادرك، في مكان واحد.</small></span></a>
+      <nav class="a1-desktop-nav" aria-label="أقسام الرئيسية"><a href="#courses-section">المواد</a><a href="#schedule-section">جدول الجامعة</a></nav>
       
-      <!-- اللوجو والعنوان -->
-      <a href="index.html" class="flex items-center gap-3 group">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform icon-box-modern">
-          <i data-lucide="sparkles" class="w-6 h-6"></i>
-        </div>
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="text-xl font-bold tracking-tight text-[var(--text-main)]">بوابة الترم الثاني</span>
-            <span class="text-xs px-2 py-0.5 rounded-full font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">AI & FCI</span>
-          </div>
-          <p class="text-xs text-[var(--text-muted)]">كلية الحاسبات والمعلومات • قسم الذكاء الاصطناعي</p>
-        </div>
-      </a>
+      <div class="a1-header-actions">
+        <button data-open-profile-modal class="a1-profile" title="تغيير مجموعتك أو سكشنك"><span class="student-profile-badge"><i data-lucide="user" aria-hidden="true"></i><span>مجموعتي</span></span><i data-lucide="chevron-down" aria-hidden="true"></i></button>
 
-      <!-- شارة مطور المنصة Eng. Ahmed Amir -->
-      <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border border-indigo-500/25 bg-indigo-500/5 text-xs shadow-sm creator-pill">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="text-[var(--text-dim)] font-medium">Developed by</span>
-        <span class="creator-name-gradient">Eng. Ahmed Amir</span>
+        <div class="a1-theme-options" role="group" aria-label="وضع العرض">
+          <button data-theme-btn="dark" title="الوضع الليلي" aria-label="الوضع الليلي"><i data-lucide="moon" aria-hidden="true"></i></button>
+          <button data-theme-btn="light" title="الوضع النهاري" aria-label="الوضع النهاري"><i data-lucide="sun" aria-hidden="true"></i></button>
+          <button data-theme-btn="reading" title="وضع القراءة" aria-label="وضع القراءة"><i data-lucide="book-open" aria-hidden="true"></i></button>
+        </div>
+        <button id="cycle-theme-btn" class="a1-theme-cycle" title="تبديل وضع العرض: ليلي، نهاري، قراءة" aria-label="تبديل وضع العرض: ليلي، نهاري، قراءة"><i data-lucide="sun" aria-hidden="true"></i></button>
       </div>
-
-      <!-- أزرار اختيار المجموعة والسكشن والأوضاع البصرية -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        <!-- زر تحديد وتغيير المجموعة والسكشن -->
-        <button 
-          data-open-profile-modal 
-          class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl glass-panel border flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-indigo-400 hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all shadow-sm"
-          title="اضغط لتغيير مجموعتك أو سكشنك"
-        >
-          <span class="student-profile-badge">
-            <i data-lucide="user" class="w-3.5 h-3.5 text-cyan-400"></i>
-            <span>تحديد مجموعتي</span>
-          </span>
-          <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-[var(--text-dim)]"></i>
-        </button>
-
-
-        <div class="p-1 rounded-xl glass-panel flex items-center gap-1 border">
-          <button data-theme-btn="dark" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all" title="الوضع الليلي">
-            <i data-lucide="moon" class="w-4 h-4"></i>
-            <span class="hidden md:inline">ليلي</span>
-          </button>
-          
-          <button data-theme-btn="light" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all" title="الوضع النهاري">
-            <i data-lucide="sun" class="w-4 h-4"></i>
-            <span class="hidden md:inline">نهاري</span>
-          </button>
-          
-          <button data-theme-btn="reading" class="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-all" title="وضع القراءة الهادئ (Sepia)">
-            <i data-lucide="book-open" class="w-4 h-4"></i>
-            <span class="hidden md:inline">قراءة</span>
-          </button>
-        </div>
-      </div>
-
     </div>
   </header>
 
   <!-- ========================================== -->
   <!-- 2. القسم الترحيبي (Hero Section) -->
   <!-- ========================================== -->
-  <main class="flex-grow">
-    <section class="relative pt-12 pb-8 overflow-hidden">
-      <!-- خلفية جمالية خفيفة -->
-      <div class="absolute inset-0 -z-10 flex items-center justify-center opacity-30 pointer-events-none">
-        <div class="w-[600px] h-[300px] bg-gradient-to-tr from-indigo-600/30 via-cyan-500/20 to-purple-500/30 blur-[100px] rounded-full"></div>
-      </div>
-
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-4 glass-panel text-[var(--text-muted)] border border-indigo-500/20 font-mono shadow-sm">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Semester 2 Academic Hub • Faculty of AI 2026</span>
-          <span class="text-[var(--text-dim)] hidden sm:inline">•</span>
-          <span class="hidden sm:inline">إعداد وبرمجة: <strong class="creator-name-gradient">Eng. Ahmed Amir (أحمد أمير)</strong></span>
-        </div>
-
-        <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-4 text-[var(--text-main)] leading-tight">
-          All Semester Courses & <span class="text-gradient">Dedicated Interactive Hubs</span> in One Place
-        </h1>
-        
-        <p class="max-w-2xl mx-auto text-sm sm:text-base text-[var(--text-muted)] mb-8 leading-relaxed">
-          The unified academic portal for Artificial Intelligence students — bringing together interactive explanation websites, lecture slides, practical lab sheets, assignments, and past exams.
-        </p>
-
+  <main class="flex-grow" id="main-content" tabindex="-1">
+    <section class="a1-welcome">
+      <h1>اختار مادتك وابدأ.</h1><p>المحاضرات والمصادر المناسبة لمجموعتك، من غير لف كتير.</p>
+      <div class="a1-summary"><span><b id="stat-courses">6</b> مواد</span><span><b id="stat-paths">2</b> مسار لكل مادة</span><span><b id="stat-groups" dir="ltr">B1–B3</b> · 12 سكشن</span></div>
         <!-- صندوق البحث الفوري والتصفية -->
-        <div class="max-w-xl mx-auto mb-10">
+        <div class="a1-search-area">
           <div class="relative glass-panel rounded-2xl p-1.5 border flex items-center shadow-lg">
             <div class="pr-3 pl-2 text-[var(--text-muted)]">
               <i data-lucide="search" class="w-5 h-5"></i>
@@ -119,10 +58,10 @@
             <input 
               type="text" 
               id="search-input" 
-              placeholder="Search courses, code (CS221), or topic / ابحث عن مادة أو كود..." 
+              placeholder="ابحث عن مادة، كود، أو عنوان محاضرة…" aria-label="البحث في المواد والمحاضرات"
               class="w-full bg-transparent px-2 py-2.5 text-sm sm:text-base text-[var(--text-main)] placeholder-[var(--text-dim)] focus:outline-none"
             >
-            <button id="clear-search" class="hidden px-2.5 text-[var(--text-muted)] hover:text-[var(--text-main)]">
+            <button id="clear-search" aria-label="مسح البحث" class="hidden px-2.5 text-[var(--text-muted)] hover:text-[var(--text-main)]">
               <i data-lucide="x" class="w-4 h-4"></i>
             </button>
           </div>
@@ -135,39 +74,15 @@
           </div>
         </div>
 
-        <!-- إحصائيات سريعة للترم -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12">
-          <div class="glass-panel p-4 rounded-2xl border text-center">
-            <div class="text-2xl sm:text-3xl font-black text-indigo-400 mb-1" id="stat-courses">6</div>
-            <div class="text-xs text-[var(--text-muted)]">مواد دراسية معتمدة</div>
-          </div>
-          <div class="glass-panel p-4 rounded-2xl border text-center">
-            <div class="text-2xl sm:text-3xl font-black text-cyan-400 mb-1" id="stat-paths">2</div>
-            <div class="text-xs text-[var(--text-muted)]">مسار لكل مادة (محاضرة / سكشن)</div>
-          </div>
-          <div class="glass-panel p-4 rounded-2xl border text-center">
-            <div class="text-2xl sm:text-3xl font-black text-emerald-400 mb-1" id="stat-groups">B1-B3</div>
-            <div class="text-xs text-[var(--text-muted)]">3 مجموعات و 12 سكشن</div>
-          </div>
-          <div class="glass-panel p-4 rounded-2xl border text-center">
-            <div class="text-2xl sm:text-3xl font-black text-amber-400 mb-1 flex items-center justify-center gap-1.5 font-mono">
-              <i data-lucide="sparkles" class="w-6 h-6"></i>
-              <span>AI</span>
-            </div>
-            <div class="text-xs text-[var(--text-muted)]">دفعة الذكاء الاصطناعي 2026</div>
-          </div>
-        </div>
-
-      </div>
     </section>
 
     <!-- ========================================== -->
     <!-- 3. شبكة بطاقات المواد (Course Cards) -->
     <!-- ========================================== -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <section id="courses-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
       <div class="flex items-center justify-between mb-6">
         <div>
-          <h2 class="text-xl sm:text-2xl font-bold text-[var(--text-main)]">مواد الترم الثاني المقررة</h2>
+          <h2 class="text-xl sm:text-2xl font-bold text-[var(--text-main)]">المواد الدراسية</h2>
           <p class="text-xs sm:text-sm text-[var(--text-muted)]">اختر المادة لتصفح موقع الشرح الخاص بها وكافة ملفات المحاضرات والسكاشن</p>
         </div>
         <span class="text-xs px-3 py-1 rounded-full border glass-panel text-[var(--text-muted)] font-mono" id="results-count">
@@ -193,7 +108,7 @@
     <!-- ========================================== -->
     <!-- 4. قسم جدول المواعيد الأسبوعي المخصص للطالب -->
     <!-- ========================================== -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <section id="schedule-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
       <div class="glass-panel rounded-3xl p-6 sm:p-8 border relative overflow-hidden shadow-xl">
         
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border-subtle)]">
@@ -256,7 +171,7 @@
       <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)]">
         <div class="flex items-center gap-2">
           <i data-lucide="terminal" class="w-4 h-4 text-indigo-400"></i>
-          <span>بوابة مواد الترم الثاني • قسم الذكاء الاصطناعي - جامعة الزقازيق 2026</span>
+          <span><bdi lang="en">Study Hub</bdi> • قسم الذكاء الاصطناعي - جامعة الزقازيق 2026</span>
         </div>
         <div class="flex items-center gap-1.5 text-[var(--text-dim)]">
           <span>صُنعت بكل إتقان</span>
@@ -268,6 +183,7 @@
     </div>
   </footer>
 
+  <nav class="a1-mobile-nav" aria-label="أقسام الرئيسية"><a href="#courses-section"><i data-lucide="grid-2x2" aria-hidden="true"></i>المواد</a><a href="#schedule-section"><i data-lucide="calendar-days" aria-hidden="true"></i>جدول الجامعة</a></nav>
   <!-- ملفات الجافاسكربت -->
   <script src="js/shared/storage.js"></script>
   <script src="js/shared/dialog.js"></script>
@@ -276,7 +192,11 @@
   <script src="js/theme.js?v=1792424832344"></script>
   <script src="js/courses-data.js?v=1792424832344"></script>
   <script src="js/schedule-data.js?v=1792424832344"></script>
+  <script src="js/a1-identity.js"></script>
+  <script src="js/a1-ui.js"></script>
+  <script src="js/a1-cursor.js"></script>
   <script src="js/profile-modal.js?v=1792424832344"></script>
   <script src="js/app.js?v=1792424832344"></script>
+  <script src="js/a1-journey.js"></script>
 </body>
 </html>

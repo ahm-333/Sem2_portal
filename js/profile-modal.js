@@ -158,7 +158,7 @@
         <span class="inline-flex items-center gap-1.5">
           <i data-lucide="user" class="w-3.5 h-3.5 text-cyan-400"></i>
           <span>مجموعتي: <strong data-profile-group></strong></span>
-          <span class="opacity-40">•</span>
+          <span class="opacity-40" aria-hidden="true">•</span>
           <span>سكشن <strong data-profile-section></strong></span>
         </span>
       `;
@@ -229,7 +229,9 @@
 
     // إذا كانت الزيارة الأولى للطالب، تفتح النافذة تلقائياً لترحيبه وتمكينه من الاختيار
     if (!window.PortalStorage.getItem(FIRST_VISIT_FLAG)) {
-      welcomeTimer = setTimeout(openModal, 600);
+      const welcome = () => { welcomeTimer = setTimeout(openModal, 600); };
+      if (window.PortalIntro?.isActive()) window.addEventListener("portal:intro-end", welcome, {once: true});
+      else welcome();
     }
   });
 

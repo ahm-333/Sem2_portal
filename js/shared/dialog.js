@@ -65,6 +65,8 @@
     } else if (event.key === 'Tab') {
       const items = controls(top.element);
       const index = items.indexOf(document.activeElement);
+    // Programmatic heading/article focus inside the dialog is a valid native Tab starting point.
+    if (index === -1 && document.activeElement !== top.element && top.element.contains(document.activeElement)) return;
       if (!items.length || (event.shiftKey && index <= 0) || (!event.shiftKey && (index < 0 || index === items.length - 1))) {
         event.preventDefault();
         const next = event.shiftKey ? items.at(-1) : items[0];

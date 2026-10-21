@@ -1,0 +1,15 @@
+{
+  "browser": "Microsoft Edge",
+  "results": [
+    {
+      "width": 1440,
+      "passed": true,
+      "journey": "course -> source family -> course switch -> real reader -> keyboard -> one-question quiz"
+    },
+    {
+      "width": 360,
+      "passed": true,
+      "journey": "course -> source family -> course switch -> real reader -> keyboard -> one-question quiz"
+    }
+  ]
+}

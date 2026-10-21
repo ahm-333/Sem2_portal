@@ -15,6 +15,21 @@
 
     let userAnswers = {};
     let score = 0;
+    let activeIndex = 0;
+    function selectQuestion(index, focus = false) {
+      activeIndex = Math.max(0, Math.min(questions.length - 1, index));
+      const id = questions[activeIndex].id;
+      studyFullQuizView.querySelectorAll('[data-qid].glass-panel').forEach(card => { card.hidden = Number(card.dataset.qid) !== id; });
+      studyFullQuizView.querySelectorAll('.q-map-pill').forEach(button => {
+        const active = button.dataset.jumpQ === 'full-q-' + id;
+        if (active) button.setAttribute('aria-current', 'step'); else button.removeAttribute('aria-current');
+      });
+      studyFullQuizView.querySelector('[data-quiz-position]').textContent = `السؤال ${activeIndex + 1} من ${questions.length}`;
+      studyFullQuizView.querySelector('[data-quiz-step="prev"]').disabled = activeIndex === 0;
+      studyFullQuizView.querySelector('[data-quiz-step="next"]').disabled = activeIndex === questions.length - 1;
+      studyFullQuizView.scrollTop = 0;
+      if (focus) { const card = document.getElementById('full-q-' + id); card.tabIndex = -1; card.focus({preventScroll: true}); }
+    }
 
     function renderQuestion(q) {
       const answered = userAnswers[q.id] !== undefined;
@@ -94,70 +109,21 @@
     function buildQuizHtml() {
       const answeredCount = Object.keys(userAnswers).length;
       return `
-        <div class="max-w-4xl mx-auto space-y-6">
-          
-          <!-- بطاقة رأس الكويز الشامل وعداد النتيجة -->
-          <div class="glass-panel p-5 sm:p-6 rounded-3xl border border-amber-500/30 bg-gradient-to-r from-amber-500/5 via-indigo-500/5 to-cyan-500/5 shadow-xl">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center font-bold shadow-lg shadow-amber-500/25 flex-shrink-0 icon-box-modern">
-                  <i data-lucide="award" class="w-6 h-6"></i>
-                </div>
-                <div>
-                  <h3 class="text-base sm:text-lg font-black text-[var(--text-main)] flex flex-wrap items-center gap-2">
-                    <span>اختبار التقييم الشامل للمحاضرة كاملة</span>
-                    <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-500 dark:text-amber-300 font-mono font-bold">${questions.length} سؤال امتحاني</span>
-                  </h3>
-                  <p class="text-xs text-[var(--text-muted)] mt-1">أسئلة اختيار من متعدد (MCQ) باللغة الإنجليزية من واقع امتحانات وسلايدات د. محمد ماهر مع تفسير فوري بالعامية ومصطلحات المادة</p>
-                </div>
+        <div class="a1-quiz-layout">
+          <aside class="a1-quiz-context">
+            <h3>اختبار المحاضرة</h3>
+            <div class="a1-quiz-score"><span>الدرجة الحالية</span><bdi id="full-quiz-score-val">${score} / ${questions.length}</bdi><button id="full-quiz-reset-btn" type="button" class="glass-panel" title="إعادة الاختبار من البداية">إعادة الاختبار</button></div>
+            <span id="full-quiz-answered-count">${answeredCount} من ${questions.length} تم حله</span>
+            <details class="a1-quiz-map" ${window.matchMedia('(min-width:761px)').matches ? 'open' : ''}>
+              <summary>خريطة الأسئلة</summary><div class="a1-question-map">
+              ${questions.map(q => `<button type="button" data-jump-q="full-q-${q.id}" class="q-map-pill glass-panel">${q.id}</button>`).join('')}
               </div>
-
-              <!-- عداد النتيجة الفوري وزر الإعادة -->
-              <div class="flex items-center gap-3 self-end sm:self-auto flex-shrink-0">
-                <div class="glass-panel px-4 py-2 rounded-2xl border border-[var(--border-subtle)] text-center bg-[var(--bg-surface)]">
-                  <span class="text-[10px] text-[var(--text-dim)] font-bold block">الدرجة الحالية</span>
-                  <span id="full-quiz-score-val" class="text-lg font-black text-amber-500 font-mono">${score} / ${questions.length}</span>
-                </div>
-                <button id="full-quiz-reset-btn" type="button" class="px-3.5 py-2.5 rounded-xl glass-panel border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-muted)] hover:text-rose-500 hover:border-rose-500/30 transition-all flex items-center gap-1.5 cursor-pointer" title="إعادة الاختبار من البداية">
-                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                  <span>إعادة</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- شريط الأسئلة السريع للقفز -->
-            <div class="mt-5 pt-4 border-t border-[var(--border-subtle)]">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[11px] font-bold text-[var(--text-muted)]">خريطة الأسئلة (اضغط للقفز لأي سؤال):</span>
-                <span id="full-quiz-answered-count" class="text-[10px] font-mono font-bold text-[var(--text-dim)]">${answeredCount} من ${questions.length} تم حله</span>
-              </div>
-              <div class="flex items-center gap-1.5 flex-wrap">
-                ${questions.map((q) => {
-                  let pillStyle = "glass-panel text-[var(--text-muted)] hover:text-[var(--text-main)] border-[var(--border-subtle)]";
-                  if (userAnswers[q.id] !== undefined) {
-                    pillStyle = userAnswers[q.id] === q.correct 
-                      ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border-emerald-500/40 font-black"
-                      : "bg-rose-500/20 text-rose-600 dark:text-rose-300 border-rose-500/40 font-black";
-                  }
-                  return `
-                    <button 
-                      type="button" 
-                      data-jump-q="full-q-${q.id}" 
-                      class="q-map-pill w-8 h-8 rounded-xl text-xs font-mono font-bold border transition-all flex items-center justify-center cursor-pointer ${pillStyle}"
-                    >
-                      ${q.id}
-                    </button>
-                  `;
-                }).join("")}
-              </div>
-            </div>
-          </div>
-
-          <!-- قائمة الأسئلة -->
-          <div class="space-y-6">
+            </details>
+            <p class="a1-quiz-note">اختار إجابتك، وشوف تفسيرها. تقدر تتنقل بين الأسئلة وتراجع إجاباتك في الجلسة الحالية.</p>
+          </aside>
+          <section class="a1-quiz-main">
             ${questions.map(renderQuestion).join("")}
-          </div>
-
+            <div class="a1-quiz-pagination"><button type="button" data-quiz-step="prev">السابق</button><span data-quiz-position role="status"></span><button type="button" data-quiz-step="next">السؤال التالي</button></div>
           <!-- بطاقة التقييم النهائي للكويز -->
           <div id="full-quiz-summary-card" class="glass-panel p-6 sm:p-8 rounded-3xl border border-indigo-500/30 text-center space-y-4 bg-gradient-to-b from-indigo-500/5 to-purple-500/10 ${
             answeredCount === questions.length ? "" : "hidden"
@@ -179,6 +145,7 @@
             </p>
           </div>
 
+          </section>
         </div>
       `;
     }
@@ -208,21 +175,29 @@
         const card = document.getElementById(`full-q-${qid}`);
         card.setAttribute("tabindex", "-1");
         card.focus({preventScroll:true});
+        selectQuestion(activeIndex);
         window.PortalUI.icons(card);
         return;
       }
       if (event.target.closest("#full-quiz-reset-btn")) {
         userAnswers = {};
-        score = 0;
+        score = 0; activeIndex = 0;
         studyFullQuizView.innerHTML = buildQuizHtml();
         studyFullQuizView.scrollTop = 0;
+        selectQuestion(0, true);
         window.PortalUI.icons(studyFullQuizView);
         return;
       }
+      const step = event.target.closest('[data-quiz-step]');
+      if (step) { selectQuestion(activeIndex + (step.dataset.quizStep === 'next' ? 1 : -1), true); return; }
       const jump = event.target.closest(".q-map-pill");
-      if (jump) document.getElementById(jump.dataset.jumpQ)?.scrollIntoView({behavior:"smooth",block:"start"});
+      if (jump) {
+        selectQuestion(questions.findIndex(q => 'full-q-' + q.id === jump.dataset.jumpQ), true);
+        if (window.matchMedia('(max-width:760px)').matches) studyFullQuizView.querySelector('.a1-quiz-map').open = false;
+      }
     };
     studyFullQuizView.innerHTML = buildQuizHtml();
+    selectQuestion(0);
     window.PortalUI.icons(studyFullQuizView);
   }
 

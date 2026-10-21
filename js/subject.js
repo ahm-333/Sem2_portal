@@ -39,41 +39,36 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  const display = window.PortalPresentation.course(course);
+
   // 2. تحديث عنوان الصفحة
-  document.title = `${course.name} (${course.arabicName}) | بوابة الترم الثاني`;
+  document.title = `${display.name} (${course.arabicName}) | Study Hub`;
 
   // 3. ملء القائمة المنسدلة للانتقال السريع
   const quickSelect = document.getElementById("quick-course-select");
   if (quickSelect) {
     quickSelect.innerHTML = window.COURSES_DATA.map(
-      (c) => `<option value="${c.id}" ${c.id === course.id ? "selected" : ""}>${c.name} - ${c.code}</option>`
+      (c) => `<option value="${c.id}" ${c.id === course.id ? "selected" : ""}>${window.PortalPresentation.course(c).name} - ${c.code}</option>`
     ).join("");
 
     quickSelect.addEventListener("change", function () {
-      window.location.href = `subject.html?id=${this.value}&track=${activeTrack}`;
+      const kind = document.body.dataset.resourceKind;
+      window.location.href = `subject.html?id=${this.value}&track=${activeTrack}${kind ? '&kind=' + encodeURIComponent(kind) : ''}`;
     });
   }
 
   // 4. تعبئة بيانات المادة الثابتة
-  document.getElementById("nav-subject-name").textContent = course.name;
+  document.getElementById("nav-subject-name").textContent = display.name;
   document.getElementById("nav-subject-code").textContent = `${course.code} • ${course.arabicName}`;
-  document.getElementById("crumb-subject-name").textContent = course.name;
+  document.getElementById("crumb-subject-name").textContent = display.name;
 
-  document.getElementById("subject-title-en").textContent = course.name;
+  document.getElementById("subject-title-en").textContent = display.name;
   document.getElementById("subject-title-ar").textContent = course.arabicName;
   document.getElementById("subject-desc").textContent = course.shortDesc;
   document.getElementById("subject-badge-code").textContent = course.code;
   document.getElementById("subject-category").textContent = course.category;
 
-  const iconMap = {
-    cpu: "cpu",
-    palette: "palette",
-    database: "database",
-    network: "network",
-    terminal: "terminal",
-    "file-text": "file-text"
-  };
-  const iconName = iconMap[course.icon] || "book";
+  const iconName = display.icon;
   const iconBox = document.getElementById("subject-icon-box");
   if (iconBox) {
     iconBox.className = `w-16 h-16 rounded-2xl bg-gradient-to-tr ${course.accentColor} flex items-center justify-center text-white shadow-lg flex-shrink-0 icon-box-modern`;
@@ -157,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="flex items-center justify-between gap-2 mb-3">
                 <div class="flex items-center gap-2">
                   <span class="text-[10px] px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold flex items-center gap-1">
-                    <i data-lucide="youtube" class="w-3 h-3"></i>
+                    <i data-lucide="monitor-play" class="w-3 h-3"></i>
                     <span>${vid.typeArabic || "فيديو شرح"}</span>
                   </span>
                   <span class="text-[10px] px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold">

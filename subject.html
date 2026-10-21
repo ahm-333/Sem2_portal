@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تفاصيل المادة | منصة الترم الثاني</title>
+  <title>تفاصيل المادة | Study Hub</title>
   
-  <!-- خطوط جوجل (Cairo & JetBrains Mono) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Local A1 font; no required font CDN. -->
+  <link rel="stylesheet" href="css/fonts/fonts.css">
   
   <!-- Prebuilt assets keep layout and icons available without a CDN. -->
   <link rel="stylesheet" href="css/tailwind.css">
@@ -16,85 +14,45 @@
 
   <!-- التنسيقات المخصصة والأوضاع الثلاثة والمسارين -->
   <link rel="stylesheet" href="css/style.css?v=1792424832344">
+  <link rel="stylesheet" href="css/processor.css">
+  <link rel="stylesheet" href="css/a1.css">
+  <link rel="stylesheet" href="css/a1-journey.css">
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="a1 min-h-screen flex flex-col" data-page="subject">
+  <a class="a1-skip" href="#main-content">تخطّي إلى المحتوى</a>
 
   <!-- ========================================== -->
   <!-- 1. شريط التنقل العلوي (Navbar) -->
   <!-- ========================================== -->
-  <header class="sticky top-0 z-50 glass-header border-b">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+  <header class="a1-navbar glass-header" aria-label="التنقل الرئيسي">
+    <div class="a1-header-inner">
+      <a href="index.html" class="a1-brand" aria-label="الرئيسية · Study Hub"><span class="a1-brand-mark"></span><span><strong lang="en"><bdi>Study Hub</bdi></strong><small>موادك ومصادرك، في مكان واحد.</small></span></a>
       
-      <!-- العودة للرئيسية واللوجو -->
-      <div class="flex items-center gap-3">
-        <a href="index.html" class="p-2.5 rounded-xl glass-panel border hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 text-xs font-bold" title="العودة للرئيسية">
-          <i data-lucide="arrow-right" class="w-4 h-4"></i>
-          <span class="hidden sm:inline">جميع المواد</span>
-        </a>
-
-        <div class="h-6 w-px bg-[var(--border-subtle)] hidden sm:block"></div>
-
-        <div>
-          <span class="text-sm sm:text-base font-bold text-[var(--text-main)]" id="nav-subject-name">جارٍ التحميل...</span>
-          <p class="text-[11px] text-[var(--text-muted)] font-mono" id="nav-subject-code">---</p>
+      <div class="a1-subject-label"><span id="nav-subject-name"></span><small id="nav-subject-code"></small></div>
+      <div class="a1-header-actions">
+        <button data-open-profile-modal class="a1-profile" title="تغيير مجموعتك أو سكشنك"><span class="student-profile-badge"><i data-lucide="user" aria-hidden="true"></i><span>مجموعتي</span></span><i data-lucide="chevron-down" aria-hidden="true"></i></button>
+        <button id="share-btn" title="مشاركة رابط المادة" aria-label="مشاركة رابط المادة"><i data-lucide="share-2" aria-hidden="true"></i></button>
+        <div class="a1-theme-options" role="group" aria-label="وضع العرض">
+          <button data-theme-btn="dark" title="الوضع الليلي" aria-label="الوضع الليلي"><i data-lucide="moon" aria-hidden="true"></i></button>
+          <button data-theme-btn="light" title="الوضع النهاري" aria-label="الوضع النهاري"><i data-lucide="sun" aria-hidden="true"></i></button>
+          <button data-theme-btn="reading" title="وضع القراءة" aria-label="وضع القراءة"><i data-lucide="book-open" aria-hidden="true"></i></button>
         </div>
+        <button id="cycle-theme-btn" class="a1-theme-cycle" title="تبديل وضع العرض: ليلي، نهاري، قراءة" aria-label="تبديل وضع العرض: ليلي، نهاري، قراءة"><i data-lucide="sun" aria-hidden="true"></i></button>
       </div>
-
-      <!-- شارة مطور المنصة Eng. Ahmed Amir -->
-      <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border border-indigo-500/25 bg-indigo-500/5 text-xs shadow-sm creator-pill">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span class="text-[var(--text-dim)] font-medium">Developed by</span>
-        <span class="creator-name-gradient">Eng. Ahmed Amir</span>
-      </div>
-
-      <!-- أزرار الأوضاع ومشاركة الرابط وتخصيص المجموعة -->
-      <div class="flex items-center gap-2">
-        <!-- زر تحديد وتغيير المجموعة والسكشن -->
-        <button 
-          data-open-profile-modal 
-          class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl glass-panel border flex items-center gap-1.5 text-xs font-bold text-indigo-400 hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all shadow-sm"
-          title="اضغط لتغيير مجموعتك أو سكشنك"
-        >
-          <span class="student-profile-badge">
-            <i data-lucide="user" class="w-3.5 h-3.5 text-cyan-400"></i>
-            <span>مجموعتي</span>
-          </span>
-          <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-[var(--text-dim)]"></i>
-        </button>
-
-        <button id="share-btn" class="p-2 sm:px-3 sm:py-2 rounded-xl glass-panel border flex items-center gap-1.5 text-xs font-medium text-[var(--text-muted)] hover:text-indigo-400 hover:border-indigo-500/30 transition-all" title="مشاركة رابط المادة">
-          <i data-lucide="share-2" class="w-4 h-4"></i>
-          <span class="hidden md:inline">مشاركة</span>
-        </button>
-
-
-        <div class="p-1 rounded-xl glass-panel flex items-center gap-1 border">
-          <button data-theme-btn="dark" class="px-2.5 py-1.5 rounded-lg text-xs font-medium" title="الوضع الليلي">
-            <i data-lucide="moon" class="w-4 h-4"></i>
-          </button>
-          <button data-theme-btn="light" class="px-2.5 py-1.5 rounded-lg text-xs font-medium" title="الوضع النهاري">
-            <i data-lucide="sun" class="w-4 h-4"></i>
-          </button>
-          <button data-theme-btn="reading" class="px-2.5 py-1.5 rounded-lg text-xs font-medium" title="وضع القراءة">
-            <i data-lucide="book-open" class="w-4 h-4"></i>
-          </button>
-        </div>
-      </div>
-
     </div>
   </header>
 
   <!-- ========================================== -->
   <!-- 2. محتوى صفحة المادة -->
   <!-- ========================================== -->
-  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full" id="main-content">
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full" id="main-content" tabindex="-1">
     
     <!-- مسار التنقل (Breadcrumbs) والتبديل السريع بين المواد -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-[var(--border-subtle)] text-xs">
       <div class="flex items-center gap-2 text-[var(--text-muted)]">
         <a href="index.html" class="hover:text-indigo-400">الرئيسية</a>
         <span>/</span>
-        <span>مواد الترم الثاني</span>
+        <span>المواد الدراسية</span>
         <span>/</span>
         <span class="text-[var(--text-main)] font-bold" id="crumb-subject-name">---</span>
       </div>
@@ -286,7 +244,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border-subtle)]">
           <div class="flex items-center gap-3">
             <div class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center flex-shrink-0 border border-red-500/20 shadow-sm">
-              <i data-lucide="youtube" class="w-6 h-6"></i>
+              <i data-lucide="monitor-play" class="w-6 h-6"></i>
             </div>
             <div>
               <div class="flex items-center gap-2 mb-0.5">
@@ -526,7 +484,7 @@
       <div class="p-4 border-b border-[var(--border-subtle)] flex items-center justify-between gap-3 bg-[var(--bg-surface)]">
         <div class="flex items-center gap-3 overflow-hidden">
           <div class="w-10 h-10 rounded-2xl bg-red-500/10 text-red-500 flex items-center justify-center flex-shrink-0 font-bold border border-red-500/20">
-            <i data-lucide="youtube" class="w-5 h-5"></i>
+            <i data-lucide="monitor-play" class="w-5 h-5"></i>
           </div>
           <div class="truncate">
             <h3 id="video-modal-title" class="text-sm font-bold text-[var(--text-main)] truncate">مشاهدة الشرح</h3>
@@ -557,7 +515,7 @@
     <div id="study-modal-container" class="glass-panel w-full max-w-5xl h-[100dvh] sm:h-[94vh] rounded-none sm:rounded-3xl border shadow-2xl flex flex-col overflow-hidden animate-fade-in bg-[var(--bg-main)] transition-all duration-300">
       
       <!-- الشريط العلوي المثبت (Sticky Header) -->
-      <div class="p-3.5 sm:p-4 border-b border-[var(--border-subtle)] flex items-center justify-between gap-3 bg-[var(--bg-surface)] flex-shrink-0">
+      <div class="a1-reader-header p-3.5 sm:p-4 border-b border-[var(--border-subtle)] flex items-center justify-between gap-3 bg-[var(--bg-surface)] flex-shrink-0">
         <div class="flex items-center gap-3 overflow-hidden">
           <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center flex-shrink-0 font-bold shadow-md shadow-purple-500/20 icon-box-modern">
             <i data-lucide="sparkles" class="w-5 h-5"></i>
@@ -573,7 +531,7 @@
 
         <div class="flex items-center gap-2 flex-shrink-0">
           <!-- أزرار تكبير وتصغير حجم الخط للقراءة المريحة -->
-          <div class="hidden sm:flex items-center gap-1 glass-panel px-1.5 py-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)]">
+          <div class="a1-reader-zoom flex items-center gap-1 glass-panel px-1.5 py-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-card)]">
             <button id="study-font-zoom-out" type="button" class="w-7 h-7 rounded-lg text-xs font-bold text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)] flex items-center justify-center transition-all cursor-pointer" title="تصغير حجم الخط">
               A-
             </button>
@@ -668,7 +626,7 @@
       <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)]">
         <div class="flex items-center gap-2">
           <i data-lucide="terminal" class="w-4 h-4 text-indigo-400"></i>
-          <span>بوابة مواد الترم الثاني • قسم الذكاء الاصطناعي - جامعة الزقازيق 2026</span>
+          <span><bdi lang="en">Study Hub</bdi> • قسم الذكاء الاصطناعي - جامعة الزقازيق 2026</span>
         </div>
         <div class="flex items-center gap-1.5 text-[var(--text-dim)]">
           <span>صُنعت بكل إتقان</span>
@@ -688,6 +646,9 @@
   <script src="js/theme.js?v=1792424832344"></script>
   <script src="js/courses-data.js?v=1792424832344"></script>
   <script src="js/schedule-data.js?v=1792424832344"></script>
+  <script src="js/a1-identity.js"></script>
+  <script src="js/a1-ui.js"></script>
+  <script src="js/a1-cursor.js"></script>
   <script src="js/profile-modal.js?v=1792424832344"></script>
   <script src="js/study-catalog.js"></script>
   <script src="js/study-loader.js"></script>
@@ -695,5 +656,6 @@
   <script src="js/study-reader.js"></script>
   <script src="js/subject-content.js"></script>
   <script src="js/subject.js?v=1792424832344"></script>
+  <script src="js/a1-journey.js"></script>
 </body>
 </html>
