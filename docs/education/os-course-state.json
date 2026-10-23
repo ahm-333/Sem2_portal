@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "phase": "sites_published_awaiting_github_write_access",
+  "phase": "portal_integration_ready_awaiting_github_write_access",
   "acceptedAt": "2026-10-23T17:50:38.655930+00:00",
   "approval": "Direct user acceptance of OS-01 v1.1.0 and request to implement remaining current OS slides/lectures, meaningful diagrams/graphs, original logo replacement and same-chat execution.",
   "spec": "docs/education/OS-COURSE-EXTENSION.md",
@@ -45,7 +45,7 @@
     "os-19": "content_review_accepted"
   },
   "logo": "Implemented and locally verified; public original portal update awaits GitHub write access",
-  "nextAction": "Restore authorized GitHub repository write access, then continue the existing scoped PR/CI/merge/Pages verification authorization.",
+  "nextAction": "Restore GitHub integration write access to ahm-333/Sem2_portal, then push the prepared current branch, create/attach scoped PR, pass remote CI, use existing merge authorization and verify original Pages entry/course/logo.",
   "unresolved": [
     "GitHub write access; scoped PR, remote CI, merge and actual GitHub Pages verification"
   ],
@@ -56,7 +56,7 @@
     "visuals": "education-preview/os/visuals.js",
     "status": "full 19-unit browser pass; SVG LTR and namespacing regressions passed"
   },
-  "updatedAt": "2026-10-23T23:18:39.417Z",
+  "updatedAt": "2026-10-23T23:29:41.705Z",
   "continuation": {
     "id": "os",
     "status": "PAUSED",
@@ -71,12 +71,13 @@
     "lint": "passed",
     "syntax": "passed",
     "finalVerify": {
-      "command": "npm run verify",
+      "command": "PORTAL_BROWSER_CHANNEL=msedge npm run verify",
       "exitCode": 0,
-      "evidence": "test-results/education/os-course/final-verify.log"
+      "evidence": "test-results/education/os-course/portal-entry-verify.log"
     },
     "independentTechnical": "PASS; zero remaining findings within review scope",
-    "preservation": "PASS 276 protected tracked and 326 pre-existing local files preserved; six scoped original changes; three raw source hashes and 14 accepted plan hashes match"
+    "preservation": "PASS 274 protected tracked and 326 pre-existing local files preserved; eight scoped original changes; three raw source hashes and 14 accepted plan hashes match",
+    "portalEntry": "PASS independent 360/1440px and focused 390/1440px; root/Pages paths; three chapter links; source actions and other-subject reader"
   },
   "reviews": {
     "ch1": "test-results/education/os-course/ch1-review/review-final.json",
@@ -95,11 +96,19 @@
   "blocker": {
     "kind": "github_write_access",
     "observedAt": "2026-10-23T23:17:36.514Z",
-    "operation": "GitHub integration create_blob for first source image",
+    "operation": "GitHub integration create_blob for legitimate reviewed course catalog",
     "result": "403 Resource not accessible by integration",
     "remoteMutationCreated": false,
     "cliAuthentication": "gh auth status: not logged into any GitHub hosts",
-    "requiredAction": "Restore authorized GitHub repository write access, then continue the existing scoped PR/CI/merge/Pages verification authorization."
+    "requiredAction": "Restore authorized GitHub repository write access, then continue the existing scoped PR/CI/merge/Pages verification authorization.",
+    "recheckedAt": "2026-10-23T23:29:41.705Z",
+    "authenticatedLogin": "Eyad-Ahmed-Kamal",
+    "repositoryOwner": "ahm-333",
+    "visibleInstallationAccounts": [
+      "Eyad-Ahmed-Kamal"
+    ],
+    "inference": "The repository owner integration access likely needs attention; exact provider-side configuration not visible",
+    "evidence": "test-results/education/os-course/github-write-recheck.json"
   },
   "reviewReport": "docs/education/os-course-review.md",
   "publication": {
@@ -131,6 +140,25 @@
     "merged": false,
     "pagesVerified": false,
     "localImplementationCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f",
-    "localCommitted": true
+    "localCommitted": true,
+    "portalIntegrationOnCurrentBranch": true
+  },
+  "portalIntegration": {
+    "status": "locally_accepted",
+    "authorization": "Direct user instruction to run the course in the original site on 24 October 2026",
+    "routes": {
+      "1": "education-preview/os/?unit=os-01",
+      "2": "education-preview/os/?unit=os-09",
+      "3": "education-preview/os/?unit=os-13"
+    },
+    "sourceActionsPreserved": true,
+    "otherSubjectsReaderPreserved": true,
+    "independentReview": "test-results/education/os-course/portal-entry-review/review.md",
+    "checks": "test-results/education/os-course/portal-entry/results.json",
+    "originalFiles": [
+      "js/subject.js",
+      "js/a1-journey.js"
+    ],
+    "publiclyDeployed": false
   }
 }

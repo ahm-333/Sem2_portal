@@ -16,6 +16,10 @@ Chapters can be authored independently in disjoint unit files against the schema
 
 The pilot feedback gate is resolved for OS-01 v1.1.0. The existing scoped PR/merge authorization remains in force after relevant review/checks; the expanded course must be genuinely complete and verified before being reported as such. Reuse the existing public Sites project for review delivery; verify actual publication. Account/quota interruption resumes from the durable course checkpoint and does not authorize billing/model/credential workarounds.
 
+## Original portal entry integration — 24 October 2026
+
+The user's subsequent instruction to run this course in the original site authorizes a bounded navigation seam in `js/subject.js` and `js/a1-journey.js`, with `tests/os-entry-browser.cjs` included in the existing OS runner. The three current OS lecture rows use primary same-origin links to their reviewed starting units: Chapter 1 → OS-01, Chapter 2 → OS-09, Chapter 3 → OS-13. Preserve their source/Drive actions, unrelated subjects/readers and the reviewed lesson payloads. This expands the original-file preservation allowlist by these two JS files only. GitHub write access and actual PR/CI/merge/Pages verification remain required for public original-site delivery.
+
 ## Unit payload contract
 
 Each new file `education-preview/os/units/os-NN.js` assigns `window.OSPilotLesson` in a browser and exports the same plain object via `module.exports` in Node. No imports or framework. Use the OS-01 payload shape in `lesson-data.js`: `id`, `version`, `guideVersion`, `courseId`, `lectureId` (string), `title`, `subtitle`, `sources`, `concepts`, `historicalItems`, `essayReferences`, `questions`, `glossary`.
