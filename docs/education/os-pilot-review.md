@@ -1,6 +1,6 @@
 # Current status — 24 October 2026
 
-The pilot-only narrative below is preserved as historical evidence. Eyad accepted OS-01 v1.1.0 and authorized the full current theory-course extension in this same chat. The earlier preview-feedback gate is resolved. The completed 19-unit course passed independent chapter/runtime reviews and local verification, and Sites version 3 is published and anonymously verified at the existing URL. The original header-logo change is implemented/tested locally. GitHub integration writes returned `403 Resource not accessible by integration`, so the scoped PR, remote CI, merge and original Pages verification remain blocked by write access. See `os-course-review.md` and `os-course-state.json` for authoritative current scope, publication IDs and next action. The observed continuation state is PAUSED; no overall task-complete claim is made.
+The pilot-only narrative below is historical. OS-01 was accepted and the full current theory extension is implemented, independently reviewed and published on the existing Sites preview. Original portal entry/logo changes passed local checks. The connector returned 403, but ordinary Git push subsequently succeeded with the existing Eyad-Ahmed-Kamal Git Credential Manager login; no owner permission change is required. The feature branch is remote and scoped PR/CI/merge/Pages verification is in progress. See os-course-review.md and os-course-state.json for current evidence. The continuation remains at its observed PAUSED state until final completion.
 
 # OS-01 pilot review and delivery
 

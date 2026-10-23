@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sliceId": "os-01-review-preview",
-  "phase": "portal_integration_ready_awaiting_github_write_access",
+  "phase": "remote_release_in_progress",
   "workspace": "C:\\Users\\Eyad\\Documents\\Codex\\2026-10-20\\new-chat\\work\\Sem2_portal",
   "startHead": "199ce9baf0e129abbd59d89f517600229f98b9d3",
   "branch": "codex/os-education-pilot",
@@ -71,7 +71,7 @@
   "partial": [],
   "failedChecks": [],
   "unresolved": [
-    "GitHub write access; scoped PR, remote CI, merge and actual GitHub Pages verification"
+    "Remote PR/CI/merge and original deployed verification"
   ],
   "ledger": [
     "Task 1/2/3 interfaces: shared lesson payload uses stable option IDs, per-option feedback and slide references; no conflict.",
@@ -90,9 +90,9 @@
     "Final review boundary: PR/merge/publication and exact automatic quota-reset recovery are not established by local preview QA. Cost: later authorized delivery checks and user feedback must be completed.",
     "Task 5: local preview delivered for user feedback; Task 6 not started. No deferred required findings."
   ],
-  "nextAction": "Restore GitHub integration write access to ahm-333/Sem2_portal, then push the prepared current branch, create/attach scoped PR, pass remote CI, use existing merge authorization and verify original Pages entry/course/logo.",
-  "stopReason": "GitHub integration denied repository writes; not a quota stop or preview-feedback gate",
-  "updatedAt": "2026-10-23T23:29:41.705Z",
+  "nextAction": "Create/attach scoped PR, pass remote CI, merge using existing authorization and verify actual original Pages entry/course/logo.",
+  "stopReason": null,
+  "updatedAt": "2026-10-23T23:55:23.080Z",
   "currentTrackedDiff": "Six scoped original files plus the approved new OS course/guide/review/checkpoint files",
   "changedFiles": [
     ".agents/skills/sem2-os-teaching/SKILL.md",
@@ -193,7 +193,7 @@
     "resumptionEvidence": "Prior reviewer allowance failure followed by direct-user continuation and live ordinaryUsageAllowed=true. Exact automatic reset-triggered recovery not observed.",
     "status": "PAUSED"
   },
-  "resumePhase": "portal_integration_ready_awaiting_github_write_access",
+  "resumePhase": "remote_release_in_progress",
   "localServerRunning": true,
   "deviceIncident": {
     "account": "MSI\\Eyad",
@@ -289,22 +289,6 @@
     }
   ],
   "courseState": "docs/education/os-course-state.json",
-  "blocker": {
-    "kind": "github_write_access",
-    "observedAt": "2026-10-23T23:17:36.514Z",
-    "operation": "GitHub integration create_blob for legitimate reviewed course catalog",
-    "result": "403 Resource not accessible by integration",
-    "remoteMutationCreated": false,
-    "cliAuthentication": "gh auth status: not logged into any GitHub hosts",
-    "requiredAction": "Restore authorized GitHub repository write access, then continue the existing scoped PR/CI/merge/Pages verification authorization.",
-    "recheckedAt": "2026-10-23T23:29:41.705Z",
-    "authenticatedLogin": "Eyad-Ahmed-Kamal",
-    "repositoryOwner": "ahm-333",
-    "visibleInstallationAccounts": [
-      "Eyad-Ahmed-Kamal"
-    ],
-    "inference": "The repository owner integration access likely needs attention; exact provider-side configuration not visible",
-    "evidence": "test-results/education/os-course/github-write-recheck.json"
-  },
+  "blocker": null,
   "currentImplementationCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f"
 }

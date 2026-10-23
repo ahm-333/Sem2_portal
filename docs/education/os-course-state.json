@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "phase": "portal_integration_ready_awaiting_github_write_access",
+  "phase": "remote_release_in_progress",
   "acceptedAt": "2026-10-23T17:50:38.655930+00:00",
   "approval": "Direct user acceptance of OS-01 v1.1.0 and request to implement remaining current OS slides/lectures, meaningful diagrams/graphs, original logo replacement and same-chat execution.",
   "spec": "docs/education/OS-COURSE-EXTENSION.md",
@@ -45,9 +45,9 @@
     "os-19": "content_review_accepted"
   },
   "logo": "Implemented and locally verified; public original portal update awaits GitHub write access",
-  "nextAction": "Restore GitHub integration write access to ahm-333/Sem2_portal, then push the prepared current branch, create/attach scoped PR, pass remote CI, use existing merge authorization and verify original Pages entry/course/logo.",
+  "nextAction": "Create/attach scoped PR, pass remote CI, merge using existing authorization and verify actual original Pages entry/course/logo.",
   "unresolved": [
-    "GitHub write access; scoped PR, remote CI, merge and actual GitHub Pages verification"
+    "Remote PR/CI/merge and original deployed verification"
   ],
   "failedChecks": [],
   "runtime": {
@@ -56,7 +56,7 @@
     "visuals": "education-preview/os/visuals.js",
     "status": "full 19-unit browser pass; SVG LTR and namespacing regressions passed"
   },
-  "updatedAt": "2026-10-23T23:29:41.705Z",
+  "updatedAt": "2026-10-23T23:55:23.080Z",
   "continuation": {
     "id": "os",
     "status": "PAUSED",
@@ -93,23 +93,7 @@
     "visuals": 32,
     "glossaryEntries": 254
   },
-  "blocker": {
-    "kind": "github_write_access",
-    "observedAt": "2026-10-23T23:17:36.514Z",
-    "operation": "GitHub integration create_blob for legitimate reviewed course catalog",
-    "result": "403 Resource not accessible by integration",
-    "remoteMutationCreated": false,
-    "cliAuthentication": "gh auth status: not logged into any GitHub hosts",
-    "requiredAction": "Restore authorized GitHub repository write access, then continue the existing scoped PR/CI/merge/Pages verification authorization.",
-    "recheckedAt": "2026-10-23T23:29:41.705Z",
-    "authenticatedLogin": "Eyad-Ahmed-Kamal",
-    "repositoryOwner": "ahm-333",
-    "visibleInstallationAccounts": [
-      "Eyad-Ahmed-Kamal"
-    ],
-    "inference": "The repository owner integration access likely needs attention; exact provider-side configuration not visible",
-    "evidence": "test-results/education/os-course/github-write-recheck.json"
-  },
+  "blocker": null,
   "reviewReport": "docs/education/os-course-review.md",
   "publication": {
     "provider": "ChatGPT Sites",
@@ -135,13 +119,15 @@
   "release": {
     "branch": "codex/os-education-pilot",
     "baseCommit": "199ce9baf0e129abbd59d89f517600229f98b9d3",
-    "remoteFeatureCommit": null,
+    "remoteFeatureCommit": "a771f096e20b45c8c126868a2bc4e1b58c0ae047",
     "pullRequest": null,
     "merged": false,
     "pagesVerified": false,
     "localImplementationCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f",
     "localCommitted": true,
-    "portalIntegrationOnCurrentBranch": true
+    "portalIntegrationOnCurrentBranch": true,
+    "transport": "Ordinary Git and GitHub CLI using existing Git Credential Manager login in child memory; no persisted auth change",
+    "permissionDiagnosisCorrection": "gh auth status does not establish Git authentication state. The previous requirement for owner installation/access changes was unproven and is withdrawn."
   },
   "portalIntegration": {
     "status": "locally_accepted",
@@ -160,5 +146,26 @@
       "js/a1-journey.js"
     ],
     "publiclyDeployed": false
-  }
+  },
+  "blockerHistory": [
+    {
+      "kind": "github_write_access",
+      "observedAt": "2026-10-23T23:17:36.514Z",
+      "operation": "GitHub integration create_blob for legitimate reviewed course catalog",
+      "result": "403 Resource not accessible by integration",
+      "remoteMutationCreated": false,
+      "cliAuthentication": "gh auth status: not logged into any GitHub hosts",
+      "requiredAction": "Restore authorized GitHub repository write access, then continue the existing scoped PR/CI/merge/Pages verification authorization.",
+      "recheckedAt": "2026-10-23T23:29:41.705Z",
+      "authenticatedLogin": "Eyad-Ahmed-Kamal",
+      "repositoryOwner": "ahm-333",
+      "visibleInstallationAccounts": [
+        "Eyad-Ahmed-Kamal"
+      ],
+      "inference": "The repository owner integration access likely needs attention; exact provider-side configuration not visible",
+      "evidence": "test-results/education/os-course/github-write-recheck.json",
+      "resolvedAt": "2026-10-23T23:55:23.080Z",
+      "resolution": "Connector-specific 403 remains, but ordinary Git push succeeded using existing Git Credential Manager authentication. Same authenticated user Eyad-Ahmed-Kamal confirmed. No user/repository permission change required."
+    }
+  ]
 }
