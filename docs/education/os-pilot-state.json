@@ -92,8 +92,7 @@
   ],
   "nextAction": "Follow docs/education/os-course-state.json. Restore authorized GitHub repository write access, then continue the existing scoped PR/CI/merge/Pages verification authorization.",
   "stopReason": "GitHub integration denied repository writes; not a quota stop or preview-feedback gate",
-  "updatedAt": "2026-10-23T23:17:36.514Z",
-  "currentHead": "199ce9baf0e129abbd59d89f517600229f98b9d3",
+  "updatedAt": "2026-10-23T23:18:39.417Z",
   "currentTrackedDiff": "Six scoped original files plus the approved new OS course/guide/review/checkpoint files",
   "changedFiles": [
     ".agents/skills/sem2-os-teaching/SKILL.md",
@@ -115,7 +114,7 @@
     "education-preview/os/verify-layout.cjs",
     "education-preview/os/verify.cjs"
   ],
-  "featureCommit": null,
+  "featureCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f",
   "previewUrl": "http://127.0.0.1:8765/education-preview/os/",
   "review": {
     "content": {
@@ -298,5 +297,6 @@
     "remoteMutationCreated": false,
     "cliAuthentication": "gh auth status: not logged into any GitHub hosts",
     "requiredAction": "Restore authorized GitHub repository write access, then continue the existing scoped PR/CI/merge/Pages verification authorization."
-  }
+  },
+  "currentImplementationCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f"
 }
