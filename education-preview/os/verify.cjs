@@ -1,0 +1,80 @@
+const {chromium} = require('playwright');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const out = path.resolve(__dirname,'../../test-results/education/os-pilot');
+const base = process.env.OS_PREVIEW_URL || 'http://127.0.0.1:8765/education-preview/os/';
+const mode = process.argv.includes('--practice')?'practice':'reading';
+(async()=>{
+  fs.mkdirSync(out,{recursive:true});
+  const browser=await chromium.launch(require('./browser-options.cjs'));
+  const results=[];
+  try{
+    const context=await browser.newContext({viewport:{width:1280,height:900},reducedMotion:'reduce'});
+    const page=await context.newPage();page.setDefaultTimeout(6000);const errors=[];
+    page.on('pageerror',e=>errors.push(e.message));
+    page.on('response',r=>{if(r.status()>=400) errors.push(`${r.status()} ${r.url()}`);});
+    const response=await page.goto(base);
+    assert.equal(response.status(),200,'Learner must reach the preview');
+    await page.getByRole('heading',{name:'مين بيعمل إيه جوّه جهازك؟',exact:true}).waitFor();
+    for(const id of ['resources','roles','purpose','kernel']) assert.ok(await page.locator(`#${id}`).innerText());
+    assert.equal(await page.locator('#role-map button').count(),4);
+    const os=page.getByRole('button',{name:'Operating system (OS)',exact:true});
+    await os.focus(); await page.keyboard.press('Enter');
+    assert.equal(await os.getAttribute('aria-pressed'),'true');
+    assert.match(await page.locator('#role-detail').innerText(),/Kernel/);
+    assert.ok(await page.getByText('دي خريطة توضح مين مسؤول عن إيه',{exact:false}).count());
+    for(const n of [4,5,6,7,8]){
+      const summary=page.locator(`#source-${n} summary`);await summary.click();
+      const img=page.locator(`#source-${n} img`);
+      await img.scrollIntoViewIfNeeded();
+      await img.evaluate(i=>i.decode());
+      assert.ok(await img.evaluate(i=>i.naturalWidth>=1200));
+      const target=await page.locator(`#source-${n} a`).getAttribute('href');
+      const r=await context.request.get(new URL(target,base).href);assert.equal(r.status(),200);
+      await summary.click();
+    }
+    assert.equal(await page.getByRole('link',{name:'افتح المحاضرة الأصلية على Drive'}).getAttribute('href'),'https://drive.google.com/file/d/14YyfOeN0occ4jy1PgQN9PO6zwmZV7y8M/view');
+    const sourceLink=page.locator('#kernel a[href="#source-8"]');
+    await sourceLink.click();assert.equal(await page.locator('#source-8').evaluate(e=>e.open),true);
+    await page.locator('#source-8 summary').click();assert.equal(await page.locator('#source-8').evaluate(e=>e.open),false);
+    await sourceLink.focus();await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#source-8').evaluate(e=>e.open),true,'Reopening the same source hash must expand it again');
+    assert.equal(errors.length,0,JSON.stringify(errors)); results.push('Reading, role-map keyboard control, original links and all five local source images');
+    if(mode==='practice'){
+      const q=page.locator('[data-question="roles-report"]');
+      await q.getByRole('button',{name:'راجع الإجابة',exact:true}).click();
+      assert.match(await q.getByRole('alert').innerText(),/اختار إجابة الأول/);
+      assert.equal(await page.locator('input:disabled').count(),0);
+      await q.getByLabel('Operating system',{exact:true}).check();
+      await q.getByRole('button',{name:'راجع الإجابة',exact:true}).click();
+      assert.match(await q.getByRole('status').innerText(),/إجابة محتاجة تصحيح/);
+      assert.match(await q.getByRole('status').innerText(),/Word/);
+      assert.match(await q.getByRole('status').innerText(),/Application program/);
+      assert.ok(await q.locator('input:disabled').count()===4,'First answer should lock until reset');
+      const good=page.locator('[data-question="allocation-conflict"]');
+      await good.getByLabel('The operating system',{exact:true}).check();await good.getByRole('button',{name:'راجع الإجابة',exact:true}).click();
+      assert.match(await good.getByRole('status').innerText(),/إجابة صحيحة/);
+      const tf=page.locator('[data-question="users-machines"]');
+      await tf.getByLabel('False · غلط',{exact:true}).check();await tf.getByRole('button',{name:'راجع الإجابة',exact:true}).click();
+      assert.match(await tf.getByRole('status').innerText(),/إجابة محتاجة تصحيح/);
+      assert.match(await tf.getByRole('status').innerText(),/أجهزة كمبيوتر تانية/);
+      const tfGood=page.locator('[data-question="control-guarantee"]');
+      await tfGood.getByLabel('False · غلط',{exact:true}).check();await tfGood.getByRole('button',{name:'راجع الإجابة',exact:true}).click();
+      assert.match(await tfGood.getByRole('status').innerText(),/إجابة صحيحة/);
+      assert.match(await page.locator('#session-score').innerText(),/2.*4/);
+      await page.getByRole('button',{name:'ابدأ المحاولة من جديد',exact:true}).click();
+      assert.equal(await page.locator('input:checked').count(),0);
+      assert.equal(await page.locator('input:disabled').count(),0);
+      assert.equal(await page.locator('.feedback:not([hidden])').count(),0);
+      assert.match(await page.locator('#session-score').innerText(),/0.*0/);
+      await page.reload();assert.equal(await page.locator('input:checked').count(),0);
+      assert.equal(await page.evaluate(()=>localStorage.length),0);
+      results.push('Incorrect/correct MCQ and true-false explanations, answer locking, session score, reset and no saved attempts');
+    }
+    await page.screenshot({path:path.join(out,`${mode}-desktop.png`),fullPage:true});
+    await context.close();
+    fs.writeFileSync(path.join(out,`${mode}-results.json`),JSON.stringify({date:new Date().toISOString(),base,mode,results},null,2));
+    console.log(`PASS ${mode}: ${results.join('; ')}`);
+  }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});

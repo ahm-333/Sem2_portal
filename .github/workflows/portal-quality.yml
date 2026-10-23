@@ -1,9 +1,9 @@
 name: Portal quality checks
 on:
   push:
-    paths: ['index.html', 'subject.html', 'js/**', 'css/**', 'tests/**', 'tools/*.cjs', 'tools/pending-schedule.json', '*config.cjs', 'package*.json', '.github/workflows/portal-quality.yml']
+    paths: ['index.html', 'subject.html', 'js/**', 'css/**', 'education-preview/os/**', 'tests/**', 'tools/*.cjs', 'tools/pending-schedule.json', '*config.cjs', 'package*.json', '.github/workflows/portal-quality.yml']
   pull_request:
-    paths: ['index.html', 'subject.html', 'js/**', 'css/**', 'tests/**', 'tools/*.cjs', 'tools/pending-schedule.json', '*config.cjs', 'package*.json', '.github/workflows/portal-quality.yml']
+    paths: ['index.html', 'subject.html', 'js/**', 'css/**', 'education-preview/os/**', 'tests/**', 'tools/*.cjs', 'tools/pending-schedule.json', '*config.cjs', 'package*.json', '.github/workflows/portal-quality.yml']
 permissions:
   contents: read
 jobs:

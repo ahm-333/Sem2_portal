@@ -1,0 +1,679 @@
+{
+  "schemaVersion": 1,
+  "courseVersion": "2.0.0",
+  "recordedAt": "2026-10-23T23:03:03.407Z",
+  "method": "Fresh independent chapter solutions were saved before author keys; feedback, glossary and visuals reviewed, substantive fixes rechecked. OS-01 v1.1.0 was accepted by the user. This is AI review, not lecturer certification or measured learning effectiveness.",
+  "sources": [
+    {
+      "chapter": "1",
+      "rawSha256": "c81ae8d50d261ffbd4c78ebf75b42f3f980c50298bba19b32f5779b3d1745e7b"
+    },
+    {
+      "chapter": "2",
+      "rawSha256": "7077be5a51357a7fd485d21111e7a296478f7dcfaf98985ccebcc998a349494e"
+    },
+    {
+      "chapter": "3",
+      "rawSha256": "7501cd4c2e06b1c09fedc2e7788d47df86786c263f68e0e268dc887c1b73444b"
+    }
+  ],
+  "units": [
+    {
+      "id": "os-01",
+      "chapter": 1,
+      "pages": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "file": "lesson-data.js",
+      "version": "1.1.0",
+      "guideVersion": "1.1.0",
+      "sha256": "00d16d4ac71e7faf11e3a1418e6a2b510badc047b4fb359c95ade05235d07947",
+      "normalizedSha256": "00d16d4ac71e7faf11e3a1418e6a2b510badc047b4fb359c95ade05235d07947",
+      "review": "independent-source-based-AI",
+      "questionCount": 8,
+      "glossaryCount": 19,
+      "visualCount": 1
+    },
+    {
+      "id": "os-02",
+      "chapter": 1,
+      "pages": [
+        9
+      ],
+      "file": "units/os-02.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "1c4dcee07fe2dbe4bdbb06c72668ff16b7e7709916cd779b080beb04127bcea6",
+      "normalizedSha256": "1c4dcee07fe2dbe4bdbb06c72668ff16b7e7709916cd779b080beb04127bcea6",
+      "review": "independent-source-based-AI",
+      "questionCount": 3,
+      "glossaryCount": 6,
+      "visualCount": 1
+    },
+    {
+      "id": "os-03",
+      "chapter": 1,
+      "pages": [
+        10,
+        11,
+        12
+      ],
+      "file": "units/os-03.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "e021575c8dc2e9c00b0e5553f4e4c6ea10026f06630911c325d5ce111c620d77",
+      "normalizedSha256": "e021575c8dc2e9c00b0e5553f4e4c6ea10026f06630911c325d5ce111c620d77",
+      "review": "independent-source-based-AI",
+      "questionCount": 4,
+      "glossaryCount": 9,
+      "visualCount": 2
+    },
+    {
+      "id": "os-04",
+      "chapter": 1,
+      "pages": [
+        13,
+        14,
+        15,
+        16
+      ],
+      "file": "units/os-04.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "f0e5bd619b9c8b909f6a756964271ef1d78faf826e99d1d149c12ef1199f9725",
+      "normalizedSha256": "f0e5bd619b9c8b909f6a756964271ef1d78faf826e99d1d149c12ef1199f9725",
+      "review": "independent-source-based-AI",
+      "questionCount": 4,
+      "glossaryCount": 15,
+      "visualCount": 1
+    },
+    {
+      "id": "os-05",
+      "chapter": 1,
+      "pages": [
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "file": "units/os-05.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "1b54d861c5b868aeff45e61f6478b08025767c4416c8f75b36138642fd2c0c1b",
+      "normalizedSha256": "1b54d861c5b868aeff45e61f6478b08025767c4416c8f75b36138642fd2c0c1b",
+      "review": "independent-source-based-AI",
+      "questionCount": 5,
+      "glossaryCount": 17,
+      "visualCount": 1
+    },
+    {
+      "id": "os-06",
+      "chapter": 1,
+      "pages": [
+        22,
+        23
+      ],
+      "file": "units/os-06.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "7a46643294de1d35be362a3730221e38c1b18ac3daf2f93ed4d88a60886b471a",
+      "normalizedSha256": "7a46643294de1d35be362a3730221e38c1b18ac3daf2f93ed4d88a60886b471a",
+      "review": "independent-source-based-AI",
+      "questionCount": 4,
+      "glossaryCount": 12,
+      "visualCount": 1
+    },
+    {
+      "id": "os-07",
+      "chapter": 1,
+      "pages": [
+        24,
+        25
+      ],
+      "file": "units/os-07.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "a0b9baaa9ad70d799ec0d4bfd8ea1e77505bf171819448e3460191be17505e45",
+      "normalizedSha256": "a0b9baaa9ad70d799ec0d4bfd8ea1e77505bf171819448e3460191be17505e45",
+      "review": "independent-source-based-AI",
+      "questionCount": 4,
+      "glossaryCount": 12,
+      "visualCount": 2
+    },
+    {
+      "id": "os-08",
+      "chapter": 1,
+      "pages": [
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "file": "units/os-08.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "6e2bcbf5d13e408d24de83470ed58d51faaeb7ae0c205bc32b39b43a584963fb",
+      "normalizedSha256": "6e2bcbf5d13e408d24de83470ed58d51faaeb7ae0c205bc32b39b43a584963fb",
+      "review": "independent-source-based-AI",
+      "questionCount": 6,
+      "glossaryCount": 25,
+      "visualCount": 2
+    },
+    {
+      "id": "os-09",
+      "chapter": 2,
+      "pages": [
+        4,
+        5
+      ],
+      "file": "units/os-09.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "37ebe18171c99ff7e7192a239b4ab0eed29f48d80abb73d892adc3266213d950",
+      "normalizedSha256": "37ebe18171c99ff7e7192a239b4ab0eed29f48d80abb73d892adc3266213d950",
+      "review": "independent-source-based-AI",
+      "questionCount": 7,
+      "glossaryCount": 16,
+      "visualCount": 1
+    },
+    {
+      "id": "os-10",
+      "chapter": 2,
+      "pages": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "file": "units/os-10.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "663dafc3ac2fff6bae4965aa786d461b38ec13a0e95aaab6bda00f6ac578a549",
+      "normalizedSha256": "663dafc3ac2fff6bae4965aa786d461b38ec13a0e95aaab6bda00f6ac578a549",
+      "review": "independent-source-based-AI",
+      "questionCount": 10,
+      "glossaryCount": 21,
+      "visualCount": 3
+    },
+    {
+      "id": "os-11",
+      "chapter": 2,
+      "pages": [
+        13
+      ],
+      "file": "units/os-11.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "21774eed70decfca705da7ba490c8aaf0f636aa38b1a84a7862238f00906a705",
+      "normalizedSha256": "21774eed70decfca705da7ba490c8aaf0f636aa38b1a84a7862238f00906a705",
+      "review": "independent-source-based-AI",
+      "questionCount": 4,
+      "glossaryCount": 8,
+      "visualCount": 1
+    },
+    {
+      "id": "os-12",
+      "chapter": 2,
+      "pages": [
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "file": "units/os-12.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "42323980303c21055b6432fb9d27d272bb54345d986c35a9448aadd8fca5fca0",
+      "normalizedSha256": "42323980303c21055b6432fb9d27d272bb54345d986c35a9448aadd8fca5fca0",
+      "review": "independent-source-based-AI",
+      "questionCount": 10,
+      "glossaryCount": 16,
+      "visualCount": 5
+    },
+    {
+      "id": "os-13",
+      "chapter": 3,
+      "pages": [
+        4,
+        5,
+        6
+      ],
+      "file": "units/os-13.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "1bffa0cf2830ef22ca714627e7bbea217303fe76309ccd7bc153e95e0c7aab7c",
+      "normalizedSha256": "1bffa0cf2830ef22ca714627e7bbea217303fe76309ccd7bc153e95e0c7aab7c",
+      "review": "independent-source-based-AI",
+      "questionCount": 4,
+      "glossaryCount": 9,
+      "visualCount": 1
+    },
+    {
+      "id": "os-14",
+      "chapter": 3,
+      "pages": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "file": "units/os-14.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "05b6bbd43902f4055a6ac2ab2907639b2c6c2f72211b543210df793d9ba193b4",
+      "normalizedSha256": "05b6bbd43902f4055a6ac2ab2907639b2c6c2f72211b543210df793d9ba193b4",
+      "review": "independent-source-based-AI",
+      "questionCount": 4,
+      "glossaryCount": 10,
+      "visualCount": 2
+    },
+    {
+      "id": "os-15",
+      "chapter": 3,
+      "pages": [
+        11,
+        12
+      ],
+      "file": "units/os-15.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "e0b24204e9afc470af22e8b76b5e1b3f806386bc244e0c021f6c30a8d7dcf1d1",
+      "normalizedSha256": "e0b24204e9afc470af22e8b76b5e1b3f806386bc244e0c021f6c30a8d7dcf1d1",
+      "review": "independent-source-based-AI",
+      "questionCount": 4,
+      "glossaryCount": 7,
+      "visualCount": 2
+    },
+    {
+      "id": "os-16",
+      "chapter": 3,
+      "pages": [
+        13,
+        14,
+        15,
+        16
+      ],
+      "file": "units/os-16.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "2ea882c5d38d1a78080833635eef2253c21cd77a9edcc82b74980be0a1d47f33",
+      "normalizedSha256": "2ea882c5d38d1a78080833635eef2253c21cd77a9edcc82b74980be0a1d47f33",
+      "review": "independent-source-based-AI",
+      "questionCount": 5,
+      "glossaryCount": 13,
+      "visualCount": 1
+    },
+    {
+      "id": "os-17",
+      "chapter": 3,
+      "pages": [
+        17
+      ],
+      "file": "units/os-17.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "85c9165b64830b7571fa1adb91777b4a3f65349a45e94bbe9a09cf02d274e208",
+      "normalizedSha256": "85c9165b64830b7571fa1adb91777b4a3f65349a45e94bbe9a09cf02d274e208",
+      "review": "independent-source-based-AI",
+      "questionCount": 4,
+      "glossaryCount": 5,
+      "visualCount": 1
+    },
+    {
+      "id": "os-18",
+      "chapter": 3,
+      "pages": [
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "file": "units/os-18.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "f7c29159a631e208f98e5789bb0992abb1d5ece146c7cdd69618a8b1955c4164",
+      "normalizedSha256": "f7c29159a631e208f98e5789bb0992abb1d5ece146c7cdd69618a8b1955c4164",
+      "review": "independent-source-based-AI",
+      "questionCount": 9,
+      "glossaryCount": 17,
+      "visualCount": 2
+    },
+    {
+      "id": "os-19",
+      "chapter": 3,
+      "pages": [
+        25,
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "file": "units/os-19.js",
+      "version": "1.0.0",
+      "guideVersion": "1.2.0",
+      "sha256": "daf589c6e42147e4fa32b8c6d727b11a8eb5a74bc25a03cedad3cad82aa3accc",
+      "normalizedSha256": "daf589c6e42147e4fa32b8c6d727b11a8eb5a74bc25a03cedad3cad82aa3accc",
+      "review": "independent-source-based-AI",
+      "questionCount": 8,
+      "glossaryCount": 17,
+      "visualCount": 2
+    }
+  ],
+  "sourceRenderings": [
+    {
+      "file": "sources/slide-04.png",
+      "sha256": "b376a8601033ed656216b460961b3b5ec2ff8076cdfb7c74b2a8a989faade484"
+    },
+    {
+      "file": "sources/slide-05.png",
+      "sha256": "3aba1dc1a986e2d44a4b7be4552c0c61007de567a264ab45177d5d50d3f46f4b"
+    },
+    {
+      "file": "sources/slide-06.png",
+      "sha256": "1cd9d4977fb9f45a64eb5e6135b9ff755c4ed2eee7ad232ec5139204f2cc60c8"
+    },
+    {
+      "file": "sources/slide-07.png",
+      "sha256": "2477a27d808af4d1d86fd3c8161b1b4e9aed0795e04684eab241d62916cfa96f"
+    },
+    {
+      "file": "sources/slide-08.png",
+      "sha256": "a042472de43863cc07a8417ccb7f9765fec63be1edf5266bda57724c06a2c829"
+    },
+    {
+      "file": "sources/ch1/slide-09.png",
+      "sha256": "e5750bfed48b64edf31078774f8fff169125f40e517be5fe450895ad291ab05a"
+    },
+    {
+      "file": "sources/ch1/slide-10.png",
+      "sha256": "952cbcec8f1dcc7ada2f46f21554001f9673b969dda3a85784791a798b7c0ddb"
+    },
+    {
+      "file": "sources/ch1/slide-11.png",
+      "sha256": "8049ad353344d3b2b63155a75ab0ecd3a6228ff1613344be375433546048d267"
+    },
+    {
+      "file": "sources/ch1/slide-12.png",
+      "sha256": "a10572a5215077891b3ef05dff37882d1e2fe9c26bcc4e6a1f24540b5bf2122c"
+    },
+    {
+      "file": "sources/ch1/slide-13.png",
+      "sha256": "7e693f823df9cce40361b3410c9c2ea94246a0ce8023712a2dcbac1be294c0fa"
+    },
+    {
+      "file": "sources/ch1/slide-14.png",
+      "sha256": "6afa4d436fdc9a2ef9e1c4a6e8d93d23a508375c7e4ef20e2dd8c46a34419c92"
+    },
+    {
+      "file": "sources/ch1/slide-15.png",
+      "sha256": "ab2edc61544fe9e6662718eb8eba85a4ee14859d5147e380b4bdf4eefe4975c9"
+    },
+    {
+      "file": "sources/ch1/slide-16.png",
+      "sha256": "748ef3a6e62bc9a04767007b9be277354c8e5eb2a0bb8800ae34193aa5c9038b"
+    },
+    {
+      "file": "sources/ch1/slide-17.png",
+      "sha256": "b456f0ba33fc3521e6132975627c2712ce522e426b4f4caab331b9c68fa292d1"
+    },
+    {
+      "file": "sources/ch1/slide-18.png",
+      "sha256": "b1f30d1ba2cd4d0786ebad08562bde485d8a1000ef771cd091176f9fa8a30bfc"
+    },
+    {
+      "file": "sources/ch1/slide-19.png",
+      "sha256": "09d36c42ef455f3e9ccbb35c9af8627abce6ffb81216679a95ef1fc68422acd4"
+    },
+    {
+      "file": "sources/ch1/slide-20.png",
+      "sha256": "404bc842173a2b566e5311295a52586a84fd8f25259fc6762bd68a620fe500a6"
+    },
+    {
+      "file": "sources/ch1/slide-21.png",
+      "sha256": "d5d357160c9f17d00996c37288612c1a90646c31e19a6dff61c5ed61dadf40e1"
+    },
+    {
+      "file": "sources/ch1/slide-22.png",
+      "sha256": "ebab48fe34ee4f68c9b73bb5468e44eb7790cab69ef200fa5491d0d9336dede8"
+    },
+    {
+      "file": "sources/ch1/slide-23.png",
+      "sha256": "2f0a435fe806bf47e2e58140529c2457763daf24098b87386670d69f08260ca1"
+    },
+    {
+      "file": "sources/ch1/slide-24.png",
+      "sha256": "9ecc6e54c3387594049a6935f76a07689e1fedc4b8c8ee94cfddd0e70d3e845f"
+    },
+    {
+      "file": "sources/ch1/slide-25.png",
+      "sha256": "08b8091158fa9fe871cc4ca988241023989b37276561e2647ec21a1bc10ede09"
+    },
+    {
+      "file": "sources/ch1/slide-26.png",
+      "sha256": "16622a3485081f77a4e98c27e1330e4c1c44320a783c17107e82450b3d924b0b"
+    },
+    {
+      "file": "sources/ch1/slide-27.png",
+      "sha256": "f57cb85f8826a8ea59e6056a66a5fdcc5bb59cf4f240b0b1e70b28785c01c924"
+    },
+    {
+      "file": "sources/ch1/slide-28.png",
+      "sha256": "1f2c26d8376be19160b4e0e37afe6b678898252585a396f7c5891468102bce7c"
+    },
+    {
+      "file": "sources/ch1/slide-29.png",
+      "sha256": "c4f3e1dcfa975d5eff4bdefb31dec0e60a792b5464a5531ae3e5a2e263c31c8e"
+    },
+    {
+      "file": "sources/ch1/slide-30.png",
+      "sha256": "0045791a88ce17bc610ab024bbd2a6d43a57d6ad74c9a9b5b498b32370635ec7"
+    },
+    {
+      "file": "sources/ch2/slide-04.png",
+      "sha256": "b87317ee66fe621dab31bd899d1a75a7e9f8e70f42aa4a40efc1133d0d7bea4b"
+    },
+    {
+      "file": "sources/ch2/slide-05.png",
+      "sha256": "25dbc3f2caf4a18627478c91f536ee0a799c9e54fe1b42695544ce37b0f63db7"
+    },
+    {
+      "file": "sources/ch2/slide-06.png",
+      "sha256": "2f5f541da95ba839a4f56d38d71fa6691addfb7fcd2dd93d1f6a08deb0f2b0ba"
+    },
+    {
+      "file": "sources/ch2/slide-07.png",
+      "sha256": "54523d74d1c81a86dc858791f7baaf65e6111a78a90645d0ae4e7f8b038db8fb"
+    },
+    {
+      "file": "sources/ch2/slide-08.png",
+      "sha256": "eb5818fbb6cefd977123a119038d52527d63af2f29ef2660a0e9fafebc0d207e"
+    },
+    {
+      "file": "sources/ch2/slide-09.png",
+      "sha256": "3aba6a2d4a0495ec8c406145c2a407f6677b0eda39f70c36a3ae69d9fa3453e4"
+    },
+    {
+      "file": "sources/ch2/slide-10.png",
+      "sha256": "749af7abeb8f40c93fedb29bc51373ee99220491a6c39e53d0d1c6b3c1604b85"
+    },
+    {
+      "file": "sources/ch2/slide-11.png",
+      "sha256": "c3bcd9a579258073ac954ffe9ed611ebd51d32a8cc7c45fdc3b57b3262127371"
+    },
+    {
+      "file": "sources/ch2/slide-12.png",
+      "sha256": "4cc9c280a30673797bcd14684c9b41784fa3c72cc31af93a7628f640c958e20b"
+    },
+    {
+      "file": "sources/ch2/slide-13.png",
+      "sha256": "077c9cca5a286121720f0cf21899ad53ec1dab818955b17e8517bd68034215c3"
+    },
+    {
+      "file": "sources/ch2/slide-14.png",
+      "sha256": "be25fc113bfdbe5eb8b334953bfa0d08edfd49dd87ddc18f4481b710ea8bf1b5"
+    },
+    {
+      "file": "sources/ch2/slide-15.png",
+      "sha256": "aa651dc04d978482cd09e1a55551559d37a606b642e035cdf2cf1eb60d354280"
+    },
+    {
+      "file": "sources/ch2/slide-16.png",
+      "sha256": "d5a5140939c552682de4c4092a7146358d1c3e81bfd3955f5ce7105cb1101656"
+    },
+    {
+      "file": "sources/ch2/slide-17.png",
+      "sha256": "4d6236d9b00c298d39b430dffa9b6918111509a375fc127cb6f7c2294bdd560c"
+    },
+    {
+      "file": "sources/ch2/slide-18.png",
+      "sha256": "0c807d054ec17cb391e9fcddf2b293f4ff6847acf710fe18fe5840466b30280f"
+    },
+    {
+      "file": "sources/ch2/slide-19.png",
+      "sha256": "b0e3f21d4a202a3c2b41736c43e3567518046e97cd75f8bb1ce44397edca55dd"
+    },
+    {
+      "file": "sources/ch2/slide-20.png",
+      "sha256": "3d3408c7cfcce0e9bbec4de4b22e13ba160421cf3fe353fcc4a7488f7d31633b"
+    },
+    {
+      "file": "sources/ch2/slide-21.png",
+      "sha256": "4eb744bf05b187f5ee21af03881eb8578653a0fc1597492194aaa381ec95278a"
+    },
+    {
+      "file": "sources/ch2/slide-22.png",
+      "sha256": "a9a8b1d847f03c2df99dc2a35adec8f46f072a0f0575edc4f1274005979cb5f0"
+    },
+    {
+      "file": "sources/ch2/slide-23.png",
+      "sha256": "2bb5ca8e7c4a7bb538e8a285953645244c4a255c9d2f6fe5e2d270582f60b2ec"
+    },
+    {
+      "file": "sources/ch3/slide-04.png",
+      "sha256": "b802bd6f896ae0a33e714ef5ebed8d0ed0f4f0d92c03cb1ed8373052345d6473"
+    },
+    {
+      "file": "sources/ch3/slide-05.png",
+      "sha256": "12b0c79cab02e9352a37f29a90a951fac8374ec5fe9aa91c326fbbecca2ad464"
+    },
+    {
+      "file": "sources/ch3/slide-06.png",
+      "sha256": "f11a55950f8771e9c8349fb48a70d6b870d5974aca4e1b6bbc8875e9d03bfe1e"
+    },
+    {
+      "file": "sources/ch3/slide-07.png",
+      "sha256": "21c114ca424a1a07d39de441b83fd0fc68bfc49b3f4c225cb5413e8f1f385117"
+    },
+    {
+      "file": "sources/ch3/slide-08.png",
+      "sha256": "85c3abd54ca6d50fe46429b683d6e73bf336e0a3a8fceb48f14049ab34027f77"
+    },
+    {
+      "file": "sources/ch3/slide-09.png",
+      "sha256": "c11a5d38840754f68c27dbcf032b489b16c82b8635d97074472d292cb9fcd376"
+    },
+    {
+      "file": "sources/ch3/slide-10.png",
+      "sha256": "3c4733da14d475cb407afd994464ec453378d0bc02d02e72ffcd1629165e961a"
+    },
+    {
+      "file": "sources/ch3/slide-11.png",
+      "sha256": "52c2fc2f51f61ce383aeb7c2d9551a07c0ec63e17e501d8e1d9e238a374db898"
+    },
+    {
+      "file": "sources/ch3/slide-12.png",
+      "sha256": "d01901a24e8358727bad104add0c0c8d2ae98def02b5f8e078422b631c33ba7b"
+    },
+    {
+      "file": "sources/ch3/slide-13.png",
+      "sha256": "75173d16ab6170641a658fb0fa8782dcb0fec8e5c6a7a2993776bf23ae0a09ba"
+    },
+    {
+      "file": "sources/ch3/slide-14.png",
+      "sha256": "ab7dd176338bf2035193f380973a22436bbfefbf0736402d8a7167f6c434a1e9"
+    },
+    {
+      "file": "sources/ch3/slide-15.png",
+      "sha256": "1c6979a6bf4b7bca01c4d8a4fef7d548197537a89a9ad690816a2254b31a0a2b"
+    },
+    {
+      "file": "sources/ch3/slide-16.png",
+      "sha256": "92cb2aa4ef9cbac417e9e042a6978cb7cf5a6ac39ccf0836a94ab5ee040994bd"
+    },
+    {
+      "file": "sources/ch3/slide-17.png",
+      "sha256": "657c0df99ad36b8d038dc5081e8f52a61181a0d9d58be781d4bf20473070bea4"
+    },
+    {
+      "file": "sources/ch3/slide-18.png",
+      "sha256": "6f0317bd64dcbca620f6b1e69e969a2b82e150e3524e2e0e4f25db339c78e33a"
+    },
+    {
+      "file": "sources/ch3/slide-19.png",
+      "sha256": "7cf0ca4feaee2724f0e75b889b36bc2203f90ad552d87e89895c8a4b6bc035d9"
+    },
+    {
+      "file": "sources/ch3/slide-20.png",
+      "sha256": "67879a6c3597fb6d4573649f656803ec0dc3fd6720137bb8e326d75567482972"
+    },
+    {
+      "file": "sources/ch3/slide-21.png",
+      "sha256": "f2194fce4f5cf77da640aa707ce5d71f6a7a121a8a6cb9b78c5bb3d6fbb4b8ca"
+    },
+    {
+      "file": "sources/ch3/slide-22.png",
+      "sha256": "adfae0e46d58e12df0576b008803afb915aeb9ec4a226a854687c8c84acd778f"
+    },
+    {
+      "file": "sources/ch3/slide-23.png",
+      "sha256": "0bfda3c44dad286acf7ae7b875dd10ac08727f6d422f512d55ca4d58e9a31447"
+    },
+    {
+      "file": "sources/ch3/slide-24.png",
+      "sha256": "624df82754f6a4e4cbfa016e8b67a97d064cbce37a791455ef5f4ea047c71d00"
+    },
+    {
+      "file": "sources/ch3/slide-25.png",
+      "sha256": "70a1419261f8c3db05540aefa7aaf3f3f49fcb12ef545ae1fb84e762dfd06989"
+    },
+    {
+      "file": "sources/ch3/slide-26.png",
+      "sha256": "68ebea09d7e912caa337914ae3e533aece5c515f1020dafe6e6447f22809906a"
+    },
+    {
+      "file": "sources/ch3/slide-27.png",
+      "sha256": "03d4d9937bdc1995ae0adecefd895a1b772c95a331f9b8ba0a231a7b8dad814a"
+    },
+    {
+      "file": "sources/ch3/slide-28.png",
+      "sha256": "6400f8cccce17dc855f961027e674b9f0541bbfa1065cacf6f01808c47a148c2"
+    },
+    {
+      "file": "sources/ch3/slide-29.png",
+      "sha256": "9419024fdc73bfbd805450f6c6eaadd35465fac565b83f8ce705249fdc7cb2e9"
+    },
+    {
+      "file": "sources/ch3/slide-30.png",
+      "sha256": "79f279c8f9c1472f42b2cd63476d367a2789c4af330a9a542b667ceccad7003d"
+    }
+  ]
+}

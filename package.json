@@ -16,8 +16,9 @@
     "test:browser": "node tests/browser.cjs",
     "test:a1": "node tests/a1-browser.cjs",
     "test:study": "node tests/study-features-browser.cjs",
+    "test:os": "node education-preview/os/check.cjs",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=js/shared/*.js tests/*.test.cjs",
-    "verify": "npm run build && npm run check && npm run validate && npm run lint && npm test && npm run test:browser && npm run test:a1 && npm run test:study"
+    "verify": "npm run build && npm run check && npm run validate && npm run lint && npm test && npm run test:browser && npm run test:a1 && npm run test:study && npm run test:os"
   },
   "devDependencies": {
     "eslint": "10.13.0",
