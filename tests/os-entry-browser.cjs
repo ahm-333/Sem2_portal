@@ -5,7 +5,7 @@ const out=path.resolve(__dirname,'../test-results/education/os-course/portal-ent
 (async()=>{const browser=await chromium.launch(require('../education-preview/os/browser-options.cjs'));const results=[];try{
  for(const prefix of ['', 'Sem2_portal/'])for(const width of [390,1440]){
   const context=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce'});await context.route('https://**',r=>r.abort());
-  await context.addInitScript(()=>{localStorage.setItem('sem2_first_visit_configured','true');window.sessionStorage.setItem('sem2-a1-processor-intro-v1','seen');});
+  await context.addInitScript(()=>{localStorage.setItem('sem2_first_visit_configured','true');window.sessionStorage.setItem('sem2-studio-rift-intro-v3','seen');});
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(8000);
   const subject=origin+prefix+'subject.html?id=operating-system';
   for(const [chapter,unit] of [[1,'os-01'],[2,'os-09'],[3,'os-13']]){

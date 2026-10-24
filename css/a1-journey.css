@@ -136,7 +136,7 @@ body.a1 .a1-question-map .q-map-pill[aria-current="step"] {outline:2px solid var
  body.a1 .a1-course>.a1-assignment-link {padding:9px 13px}
  .a1-course-enter {font-size:12px}
  .a1-course-breadcrumb {margin-bottom:8px!important;padding-bottom:6px!important}
- .a1-course-heading-panel {padding:4px 0 10px!important}
+ .a1-course-heading-panel:not(.course-atlas) {padding:4px 0 10px!important}
  body.a1 .a1-course-title-line h1 {font-size:26px}
  .a1-course-heading-panel #subject-desc {font-size:12px}
  .a1-track-tabs {margin-bottom:10px}

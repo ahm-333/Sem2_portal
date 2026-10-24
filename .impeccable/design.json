@@ -1,0 +1,1968 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-24T19:35:27.731810+00:00",
+  "title": "Design System: Study Hub — Study Studio",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Bg",
+        "tonalRamp": [
+          "oklch(15% 0.0067 277.16)",
+          "oklch(26% 0.0067 277.16)",
+          "oklch(38% 0.0067 277.16)",
+          "oklch(49% 0.0067 277.16)",
+          "oklch(61% 0.0067 277.16)",
+          "oklch(72% 0.0067 277.16)",
+          "oklch(84% 0.0067 277.16)",
+          "oklch(95% 0.0067 277.16)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0511 281.03)",
+          "oklch(26% 0.0511 281.03)",
+          "oklch(38% 0.0511 281.03)",
+          "oklch(49% 0.0511 281.03)",
+          "oklch(61% 0.0511 281.03)",
+          "oklch(72% 0.0511 281.03)",
+          "oklch(84% 0.0511 281.03)",
+          "oklch(95% 0.0511 281.03)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "tonalRamp": [
+          "oklch(15% 0.0347 281.02)",
+          "oklch(26% 0.0347 281.02)",
+          "oklch(38% 0.0347 281.02)",
+          "oklch(49% 0.0347 281.02)",
+          "oklch(61% 0.0347 281.02)",
+          "oklch(72% 0.0347 281.02)",
+          "oklch(84% 0.0347 281.02)",
+          "oklch(95% 0.0347 281.02)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Accent",
+        "tonalRamp": [
+          "oklch(15% 0.1989 272.82)",
+          "oklch(26% 0.1989 272.82)",
+          "oklch(38% 0.1989 272.82)",
+          "oklch(49% 0.1989 272.82)",
+          "oklch(61% 0.1989 272.82)",
+          "oklch(72% 0.1989 272.82)",
+          "oklch(84% 0.1989 272.82)",
+          "oklch(95% 0.1989 272.82)"
+        ]
+      },
+      "soft": {
+        "role": "neutral",
+        "displayName": "Soft",
+        "tonalRamp": [
+          "oklch(15% 0.0244 278.37)",
+          "oklch(26% 0.0244 278.37)",
+          "oklch(38% 0.0244 278.37)",
+          "oklch(49% 0.0244 278.37)",
+          "oklch(61% 0.0244 278.37)",
+          "oklch(72% 0.0244 278.37)",
+          "oklch(84% 0.0244 278.37)",
+          "oklch(95% 0.0244 278.37)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "tonalRamp": [
+          "oklch(15% 0.0166 274.81)",
+          "oklch(26% 0.0166 274.81)",
+          "oklch(38% 0.0166 274.81)",
+          "oklch(49% 0.0166 274.81)",
+          "oklch(61% 0.0166 274.81)",
+          "oklch(72% 0.0166 274.81)",
+          "oklch(84% 0.0166 274.81)",
+          "oklch(95% 0.0166 274.81)"
+        ]
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "Focus",
+        "tonalRamp": [
+          "oklch(15% 0.1467 45.24)",
+          "oklch(26% 0.1467 45.24)",
+          "oklch(38% 0.1467 45.24)",
+          "oklch(49% 0.1467 45.24)",
+          "oklch(61% 0.1467 45.24)",
+          "oklch(72% 0.1467 45.24)",
+          "oklch(84% 0.1467 45.24)",
+          "oklch(95% 0.1467 45.24)"
+        ]
+      },
+      "positive": {
+        "role": "neutral",
+        "displayName": "Positive",
+        "tonalRamp": [
+          "oklch(15% 0.0931 159.55)",
+          "oklch(26% 0.0931 159.55)",
+          "oklch(38% 0.0931 159.55)",
+          "oklch(49% 0.0931 159.55)",
+          "oklch(61% 0.0931 159.55)",
+          "oklch(72% 0.0931 159.55)",
+          "oklch(84% 0.0931 159.55)",
+          "oklch(95% 0.0931 159.55)"
+        ]
+      },
+      "negative": {
+        "role": "neutral",
+        "displayName": "Negative",
+        "tonalRamp": [
+          "oklch(15% 0.1575 14.32)",
+          "oklch(26% 0.1575 14.32)",
+          "oklch(38% 0.1575 14.32)",
+          "oklch(49% 0.1575 14.32)",
+          "oklch(61% 0.1575 14.32)",
+          "oklch(72% 0.1575 14.32)",
+          "oklch(84% 0.1575 14.32)",
+          "oklch(95% 0.1575 14.32)"
+        ]
+      },
+      "warning": {
+        "role": "neutral",
+        "displayName": "Warning",
+        "tonalRamp": [
+          "oklch(15% 0.0984 78.49)",
+          "oklch(26% 0.0984 78.49)",
+          "oklch(38% 0.0984 78.49)",
+          "oklch(49% 0.0984 78.49)",
+          "oklch(61% 0.0984 78.49)",
+          "oklch(72% 0.0984 78.49)",
+          "oklch(84% 0.0984 78.49)",
+          "oklch(95% 0.0984 78.49)"
+        ]
+      },
+      "rail": {
+        "role": "neutral",
+        "displayName": "Rail",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "hero": {
+        "role": "primary",
+        "displayName": "Hero",
+        "tonalRamp": [
+          "oklch(15% 0.1948 272.40)",
+          "oklch(26% 0.1948 272.40)",
+          "oklch(38% 0.1948 272.40)",
+          "oklch(49% 0.1948 272.40)",
+          "oklch(61% 0.1948 272.40)",
+          "oklch(72% 0.1948 272.40)",
+          "oklch(84% 0.1948 272.40)",
+          "oklch(95% 0.1948 272.40)"
+        ]
+      },
+      "hero-ink": {
+        "role": "neutral",
+        "displayName": "Hero Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.88)",
+          "oklch(26% 0.0000 89.88)",
+          "oklch(38% 0.0000 89.88)",
+          "oklch(49% 0.0000 89.88)",
+          "oklch(61% 0.0000 89.88)",
+          "oklch(72% 0.0000 89.88)",
+          "oklch(84% 0.0000 89.88)",
+          "oklch(95% 0.0000 89.88)"
+        ]
+      },
+      "course-blue": {
+        "role": "secondary",
+        "displayName": "Course Blue",
+        "tonalRamp": [
+          "oklch(15% 0.0251 271.14)",
+          "oklch(26% 0.0251 271.14)",
+          "oklch(38% 0.0251 271.14)",
+          "oklch(49% 0.0251 271.14)",
+          "oklch(61% 0.0251 271.14)",
+          "oklch(72% 0.0251 271.14)",
+          "oklch(84% 0.0251 271.14)",
+          "oklch(95% 0.0251 271.14)"
+        ]
+      },
+      "course-purple": {
+        "role": "secondary",
+        "displayName": "Course Purple",
+        "tonalRamp": [
+          "oklch(15% 0.0262 300.27)",
+          "oklch(26% 0.0262 300.27)",
+          "oklch(38% 0.0262 300.27)",
+          "oklch(49% 0.0262 300.27)",
+          "oklch(61% 0.0262 300.27)",
+          "oklch(72% 0.0262 300.27)",
+          "oklch(84% 0.0262 300.27)",
+          "oklch(95% 0.0262 300.27)"
+        ]
+      },
+      "course-mint": {
+        "role": "secondary",
+        "displayName": "Course Mint",
+        "tonalRamp": [
+          "oklch(15% 0.0208 166.09)",
+          "oklch(26% 0.0208 166.09)",
+          "oklch(38% 0.0208 166.09)",
+          "oklch(49% 0.0208 166.09)",
+          "oklch(61% 0.0208 166.09)",
+          "oklch(72% 0.0208 166.09)",
+          "oklch(84% 0.0208 166.09)",
+          "oklch(95% 0.0208 166.09)"
+        ]
+      },
+      "course-peach": {
+        "role": "secondary",
+        "displayName": "Course Peach",
+        "tonalRamp": [
+          "oklch(15% 0.0257 67.52)",
+          "oklch(26% 0.0257 67.52)",
+          "oklch(38% 0.0257 67.52)",
+          "oklch(49% 0.0257 67.52)",
+          "oklch(61% 0.0257 67.52)",
+          "oklch(72% 0.0257 67.52)",
+          "oklch(84% 0.0257 67.52)",
+          "oklch(95% 0.0257 67.52)"
+        ]
+      },
+      "course-pink": {
+        "role": "secondary",
+        "displayName": "Course Pink",
+        "tonalRamp": [
+          "oklch(15% 0.0225 353.14)",
+          "oklch(26% 0.0225 353.14)",
+          "oklch(38% 0.0225 353.14)",
+          "oklch(49% 0.0225 353.14)",
+          "oklch(61% 0.0225 353.14)",
+          "oklch(72% 0.0225 353.14)",
+          "oklch(84% 0.0225 353.14)",
+          "oklch(95% 0.0225 353.14)"
+        ]
+      },
+      "course-sky": {
+        "role": "secondary",
+        "displayName": "Course Sky",
+        "tonalRamp": [
+          "oklch(15% 0.0196 245.64)",
+          "oklch(26% 0.0196 245.64)",
+          "oklch(38% 0.0196 245.64)",
+          "oklch(49% 0.0196 245.64)",
+          "oklch(61% 0.0196 245.64)",
+          "oklch(72% 0.0196 245.64)",
+          "oklch(84% 0.0196 245.64)",
+          "oklch(95% 0.0196 245.64)"
+        ]
+      },
+      "dark-bg": {
+        "role": "neutral",
+        "displayName": "Dark Bg",
+        "tonalRamp": [
+          "oklch(15% 0.0354 275.94)",
+          "oklch(26% 0.0354 275.94)",
+          "oklch(38% 0.0354 275.94)",
+          "oklch(49% 0.0354 275.94)",
+          "oklch(61% 0.0354 275.94)",
+          "oklch(72% 0.0354 275.94)",
+          "oklch(84% 0.0354 275.94)",
+          "oklch(95% 0.0354 275.94)"
+        ]
+      },
+      "dark-paper": {
+        "role": "neutral",
+        "displayName": "Dark Paper",
+        "tonalRamp": [
+          "oklch(15% 0.0412 275.48)",
+          "oklch(26% 0.0412 275.48)",
+          "oklch(38% 0.0412 275.48)",
+          "oklch(49% 0.0412 275.48)",
+          "oklch(61% 0.0412 275.48)",
+          "oklch(72% 0.0412 275.48)",
+          "oklch(84% 0.0412 275.48)",
+          "oklch(95% 0.0412 275.48)"
+        ]
+      },
+      "dark-ink": {
+        "role": "neutral",
+        "displayName": "Dark Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0147 290.31)",
+          "oklch(26% 0.0147 290.31)",
+          "oklch(38% 0.0147 290.31)",
+          "oklch(49% 0.0147 290.31)",
+          "oklch(61% 0.0147 290.31)",
+          "oklch(72% 0.0147 290.31)",
+          "oklch(84% 0.0147 290.31)",
+          "oklch(95% 0.0147 290.31)"
+        ]
+      },
+      "dark-muted": {
+        "role": "neutral",
+        "displayName": "Dark Muted",
+        "tonalRamp": [
+          "oklch(15% 0.0326 279.73)",
+          "oklch(26% 0.0326 279.73)",
+          "oklch(38% 0.0326 279.73)",
+          "oklch(49% 0.0326 279.73)",
+          "oklch(61% 0.0326 279.73)",
+          "oklch(72% 0.0326 279.73)",
+          "oklch(84% 0.0326 279.73)",
+          "oklch(95% 0.0326 279.73)"
+        ]
+      },
+      "dark-accent": {
+        "role": "primary",
+        "displayName": "Dark Accent",
+        "tonalRamp": [
+          "oklch(15% 0.0903 279.37)",
+          "oklch(26% 0.0903 279.37)",
+          "oklch(38% 0.0903 279.37)",
+          "oklch(49% 0.0903 279.37)",
+          "oklch(61% 0.0903 279.37)",
+          "oklch(72% 0.0903 279.37)",
+          "oklch(84% 0.0903 279.37)",
+          "oklch(95% 0.0903 279.37)"
+        ]
+      },
+      "dark-soft": {
+        "role": "neutral",
+        "displayName": "Dark Soft",
+        "tonalRamp": [
+          "oklch(15% 0.0516 274.41)",
+          "oklch(26% 0.0516 274.41)",
+          "oklch(38% 0.0516 274.41)",
+          "oklch(49% 0.0516 274.41)",
+          "oklch(61% 0.0516 274.41)",
+          "oklch(72% 0.0516 274.41)",
+          "oklch(84% 0.0516 274.41)",
+          "oklch(95% 0.0516 274.41)"
+        ]
+      },
+      "dark-line": {
+        "role": "neutral",
+        "displayName": "Dark Line",
+        "tonalRamp": [
+          "oklch(15% 0.0501 274.83)",
+          "oklch(26% 0.0501 274.83)",
+          "oklch(38% 0.0501 274.83)",
+          "oklch(49% 0.0501 274.83)",
+          "oklch(61% 0.0501 274.83)",
+          "oklch(72% 0.0501 274.83)",
+          "oklch(84% 0.0501 274.83)",
+          "oklch(95% 0.0501 274.83)"
+        ]
+      },
+      "dark-focus": {
+        "role": "neutral",
+        "displayName": "Dark Focus",
+        "tonalRamp": [
+          "oklch(15% 0.0952 72.18)",
+          "oklch(26% 0.0952 72.18)",
+          "oklch(38% 0.0952 72.18)",
+          "oklch(49% 0.0952 72.18)",
+          "oklch(61% 0.0952 72.18)",
+          "oklch(72% 0.0952 72.18)",
+          "oklch(84% 0.0952 72.18)",
+          "oklch(95% 0.0952 72.18)"
+        ]
+      },
+      "dark-positive": {
+        "role": "neutral",
+        "displayName": "Dark Positive",
+        "tonalRamp": [
+          "oklch(15% 0.0767 158.99)",
+          "oklch(26% 0.0767 158.99)",
+          "oklch(38% 0.0767 158.99)",
+          "oklch(49% 0.0767 158.99)",
+          "oklch(61% 0.0767 158.99)",
+          "oklch(72% 0.0767 158.99)",
+          "oklch(84% 0.0767 158.99)",
+          "oklch(95% 0.0767 158.99)"
+        ]
+      },
+      "dark-negative": {
+        "role": "neutral",
+        "displayName": "Dark Negative",
+        "tonalRamp": [
+          "oklch(15% 0.0917 5.56)",
+          "oklch(26% 0.0917 5.56)",
+          "oklch(38% 0.0917 5.56)",
+          "oklch(49% 0.0917 5.56)",
+          "oklch(61% 0.0917 5.56)",
+          "oklch(72% 0.0917 5.56)",
+          "oklch(84% 0.0917 5.56)",
+          "oklch(95% 0.0917 5.56)"
+        ]
+      },
+      "dark-warning": {
+        "role": "neutral",
+        "displayName": "Dark Warning",
+        "tonalRamp": [
+          "oklch(15% 0.1050 87.00)",
+          "oklch(26% 0.1050 87.00)",
+          "oklch(38% 0.1050 87.00)",
+          "oklch(49% 0.1050 87.00)",
+          "oklch(61% 0.1050 87.00)",
+          "oklch(72% 0.1050 87.00)",
+          "oklch(84% 0.1050 87.00)",
+          "oklch(95% 0.1050 87.00)"
+        ]
+      },
+      "dark-rail": {
+        "role": "neutral",
+        "displayName": "Dark Rail",
+        "tonalRamp": [
+          "oklch(15% 0.0385 274.64)",
+          "oklch(26% 0.0385 274.64)",
+          "oklch(38% 0.0385 274.64)",
+          "oklch(49% 0.0385 274.64)",
+          "oklch(61% 0.0385 274.64)",
+          "oklch(72% 0.0385 274.64)",
+          "oklch(84% 0.0385 274.64)",
+          "oklch(95% 0.0385 274.64)"
+        ]
+      },
+      "dark-hero": {
+        "role": "primary",
+        "displayName": "Dark Hero",
+        "tonalRamp": [
+          "oklch(15% 0.1723 272.92)",
+          "oklch(26% 0.1723 272.92)",
+          "oklch(38% 0.1723 272.92)",
+          "oklch(49% 0.1723 272.92)",
+          "oklch(61% 0.1723 272.92)",
+          "oklch(72% 0.1723 272.92)",
+          "oklch(84% 0.1723 272.92)",
+          "oklch(95% 0.1723 272.92)"
+        ]
+      },
+      "dark-course-blue": {
+        "role": "secondary",
+        "displayName": "Dark Course Blue",
+        "tonalRamp": [
+          "oklch(15% 0.0700 267.06)",
+          "oklch(26% 0.0700 267.06)",
+          "oklch(38% 0.0700 267.06)",
+          "oklch(49% 0.0700 267.06)",
+          "oklch(61% 0.0700 267.06)",
+          "oklch(72% 0.0700 267.06)",
+          "oklch(84% 0.0700 267.06)",
+          "oklch(95% 0.0700 267.06)"
+        ]
+      },
+      "dark-course-purple": {
+        "role": "secondary",
+        "displayName": "Dark Course Purple",
+        "tonalRamp": [
+          "oklch(15% 0.0671 298.40)",
+          "oklch(26% 0.0671 298.40)",
+          "oklch(38% 0.0671 298.40)",
+          "oklch(49% 0.0671 298.40)",
+          "oklch(61% 0.0671 298.40)",
+          "oklch(72% 0.0671 298.40)",
+          "oklch(84% 0.0671 298.40)",
+          "oklch(95% 0.0671 298.40)"
+        ]
+      },
+      "dark-course-mint": {
+        "role": "secondary",
+        "displayName": "Dark Course Mint",
+        "tonalRamp": [
+          "oklch(15% 0.0436 179.92)",
+          "oklch(26% 0.0436 179.92)",
+          "oklch(38% 0.0436 179.92)",
+          "oklch(49% 0.0436 179.92)",
+          "oklch(61% 0.0436 179.92)",
+          "oklch(72% 0.0436 179.92)",
+          "oklch(84% 0.0436 179.92)",
+          "oklch(95% 0.0436 179.92)"
+        ]
+      },
+      "dark-course-peach": {
+        "role": "secondary",
+        "displayName": "Dark Course Peach",
+        "tonalRamp": [
+          "oklch(15% 0.0317 66.70)",
+          "oklch(26% 0.0317 66.70)",
+          "oklch(38% 0.0317 66.70)",
+          "oklch(49% 0.0317 66.70)",
+          "oklch(61% 0.0317 66.70)",
+          "oklch(72% 0.0317 66.70)",
+          "oklch(84% 0.0317 66.70)",
+          "oklch(95% 0.0317 66.70)"
+        ]
+      },
+      "dark-course-pink": {
+        "role": "secondary",
+        "displayName": "Dark Course Pink",
+        "tonalRamp": [
+          "oklch(15% 0.0442 338.87)",
+          "oklch(26% 0.0442 338.87)",
+          "oklch(38% 0.0442 338.87)",
+          "oklch(49% 0.0442 338.87)",
+          "oklch(61% 0.0442 338.87)",
+          "oklch(72% 0.0442 338.87)",
+          "oklch(84% 0.0442 338.87)",
+          "oklch(95% 0.0442 338.87)"
+        ]
+      },
+      "dark-course-sky": {
+        "role": "secondary",
+        "displayName": "Dark Course Sky",
+        "tonalRamp": [
+          "oklch(15% 0.0542 247.59)",
+          "oklch(26% 0.0542 247.59)",
+          "oklch(38% 0.0542 247.59)",
+          "oklch(49% 0.0542 247.59)",
+          "oklch(61% 0.0542 247.59)",
+          "oklch(72% 0.0542 247.59)",
+          "oklch(84% 0.0542 247.59)",
+          "oklch(95% 0.0542 247.59)"
+        ]
+      },
+      "reading-bg": {
+        "role": "neutral",
+        "displayName": "Reading Bg",
+        "tonalRamp": [
+          "oklch(15% 0.0108 118.02)",
+          "oklch(26% 0.0108 118.02)",
+          "oklch(38% 0.0108 118.02)",
+          "oklch(49% 0.0108 118.02)",
+          "oklch(61% 0.0108 118.02)",
+          "oklch(72% 0.0108 118.02)",
+          "oklch(84% 0.0108 118.02)",
+          "oklch(95% 0.0108 118.02)"
+        ]
+      },
+      "reading-paper": {
+        "role": "neutral",
+        "displayName": "Reading Paper",
+        "tonalRamp": [
+          "oklch(15% 0.0079 114.21)",
+          "oklch(26% 0.0079 114.21)",
+          "oklch(38% 0.0079 114.21)",
+          "oklch(49% 0.0079 114.21)",
+          "oklch(61% 0.0079 114.21)",
+          "oklch(72% 0.0079 114.21)",
+          "oklch(84% 0.0079 114.21)",
+          "oklch(95% 0.0079 114.21)"
+        ]
+      },
+      "reading-ink": {
+        "role": "neutral",
+        "displayName": "Reading Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0253 167.62)",
+          "oklch(26% 0.0253 167.62)",
+          "oklch(38% 0.0253 167.62)",
+          "oklch(49% 0.0253 167.62)",
+          "oklch(61% 0.0253 167.62)",
+          "oklch(72% 0.0253 167.62)",
+          "oklch(84% 0.0253 167.62)",
+          "oklch(95% 0.0253 167.62)"
+        ]
+      },
+      "reading-muted": {
+        "role": "neutral",
+        "displayName": "Reading Muted",
+        "tonalRamp": [
+          "oklch(15% 0.0260 155.33)",
+          "oklch(26% 0.0260 155.33)",
+          "oklch(38% 0.0260 155.33)",
+          "oklch(49% 0.0260 155.33)",
+          "oklch(61% 0.0260 155.33)",
+          "oklch(72% 0.0260 155.33)",
+          "oklch(84% 0.0260 155.33)",
+          "oklch(95% 0.0260 155.33)"
+        ]
+      },
+      "reading-accent": {
+        "role": "primary",
+        "displayName": "Reading Accent",
+        "tonalRamp": [
+          "oklch(15% 0.0636 162.18)",
+          "oklch(26% 0.0636 162.18)",
+          "oklch(38% 0.0636 162.18)",
+          "oklch(49% 0.0636 162.18)",
+          "oklch(61% 0.0636 162.18)",
+          "oklch(72% 0.0636 162.18)",
+          "oklch(84% 0.0636 162.18)",
+          "oklch(95% 0.0636 162.18)"
+        ]
+      },
+      "reading-soft": {
+        "role": "neutral",
+        "displayName": "Reading Soft",
+        "tonalRamp": [
+          "oklch(15% 0.0215 136.60)",
+          "oklch(26% 0.0215 136.60)",
+          "oklch(38% 0.0215 136.60)",
+          "oklch(49% 0.0215 136.60)",
+          "oklch(61% 0.0215 136.60)",
+          "oklch(72% 0.0215 136.60)",
+          "oklch(84% 0.0215 136.60)",
+          "oklch(95% 0.0215 136.60)"
+        ]
+      },
+      "reading-line": {
+        "role": "neutral",
+        "displayName": "Reading Line",
+        "tonalRamp": [
+          "oklch(15% 0.0242 133.48)",
+          "oklch(26% 0.0242 133.48)",
+          "oklch(38% 0.0242 133.48)",
+          "oklch(49% 0.0242 133.48)",
+          "oklch(61% 0.0242 133.48)",
+          "oklch(72% 0.0242 133.48)",
+          "oklch(84% 0.0242 133.48)",
+          "oklch(95% 0.0242 133.48)"
+        ]
+      },
+      "reading-rail": {
+        "role": "neutral",
+        "displayName": "Reading Rail",
+        "tonalRamp": [
+          "oklch(15% 0.0135 120.27)",
+          "oklch(26% 0.0135 120.27)",
+          "oklch(38% 0.0135 120.27)",
+          "oklch(49% 0.0135 120.27)",
+          "oklch(61% 0.0135 120.27)",
+          "oklch(72% 0.0135 120.27)",
+          "oklch(84% 0.0135 120.27)",
+          "oklch(95% 0.0135 120.27)"
+        ]
+      },
+      "reading-hero": {
+        "role": "primary",
+        "displayName": "Reading Hero",
+        "tonalRamp": [
+          "oklch(15% 0.0636 162.18)",
+          "oklch(26% 0.0636 162.18)",
+          "oklch(38% 0.0636 162.18)",
+          "oklch(49% 0.0636 162.18)",
+          "oklch(61% 0.0636 162.18)",
+          "oklch(72% 0.0636 162.18)",
+          "oklch(84% 0.0636 162.18)",
+          "oklch(95% 0.0636 162.18)"
+        ]
+      },
+      "reading-course-blue": {
+        "role": "secondary",
+        "displayName": "Reading Course Blue",
+        "tonalRamp": [
+          "oklch(15% 0.0153 136.08)",
+          "oklch(26% 0.0153 136.08)",
+          "oklch(38% 0.0153 136.08)",
+          "oklch(49% 0.0153 136.08)",
+          "oklch(61% 0.0153 136.08)",
+          "oklch(72% 0.0153 136.08)",
+          "oklch(84% 0.0153 136.08)",
+          "oklch(95% 0.0153 136.08)"
+        ]
+      },
+      "reading-course-purple": {
+        "role": "secondary",
+        "displayName": "Reading Course Purple",
+        "tonalRamp": [
+          "oklch(15% 0.0062 317.75)",
+          "oklch(26% 0.0062 317.75)",
+          "oklch(38% 0.0062 317.75)",
+          "oklch(49% 0.0062 317.75)",
+          "oklch(61% 0.0062 317.75)",
+          "oklch(72% 0.0062 317.75)",
+          "oklch(84% 0.0062 317.75)",
+          "oklch(95% 0.0062 317.75)"
+        ]
+      },
+      "reading-course-mint": {
+        "role": "secondary",
+        "displayName": "Reading Course Mint",
+        "tonalRamp": [
+          "oklch(15% 0.0238 139.44)",
+          "oklch(26% 0.0238 139.44)",
+          "oklch(38% 0.0238 139.44)",
+          "oklch(49% 0.0238 139.44)",
+          "oklch(61% 0.0238 139.44)",
+          "oklch(72% 0.0238 139.44)",
+          "oklch(84% 0.0238 139.44)",
+          "oklch(95% 0.0238 139.44)"
+        ]
+      },
+      "reading-course-peach": {
+        "role": "secondary",
+        "displayName": "Reading Course Peach",
+        "tonalRamp": [
+          "oklch(15% 0.0214 85.95)",
+          "oklch(26% 0.0214 85.95)",
+          "oklch(38% 0.0214 85.95)",
+          "oklch(49% 0.0214 85.95)",
+          "oklch(61% 0.0214 85.95)",
+          "oklch(72% 0.0214 85.95)",
+          "oklch(84% 0.0214 85.95)",
+          "oklch(95% 0.0214 85.95)"
+        ]
+      },
+      "reading-course-pink": {
+        "role": "secondary",
+        "displayName": "Reading Course Pink",
+        "tonalRamp": [
+          "oklch(15% 0.0149 33.07)",
+          "oklch(26% 0.0149 33.07)",
+          "oklch(38% 0.0149 33.07)",
+          "oklch(49% 0.0149 33.07)",
+          "oklch(61% 0.0149 33.07)",
+          "oklch(72% 0.0149 33.07)",
+          "oklch(84% 0.0149 33.07)",
+          "oklch(95% 0.0149 33.07)"
+        ]
+      },
+      "reading-course-sky": {
+        "role": "secondary",
+        "displayName": "Reading Course Sky",
+        "tonalRamp": [
+          "oklch(15% 0.0134 179.45)",
+          "oklch(26% 0.0134 179.45)",
+          "oklch(38% 0.0134 179.45)",
+          "oklch(49% 0.0134 179.45)",
+          "oklch(61% 0.0134 179.45)",
+          "oklch(72% 0.0134 179.45)",
+          "oklch(84% 0.0134 179.45)",
+          "oklch(95% 0.0134 179.45)"
+        ]
+      },
+      "reading-warning": {
+        "role": "neutral",
+        "displayName": "Reading Warning",
+        "tonalRamp": [
+          "oklch(15% 0.0918 77.23)",
+          "oklch(26% 0.0918 77.23)",
+          "oklch(38% 0.0918 77.23)",
+          "oklch(49% 0.0918 77.23)",
+          "oklch(61% 0.0918 77.23)",
+          "oklch(72% 0.0918 77.23)",
+          "oklch(84% 0.0918 77.23)",
+          "oklch(95% 0.0918 77.23)"
+        ]
+      },
+      "book-mint": {
+        "role": "secondary",
+        "displayName": "Book Mint",
+        "tonalRamp": [
+          "oklch(15% 0.0307 159.06)",
+          "oklch(26% 0.0307 159.06)",
+          "oklch(38% 0.0307 159.06)",
+          "oklch(49% 0.0307 159.06)",
+          "oklch(61% 0.0307 159.06)",
+          "oklch(72% 0.0307 159.06)",
+          "oklch(84% 0.0307 159.06)",
+          "oklch(95% 0.0307 159.06)"
+        ]
+      },
+      "book-pink": {
+        "role": "secondary",
+        "displayName": "Book Pink",
+        "tonalRamp": [
+          "oklch(15% 0.0318 355.55)",
+          "oklch(26% 0.0318 355.55)",
+          "oklch(38% 0.0318 355.55)",
+          "oklch(49% 0.0318 355.55)",
+          "oklch(61% 0.0318 355.55)",
+          "oklch(72% 0.0318 355.55)",
+          "oklch(84% 0.0318 355.55)",
+          "oklch(95% 0.0318 355.55)"
+        ]
+      },
+      "book-peach": {
+        "role": "secondary",
+        "displayName": "Book Peach",
+        "tonalRamp": [
+          "oklch(15% 0.0504 71.00)",
+          "oklch(26% 0.0504 71.00)",
+          "oklch(38% 0.0504 71.00)",
+          "oklch(49% 0.0504 71.00)",
+          "oklch(61% 0.0504 71.00)",
+          "oklch(72% 0.0504 71.00)",
+          "oklch(84% 0.0504 71.00)",
+          "oklch(95% 0.0504 71.00)"
+        ]
+      },
+      "book-ink": {
+        "role": "secondary",
+        "displayName": "Book Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0728 278.80)",
+          "oklch(26% 0.0728 278.80)",
+          "oklch(38% 0.0728 278.80)",
+          "oklch(49% 0.0728 278.80)",
+          "oklch(61% 0.0728 278.80)",
+          "oklch(72% 0.0728 278.80)",
+          "oklch(84% 0.0728 278.80)",
+          "oklch(95% 0.0728 278.80)"
+        ]
+      },
+      "button-white-ink": {
+        "role": "neutral",
+        "displayName": "Button White Ink",
+        "tonalRamp": [
+          "oklch(15% 0.1830 271.86)",
+          "oklch(26% 0.1830 271.86)",
+          "oklch(38% 0.1830 271.86)",
+          "oklch(49% 0.1830 271.86)",
+          "oklch(61% 0.1830 271.86)",
+          "oklch(72% 0.1830 271.86)",
+          "oklch(84% 0.1830 271.86)",
+          "oklch(95% 0.1830 271.86)"
+        ]
+      },
+      "hero-copy": {
+        "role": "neutral",
+        "displayName": "Hero Copy",
+        "tonalRamp": [
+          "oklch(15% 0.0297 281.67)",
+          "oklch(26% 0.0297 281.67)",
+          "oklch(38% 0.0297 281.67)",
+          "oklch(49% 0.0297 281.67)",
+          "oklch(61% 0.0297 281.67)",
+          "oklch(72% 0.0297 281.67)",
+          "oklch(84% 0.0297 281.67)",
+          "oklch(95% 0.0297 281.67)"
+        ]
+      },
+      "tone-blue": {
+        "role": "secondary",
+        "displayName": "Tone Blue",
+        "tonalRamp": [
+          "oklch(15% 0.1239 263.97)",
+          "oklch(26% 0.1239 263.97)",
+          "oklch(38% 0.1239 263.97)",
+          "oklch(49% 0.1239 263.97)",
+          "oklch(61% 0.1239 263.97)",
+          "oklch(72% 0.1239 263.97)",
+          "oklch(84% 0.1239 263.97)",
+          "oklch(95% 0.1239 263.97)"
+        ]
+      },
+      "tone-purple": {
+        "role": "secondary",
+        "displayName": "Tone Purple",
+        "tonalRamp": [
+          "oklch(15% 0.1372 307.03)",
+          "oklch(26% 0.1372 307.03)",
+          "oklch(38% 0.1372 307.03)",
+          "oklch(49% 0.1372 307.03)",
+          "oklch(61% 0.1372 307.03)",
+          "oklch(72% 0.1372 307.03)",
+          "oklch(84% 0.1372 307.03)",
+          "oklch(95% 0.1372 307.03)"
+        ]
+      },
+      "tone-mint": {
+        "role": "secondary",
+        "displayName": "Tone Mint",
+        "tonalRamp": [
+          "oklch(15% 0.0835 164.12)",
+          "oklch(26% 0.0835 164.12)",
+          "oklch(38% 0.0835 164.12)",
+          "oklch(49% 0.0835 164.12)",
+          "oklch(61% 0.0835 164.12)",
+          "oklch(72% 0.0835 164.12)",
+          "oklch(84% 0.0835 164.12)",
+          "oklch(95% 0.0835 164.12)"
+        ]
+      },
+      "tone-peach": {
+        "role": "secondary",
+        "displayName": "Tone Peach",
+        "tonalRamp": [
+          "oklch(15% 0.1037 64.77)",
+          "oklch(26% 0.1037 64.77)",
+          "oklch(38% 0.1037 64.77)",
+          "oklch(49% 0.1037 64.77)",
+          "oklch(61% 0.1037 64.77)",
+          "oklch(72% 0.1037 64.77)",
+          "oklch(84% 0.1037 64.77)",
+          "oklch(95% 0.1037 64.77)"
+        ]
+      },
+      "tone-pink": {
+        "role": "secondary",
+        "displayName": "Tone Pink",
+        "tonalRamp": [
+          "oklch(15% 0.1178 356.35)",
+          "oklch(26% 0.1178 356.35)",
+          "oklch(38% 0.1178 356.35)",
+          "oklch(49% 0.1178 356.35)",
+          "oklch(61% 0.1178 356.35)",
+          "oklch(72% 0.1178 356.35)",
+          "oklch(84% 0.1178 356.35)",
+          "oklch(95% 0.1178 356.35)"
+        ]
+      },
+      "tone-sky": {
+        "role": "secondary",
+        "displayName": "Tone Sky",
+        "tonalRamp": [
+          "oklch(15% 0.0818 231.62)",
+          "oklch(26% 0.0818 231.62)",
+          "oklch(38% 0.0818 231.62)",
+          "oklch(49% 0.0818 231.62)",
+          "oklch(61% 0.0818 231.62)",
+          "oklch(72% 0.0818 231.62)",
+          "oklch(84% 0.0818 231.62)",
+          "oklch(95% 0.0818 231.62)"
+        ]
+      },
+      "brand-blue": {
+        "role": "primary",
+        "displayName": "Original Shared Brand Blue",
+        "tonalRamp": [
+          "oklch(15% 0.1499 260.17)",
+          "oklch(26% 0.1499 260.17)",
+          "oklch(38% 0.1499 260.17)",
+          "oklch(49% 0.1499 260.17)",
+          "oklch(61% 0.1499 260.17)",
+          "oklch(72% 0.1499 260.17)",
+          "oklch(84% 0.1499 260.17)",
+          "oklch(95% 0.1499 260.17)"
+        ]
+      },
+      "brand-shadow": {
+        "role": "neutral",
+        "displayName": "Original Shared Brand Shadow",
+        "tonalRamp": [
+          "oklch(15% 0.0219 263.19)",
+          "oklch(26% 0.0219 263.19)",
+          "oklch(38% 0.0219 263.19)",
+          "oklch(49% 0.0219 263.19)",
+          "oklch(61% 0.0219 263.19)",
+          "oklch(72% 0.0219 263.19)",
+          "oklch(84% 0.0219 263.19)",
+          "oklch(95% 0.0219 263.19)"
+        ]
+      },
+      "atlas-ground": {
+        "role": "primary",
+        "displayName": "Atlas Ground",
+        "tonalRamp": [
+          "oklch(15% 0.1760 269.78)",
+          "oklch(26% 0.1760 269.78)",
+          "oklch(38% 0.1760 269.78)",
+          "oklch(49% 0.1760 269.78)",
+          "oklch(61% 0.1760 269.78)",
+          "oklch(72% 0.1760 269.78)",
+          "oklch(84% 0.1760 269.78)",
+          "oklch(95% 0.1760 269.78)"
+        ]
+      },
+      "atlas-branch": {
+        "role": "primary",
+        "displayName": "Atlas Branch",
+        "tonalRamp": [
+          "oklch(15% 0.1724 270.23)",
+          "oklch(26% 0.1724 270.23)",
+          "oklch(38% 0.1724 270.23)",
+          "oklch(49% 0.1724 270.23)",
+          "oklch(61% 0.1724 270.23)",
+          "oklch(72% 0.1724 270.23)",
+          "oklch(84% 0.1724 270.23)",
+          "oklch(95% 0.1724 270.23)"
+        ]
+      },
+      "atlas-branch-hover": {
+        "role": "primary",
+        "displayName": "Atlas Branch Hover",
+        "tonalRamp": [
+          "oklch(15% 0.1723 270.31)",
+          "oklch(26% 0.1723 270.31)",
+          "oklch(38% 0.1723 270.31)",
+          "oklch(49% 0.1723 270.31)",
+          "oklch(61% 0.1723 270.31)",
+          "oklch(72% 0.1723 270.31)",
+          "oklch(84% 0.1723 270.31)",
+          "oklch(95% 0.1723 270.31)"
+        ]
+      },
+      "atlas-selected": {
+        "role": "primary",
+        "displayName": "Atlas Selected",
+        "tonalRamp": [
+          "oklch(15% 0.0266 262.34)",
+          "oklch(26% 0.0266 262.34)",
+          "oklch(38% 0.0266 262.34)",
+          "oklch(49% 0.0266 262.34)",
+          "oklch(61% 0.0266 262.34)",
+          "oklch(72% 0.0266 262.34)",
+          "oklch(84% 0.0266 262.34)",
+          "oklch(95% 0.0266 262.34)"
+        ]
+      },
+      "atlas-action": {
+        "role": "secondary",
+        "displayName": "Atlas Action",
+        "tonalRamp": [
+          "oklch(15% 0.0276 258.36)",
+          "oklch(26% 0.0276 258.36)",
+          "oklch(38% 0.0276 258.36)",
+          "oklch(49% 0.0276 258.36)",
+          "oklch(61% 0.0276 258.36)",
+          "oklch(72% 0.0276 258.36)",
+          "oklch(84% 0.0276 258.36)",
+          "oklch(95% 0.0276 258.36)"
+        ]
+      },
+      "atlas-action-ink": {
+        "role": "secondary",
+        "displayName": "Atlas Action Ink",
+        "tonalRamp": [
+          "oklch(15% 0.1397 266.70)",
+          "oklch(26% 0.1397 266.70)",
+          "oklch(38% 0.1397 266.70)",
+          "oklch(49% 0.1397 266.70)",
+          "oklch(61% 0.1397 266.70)",
+          "oklch(72% 0.1397 266.70)",
+          "oklch(84% 0.1397 266.70)",
+          "oklch(95% 0.1397 266.70)"
+        ]
+      },
+      "atlas-select": {
+        "role": "secondary",
+        "displayName": "Atlas Select",
+        "tonalRamp": [
+          "oklch(15% 0.1483 269.72)",
+          "oklch(26% 0.1483 269.72)",
+          "oklch(38% 0.1483 269.72)",
+          "oklch(49% 0.1483 269.72)",
+          "oklch(61% 0.1483 269.72)",
+          "oklch(72% 0.1483 269.72)",
+          "oklch(84% 0.1483 269.72)",
+          "oklch(95% 0.1483 269.72)"
+        ]
+      },
+      "atlas-copy": {
+        "role": "secondary",
+        "displayName": "Atlas Copy",
+        "tonalRamp": [
+          "oklch(15% 0.0273 276.84)",
+          "oklch(26% 0.0273 276.84)",
+          "oklch(38% 0.0273 276.84)",
+          "oklch(49% 0.0273 276.84)",
+          "oklch(61% 0.0273 276.84)",
+          "oklch(72% 0.0273 276.84)",
+          "oklch(84% 0.0273 276.84)",
+          "oklch(95% 0.0273 276.84)"
+        ]
+      },
+      "atlas-metadata": {
+        "role": "secondary",
+        "displayName": "Atlas Metadata",
+        "tonalRamp": [
+          "oklch(15% 0.0291 273.10)",
+          "oklch(26% 0.0291 273.10)",
+          "oklch(38% 0.0291 273.10)",
+          "oklch(49% 0.0291 273.10)",
+          "oklch(61% 0.0291 273.10)",
+          "oklch(72% 0.0291 273.10)",
+          "oklch(84% 0.0291 273.10)",
+          "oklch(95% 0.0291 273.10)"
+        ]
+      },
+      "atlas-connection": {
+        "role": "secondary",
+        "displayName": "Atlas Connection",
+        "tonalRamp": [
+          "oklch(15% 0.0850 272.67)",
+          "oklch(26% 0.0850 272.67)",
+          "oklch(38% 0.0850 272.67)",
+          "oklch(49% 0.0850 272.67)",
+          "oklch(61% 0.0850 272.67)",
+          "oklch(72% 0.0850 272.67)",
+          "oklch(84% 0.0850 272.67)",
+          "oklch(95% 0.0850 272.67)"
+        ]
+      },
+      "atlas-connection-active": {
+        "role": "secondary",
+        "displayName": "Atlas Connection Active",
+        "tonalRamp": [
+          "oklch(15% 0.0378 159.91)",
+          "oklch(26% 0.0378 159.91)",
+          "oklch(38% 0.0378 159.91)",
+          "oklch(49% 0.0378 159.91)",
+          "oklch(61% 0.0378 159.91)",
+          "oklch(72% 0.0378 159.91)",
+          "oklch(84% 0.0378 159.91)",
+          "oklch(95% 0.0378 159.91)"
+        ]
+      },
+      "atlas-branch-border": {
+        "role": "primary",
+        "displayName": "Atlas Branch Border",
+        "tonalRamp": [
+          "oklch(15% 0.0937 270.20)",
+          "oklch(26% 0.0937 270.20)",
+          "oklch(38% 0.0937 270.20)",
+          "oklch(49% 0.0937 270.20)",
+          "oklch(61% 0.0937 270.20)",
+          "oklch(72% 0.0937 270.20)",
+          "oklch(84% 0.0937 270.20)",
+          "oklch(95% 0.0937 270.20)"
+        ]
+      },
+      "atlas-focus": {
+        "role": "secondary",
+        "displayName": "Atlas Focus",
+        "tonalRamp": [
+          "oklch(15% 0.0864 76.54)",
+          "oklch(26% 0.0864 76.54)",
+          "oklch(38% 0.0864 76.54)",
+          "oklch(49% 0.0864 76.54)",
+          "oklch(61% 0.0864 76.54)",
+          "oklch(72% 0.0864 76.54)",
+          "oklch(84% 0.0864 76.54)",
+          "oklch(95% 0.0864 76.54)"
+        ]
+      },
+      "atlas-reading-ground": {
+        "role": "primary",
+        "displayName": "Atlas Reading Ground",
+        "tonalRamp": [
+          "oklch(15% 0.0601 173.00)",
+          "oklch(26% 0.0601 173.00)",
+          "oklch(38% 0.0601 173.00)",
+          "oklch(49% 0.0601 173.00)",
+          "oklch(61% 0.0601 173.00)",
+          "oklch(72% 0.0601 173.00)",
+          "oklch(84% 0.0601 173.00)",
+          "oklch(95% 0.0601 173.00)"
+        ]
+      },
+      "atlas-reading-branch": {
+        "role": "primary",
+        "displayName": "Atlas Reading Branch",
+        "tonalRamp": [
+          "oklch(15% 0.0687 172.12)",
+          "oklch(26% 0.0687 172.12)",
+          "oklch(38% 0.0687 172.12)",
+          "oklch(49% 0.0687 172.12)",
+          "oklch(61% 0.0687 172.12)",
+          "oklch(72% 0.0687 172.12)",
+          "oklch(84% 0.0687 172.12)",
+          "oklch(95% 0.0687 172.12)"
+        ]
+      },
+      "atlas-reading-selected": {
+        "role": "primary",
+        "displayName": "Atlas Reading Selected",
+        "tonalRamp": [
+          "oklch(15% 0.0221 145.40)",
+          "oklch(26% 0.0221 145.40)",
+          "oklch(38% 0.0221 145.40)",
+          "oklch(49% 0.0221 145.40)",
+          "oklch(61% 0.0221 145.40)",
+          "oklch(72% 0.0221 145.40)",
+          "oklch(84% 0.0221 145.40)",
+          "oklch(95% 0.0221 145.40)"
+        ]
+      },
+      "atlas-reading-ink": {
+        "role": "secondary",
+        "displayName": "Atlas Reading Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0613 164.60)",
+          "oklch(26% 0.0613 164.60)",
+          "oklch(38% 0.0613 164.60)",
+          "oklch(49% 0.0613 164.60)",
+          "oklch(61% 0.0613 164.60)",
+          "oklch(72% 0.0613 164.60)",
+          "oklch(84% 0.0613 164.60)",
+          "oklch(95% 0.0613 164.60)"
+        ]
+      },
+      "rift-midnight": {
+        "role": "neutral",
+        "displayName": "Rift Midnight",
+        "tonalRamp": [
+          "oklch(15% 0.0479 273.99)",
+          "oklch(26% 0.0479 273.99)",
+          "oklch(38% 0.0479 273.99)",
+          "oklch(49% 0.0479 273.99)",
+          "oklch(61% 0.0479 273.99)",
+          "oklch(72% 0.0479 273.99)",
+          "oklch(84% 0.0479 273.99)",
+          "oklch(95% 0.0479 273.99)"
+        ]
+      },
+      "rift-pearl": {
+        "role": "neutral",
+        "displayName": "Rift Pearl",
+        "tonalRamp": [
+          "oklch(15% 0.0164 274.82)",
+          "oklch(26% 0.0164 274.82)",
+          "oklch(38% 0.0164 274.82)",
+          "oklch(49% 0.0164 274.82)",
+          "oklch(61% 0.0164 274.82)",
+          "oklch(72% 0.0164 274.82)",
+          "oklch(84% 0.0164 274.82)",
+          "oklch(95% 0.0164 274.82)"
+        ]
+      },
+      "rift-indigo": {
+        "role": "secondary",
+        "displayName": "Rift Indigo",
+        "tonalRamp": [
+          "oklch(15% 0.0799 274.40)",
+          "oklch(26% 0.0799 274.40)",
+          "oklch(38% 0.0799 274.40)",
+          "oklch(49% 0.0799 274.40)",
+          "oklch(61% 0.0799 274.40)",
+          "oklch(72% 0.0799 274.40)",
+          "oklch(84% 0.0799 274.40)",
+          "oklch(95% 0.0799 274.40)"
+        ]
+      },
+      "rift-aqua": {
+        "role": "secondary",
+        "displayName": "Rift Aqua",
+        "tonalRamp": [
+          "oklch(15% 0.1006 186.50)",
+          "oklch(26% 0.1006 186.50)",
+          "oklch(38% 0.1006 186.50)",
+          "oklch(49% 0.1006 186.50)",
+          "oklch(61% 0.1006 186.50)",
+          "oklch(72% 0.1006 186.50)",
+          "oklch(84% 0.1006 186.50)",
+          "oklch(95% 0.1006 186.50)"
+        ]
+      },
+      "rift-coral": {
+        "role": "secondary",
+        "displayName": "Rift Coral",
+        "tonalRamp": [
+          "oklch(15% 0.1013 34.51)",
+          "oklch(26% 0.1013 34.51)",
+          "oklch(38% 0.1013 34.51)",
+          "oklch(49% 0.1013 34.51)",
+          "oklch(61% 0.1013 34.51)",
+          "oklch(72% 0.1013 34.51)",
+          "oklch(84% 0.1013 34.51)",
+          "oklch(95% 0.1013 34.51)"
+        ]
+      },
+      "rift-wordmark-muted": {
+        "role": "neutral",
+        "displayName": "Rift Wordmark Muted",
+        "tonalRamp": [
+          "oklch(15% 0.0526 269.59)",
+          "oklch(26% 0.0526 269.59)",
+          "oklch(38% 0.0526 269.59)",
+          "oklch(49% 0.0526 269.59)",
+          "oklch(61% 0.0526 269.59)",
+          "oklch(72% 0.0526 269.59)",
+          "oklch(84% 0.0526 269.59)",
+          "oklch(95% 0.0526 269.59)"
+        ]
+      },
+      "rift-wordmark-divider": {
+        "role": "neutral",
+        "displayName": "Rift Wordmark Divider",
+        "tonalRamp": [
+          "oklch(15% 0.0717 263.84)",
+          "oklch(26% 0.0717 263.84)",
+          "oklch(38% 0.0717 263.84)",
+          "oklch(49% 0.0717 263.84)",
+          "oklch(61% 0.0717 263.84)",
+          "oklch(72% 0.0717 263.84)",
+          "oklch(84% 0.0717 263.84)",
+          "oklch(95% 0.0717 263.84)"
+        ]
+      },
+      "rift-skip": {
+        "role": "neutral",
+        "displayName": "Rift Skip",
+        "tonalRamp": [
+          "oklch(15% 0.0585 271.35)",
+          "oklch(26% 0.0585 271.35)",
+          "oklch(38% 0.0585 271.35)",
+          "oklch(49% 0.0585 271.35)",
+          "oklch(61% 0.0585 271.35)",
+          "oklch(72% 0.0585 271.35)",
+          "oklch(84% 0.0585 271.35)",
+          "oklch(95% 0.0585 271.35)"
+        ]
+      },
+      "rift-skip-ink": {
+        "role": "neutral",
+        "displayName": "Rift Skip Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0251 271.14)",
+          "oklch(26% 0.0251 271.14)",
+          "oklch(38% 0.0251 271.14)",
+          "oklch(49% 0.0251 271.14)",
+          "oklch(61% 0.0251 271.14)",
+          "oklch(72% 0.0251 271.14)",
+          "oklch(84% 0.0251 271.14)",
+          "oklch(95% 0.0251 271.14)"
+        ]
+      },
+      "rift-skip-border": {
+        "role": "neutral",
+        "displayName": "Rift Skip Border",
+        "tonalRamp": [
+          "oklch(15% 0.0665 262.99)",
+          "oklch(26% 0.0665 262.99)",
+          "oklch(38% 0.0665 262.99)",
+          "oklch(49% 0.0665 262.99)",
+          "oklch(61% 0.0665 262.99)",
+          "oklch(72% 0.0665 262.99)",
+          "oklch(84% 0.0665 262.99)",
+          "oklch(95% 0.0665 262.99)"
+        ]
+      },
+      "rift-skip-hover": {
+        "role": "neutral",
+        "displayName": "Rift Skip Hover",
+        "tonalRamp": [
+          "oklch(15% 0.0697 268.18)",
+          "oklch(26% 0.0697 268.18)",
+          "oklch(38% 0.0697 268.18)",
+          "oklch(49% 0.0697 268.18)",
+          "oklch(61% 0.0697 268.18)",
+          "oklch(72% 0.0697 268.18)",
+          "oklch(84% 0.0697 268.18)",
+          "oklch(95% 0.0697 268.18)"
+        ]
+      },
+      "rift-skip-hover-border": {
+        "role": "neutral",
+        "displayName": "Rift Skip Hover Border",
+        "tonalRamp": [
+          "oklch(15% 0.0504 265.37)",
+          "oklch(26% 0.0504 265.37)",
+          "oklch(38% 0.0504 265.37)",
+          "oklch(49% 0.0504 265.37)",
+          "oklch(61% 0.0504 265.37)",
+          "oklch(72% 0.0504 265.37)",
+          "oklch(84% 0.0504 265.37)",
+          "oklch(95% 0.0504 265.37)"
+        ]
+      },
+      "rift-copy": {
+        "role": "neutral",
+        "displayName": "Rift Copy",
+        "tonalRamp": [
+          "oklch(15% 0.0313 269.80)",
+          "oklch(26% 0.0313 269.80)",
+          "oklch(38% 0.0313 269.80)",
+          "oklch(49% 0.0313 269.80)",
+          "oklch(61% 0.0313 269.80)",
+          "oklch(72% 0.0313 269.80)",
+          "oklch(84% 0.0313 269.80)",
+          "oklch(95% 0.0313 269.80)"
+        ]
+      },
+      "rift-final-copy": {
+        "role": "neutral",
+        "displayName": "Rift Final Copy",
+        "tonalRamp": [
+          "oklch(15% 0.0281 270.41)",
+          "oklch(26% 0.0281 270.41)",
+          "oklch(38% 0.0281 270.41)",
+          "oklch(49% 0.0281 270.41)",
+          "oklch(61% 0.0281 270.41)",
+          "oklch(72% 0.0281 270.41)",
+          "oklch(84% 0.0281 270.41)",
+          "oklch(95% 0.0281 270.41)"
+        ]
+      },
+      "rift-footer": {
+        "role": "neutral",
+        "displayName": "Rift Footer",
+        "tonalRamp": [
+          "oklch(15% 0.0414 265.69)",
+          "oklch(26% 0.0414 265.69)",
+          "oklch(38% 0.0414 265.69)",
+          "oklch(49% 0.0414 265.69)",
+          "oklch(61% 0.0414 265.69)",
+          "oklch(72% 0.0414 265.69)",
+          "oklch(84% 0.0414 265.69)",
+          "oklch(95% 0.0414 265.69)"
+        ]
+      },
+      "rift-mouse-border": {
+        "role": "neutral",
+        "displayName": "Rift Mouse Border",
+        "tonalRamp": [
+          "oklch(15% 0.0543 262.64)",
+          "oklch(26% 0.0543 262.64)",
+          "oklch(38% 0.0543 262.64)",
+          "oklch(49% 0.0543 262.64)",
+          "oklch(61% 0.0543 262.64)",
+          "oklch(72% 0.0543 262.64)",
+          "oklch(84% 0.0543 262.64)",
+          "oklch(95% 0.0543 262.64)"
+        ]
+      },
+      "rift-mouse-wheel": {
+        "role": "neutral",
+        "displayName": "Rift Mouse Wheel",
+        "tonalRamp": [
+          "oklch(15% 0.0314 267.97)",
+          "oklch(26% 0.0314 267.97)",
+          "oklch(38% 0.0314 267.97)",
+          "oklch(49% 0.0314 267.97)",
+          "oklch(61% 0.0314 267.97)",
+          "oklch(72% 0.0314 267.97)",
+          "oklch(84% 0.0314 267.97)",
+          "oklch(95% 0.0314 267.97)"
+        ]
+      },
+      "rift-progress-track": {
+        "role": "neutral",
+        "displayName": "Rift Progress Track",
+        "tonalRamp": [
+          "oklch(15% 0.0633 264.87)",
+          "oklch(26% 0.0633 264.87)",
+          "oklch(38% 0.0633 264.87)",
+          "oklch(49% 0.0633 264.87)",
+          "oklch(61% 0.0633 264.87)",
+          "oklch(72% 0.0633 264.87)",
+          "oklch(84% 0.0633 264.87)",
+          "oklch(95% 0.0633 264.87)"
+        ]
+      },
+      "rift-progress": {
+        "role": "neutral",
+        "displayName": "Rift Progress",
+        "tonalRamp": [
+          "oklch(15% 0.0752 270.63)",
+          "oklch(26% 0.0752 270.63)",
+          "oklch(38% 0.0752 270.63)",
+          "oklch(49% 0.0752 270.63)",
+          "oklch(61% 0.0752 270.63)",
+          "oklch(72% 0.0752 270.63)",
+          "oklch(84% 0.0752 270.63)",
+          "oklch(95% 0.0752 270.63)"
+        ]
+      },
+      "rift-progress-ink": {
+        "role": "neutral",
+        "displayName": "Rift Progress Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0135 277.07)",
+          "oklch(26% 0.0135 277.07)",
+          "oklch(38% 0.0135 277.07)",
+          "oklch(49% 0.0135 277.07)",
+          "oklch(61% 0.0135 277.07)",
+          "oklch(72% 0.0135 277.07)",
+          "oklch(84% 0.0135 277.07)",
+          "oklch(95% 0.0135 277.07)"
+        ]
+      },
+      "rift-focus": {
+        "role": "neutral",
+        "displayName": "Rift Focus",
+        "tonalRamp": [
+          "oklch(15% 0.0610 66.14)",
+          "oklch(26% 0.0610 66.14)",
+          "oklch(38% 0.0610 66.14)",
+          "oklch(49% 0.0610 66.14)",
+          "oklch(61% 0.0610 66.14)",
+          "oklch(72% 0.0610 66.14)",
+          "oklch(84% 0.0610 66.14)",
+          "oklch(95% 0.0610 66.14)"
+        ]
+      },
+      "rift-fragments": {
+        "role": "neutral",
+        "displayName": "Rift Fragments",
+        "tonalRamp": [
+          "oklch(15% 0.0572 276.48)",
+          "oklch(26% 0.0572 276.48)",
+          "oklch(38% 0.0572 276.48)",
+          "oklch(49% 0.0572 276.48)",
+          "oklch(61% 0.0572 276.48)",
+          "oklch(72% 0.0572 276.48)",
+          "oklch(84% 0.0572 276.48)",
+          "oklch(95% 0.0572 276.48)"
+        ]
+      },
+      "rift-fallback-glow": {
+        "role": "neutral",
+        "displayName": "Rift Fallback Glow",
+        "tonalRamp": [
+          "oklch(15% 0.0848 271.96)",
+          "oklch(26% 0.0848 271.96)",
+          "oklch(38% 0.0848 271.96)",
+          "oklch(49% 0.0848 271.96)",
+          "oklch(61% 0.0848 271.96)",
+          "oklch(72% 0.0848 271.96)",
+          "oklch(84% 0.0848 271.96)",
+          "oklch(95% 0.0848 271.96)"
+        ]
+      },
+      "rift-fallback-mid": {
+        "role": "neutral",
+        "displayName": "Rift Fallback Mid",
+        "tonalRamp": [
+          "oklch(15% 0.0675 274.36)",
+          "oklch(26% 0.0675 274.36)",
+          "oklch(38% 0.0675 274.36)",
+          "oklch(49% 0.0675 274.36)",
+          "oklch(61% 0.0675 274.36)",
+          "oklch(72% 0.0675 274.36)",
+          "oklch(84% 0.0675 274.36)",
+          "oklch(95% 0.0675 274.36)"
+        ]
+      },
+      "rift-fallback-indigo": {
+        "role": "neutral",
+        "displayName": "Rift Fallback Indigo",
+        "tonalRamp": [
+          "oklch(15% 0.1056 274.25)",
+          "oklch(26% 0.1056 274.25)",
+          "oklch(38% 0.1056 274.25)",
+          "oklch(49% 0.1056 274.25)",
+          "oklch(61% 0.1056 274.25)",
+          "oklch(72% 0.1056 274.25)",
+          "oklch(84% 0.1056 274.25)",
+          "oklch(95% 0.1056 274.25)"
+        ]
+      },
+      "rift-fallback-violet": {
+        "role": "neutral",
+        "displayName": "Rift Fallback Violet",
+        "tonalRamp": [
+          "oklch(15% 0.1319 289.66)",
+          "oklch(26% 0.1319 289.66)",
+          "oklch(38% 0.1319 289.66)",
+          "oklch(49% 0.1319 289.66)",
+          "oklch(61% 0.1319 289.66)",
+          "oklch(72% 0.1319 289.66)",
+          "oklch(84% 0.1319 289.66)",
+          "oklch(95% 0.1319 289.66)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero title."
+      },
+      "display-phone": {
+        "displayName": "Display Phone",
+        "purpose": "Final phone hero title."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Dedicated view headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Course display titles."
+      },
+      "title-phone": {
+        "displayName": "Title Phone",
+        "purpose": "Phone course display titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Inherited reading/body foundation."
+      },
+      "body-compact": {
+        "displayName": "Body Compact",
+        "purpose": "Compact operating copy."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Metadata and control labels."
+      },
+      "atlas-title": {
+        "displayName": "Atlas Title",
+        "purpose": "Actual course title in the Atlas hero."
+      },
+      "atlas-collection": {
+        "displayName": "Atlas Collection",
+        "purpose": "Selected source-family lane heading."
+      },
+      "atlas-source": {
+        "displayName": "Atlas Source",
+        "purpose": "Numbered source-row title."
+      },
+      "atlas-source-phone": {
+        "displayName": "Atlas Source Phone",
+        "purpose": "Phone source-row title."
+      },
+      "atlas-marker": {
+        "displayName": "Atlas Marker",
+        "purpose": "Decorative source ordinal."
+      },
+      "atlas-count": {
+        "displayName": "Atlas Count",
+        "purpose": "Profile-scoped branch count."
+      },
+      "rift-wordmark": {
+        "displayName": "Rift Wordmark",
+        "purpose": "Opening scene wordmark."
+      },
+      "rift-display": {
+        "displayName": "Rift Display",
+        "purpose": "Four-phase scene headline."
+      },
+      "rift-arrival": {
+        "displayName": "Rift Arrival",
+        "purpose": "Final Study Hub arrival title."
+      },
+      "rift-copy": {
+        "displayName": "Rift Copy",
+        "purpose": "Opening scene descriptive copy."
+      },
+      "rift-copy-compact": {
+        "displayName": "Rift Copy Compact",
+        "purpose": "Copy at 1200px and below."
+      },
+      "rift-arrival-copy": {
+        "displayName": "Rift Arrival Copy",
+        "purpose": "Final arrival sentence."
+      },
+      "rift-control": {
+        "displayName": "Rift Control",
+        "purpose": "Skip and footer controls."
+      }
+    },
+    "shadows": [
+      {
+        "name": "book-rest",
+        "value": "0 9px 17px #00000026",
+        "purpose": "Resting illustrated book."
+      },
+      {
+        "name": "book-hover",
+        "value": "0 14px 25px #00000033",
+        "purpose": "CSS book hover/focus."
+      },
+      {
+        "name": "course-lift",
+        "value": "0 24px 40px rgba(0,0,0,.16)",
+        "purpose": "Automatic fine-pointer spring lift."
+      },
+      {
+        "name": "theme-selection",
+        "value": "0 2px 5px #18204910",
+        "purpose": "Selected theme control."
+      },
+      {
+        "name": "brand-mark",
+        "value": "-5px 5px 0 #e8f0ff",
+        "purpose": "Original shared brand identity; fixed across viewports and themes."
+      },
+      {
+        "name": "atlas-branch",
+        "value": "0 6px 15px #00000013",
+        "purpose": "Source-map branch depth."
+      },
+      {
+        "name": "atlas-branch-selected",
+        "value": "0 8px 22px #0002",
+        "purpose": "Selected source-map branch."
+      },
+      {
+        "name": "atlas-hub",
+        "value": "0 8px 20px #0002",
+        "purpose": "Actual course-icon hub."
+      },
+      {
+        "name": "rift-copy",
+        "value": "0 3px 20px #080b22",
+        "purpose": "Text legibility over the sculpture and tunnel."
+      },
+      {
+        "name": "rift-arrival",
+        "value": "0 4px 28px #080b22",
+        "purpose": "Final centred title legibility."
+      }
+    ],
+    "motion": [
+      {
+        "name": "course-lift",
+        "value": "0.65s elastic.out(1,.45); y -17px; scale 1.045",
+        "purpose": "Automatic exuberant spring hover on fine pointers."
+      },
+      {
+        "name": "course-reset",
+        "value": "0.7s elastic.out(1,.45)",
+        "purpose": "Return a card to rest."
+      },
+      {
+        "name": "pointer-tilt",
+        "value": "0.25s; rotationY ±6deg; rotationX ±5deg; perspective 900px",
+        "purpose": "Fine-pointer course-card tilt."
+      },
+      {
+        "name": "magnetic-return",
+        "value": "0.6s elastic.out(1,.3)",
+        "purpose": "Discovery button return."
+      },
+      {
+        "name": "book-reset",
+        "value": "0.8s elastic.out(1,.3)",
+        "purpose": "Bounded book drag return."
+      },
+      {
+        "name": "section-entry",
+        "value": "0.35s power3.out",
+        "purpose": "Visible section change."
+      },
+      {
+        "name": "motion-policy",
+        "value": "Automatic; prefers-reduced-motion: reduce -> static fallback",
+        "purpose": "Ignore obsolete saved-off state; no play button or header lightning toggle. Pause persistent energy offscreen/hidden and resume on return."
+      },
+      {
+        "name": "book-float",
+        "value": "5s ease-in-out infinite; translate 0 -9px at midpoint",
+        "purpose": "Visible normal-state books; paused while dragging, offscreen, hidden or reduced."
+      },
+      {
+        "name": "atlas-current",
+        "value": "2.2s linear infinite; stroke-dashoffset -65",
+        "purpose": "Visible source-map flowing connections."
+      },
+      {
+        "name": "atlas-rings",
+        "value": "21s / 34s linear infinite; opposing directions",
+        "purpose": "Visible rounded hub rings; static in reduced motion."
+      },
+      {
+        "name": "atlas-selection",
+        "value": "0.65s elastic.out(1,.45) core spring; 0.35s power3.out panel transition",
+        "purpose": "Native family selection feedback."
+      },
+      {
+        "name": "canvas-energy",
+        "value": "56 points; DPR <=1.5; frame interval >=30ms; burst <=68 particles",
+        "purpose": "Persistent bounded constellation and radial pointer-down feedback; visibility/intersection lifecycle; static reduced-motion rendering."
+      },
+      {
+        "name": "rift-scroll-scrub",
+        "value": "native scroll; scrub 0.55; distance clamp(1800px,2.4 viewport heights,2600px)",
+        "purpose": "Four authored phases; reverse scroll reverses the journey."
+      },
+      {
+        "name": "rift-pointer",
+        "value": "pointer smoothing 0.05; impulse decay 0.96/frame",
+        "purpose": "Camera parallax and bounded scene press feedback without intercepting control presses."
+      },
+      {
+        "name": "rift-lifecycle",
+        "value": "sem2-studio-rift-intro-v3; ?intro=rift; compatibility ?intro=processor",
+        "purpose": "Once per eligible desktop session; skip, system reduced-motion/phone bypass, context-loss Canvas fallback, asynchronous cancellation and complete GPU/shell cleanup."
+      },
+      {
+        "name": "rift-scroll-cue",
+        "value": "1.8s ease-in-out infinite; translate 0 5px at midpoint",
+        "purpose": "Small scene scroll-direction cue while the eligible intro is present."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "single-course-column-max",
+        "value": "359px"
+      },
+      {
+        "name": "phone-max",
+        "value": "540px"
+      },
+      {
+        "name": "reader-compact-max",
+        "value": "760px"
+      },
+      {
+        "name": "bottom-nav-max",
+        "value": "800px"
+      },
+      {
+        "name": "compact-desktop-max",
+        "value": "1200px"
+      },
+      {
+        "name": "wide-min",
+        "value": "1600px"
+      },
+      {
+        "name": "atlas-stack-max",
+        "value": "1100px"
+      },
+      {
+        "name": "atlas-compact-max",
+        "value": "1300px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Theme-aware action button.",
+      "html": "<button class=\"ds-button\">استكشف المصادر</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:45px;border:0;border-radius:9px;padding:10px 18px;font:500 12px Alexandria,Tahoma,sans-serif;background:var(--accent,#4653d6);color:var(--paper,#fff);cursor:pointer}.ds-button:hover{filter:brightness(.96)}.ds-button:focus-visible{outline:3px solid var(--focus,#b34e13);outline-offset:4px}"
+    },
+    {
+      "name": "Hero button",
+      "kind": "button",
+      "refersTo": "button-hero",
+      "description": "White action on the cobalt invitation.",
+      "html": "<a class=\"ds-hero-button\" href=\"#courses-section\">اختار مادتك</a>",
+      "css": ".ds-hero-button{display:inline-flex;align-items:center;justify-content:center;min-height:45px;border-radius:9px;padding:10px 18px;font:500 12px Alexandria,Tahoma,sans-serif;background:#fff;color:#3440b5;text-decoration:none}.ds-hero-button:hover{filter:brightness(.96)}.ds-hero-button:focus-visible{outline:3px solid var(--focus,#b34e13);outline-offset:4px}"
+    },
+    {
+      "name": "Search input",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Native metadata query field.",
+      "html": "<label class=\"ds-search\"><svg viewBox=\"0 0 24 24\" width=\"17\" height=\"17\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input aria-label=\"ابحث في المصادر\" placeholder=\"ابحث في المصادر\"></label>",
+      "css": ".ds-search{display:flex;align-items:center;gap:10px;padding:2px 13px;background:var(--paper,#fff);border:1px solid var(--line,#e0e3ef);border-radius:10px;color:var(--muted,#64667c)}.ds-search input{width:100%;min-width:0;min-height:44px;border:0;outline:0;background:transparent;color:var(--ink,#252642);padding:8px 0;font:12px Alexandria,Tahoma,sans-serif}.ds-search input::placeholder{color:var(--muted,#64667c);opacity:1}.ds-search:focus-within{outline:2px solid var(--accent,#4653d6);outline-offset:2px}.ds-search:hover{border-color:var(--line,#e0e3ef)}"
+    },
+    {
+      "name": "Rail route",
+      "kind": "nav",
+      "refersTo": "nav-active",
+      "description": "Persistent current route with native link semantics.",
+      "html": "<nav dir=\"rtl\" aria-label=\"الأقسام\"><a class=\"ds-route\" aria-current=\"page\" href=\"#library\">مكتبة المصادر</a></nav>",
+      "css": ".ds-route{display:flex;align-items:center;gap:12px;padding:12px 15px;min-height:48px;border-radius:10px;font:600 12px Alexandria,Tahoma,sans-serif;background:var(--soft,#eaedff);color:var(--accent,#4653d6);text-decoration:none}.ds-route:hover{background:var(--soft,#eaedff)}.ds-route:focus-visible{outline:3px solid var(--focus,#b34e13);outline-offset:4px}"
+    },
+    {
+      "name": "Selected filter",
+      "kind": "chip",
+      "refersTo": "chip-active",
+      "description": "Selected course filter.",
+      "html": "<button class=\"ds-chip\" aria-pressed=\"true\">الكل</button>",
+      "css": ".ds-chip{min-height:38px;padding:7px 12px;border:0;border-radius:7px;font:600 11px Alexandria,Tahoma,sans-serif;color:var(--accent,#4653d6);background:var(--soft,#eaedff);cursor:pointer}.ds-chip:hover{background:var(--soft,#eaedff)}.ds-chip:focus-visible{outline:3px solid var(--focus,#b34e13);outline-offset:4px}"
+    },
+    {
+      "name": "Course card",
+      "kind": "card",
+      "refersTo": "course-card",
+      "description": "A flat course cover with title and separated open action.",
+      "html": "<a class=\"ds-card\" dir=\"rtl\" href=\"subject.html?id=database-systems\"><span class=\"ds-cover\"><svg width=\"54\" height=\"54\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.4\" aria-hidden=\"true\"><ellipse cx=\"12\" cy=\"5\" rx=\"9\" ry=\"3\"/><path d=\"M3 5v14a9 3 0 0 0 18 0V5M3 12a9 3 0 0 0 18 0\"/></svg></span><h3 class=\"ds-card-title\">Database Systems</h3><span class=\"ds-enter\">ادخل المادة</span></a>",
+      "css": ".ds-card{display:flex;flex-direction:column;width:280px;border:1px solid var(--line,#e0e3ef);border-radius:13px;background:var(--paper,#fff);color:var(--ink,#252642);text-decoration:none;font-family:Alexandria,Tahoma,sans-serif}.ds-cover{height:116px;display:flex;align-items:center;justify-content:center;border-radius:12px 12px 0 0;background:var(--course-mint,#e2f3eb);color:#33785c}.ds-card-title{font-size:20px;font-weight:650;line-height:1.4;margin:0;padding:17px 18px 8px}.ds-enter{padding:11px 18px;border-top:1px solid var(--line,#e0e3ef);font-size:11px;color:var(--accent,#4653d6)}.ds-card:hover{border-color:var(--accent,#4653d6)}.ds-card:focus-visible{outline:3px solid var(--focus,#b34e13);outline-offset:4px}@media(max-width:760px){.ds-card-title{font-size:18px}}"
+    },
+    {
+      "name": "Book link",
+      "kind": "custom",
+      "refersTo": "book-link",
+      "description": "Mint database book with automatic visible-hero floating; pink OS and peach structures are sibling covers. The live hero handles visibility pausing.",
+      "html": "<a class=\"ds-book\" href=\"subject.html?id=database-systems\"><span>Database<br>Systems</span><small dir=\"rtl\">افهم العلاقات بين البيانات</small></a>",
+      "css": ".ds-book{display:flex;flex-wrap:wrap;align-content:start;gap:8px 12px;width:253px;min-height:110px;border-radius:11px;padding:18px 20px;background:#d6eddf;color:#32355f;text-decoration:none;box-shadow:0 9px 17px #00000026;transform:rotate(-7deg);animation:ds-book-float 5s ease-in-out infinite;transition:transform .25s ease,box-shadow .25s ease;font-family:Alexandria,Tahoma,sans-serif}.ds-book span{font-size:15px;font-weight:600;line-height:1.4}.ds-book small{flex-basis:100%;font-size:11px;line-height:1.7;text-align:left}.ds-book:hover{transform:rotate(0deg) translateY(-7px);box-shadow:0 14px 25px #00000033}.ds-book:focus-visible{outline:3px solid var(--focus,#b34e13);outline-offset:4px}@keyframes ds-book-float{0%,100%{translate:0 0}50%{translate:0 -9px}}@media(prefers-reduced-motion:reduce){.ds-book{transition:none;animation:none}.ds-book:hover{transform:none}}"
+    },
+    {
+      "name": "Library row",
+      "kind": "card",
+      "refersTo": "library-row",
+      "description": "Compact source shelf with visible open action.",
+      "html": "<a class=\"ds-source\" dir=\"rtl\" href=\"subject.html?id=database-systems\"><span class=\"ds-source-copy\"><strong>Database Systems</strong><small>Database Systems / محاضرة</small></span><span class=\"ds-source-action\">افتح المصدر</span></a>",
+      "css": ".ds-source{display:flex;align-items:center;gap:15px;padding:19px 20px;border-bottom:1px solid var(--line,#e0e3ef);background:var(--paper,#fff);color:var(--ink,#252642);font-family:Alexandria,Tahoma,sans-serif;text-decoration:none}.ds-source-copy{flex:1}.ds-source strong{font-size:16px;font-weight:600;line-height:1.5}.ds-source small{display:block;margin-top:4px;font-size:11px;line-height:1.9;color:var(--muted,#64667c)}.ds-source-action{font-size:11px;color:var(--accent,#4653d6)}.ds-source:hover{background:var(--soft,#eaedff)}.ds-source:focus-visible{outline:3px solid var(--focus,#b34e13);outline-offset:4px}"
+    },
+    {
+      "name": "Original shared brand mark",
+      "kind": "custom",
+      "refersTo": "brand-mark",
+      "description": "The original portal mark, shared with the OS pilot and fixed across themes and viewport sizes.",
+      "html": "<a class=\"ds-brand-link\" href=\"index.html\" aria-label=\"Study Hub\"><span class=\"ds-brand-mark\" aria-hidden=\"true\"></span></a>",
+      "css": ".ds-brand-link{display:inline-flex}.ds-brand-mark{display:inline-block;width:20px;height:26px;border-radius:3px 3px 9px 3px;background:#2357ae;box-shadow:-5px 5px 0 #e8f0ff}.ds-brand-mark:after{display:none}.ds-brand-link:focus-visible{outline:3px solid var(--focus,#b34e13);outline-offset:4px}"
+    },
+    {
+      "name": "Atlas source branch",
+      "kind": "button",
+      "refersTo": "atlas-branch",
+      "description": "One of five native source-family branches. Runtime supplies real profile-scoped counts and pressed state; no demonstration count is fabricated.",
+      "html": "<button class=\"ds-atlas-branch\" aria-pressed=\"true\"><svg width=\"23\" height=\"23\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"M12 7v14M3 3h6a3 3 0 0 1 3 3 3 3 0 0 1 3-3h6v18h-6a3 3 0 0 0-3 0 3 3 0 0 0-3 0H3z\"/></svg><span>المحاضرات</span></button>",
+      "css": ".ds-atlas-branch{display:grid;grid-template-columns:25px minmax(0,1fr);column-gap:8px;align-items:center;text-align:right;background:#3042ae;border:1px solid #aabfff88;border-radius:12px;padding:10px 12px;color:#fff;min-height:65px;width:143px;box-shadow:0 6px 15px #00000013;font:500 12px Alexandria,Tahoma,sans-serif;transition:background .2s,border-color .2s,translate .3s cubic-bezier(.2,1.5,.4,1)}.ds-atlas-branch[aria-pressed=\"true\"]{background:#e3edff;color:#213a8c;border-color:#e3edff;box-shadow:0 8px 22px #0002}.ds-atlas-branch:hover{translate:0 -5px;border-color:#fff;background:#3b50bd}.ds-atlas-branch[aria-pressed=\"true\"]:hover{background:#fff;color:#213a8c}.ds-atlas-branch:focus-visible{outline:3px solid #ffd79d;outline-offset:4px}@media(max-width:540px){.ds-atlas-branch{width:105px;min-height:53px;grid-template-columns:19px minmax(0,1fr);column-gap:5px;padding:7px 8px;border-radius:9px;font-size:11px}.ds-atlas-branch svg{width:18px;height:18px}}@media(prefers-reduced-motion:reduce){.ds-atlas-branch{transition:background .15s,border-color .15s}}"
+    },
+    {
+      "name": "Rift skip control",
+      "kind": "button",
+      "refersTo": "rift-skip",
+      "description": "Always-available scene exit, distinct from the rejected play/disable controls.",
+      "html": "<button class=\"ds-rift-skip\" type=\"button\">تخطّي المقدمة</button>",
+      "css": ".ds-rift-skip{font:400 12px/1.7 Alexandria,Tahoma,sans-serif;display:flex;align-items:center;gap:20px;background:#141b39;color:#e7edff;border:1px solid #687da5;border-radius:10px;padding:9px 16px;min-height:44px;direction:rtl;cursor:pointer}.ds-rift-skip:hover{background:#263359;border-color:#c3d3f5}.ds-rift-skip:focus-visible{outline:3px solid #ffdbb8;outline-offset:5px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Contemporary University Library",
+    "overview": "A bright student library turns six course identities into coloured book covers, clear shelves of resources and a persistent route home. Cool paper, cobalt invitations and locally bundled Alexandria make the Arabic interface feel welcoming while English academic titles share its display voice.\n\nThe human explicitly requested plentiful exuberant animation. Springing cards, a persistent Canvas constellation, floating books and a branching source atlas make discovery continuously interactive; the reader stays quiet. Motion starts automatically, with system reduced motion providing a static fallback. On an eligible first desktop session, Study Rift opens with an iridescent procedural sculpture, a scroll-directed tunnel flight and arrival at the Study Hub title before the Studio home; permanent Canvas and Atlas interactions remain available after it. Native links, selectors and scrolling retain their ordinary behavior.",
+    "keyCharacteristics": [
+      "Course colour continuity across books, cards, navigation and resource rows.",
+      "A right rail on desktop and a bottom route bar on phones.",
+      "Abundant automatic interaction around stable learning controls, with a static system reduced-motion fallback.",
+      "Real library metadata and saved study state determine the interface."
+    ],
+    "rules": [
+      {
+        "name": "The Same Shelf Rule",
+        "body": "A course retains its colour family wherever it appears; theme changes alter its wash without changing its identity.",
+        "section": "colors"
+      },
+      {
+        "name": "The Shared Display Voice Rule",
+        "body": "Arabic and English display titles use the bundled Alexandria face; system fonts remain utility fallbacks, not the display direction.",
+        "section": "typography"
+      },
+      {
+        "name": "The Quiet Reader Rule",
+        "body": "Keep discovery motion outside the reading content; use static constellation and stop spatial effects when system reduced motion is requested. Automatic discovery motion is the approved normal state; do not restore the rejected play button or header lightning toggle.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Rift Entry Sequence Rule",
+        "body": "On eligible desktop home entry, run Study Rift once per session; forced eligible replay and its legacy query alias both open the new scene. Preserve native reverse scroll, a clear skip action, reduced-motion/phone bypass, graphics fallback and complete shell/GPU cleanup before normal Studio use. Home library, continue and timetable routes bypass it.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do preserve each course colour across navigation, cards, books and results.",
+      "Do retain native course and resource controls, visible focus and all five source-map branches on phones.",
+      "Do use actual catalog metadata and saved reader state for resource and continue views.",
+      "Do provide abundant automatic discovery interaction, pause offscreen energy and preserve the system reduced-motion fallback.",
+      "Do keep the primary course action ahead of the decorative book stack on phones."
+    ],
+    "donts": [
+      "Don't revive the redundant track strip beside resource-family controls.",
+      "Don't add decorative timetable eyebrows or nest extra bordered cards around its rows.",
+      "Don't replace local display typography with a system display face.",
+      "Don't fabricate progress, counts or learning completion to fill an empty view.",
+      "Don't restore the rejected hero play button, header lightning toggle or obsolete saved-off behavior.",
+      "Don't leave ordinary Studio scrolling or navigation blocked after Study Rift, replace the cursor or animate the reading content."
+    ]
+  }
+}

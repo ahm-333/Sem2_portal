@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const out=path.resolve(__dirname,'../test-results/education/os-course/logo');fs.mkdirSync(out,{recursive:true});
 const origin=process.env.PORTAL_ORIGIN||'http://127.0.0.1:8765/';
 (async()=>{const browser=await chromium.launch(require('../education-preview/os/browser-options.cjs'));try{
- const context=await browser.newContext();await context.addInitScript(()=>{localStorage.setItem('sem2_first_visit_configured','true');window.sessionStorage.setItem('sem2-a1-processor-intro-v1','seen');});
+ const context=await browser.newContext();await context.addInitScript(()=>{localStorage.setItem('sem2_first_visit_configured','true');window.sessionStorage.setItem('sem2-studio-rift-intro-v3','seen');});
  const reference=await context.newPage();await reference.goto(origin+'education-preview/os/');
  const expected=await reference.locator('.brand-mark').evaluate(e=>{const s=getComputedStyle(e);return{width:s.width,height:s.height,radius:s.borderRadius,background:s.backgroundColor,shadow:s.boxShadow};});
  for(const width of [360,390,1440])for(const route of ['index.html','subject.html?id=operating-system']){

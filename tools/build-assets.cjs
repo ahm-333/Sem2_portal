@@ -13,6 +13,12 @@ fs.mkdirSync(vendor,{recursive:true});
 const lucide = path.dirname(require.resolve('lucide/package.json'));
 fs.copyFileSync(path.join(lucide,'dist/umd/lucide.min.js'),path.join(vendor,'lucide.min.js'));
 fs.copyFileSync(path.join(lucide,'LICENSE'),path.join(vendor,'LUCIDE-LICENSE'));
+// The opening scene is lazy-loaded and has no CDN dependency at runtime.
+const threeRoot = path.resolve(path.dirname(require.resolve('three')), '..');
+const threeVendor = path.join(vendor,'three');
+fs.mkdirSync(threeVendor,{recursive:true});
+for (const file of ['three.module.js','three.core.js']) fs.copyFileSync(path.join(threeRoot,'build',file),path.join(threeVendor,file));
+fs.copyFileSync(path.join(threeRoot,'LICENSE'),path.join(threeVendor,'LICENSE'));
 const studySource = fs.readFileSync(path.join(root,'js/lecture-explanations-data.js'),'utf8');
 const scope = {window:{}};
 vm.createContext(scope);

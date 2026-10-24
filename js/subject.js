@@ -58,8 +58,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // 4. تعبئة بيانات المادة الثابتة
-  document.getElementById("nav-subject-name").textContent = display.name;
-  document.getElementById("nav-subject-code").textContent = `${course.code} • ${course.arabicName}`;
+  const navName = document.getElementById("nav-subject-name");
+  const navCode = document.getElementById("nav-subject-code");
+  if (navName) navName.textContent = display.name;
+  if (navCode) navCode.textContent = `${course.code} • ${course.arabicName}`;
   document.getElementById("crumb-subject-name").textContent = display.name;
 
   document.getElementById("subject-title-en").textContent = display.name;

@@ -11,7 +11,7 @@
   // قراءة الثيم الحالي أو الافتراضي (Dark)
   function getSavedTheme() {
     const saved = window.PortalStorage.getItem(THEME_KEY);
-    return THEMES.includes(saved) ? saved : "dark";
+    return THEMES.includes(saved) ? saved : "light";
   }
 
   // تطبيق الثيم على وسم <html>
