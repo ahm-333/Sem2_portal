@@ -1,6 +1,7 @@
 # 🎓 Kernal — The core of every study
 
-> 🌐 **رابط المنصة المباشر على Vercel:** [https://temporary-rushing-bismuth-0vuohhg-anon-delta-lake.vercel.app](https://temporary-rushing-bismuth-0vuohhg-anon-delta-lake.vercel.app)  
+> 🌐 **رابط الموقع المباشر (GitHub Pages):** [https://ahm-333.github.io/Sem2_portal/](https://ahm-333.github.io/Sem2_portal/)  
+> ⚡ **رابط المنصة على Vercel:** [https://sem2portal.vercel.app/](https://sem2portal.vercel.app/)  
 > 💻 **مستودع الكود على GitHub:** [https://github.com/ahm-333/Sem2_portal](https://github.com/ahm-333/Sem2_portal)
 
 التجربة الحالية هي **Study Studio**: تصميم وتجربة استخدام جديدان بالكامل، بمكتبة مصادر قابلة للبحث، استكمال الشرح، وتنقّل متكيف مع الموبايل والكمبيوتر. التشغيل والمراجعة: [دليل النسخة الجديدة](docs/STUDIO-REVIEW.md). سجلات A1 أدناه توثّق النسخة السابقة.
