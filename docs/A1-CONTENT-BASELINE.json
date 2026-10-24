@@ -1,7 +1,7 @@
 {
   "head": "729f29150f95f580f4f12678223fdbfc62a338a6",
   "files": {
-    "js/courses-data.js": "a10d53bf7a19f7dc2e706e244e1c01f969c453c2f610c02a2fe4f10827a4cd97",
+    "js/courses-data.js": "59335bd696e8e052bed69566734e13660ce17721dde90440be39cd257cb00289",
     "js/schedule-data.js": "b30572a7fbabea5a8203a901b8a1e5d52bc54512145b5eec2494c415a7609e57",
     "js/lecture-explanations-data.js": "9f63d13c4fb0ce3333367cb9aadfb395f6559a4190881b3b30ef5bc67fcaef8e",
     "tools/pending-schedule.json": "69b1f7e256a37cd43ed16babf73c05d9f4b17b742cb5552e8c348669edb4af85",
@@ -1247,7 +1247,8 @@
             "Types of Database Users (Actors on the Scene vs Behind the Scene)",
             "Advantages of Using the Database Approach (Normalization, Standards, Security)"
           ],
-          "notes": "سلايدات المحاضرة 2 المعتمدة (د. محمد ماهر) متوفرة بشرح تفاعلي ذكي لكل شريحة مع كويزات وتريكات الامتحان."
+          "notes": "سلايدات المحاضرة 2 المعتمدة (د. محمد ماهر) متوفرة بشرح تفاعلي ذكي لكل شريحة مع كويزات وتريكات الامتحان.",
+          "studyManualUrl": "study/db/chapter-1.html"
         },
         {
           "id": 3,
@@ -1273,7 +1274,8 @@
             "DBMS Languages (DDL, SDL, VDL, DML)",
             "DBMS Architectures (Centralized, 2-Tier, 3-Tier Web Architectures)"
           ],
-          "notes": "المحاضرة 3 الرسمية المعتمدة (lec 3 ch 2.ppt) لدكتور محمد ماهر مع تفكيك المخططات والشرح التفاعلي الذكي"
+          "notes": "المحاضرة 3 الرسمية المعتمدة (lec 3 ch 2.ppt) لدكتور محمد ماهر مع تفكيك المخططات والشرح التفاعلي الذكي",
+          "studyManualUrl": "study/db/chapter-2.html"
         },
         {
           "id": 4,
@@ -1708,7 +1710,7 @@
       "id": "data-structure",
       "code": "CS213",
       "name": "data structure",
-      "arabicName": "تراكيب البيانات والخوارزميات",
+      "arabicName": "هياكل البيانات والخوارزميات",
       "shortDesc": "هياكل البيانات الأساسية: Arrays, Linked Lists, Stacks, Queues, Trees, Graphs وتحليل الكفاءة (Big O).",
       "category": "أساسيات حاسب وذكاء اصطناعي (Core CS)",
       "accentColor": "from-amber-500 to-orange-600",
@@ -1734,20 +1736,20 @@
       ],
       "explanationSite": {
         "url": "https://drive.google.com/drive/folders/1gQrSrTFNGcauZk5Fdf8y3xsDQ466oK84",
-        "title": "مستودع محاضرات وسلايدات تراكيب البيانات",
+        "title": "مستودع محاضرات وسلايدات هياكل البيانات",
         "description": "سلايدات المحاضرات الرسمية المعتمدة لجميع دفعات الذكاء الاصطناعي والحاسبات مع شروحات وقوائم تشغيل ممتازة بلغة C++.",
         "status": "متصل بـ Google Drive",
         "features": [
           "سلايدات رسمية ومحدثة من Lecture 0 إلى Stacks",
           "شروحات باللغة العربية مع د. محمد الدسوقي وقنوات متخصصة",
-          "دورات عالمية باللغة الإنجليزية لتراكيب البيانات والخوارزميات"
+          "دورات عالمية باللغة الإنجليزية لهياكل البيانات والخوارزميات"
         ]
       },
       "videoExplanations": [
         {
           "id": 1,
-          "title": "شرح تراكيب البيانات بالعربي - Arrays & Data Structures",
-          "subtitle": "Data Structures 1 - In Arabic - شرح تراكيب البيانات 1 - Data Structures | Arrays",
+          "title": "شرح هياكل البيانات بالعربي - Arrays & Data Structures",
+          "subtitle": "Data Structures 1 - In Arabic - شرح هياكل البيانات 1 - Data Structures | Arrays",
           "url": "https://youtu.be/9fRN5QtvfTg?si=1nfAR3PUhatnd4n7",
           "type": "video",
           "typeArabic": "فيديو وتطبيق",
@@ -1757,8 +1759,8 @@
         },
         {
           "id": 2,
-          "title": "بلاي ليست د. محمد الدسوقي - تراكيب البيانات بلغة C++",
-          "subtitle": "01 - | C++ Data Structures | - | why Data Structures ? | - | تراكيب البيانات |",
+          "title": "بلاي ليست د. محمد الدسوقي - هياكل البيانات بلغة C++",
+          "subtitle": "01 - | C++ Data Structures | - | why Data Structures ? | - | هياكل البيانات |",
           "url": "https://youtu.be/jGP19W5IObA?si=PAIVo7RVKTXTnBeZ",
           "type": "playlist",
           "typeArabic": "قائمة تشغيل كاملة",
@@ -1768,7 +1770,7 @@
         },
         {
           "id": 3,
-          "title": "دورة تراكيب البيانات والخوارزميات باللغة الإنجليزية (عبد الباري / متقدم)",
+          "title": "دورة هياكل البيانات والخوارزميات باللغة الإنجليزية (عبد الباري / متقدم)",
           "subtitle": "Master Data Structures and Algorithms with high visual clarity and problem-solving",
           "url": "https://youtu.be/xX5iOYCJmBI?si=Hyse_Vdh3Cj9jZS3",
           "type": "video",
@@ -1779,7 +1781,7 @@
         },
         {
           "id": 4,
-          "title": "دورة تراكيب البيانات الكاملة للمبتدئين والمتقدمين (freeCodeCamp)",
+          "title": "دورة هياكل البيانات الكاملة للمبتدئين والمتقدمين (freeCodeCamp)",
           "subtitle": "Complete Data Structures and Algorithms Course with animated trace and code",
           "url": "https://youtu.be/_T42E9RkWVQ?si=KwX4qnoeYyJc6bm0",
           "type": "video",
@@ -1790,8 +1792,8 @@
         },
         {
           "id": 6,
-          "title": "Introduction to Data Structure - كورس تأسيس تراكيب البيانات",
-          "subtitle": "شرح شامل وتأسيسي لمفاهيم تراكيب البيانات والخوارزميات",
+          "title": "Introduction to Data Structure - كورس تأسيس هياكل البيانات",
+          "subtitle": "شرح شامل وتأسيسي لمفاهيم هياكل البيانات والخوارزميات",
           "url": "https://youtu.be/8IZVz4nwI5E?si=Cqq5DONz6d60Hr_m",
           "type": "video",
           "typeArabic": "فيديو تأسيسي",
@@ -1954,7 +1956,7 @@
             "Linked List Implementation of Queues",
             "Priority Queue ADT & C++ STL std::queue / std::priority_queue"
           ],
-          "notes": "سلايدات المحاضرة الخامسة الرسمية المعتمدة لمادة تراكيب البيانات على Google Drive"
+          "notes": "سلايدات المحاضرة الخامسة الرسمية المعتمدة لمادة هياكل البيانات على Google Drive"
         }
       ],
       "sections": [
@@ -1989,7 +1991,7 @@
           "tag": "Rev",
           "subTag": "C++",
           "title": "C++ Foundations & Revision - Beginners Teaching",
-          "arabicTitle": "مراجعة وتأسيس لغة C++ لسكاشن تراكيب البيانات",
+          "arabicTitle": "مراجعة وتأسيس لغة C++ لسكاشن هياكل البيانات",
           "ta": "م.م. أحمد حسام",
           "week": 1,
           "date": "مراجعة تمهيدية",
@@ -2008,7 +2010,7 @@
             "Functions & Parameter Passing (Pass-by-value vs Reference)",
             "Pointers & Direct Memory Addressing Fundamentals"
           ],
-          "notes": "سلايدات مراجعة تأسيسية متكاملة للغة C++ من إعداد م.م. أحمد حسام لتثبيت الأساس البرمجي قبل تراكيب البيانات."
+          "notes": "سلايدات مراجعة تأسيسية متكاملة للغة C++ من إعداد م.م. أحمد حسام لتثبيت الأساس البرمجي قبل هياكل البيانات."
         },
         {
           "id": 2,
@@ -2189,7 +2191,7 @@
           "year": "م.م. أحمد حسام",
           "ta": "م.م. أحمد حسام",
           "size": "86 KB",
-          "notes": "سلايدات تمهيدية ومراجعة مكثفة لقواعد لغة C++ الأساسية لسكاشن تراكيب البيانات",
+          "notes": "سلايدات تمهيدية ومراجعة مكثفة لقواعد لغة C++ الأساسية لسكاشن هياكل البيانات",
           "fileUrl": "https://drive.google.com/file/d/1C-7-6sPIecltpupe99XMNw88JQEzIlQp/view",
           "folderUrl": "https://drive.google.com/drive/folders/1p1zE6XWM2uYRn7_MnnkN51IL_HWirf-m",
           "badge": "مراجعة مهمة"
@@ -2636,5 +2638,6 @@
       "assignments": [],
       "resources": []
     }
-  ]
+  ],
+  "coursesDataSha256": "59335bd696e8e052bed69566734e13660ce17721dde90440be39cd257cb00289"
 }

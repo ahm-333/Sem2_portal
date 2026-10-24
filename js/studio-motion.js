@@ -31,18 +31,11 @@
     function wireCard(card) {
       if (wired.has(card)) return;
       wired.add(card);
-      let box;
       card.addEventListener('pointerenter', () => {
         if (!enabled || !fine.matches) return;
-        box = card.getBoundingClientRect();
         gsap.to(card, {y:-17,scale:1.045,duration:.65,ease:'elastic.out(1,.45)',boxShadow:'0 24px 40px rgba(0,0,0,.16)',overwrite:'auto'});
         const icon = card.querySelector('.a1-course-icon');
         if (icon) gsap.fromTo(icon, {y:0,rotation:0}, {y:-14,rotation:-15,duration:.4,ease:'back.out(3)',overwrite:true});
-      });
-      card.addEventListener('pointermove', event => {
-        if (!enabled || !fine.matches || !box) return;
-        const x = (event.clientX - box.left) / box.width - .5, y = (event.clientY - box.top) / box.height - .5;
-        gsap.to(card, {rotationY:x * 12,rotationX:-y * 10,transformPerspective:900,duration:.25,overwrite:'auto'});
       });
       card.addEventListener('pointerleave', () => {
         if (!enabled) return;
@@ -60,11 +53,6 @@
       if (enabled) gsap.fromTo([...grid.children], {y:20,rotation:2,scale:.97}, {y:0,rotation:0,scale:1,duration:.5,stagger:.035,ease:'back.out(1.8)',overwrite:true});
     }).observe(grid, {childList:true});
     document.querySelectorAll('.studio-button,.filter-chip').forEach(button => {
-      button.addEventListener('pointermove', event => {
-        if (!enabled || !fine.matches) return;
-        const box = button.getBoundingClientRect();
-        gsap.to(button, {x:(event.clientX-box.left-box.width/2)*.14,y:(event.clientY-box.top-box.height/2)*.22,duration:.3,ease:'power2.out',overwrite:true});
-      });
       button.addEventListener('pointerleave', () => { if (enabled) gsap.to(button,{x:0,y:0,duration:.6,ease:'elastic.out(1,.3)',overwrite:true}); });
     });
     document.addEventListener('click', event => {
@@ -97,10 +85,6 @@
     const hero = document.querySelector('.studio-hero');
     if (hero) {
       const orbit = document.createElement('span'); orbit.className='studio-hero-orbit';orbit.setAttribute('aria-hidden','true');hero.prepend(orbit);
-      hero.addEventListener('pointermove', event => {
-        if (!enabled || !fine.matches) return;
-        const box=hero.getBoundingClientRect();gsap.to(orbit,{x:(event.clientX-box.left-box.width/2)*.06,y:(event.clientY-box.top-box.height/2)*.06,duration:1,ease:'power2.out',overwrite:true});
-      });
       if (enabled && !document.querySelector('[aria-modal="true"]')) {
         gsap.fromTo(books,{x:60,y:30,rotation:12},{x:0,y:0,rotation:index=>[-7,4,-3][index],duration:1.05,stagger:.12,ease:'elastic.out(1,.6)',clearProps:'transform'});
       }

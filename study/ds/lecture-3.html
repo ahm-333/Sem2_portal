@@ -1,0 +1,1722 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المحاضرة الثالثة — الاستدعاء الذاتي (Recursion) | وضع القراءة</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #fdfaf5;
+      --bg-card: #ffffff;
+      --bg-soft: #f5efe4;
+      --bg-accent: #eef2ff;
+      --text-main: #1e293b;
+      --text-muted: #526075;
+      --border-color: #e6decb;
+      --brand-primary: #2563eb;
+      --brand-secondary: #0f766e;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+      --reading-size: 1.15rem;
+      --reading-lh: 2.15;
+    }
+
+    body.theme-white {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-soft: #f1f5f9;
+      --bg-accent: #eff6ff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #e2e8f0;
+    }
+
+    body.theme-dark {
+      --bg-page: #0b1120;
+      --bg-card: #131c31;
+      --bg-soft: #1e293b;
+      --bg-accent: #1e3a8a33;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border-color: #26354d;
+    }
+
+    body {
+      font-family: 'Tajawal', 'Cairo', sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-size: var(--reading-size);
+      line-height: var(--reading-lh);
+      transition: background-color 0.25s ease, color 0.25s ease;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Cairo', sans-serif;
+      line-height: 1.5;
+    }
+
+    .reading-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .reading-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 1.25rem;
+      padding: 2.25rem 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.04);
+    }
+
+    @media (max-width: 640px) {
+      .reading-card {
+        padding: 1.5rem 1.15rem;
+        margin-bottom: 1.75rem;
+      }
+    }
+
+    .reading-block {
+      margin-bottom: 1.75rem;
+    }
+
+    .reading-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .academic-quote {
+      direction: ltr;
+      text-align: left;
+      background-color: var(--bg-soft);
+      border-left: 5px solid var(--brand-primary);
+      border-radius: 0.75rem;
+      padding: 1.35rem 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.85;
+    }
+
+    .colloquial-box {
+      background-color: var(--bg-accent);
+      border-right: 5px solid #0d9488;
+      border-radius: 0.85rem;
+      padding: 1.5rem 1.65rem;
+      margin: 1.5rem 0;
+    }
+
+    .rule-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background-color: var(--bg-soft);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    pre.code-block {
+      direction: ltr;
+      text-align: left;
+      background-color: var(--code-bg);
+      color: var(--code-text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      line-height: 1.85;
+      padding: 1.35rem 1.5rem;
+      border-radius: 0.9rem;
+      overflow-x: auto;
+      margin: 1.25rem 0 0.75rem 0;
+      border: 1px solid #334155;
+    }
+
+    code.inline-code, .ltr-token {
+      direction: ltr;
+      unicode-bidi: isolate;
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88em;
+      background-color: var(--bg-soft);
+      padding: 0.1rem 0.55rem;
+      border-radius: 0.45rem;
+      border: 1px solid var(--border-color);
+      color: #e11d48;
+      font-weight: 600;
+    }
+
+    body.theme-dark code.inline-code,
+    body.theme-dark .ltr-token {
+      color: #fb7185;
+    }
+
+    /* صندوق تفكيك الكود سطر بسطر وكلمة بكلمة */
+    .code-walkthrough {
+      background-color: var(--bg-soft);
+      border: 1px solid var(--border-color);
+      border-right: 5px solid #2563eb;
+      border-radius: 1rem;
+      padding: 1.35rem 1.5rem;
+      margin: 0.85rem 0 1.85rem 0;
+    }
+
+    .walkthrough-title {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #2563eb;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    body.theme-dark .walkthrough-title {
+      color: #60a5fa;
+    }
+
+    .walkthrough-item {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.85rem;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .walkthrough-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .walkthrough-line-code {
+      direction: ltr;
+      unicode-bidi: isolate;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background-color: #0f172a;
+      color: #38bdf8;
+      padding: 0.55rem 0.9rem;
+      border-radius: 0.55rem;
+      margin-bottom: 0.75rem;
+      display: block;
+      overflow-x: auto;
+    }
+
+    .word-breakdown-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+      margin-top: 0.65rem;
+      padding-top: 0.65rem;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    .word-chip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .spaced-list li {
+      margin-bottom: 1rem;
+      padding-right: 0.5rem;
+    }
+
+    .spaced-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .diagram-frame {
+      background-color: var(--bg-soft);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 1.75rem 0;
+      text-align: center;
+    }
+
+    .formula-box {
+      direction: ltr;
+      unicode-bidi: isolate;
+      text-align: center;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #f8fafc;
+      padding: 1.35rem 1.5rem;
+      border-radius: 0.9rem;
+      margin: 1.5rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.02rem;
+      line-height: 1.85;
+      border: 1px solid #334155;
+    }
+
+    .chapter-pill {
+      transition: all 0.2s ease;
+    }
+    .compact-header {
+      transition: transform 0.28s ease, box-shadow 0.2s ease;
+    }
+    .compact-header.nav-hidden {
+      transform: translateY(-100%);
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .chapter-pill.active {
+      background-color: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .quiz-option {
+      transition: all 0.2s ease;
+      border: 2px solid var(--border-color);
+      background-color: var(--bg-card);
+    }
+
+    .quiz-option:hover:not(:disabled) {
+      border-color: #3b82f6;
+      background-color: var(--bg-soft);
+    }
+
+    .quiz-option.correct {
+      border-color: #10b981 !important;
+      background-color: rgba(16, 185, 129, 0.12) !important;
+    }
+
+    .quiz-option.wrong {
+      border-color: #ef4444 !important;
+      background-color: rgba(239, 68, 68, 0.12) !important;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-20">
+
+  <!-- شريط تقدم القراءة العلوي -->
+  <div class="fixed top-0 left-0 right-0 h-1.5 bg-slate-200/60 z-50">
+    <div id="readingProgressBar" class="h-full bg-blue-600 transition-all duration-150" style="width: 0%"></div>
+  </div>
+
+  <!-- الهيدر الخفيف المدمج لوضع القراءة (يختفي تلقائياً عند النزول ويظهر عند الصعود) -->
+  <header id="mainReadingHeader" class="compact-header sticky top-0 z-40 backdrop-blur-md bg-[var(--bg-page)]/95 border-b border-[var(--border-color)] shadow-sm">
+    <div class="reading-container px-3 py-1.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-3">
+        <a href="../../subject.html?id=data-structure" title="الرجوع إلى صفحة مقرر هياكل البيانات" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 text-white hover:bg-blue-600 font-bold text-xs shadow-sm transition">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span class="hidden sm:inline">الرجوع للمقرر</span>
+        </a>
+        <a href="index.html" title="فهرس شروحات هياكل البيانات" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] hover:bg-[var(--bg-soft)] font-bold text-xs shadow-sm transition">
+          <span>📚 الفهرس</span>
+        </a>
+        <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-heading font-bold text-xs shadow-sm shrink-0">L3</span>
+        <div>
+          <h1 class="font-heading font-bold text-xs sm:text-sm leading-tight truncate">المحاضرة الثالثة: الاستدعاء الذاتي (Lecture 3: Recursion)</h1>
+          <p class="hidden">وضع القراءة المريح • شرح الكود سطر بسطر وكلمة بكلمة + رسومات + كويز</p>
+        </div>
+      </div>
+
+      <!-- أدوات القراءة -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <a href="lecture-2.html" title="الانتقال للمحاضرة السابقة: القوائم المتصلة" class="px-2.5 py-1 rounded-lg border border-blue-500/30 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-xs font-heading font-bold hover:bg-blue-100 transition inline-flex items-center gap-1">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span>المحاضرة السابقة: القوائم المتصلة</span>
+        </a>
+        <!-- تكبير وتصغير الخط -->
+        <div class="flex items-center rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-0.5">
+          <button id="btnFontDec" type="button" title="تصغير النص" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-[var(--bg-soft)] transition">A-</button>
+          <span id="fontSizeLabel" class="px-1.5 text-[11px] font-semibold text-[var(--text-muted)]">100%</span>
+          <button id="btnFontInc" type="button" title="تكبير النص" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-[var(--bg-soft)] transition">A+</button>
+        </div>
+
+        <!-- تباعد الأسطر -->
+        <button id="btnLineSpacing" type="button" title="تغيير تباعد السطور" class="px-2 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[11px] font-heading font-bold hover:bg-[var(--bg-soft)] transition">
+          تباعد: مريح جداً
+        </button>
+
+        <!-- ألوان الخلفية لراحة العين -->
+        <div class="flex items-center gap-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-1">
+          <button id="btnThemeSepia" type="button" title="ورقي دافئ لراحة العين" class="w-4 h-4 rounded-full bg-[#fdfaf5] border-2 border-amber-600 shadow-sm"></button>
+          <button id="btnThemeWhite" type="button" title="أبيض نقي" class="w-4 h-4 rounded-full bg-white border border-slate-300"></button>
+          <button id="btnThemeDark" type="button" title="ليلي مريح" class="w-4 h-4 rounded-full bg-slate-900 border border-slate-600"></button>
+        </div>
+      </div>
+    </div>
+
+    
+  </header>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="reading-container px-4 pt-5">
+
+    <!-- ===================================================================
+         الجزء الأول: التأسيس، دالة fact(n)، وتشريح الذاكرة (part1.txt)
+    ==================================================================== -->
+    <section id="section-part1" class="chapter-section">
+      <div class="mb-6 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">📘 الجزء الأول • سلايدات 1 إلى 11</span>
+        <span class="text-sm text-[var(--text-muted)]">التأسيس، دالة المضروب <span class="ltr-token">fact(n)</span>، وتشريح الـ <span class="ltr-token">Call Stack</span></span>
+      </div>
+
+      <!-- 1. ما هو الـ Recursion؟ -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايد 4</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">1. ما هو الـ Recursion؟ (المنطق من الصفر)</h2>
+        </div>
+
+        <div class="reading-block">
+          <h3 class="text-lg font-heading font-bold mb-2 text-[var(--text-muted)]">التعريف الأكاديمي المكتوب نصاً في سلايد 4:</h3>
+          <div class="academic-quote">
+            <strong class="block text-blue-600 mb-2">Recursion Definition:</strong>
+            Process of solving a problem by reducing it to smaller versions of itself.
+          </div>
+        </div>
+
+        <div class="reading-block colloquial-box">
+          <h3 class="text-xl font-heading font-bold text-teal-800 dark:text-teal-300 mb-3">💡 الشرح بالعامية البسيطة:</h3>
+          <p class="mb-4">
+            في البرمجة العادية، إحنا متعودين إن الدالة لما تخلص شغلها بتسلم الناتج للـ <code class="inline-code">main</code>.
+          </p>
+          <p class="mb-4 font-semibold">
+            أما الـ <span class="ltr-token">Recursion</span> (الاستدعاء الذاتي) فبيقولك:
+          </p>
+          <ul class="list-disc list-inside spaced-list">
+            <li>لو عندك مشكلة حسابية كبيرة ومعقدة، متحلهاش كلها في خطوة واحدة!</li>
+            <li>حل جزء صغير منها، وباقي المشكلة هتلاقيه <strong>نفس المشكلة الأصلية بالظبط بس بأرقام أصغر</strong>.</li>
+            <li>فالدالة تقوم منادية "نسخة من نفسها" تديلها الأرقام الأصغر دي، وتفضل الدالة تصغر المشكلة وتستدعي نفسها، لحد ما نوصل لأبسط رقم نعرف إجابته فوراً بدون أي حسابات!</li>
+          </ul>
+        </div>
+
+        <!-- 2. مثال السلايد التأسيسي: مسألة المضروب -->
+        <div class="reading-block mt-6">
+          <h3 class="text-xl font-heading font-extrabold text-blue-600 mb-3">2. مثال السلايد التأسيسي: مسألة المضروب (<span class="ltr-token">The Factorial Problem</span>)</h3>
+          <p class="mb-3">السلايد بدأت بمضروب الرقم 5 (<span class="ltr-token">5!</span>):</p>
+          <div class="formula-box">
+            5! = 5 × 4 × 3 × 2 × 1 = 120<br>
+            5! = 5 × (4 × 3 × 2 × 1) = 5 × 4!
+          </div>
+          <p class="mb-3">الجزء اللي بين القوسين هو مضروب الـ 4 (<span class="ltr-token">4!</span>)، وبنفس المنطق تتفكك السلسلة تدريجياً حتى نصل إلى الحقيقة الرياضية الثابتة (<span class="ltr-token">0! = 1</span>):</p>
+          <div class="formula-box">
+            4! = 4 × 3!<br>
+            3! = 3 × 2!<br>
+            2! = 2 × 1!<br>
+            1! = 1 × 0!<br>
+            0! = 1   (Base Case)
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. الركيزتان الإلزاميتان للـ Recursion -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 5 و 6</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">3. الركيزتان الإلزاميتان لأي دالة Recursion</h2>
+          <p class="mt-2 text-[var(--text-muted)]">أي دالة <span class="ltr-token">Recursion</span> في العالم عشان تشتغل صح ومتهنجش، لازم المبرمج يقسمها لشقين إجباريين:</p>
+        </div>
+
+        <!-- رسمة SVG لمكونات أي دالة Recursion بدلاً من الرسم النصي -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-blue-600">🎨 رسم توضيحي: المكونان الإجباريان لأي دالة استدعاء ذاتي (Recursion)</h4>
+          <svg viewBox="0 0 760 250" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <!-- العنوان الرئيسي في الأعلى -->
+            <rect x="235" y="15" width="290" height="50" rx="14" fill="#1e293b" />
+            <text x="380" y="46" text-anchor="middle" direction="rtl" fill="#ffffff" font-family="Cairo, sans-serif" font-weight="800" font-size="16">مكونات أي دالة استدعاء ذاتي</text>
+
+            <!-- خطوط التفرع -->
+            <path d="M380 65 L380 90 L185 90 L185 115" fill="none" stroke="#64748b" stroke-width="3" />
+            <path d="M380 65 L380 90 L575 90 L575 115" fill="none" stroke="#64748b" stroke-width="3" />
+
+            <!-- الصندوق الأيسر: Base Case -->
+            <rect x="25" y="115" width="320" height="120" rx="14" fill="#ecfdf5" stroke="#10b981" stroke-width="2.5" />
+            <text x="185" y="145" text-anchor="middle" direction="ltr" fill="#047857" font-family="JetBrains Mono" font-weight="700" font-size="16">1. Base Case</text>
+            <text x="185" y="170" text-anchor="middle" direction="rtl" fill="#065f46" font-family="Cairo, sans-serif" font-weight="800" font-size="15">حالة الأساس والتوقف (الفرامل)</text>
+            <text x="185" y="196" text-anchor="middle" direction="rtl" fill="#047857" font-family="Tajawal, sans-serif" font-size="14">• الحل المباشر المعروف بدون استدعاء جديد</text>
+            <text x="185" y="218" text-anchor="middle" direction="rtl" fill="#047857" font-family="Tajawal, sans-serif" font-size="14">• توقف الاستدعاء وتمنع انهيار الذاكرة</text>
+
+            <!-- الصندوق الأيمن: General Case -->
+            <rect x="415" y="115" width="320" height="120" rx="14" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" />
+            <text x="575" y="145" text-anchor="middle" direction="ltr" fill="#1d4ed8" font-family="JetBrains Mono" font-weight="700" font-size="16">2. General Case</text>
+            <text x="575" y="170" text-anchor="middle" direction="rtl" fill="#1e3a8a" font-family="Cairo, sans-serif" font-weight="800" font-size="15">الحالة العامة المتكررة</text>
+            <text x="575" y="196" text-anchor="middle" direction="rtl" fill="#1d4ed8" font-family="Tajawal, sans-serif" font-size="14">• الدالة تستدعي نفسها بنسخة أصغر</text>
+            <text x="575" y="218" text-anchor="middle" direction="rtl" fill="#1d4ed8" font-family="Tajawal, sans-serif" font-size="14">• تقترب خطوة في كل مرة نحو حالة التوقف</text>
+          </svg>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 mt-4">
+          <div class="p-5 rounded-2xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="text-xl font-heading font-extrabold text-emerald-600 mb-2">أ) حالة الأساس (<span class="ltr-token">Base Case</span>):</h3>
+            <div class="academic-quote">
+              <strong>Slide Definition:</strong> The case for which the solution is obtained directly; it stops the recursion.
+            </div>
+            <ul class="list-disc list-inside spaced-list">
+              <li>دي الحالة البسيطة جداً اللي إحنا <strong>عارفين إجابتها بديهياً وبشكل مباشر من غير ما نحسب حاجة</strong>.</li>
+              <li>في المضروب: لما <code class="inline-code">num == 0</code>، الإجابة المباشرة هي <code class="inline-code">1</code>.</li>
+              <li><strong>وظيفتها:</strong> هي <strong>الفرامل</strong> التي توقف الاستدعاء؛ بدونها الدالة هتفضل تستدعي نفسها ومتقفش أبداً!</li>
+            </ul>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="text-xl font-heading font-extrabold text-blue-600 mb-2">ب) الحالة العامة (<span class="ltr-token">General Case / Recursive Case</span>):</h3>
+            <div class="academic-quote">
+              <strong>Slide Definition:</strong> The case for which the solution is obtained indirectly using recursion.<br>
+              <strong>Golden Rule:</strong> "General case must eventually reduce to a base case."
+            </div>
+            <ul class="list-disc list-inside spaced-list">
+              <li>دي الحالة اللي بنحلها <strong>بطريقة غير مباشرة عن طريق إن الدالة تنادي نفسها بقيمة أصغر</strong>: <code class="inline-code">fact(num) = num * fact(num - 1)</code>.</li>
+              <li><strong>القاعدة الذهبية من السلايد:</strong> لازم في كل استدعاء نطرح أو نصغر الرقم عشان يقرب من الـ <span class="ltr-token">Base Case</span>، مينفعش نكبره!</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. كود C++ الرسمي لدالة fact(num) + تفكيك سطر بسطر وكلمة بكلمة -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايد 7</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">4. كود <span class="ltr-token">C++</span> الرسمي لدالة المضروب <span class="ltr-token">fact(num)</span></h2>
+        </div>
+
+        <pre class="code-block"><code>int fact(int num) {
+    if (num == 0)
+        return 1;                   // Base Case
+    else
+        return num * fact(num - 1); // General Case
+}</code></pre>
+
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">int fact(int num) {</code>
+            <p class="font-semibold mb-1">الوظيفة: تعريف ترويسة دالة المضروب التي تستقبل عدداً صحيحاً وترجع مضروبه كعدد صحيح.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">int</code> (الأولى) <span>نوع القيمة الراجعة النهائية من الدالة (Return Type) وهو عدد صحيح.</span></div>
+              <div class="word-chip"><code class="inline-code">fact</code> <span>اسم الدالة (اختصار لكلمة Factorial أي المضروب).</span></div>
+              <div class="word-chip"><code class="inline-code">(int num)</code> <span>المعامل (Parameter) الذي يستقبل الرقم المراد حساب مضروبه.</span></div>
+              <div class="word-chip"><code class="inline-code">{</code> <span>قوس بداية جسم الدالة.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">if (num == 0) return 1;</code>
+            <p class="font-semibold mb-1">الوظيفة: <strong>حالة الأساس (Base Case — الفرامل)</strong>؛ تفحص هل وصل الرقم إلى الصفر، فترجع 1 فوراً دون أي استدعاء جديد.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">if</code> <span>أداة الشرط: تفحص الشرط الذي بين القوسين.</span></div>
+              <div class="word-chip"><code class="inline-code">num == 0</code> <span>معامل المقارنة <code class="inline-code">==</code> يسأل: هل قيمة <code class="inline-code">num</code> تساوي الصفر حالياً؟</span></div>
+              <div class="word-chip"><code class="inline-code">return 1;</code> <span>أمر الإرجاع الفوري للرقم <code class="inline-code">1</code> (لأن <code class="inline-code">0! = 1</code>) وإغلاق النسخة الحالية من الدالة.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">else return num * fact(num - 1);</code>
+            <p class="font-semibold mb-1">الوظيفة: <strong>الحالة العامة المتكررة (General Case)</strong>؛ تضرب الرقم الحالي في ناتج استدعاء الدالة لنفسها بالرقم الأصغر بواحد.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">else</code> <span>فرع "وإلا" (يتنفذ عندما يكون <code class="inline-code">num</code> أكبر من صفر).</span></div>
+              <div class="word-chip"><code class="inline-code">num *</code> <span>تجهيز الرقم الحالي للضرب، لكن عملية الضرب تتجمد وتنتظر حتى يعود الطرف الأيمن بناتج.</span></div>
+              <div class="word-chip"><code class="inline-code">fact(num - 1)</code> <span>الاستدعاء الذاتي (Recursive Call): الدالة تنادي نسخة جديدة من نفسها وتمرر لها <code class="inline-code">num - 1</code> للاقتراب من الصفر.</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. التشريح الكامل للذاكرة عند تنفيذ fact(4) -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايد 7 و 8</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">5. التشريح الكامل للذاكرة: ماذا يحدث بالرسم عند تنفيذ <span class="ltr-token">fact(4)</span>؟</h2>
+          <p class="mt-2">
+            في الـ <span class="ltr-token">RAM</span>، يوجد جزء مخصص لإدارة الدوال اسمه <strong>مكدس الاستدعاءات (<span class="ltr-token">Call Stack</span>)</strong>. الدالة التي في الأسفل لا تستطيع إكمال عملية الضرب إلا عندما تنتهي الدالة التي فوقها وترجع بالناتج. التنفيذ يمر بمرحلتين:
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 mb-6">
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-blue-600 mb-2">المرحلة الأولى: مرحلة الصعود والتراكم (<span class="ltr-token">Winding / Calling Phase</span>)</h3>
+            <ol class="list-decimal list-inside spaced-list">
+              <li>استدعاء <code class="inline-code">fact(4)</code>: يتجمد في الـ Stack منتظراً ناتج <code class="inline-code">4 * fact(3)</code>.</li>
+              <li>استدعاء <code class="inline-code">fact(3)</code>: يتجمد فوقه منتظراً ناتج <code class="inline-code">3 * fact(2)</code>.</li>
+              <li>استدعاء <code class="inline-code">fact(2)</code>: يتجمد فوقه منتظراً ناتج <code class="inline-code">2 * fact(1)</code>.</li>
+              <li>استدعاء <code class="inline-code">fact(1)</code>: يتجمد فوقه منتظراً ناتج <code class="inline-code">1 * fact(0)</code>.</li>
+              <li>استدعاء <code class="inline-code">fact(0)</code>: يصل إلى الـ <span class="ltr-token">Base Case</span> (<code class="inline-code">num == 0</code>) فيرجع <code class="inline-code">1</code> فوراً بدون تجميد!</li>
+            </ol>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-emerald-600 mb-2">المرحلة الثانية: مرحلة الهبوط وحساب النواتج (<span class="ltr-token">Unwinding / Returning Phase</span>)</h3>
+            <ol class="list-decimal list-inside spaced-list">
+              <li>الدالة <code class="inline-code">fact(0)</code> ترجع بالرقم <strong>1</strong> وتُحذف من الـ Stack.</li>
+              <li>الدالة <code class="inline-code">fact(1)</code> تستلم 1 وتحسب <code class="inline-code">1 * 1 = 1</code> وترجع <strong>1</strong>.</li>
+              <li>الدالة <code class="inline-code">fact(2)</code> تستلم 1 وتحسب <code class="inline-code">2 * 1 = 2</code> وترجع <strong>2</strong>.</li>
+              <li>الدالة <code class="inline-code">fact(3)</code> تستلم 2 وتحسب <code class="inline-code">3 * 2 = 6</code> وترجع <strong>6</strong>.</li>
+              <li>الدالة <code class="inline-code">fact(4)</code> تستلم 6 وتحسب <code class="inline-code">4 * 6 = 24</code> وترجع الناتج النهائي <strong>24</strong> للـ <code class="inline-code">main</code>!</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- رسمة SVG 2: شكل الـ Call Stack في الذاكرة -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-blue-600">🎨 رسم توضيحي (1): شكل مكدس الاستدعاءات (Call Stack) في قمة مرحلة الصعود</h4>
+          <svg viewBox="0 0 760 330" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <!-- إطار الـ Stack -->
+            <path d="M135 20 L135 305 L635 305 L635 20" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round" />
+
+            <!-- Frame 5: fact(0) Top -->
+            <rect x="150" y="30" width="470" height="46" rx="8" fill="#10b981" />
+            <text x="385" y="58" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">Top: fact(0)  ---&gt;  Base Case! Returns 1</text>
+            <text x="75" y="58" text-anchor="middle" direction="rtl" fill="#047857" font-family="Cairo, sans-serif" font-weight="800" font-size="14">القمة (أول راجع)</text>
+
+            <!-- Frame 4: fact(1) -->
+            <rect x="150" y="84" width="470" height="46" rx="8" fill="#3b82f6" />
+            <text x="385" y="112" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">fact(1)  paused waiting for:  1 * fact(0)</text>
+
+            <!-- Frame 3: fact(2) -->
+            <rect x="150" y="138" width="470" height="46" rx="8" fill="#2563eb" />
+            <text x="385" y="166" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">fact(2)  paused waiting for:  2 * fact(1)</text>
+
+            <!-- Frame 2: fact(3) -->
+            <rect x="150" y="192" width="470" height="46" rx="8" fill="#1d4ed8" />
+            <text x="385" y="220" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">fact(3)  paused waiting for:  3 * fact(2)</text>
+
+            <!-- Frame 1: fact(4) Base -->
+            <rect x="150" y="246" width="470" height="46" rx="8" fill="#1e3a8a" />
+            <text x="385" y="274" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">Base: fact(4)  paused waiting for:  4 * fact(3)</text>
+            <text x="75" y="274" text-anchor="middle" direction="rtl" fill="#1e3a8a" font-family="Cairo, sans-serif" font-weight="800" font-size="14">القاع (أول نداء)</text>
+          </svg>
+        </div>
+
+        <!-- رسمة SVG 3: مسار النزول والصعود في fact(4) (سلايد 7) -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-teal-600">🎨 رسم توضيحي (2): مسار الاستدعاء (Winding) وإرجاع النواتج (Unwinding) في <code class="inline-code">fact(4)</code></h4>
+          <svg viewBox="0 0 760 300" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <!-- заголовки -->
+            <rect x="30" y="12" width="310" height="36" rx="8" fill="#dbeafe" />
+            <text x="185" y="35" text-anchor="middle" direction="rtl" fill="#1e40af" font-family="Cairo, sans-serif" font-weight="800" font-size="14">١. مرحلة النزول (الاستدعاء والتجميد)</text>
+
+            <rect x="420" y="12" width="310" height="36" rx="8" fill="#d1fae5" />
+            <text x="575" y="35" text-anchor="middle" direction="rtl" fill="#065f46" font-family="Cairo, sans-serif" font-weight="800" font-size="14">٢. مرحلة الصعود (الرجوع وحساب الضرب)</text>
+
+            <!-- خطوات النزول -->
+            <rect x="45" y="60" width="240" height="34" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" />
+            <text x="165" y="82" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="13">1) fact(4) = 4 * fact(3)</text>
+
+            <rect x="65" y="108" width="240" height="34" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" />
+            <text x="185" y="130" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="13">2) fact(3) = 3 * fact(2)</text>
+
+            <rect x="85" y="156" width="240" height="34" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" />
+            <text x="205" y="178" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="13">3) fact(2) = 2 * fact(1)</text>
+
+            <rect x="105" y="204" width="240" height="34" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" />
+            <text x="225" y="226" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="13">4) fact(1) = 1 * fact(0)</text>
+
+            <!-- القاع المشترك: Base Case -->
+            <rect x="235" y="252" width="290" height="36" rx="8" fill="#10b981" />
+            <text x="380" y="275" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="13">5) fact(0) ==&gt; Base Case (Returns 1)</text>
+
+            <!-- خطوات الصعود -->
+            <rect x="435" y="204" width="260" height="34" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" />
+            <text x="565" y="226" text-anchor="middle" direction="ltr" fill="#065f46" font-family="JetBrains Mono" font-weight="700" font-size="13">6) fact(1) = 1 * 1 = 1</text>
+
+            <rect x="455" y="156" width="260" height="34" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" />
+            <text x="585" y="178" text-anchor="middle" direction="ltr" fill="#065f46" font-family="JetBrains Mono" font-weight="700" font-size="13">7) fact(2) = 2 * 1 = 2</text>
+
+            <rect x="475" y="108" width="260" height="34" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" />
+            <text x="605" y="130" text-anchor="middle" direction="ltr" fill="#065f46" font-family="JetBrains Mono" font-weight="700" font-size="13">8) fact(3) = 3 * 2 = 6</text>
+
+            <rect x="495" y="60" width="250" height="34" rx="6" fill="#059669" />
+            <text x="620" y="82" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="13">9) fact(4) = 4 * 6 = 24</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- 6. أنواع الـ Recursion الثلاثة + 7. كارثة الاستدعاء اللانهائي -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 9 و 10</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">6. أنواع الـ Recursion الثلاثة وكارثة الاستدعاء اللانهائي</h2>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 mb-6">
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-blue-600 mb-1">1. الاستدعاء المباشر (<span class="ltr-token">Directly Recursive Function</span>) — سلايد 9:</h3>
+            <p class="font-mono text-sm mb-1" dir="ltr">Definition: A function that calls itself directly.</p>
+            <p>دالة <code class="inline-code">fact</code> تنادي دالة <code class="inline-code">fact</code> صراحة وبنفس الاسم داخل جسمها.</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-teal-600 mb-1">2. الاستدعاء غير المباشر (<span class="ltr-token">Indirectly Recursive Function</span>) — سلايد 9:</h3>
+            <p class="font-mono text-sm mb-1" dir="ltr">Definition: A function calls another function, which eventually results in the original function call.</p>
+            <p>الدالة <code class="inline-code">A</code> تنادي الدالة <code class="inline-code">B</code>، وداخل الدالة <code class="inline-code">B</code> سطر ينادي الدالة <code class="inline-code">A</code> من جديد!</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-purple-600 mb-1">3. الاستدعاء ذو الذيل (<span class="ltr-token">Tail Recursive Function</span>) — سلايد 9:</h3>
+            <p class="font-mono text-sm mb-1" dir="ltr">Definition: A recursive function where the LAST statement executed is the recursive call.</p>
+            <p>يكون استدعاء الدالة لنفسها هو آخر أمر تنفيذي في الدالة تماماً، ولا توجد بعده أي عملية ضرب أو جمع أو طباعة مؤجلة.</p>
+          </div>
+        </div>
+
+        <div class="colloquial-box !border-r-rose-600">
+          <h3 class="text-xl font-heading font-extrabold text-rose-700 dark:text-rose-400 mb-2">⚠️ كارثة الاستدعاء اللانهائي (<span class="ltr-token">Infinite Recursion</span>) — سلايد 10:</h3>
+          <ul class="list-disc list-inside spaced-list">
+            <li><strong>السبب:</strong> يحدث عندما تستمر الدالة في استدعاء نفسها للأبد دون أن تصل إلى الـ <span class="ltr-token">Base Case</span> إطلاقاً (مثلاً لو نسينا كتابة شرط التوقف أو كبرنا الرقم بدلاً من تصغيره).</li>
+            <li><strong>ماذا يحدث في عتاد الحاسوب والـ <span class="ltr-token">RAM</span>؟</strong> كل استدعاء يحجز صندوقاً (<span class="ltr-token">Stack Frame</span>) في الذاكرة لتخزين المتغيرات والبارامترات. وبما أن ذاكرة الحاسوب محدودة (<span class="ltr-token">Finite system memory</span>)، تمتلئ مساحة الـ <span class="ltr-token">Stack</span> تماماً وينهار البرنامج فوراً بخطأ يسمى: <span class="ltr-token">Stack Overflow / Abnormal Termination</span>.</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- تطبيق عملي الجزء الأول + شرح سطر بسطر وكلمة بكلمة -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="rule-badge mb-2">💻 كود رقم (2) • تطبيق عملي متكامل للجزء الأول</span>
+          <h3 class="text-xl font-heading font-extrabold mt-2">تطبيق عملي: برنامج اختبار دالة المضروب <span class="ltr-token">fact</span></h3>
+        </div>
+
+        <pre class="code-block"><code>#include &lt;iostream&gt;
+using namespace std;
+
+int fact(int num) {
+    if (num == 0)
+        return 1;                   // Base Case
+    else
+        return num * fact(num - 1); // General Case
+}
+
+int main() {
+    cout &lt;&lt; "Testing fact(0) = " &lt;&lt; fact(0) &lt;&lt; endl; // 1
+    cout &lt;&lt; "Testing fact(3) = " &lt;&lt; fact(3) &lt;&lt; endl; // 6
+    cout &lt;&lt; "Testing fact(4) = " &lt;&lt; fact(4) &lt;&lt; endl; // 24
+
+    return 0;
+}</code></pre>
+
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">#include &lt;iostream&gt;   /   using namespace std;</code>
+            <p class="font-semibold mb-1">الوظيفة: استدعاء مكتبة الإدخال والإخراج القياسية وتفعيل النطاق القياسي <code class="inline-code">std</code> لاستخدام <code class="inline-code">cout</code> و <code class="inline-code">endl</code>.</p>
+          </div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">cout &lt;&lt; "Testing fact(0) = " &lt;&lt; fact(0) &lt;&lt; endl;</code>
+            <p class="font-semibold mb-1">الوظيفة: استدعاء الدالة <code class="inline-code">fact(0)</code>؛ هنا يتحقق شرط <code class="inline-code">num == 0</code> من أول مرة فترجع الدالة <code class="inline-code">1</code> مباشرة.</p>
+          </div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">cout &lt;&lt; "Testing fact(3) = " &lt;&lt; fact(3) &lt;&lt; endl;</code>
+            <p class="font-semibold mb-1">الوظيفة: حساب مضروب الـ 3 (<code class="inline-code">3 * 2 * 1 * 1</code>) ويطبع الناتج <code class="inline-code">6</code>.</p>
+          </div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">cout &lt;&lt; "Testing fact(4) = " &lt;&lt; fact(4) &lt;&lt; endl;</code>
+            <p class="font-semibold mb-1">الوظيفة: حساب مضروب الـ 4 (<code class="inline-code">4 * 3 * 2 * 1 * 1</code>) ويطبع الناتج <code class="inline-code">24</code>.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================================================================
+         الجزء الثاني: متتالية فيبوناتشي ودالة rFibNum (part2.txt)
+    ==================================================================== -->
+    <section id="section-part2" class="chapter-section">
+      <div class="mb-6 mt-10 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">📗 الجزء الثاني • سلايدات 12 إلى 17</span>
+        <span class="text-sm text-[var(--text-muted)]">متتالية فيبوناتشي ودالة <span class="ltr-token">rFibNum(a, b, n)</span></span>
+      </div>
+
+      <!-- 1. ما هي متتالية فيبوناتشي؟ -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 13 إلى 15</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">1. ما هي متتالية فيبوناتشي؟ (Fibonacci Sequence)</h2>
+          <p class="mt-2">في سلايد 13، تبدأ متتالية فيبوناتشي القياسية بالأرقام التالية:</p>
+          <div class="formula-box">
+            1, 1, 2, 3, 5, 8, 13, 21, 34, ...
+          </div>
+        </div>
+
+        <div class="reading-block colloquial-box">
+          <h3 class="text-xl font-heading font-bold text-teal-800 dark:text-teal-300 mb-3">💡 القاعدة الرياضية ببساطة:</h3>
+          <p class="mb-3">
+            إذا أعطينا أول رقمين في المتتالية (<code class="inline-code">a1</code> و <code class="inline-code">a2</code>)، فإن أي رقم لاحق بدءاً من الرقم الثالث فصاعداً (<code class="inline-code">n &gt;= 3</code>) يساوي <strong>حاصل جمع الرقمين السابقين له مباشرة!</strong>
+          </p>
+          <div class="formula-box">
+            an = a(n-1) + a(n-2)
+          </div>
+          <ul class="list-disc list-inside spaced-list">
+            <li><strong>الرقم الثالث:</strong> جمع الأول + الثاني = <code class="inline-code">1 + 1 = 2</code>.</li>
+            <li><strong>الرقم الرابع:</strong> جمع الثاني + الثالث = <code class="inline-code">1 + 2 = 3</code>.</li>
+            <li><strong>الرقم الخامس:</strong> جمع الثالث + الرابع = <code class="inline-code">2 + 3 = 5</code>.</li>
+            <li><strong>الرقم السادس:</strong> جمع الرابع + الخامس = <code class="inline-code">3 + 5 = 8</code>.</li>
+          </ul>
+        </div>
+
+        <div class="reading-block">
+          <h3 class="text-xl font-heading font-bold text-blue-600 mb-3">2. دالة السلايد الرسمية: <span class="ltr-token">rFibNum(a, b, n)</span> — سلايد 13 و 15:</h3>
+          <p class="mb-3">
+            صُممت دالة <code class="inline-code">rFibNum</code> (اختصار <strong>Recursive Fibonacci Number</strong>) لتعمل مع <strong>أي متتالية فيبوناتشي</strong> حتى لو لم تبدأ بـ (1, 1)، وتستقبل 3 معاملات:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+            <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+              <div class="font-mono font-bold text-blue-600 text-lg mb-1" dir="ltr">int a</div>
+              <p class="text-sm">يمثل الرقم الأول في المتتالية (<span class="ltr-token">First Number</span>).</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+              <div class="font-mono font-bold text-teal-600 text-lg mb-1" dir="ltr">int b</div>
+              <p class="text-sm">يمثل الرقم الثاني في المتتالية (<span class="ltr-token">Second Number</span>).</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+              <div class="font-mono font-bold text-purple-600 text-lg mb-1" dir="ltr">int n</div>
+              <p class="text-sm">ترتيب الرقم المطلوب حسابه (<span class="ltr-token">n-th Fibonacci number</span>).</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. كود C++ الرسمي لدالة rFibNum + تفكيك سطر بسطر وكلمة بكلمة -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايد 16</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">3. كود <span class="ltr-token">C++</span> الرسمي لدالة <span class="ltr-token">rFibNum</span> (سلايد 16)</h2>
+        </div>
+
+        <pre class="code-block"><code>int rFibNum(int a, int b, int n) {
+    if (n == 1)
+        return a;                                       // Base Case 1
+    else if (n == 2)
+        return b;                                       // Base Case 2
+    else
+        return rFibNum(a, b, n - 1) + rFibNum(a, b, n - 2); // General Case
+}</code></pre>
+
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">int rFibNum(int a, int b, int n)</code>
+            <p class="font-semibold mb-1">الوظيفة: ترويسة الدالة؛ تستقبل الحد الأول <code class="inline-code">a</code> والحد الثاني <code class="inline-code">b</code> وترتيب الحد المطلوب <code class="inline-code">n</code>، وترجع قيمته كعدد صحيح <code class="inline-code">int</code>.</p>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">if (n == 1) return a;</code>
+            <p class="font-semibold mb-1">الوظيفة: <strong>حالة التوقف الأولى (Base Case 1)</strong>؛ إذا طلب المستخدم الرقم الأول في السلسلة (<code class="inline-code">n == 1</code>) نرجع القيمة <code class="inline-code">a</code> فوراً.</p>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">else if (n == 2) return b;</code>
+            <p class="font-semibold mb-1">الوظيفة: <strong>حالة التوقف الثانية (Base Case 2)</strong>؛ إذا طلب المستخدم الرقم الثاني في السلسلة (<code class="inline-code">n == 2</code>) نرجع القيمة <code class="inline-code">b</code> فوراً.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><span class="font-bold text-amber-600">ملاحظة امتحانية:</span> <span>دالة فيبوناتشي تحتاج <strong>حالتي توقف (Two Base Cases)</strong> إجبارياً لأن كل خطوة تعتمد على رقمين سابقين.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">else return rFibNum(a, b, n - 1) + rFibNum(a, b, n - 2);</code>
+            <p class="font-semibold mb-1">الوظيفة: <strong>الحالة العامة (General Case)</strong>؛ عندما يكون <code class="inline-code">n &gt;= 3</code> تنادي الدالة نفسها مرتين (شجرة ثنائية) لجمع الحد السابق <code class="inline-code">n - 1</code> والحد الذي قبله <code class="inline-code">n - 2</code>.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">rFibNum(a, b, n - 1)</code> <span>الاستدعاء الذاتي الأول لحساب قيمة العنصر السابق مباشرة.</span></div>
+              <div class="word-chip"><code class="inline-code">+</code> <span>عملية الجمع بين ناتجي الفرعين الأيسر والأيمن.</span></div>
+              <div class="word-chip"><code class="inline-code">rFibNum(a, b, n - 2)</code> <span>الاستدعاء الذاتي الثاني لحساب قيمة العنصر الذي يسبق السابق.</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. تتبع التنفيذ في الذاكرة: طلب السلايد الرسمي rFibNum(2, 3, 4) -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايد 17</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">4. تتبع السلايد الرسمي: شجرة استدعاء <span class="ltr-token">rFibNum(2, 3, 4)</span></h2>
+          <p class="mt-2">
+            في سلايد 17، الرقم الأول <code class="inline-code">a = 2</code>، والرقم الثاني <code class="inline-code">b = 3</code>، والمطلوب حساب الرقم الرابع <code class="inline-code">n = 4</code>.
+            بالمنطق الحسابي: السلسلة هي <code class="inline-code">2, 3, 5, 8</code> إذن الناتج هو <strong>8</strong>. انظر كيف يحسبها المعالج بشجرة الاستدعاء:
+          </p>
+        </div>
+
+        <!-- رسمة SVG 4: شجرة الاستدعاء الرسمية لـ rFibNum(2, 3, 4) من سلايد 17 -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-blue-600">🎨 رسم توضيحي: شجرة الاستدعاء وتجميع النواتج لـ <code class="inline-code">rFibNum(2, 3, 4)</code> (سلايد 17)</h4>
+          <svg viewBox="0 0 760 320" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <!-- خطوط الشجرة -->
+            <line x1="380" y1="62" x2="230" y2="125" stroke="#2563eb" stroke-width="3" />
+            <line x1="380" y1="62" x2="555" y2="125" stroke="#0d9488" stroke-width="3" />
+
+            <line x1="230" y1="170" x2="125" y2="235" stroke="#0d9488" stroke-width="3" />
+            <line x1="230" y1="170" x2="335" y2="235" stroke="#0d9488" stroke-width="3" />
+
+            <!-- الجذر: rFibNum(2, 3, 4) -->
+            <rect x="265" y="16" width="230" height="50" rx="12" fill="#1e3a8a" />
+            <text x="380" y="38" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">rFibNum(2, 3, 4)</text>
+            <text x="380" y="57" text-anchor="middle" direction="ltr" fill="#fde047" font-family="JetBrains Mono" font-weight="700" font-size="13">Result: 5 + 3 = 8</text>
+
+            <!-- المستوى 2 أيسر: rFibNum(2, 3, 3) -->
+            <rect x="115" y="120" width="230" height="50" rx="12" fill="#2563eb" />
+            <text x="230" y="142" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">rFibNum(2, 3, 3)</text>
+            <text x="230" y="161" text-anchor="middle" direction="ltr" fill="#bfdbfe" font-family="JetBrains Mono" font-weight="700" font-size="13">Returns: 3 + 2 = 5</text>
+
+            <!-- المستوى 2 أيمن: rFibNum(2, 3, 2) Base Case -->
+            <rect x="440" y="120" width="230" height="58" rx="12" fill="#0d9488" />
+            <text x="555" y="142" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">rFibNum(2, 3, 2)</text>
+            <text x="555" y="164" text-anchor="middle" direction="ltr" fill="#ccfbf1" font-family="JetBrains Mono" font-weight="700" font-size="12">Base Case (n==2) -&gt; b = 3</text>
+
+            <!-- المستوى 3 أيسر: rFibNum(2, 3, 2) Base Case -->
+            <rect x="15" y="230" width="215" height="58" rx="12" fill="#0d9488" />
+            <text x="122" y="252" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="13">rFibNum(2, 3, 2)</text>
+            <text x="122" y="274" text-anchor="middle" direction="ltr" fill="#ccfbf1" font-family="JetBrains Mono" font-weight="700" font-size="12">Base Case (n==2) -&gt; b = 3</text>
+
+            <!-- المستوى 3 أيمن: rFibNum(2, 3, 1) Base Case -->
+            <rect x="245" y="230" width="215" height="58" rx="12" fill="#0f766e" />
+            <text x="352" y="252" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="13">rFibNum(2, 3, 1)</text>
+            <text x="352" y="274" text-anchor="middle" direction="ltr" fill="#fde047" font-family="JetBrains Mono" font-weight="700" font-size="12">Base Case (n==1) -&gt; a = 2</text>
+          </svg>
+        </div>
+
+        <ul class="list-disc list-inside spaced-list mt-4 p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+          <li><strong>كم مرة وصلنا للـ Base Case في <code class="inline-code">rFibNum(2, 3, 4)</code>؟</strong> وصلنا <strong>3 مرات</strong> (المربعات الخضراء الثلاثة في نهاية الفروع).</li>
+          <li>الفرع الأيسر السفلي جمع <code class="inline-code">3 + 2 = 5</code>، ثم جُمعت الـ <code class="inline-code">5</code> مع الـ <code class="inline-code">3</code> في الفرع الأيمن فأعطت الناتج النهائي <strong>8</strong>.</li>
+        </ul>
+      </article>
+
+      <!-- تطبيق عملي الجزء الثاني + شرح سطر بسطر وكلمة بكلمة -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="rule-badge mb-2">💻 كود رقم (4) • تطبيق عملي متكامل للجزء الثاني</span>
+          <h3 class="text-xl font-heading font-extrabold mt-2">تطبيق عملي: برنامج اختبار دالة <span class="ltr-token">rFibNum</span></h3>
+        </div>
+
+        <pre class="code-block"><code>#include &lt;iostream&gt;
+using namespace std;
+
+int rFibNum(int a, int b, int n) {
+    if (n == 1)
+        return a;
+    else if (n == 2)
+        return b;
+    else
+        return rFibNum(a, b, n - 1) + rFibNum(a, b, n - 2);
+}
+
+int main() {
+    cout &lt;&lt; "rFibNum(2, 3, 4) = " &lt;&lt; rFibNum(2, 3, 4) &lt;&lt; endl; // 8
+    cout &lt;&lt; "Standard Fib(6) = " &lt;&lt; rFibNum(1, 1, 6) &lt;&lt; endl;   // 8
+
+    return 0;
+}</code></pre>
+
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك السطور الأساسية في هذا التطبيق:</div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">rFibNum(2, 3, 4)</code>
+            <p class="font-semibold mb-1">الوظيفة: تمرير <code class="inline-code">a = 2</code> و <code class="inline-code">b = 3</code> وطلب العنصر الرابع <code class="inline-code">n = 4</code> فيطبع <code class="inline-code">8</code> كما في سلايد 17.</p>
+          </div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">rFibNum(1, 1, 6)</code>
+            <p class="font-semibold mb-1">الوظيفة: تمرير البداية القياسية لمتتالية فيبوناتشي (<code class="inline-code">a = 1, b = 1</code>) وطلب العنصر السادس (<code class="inline-code">1, 1, 2, 3, 5, 8</code>) فيطبع <code class="inline-code">8</code>.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================================================================
+         الجزء الثالث: الـ Recursion على الـ Arrays والـ Linked Lists (Part3.txt)
+    ==================================================================== -->
+    <section id="section-part3" class="chapter-section">
+      <div class="mb-6 mt-10 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">📙 الجزء الثالث • سلايدات 18 إلى 30</span>
+        <span class="text-sm text-[var(--text-muted)]">أكبر عنصر في مصفوفة <span class="ltr-token">largest</span> وطباعة قائمة متصلة بالمعكوس <span class="ltr-token">reversePrint</span></span>
+      </div>
+
+      <!-- أولاً: إيجاد أكبر عنصر في مصفوفة -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 19 إلى 24</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">أولاً: إيجاد أكبر عنصر في مصفوفة (Largest Element in an Array)</h2>
+        </div>
+
+        <div class="reading-block colloquial-box">
+          <h3 class="text-xl font-heading font-bold text-teal-800 dark:text-teal-300 mb-3">💡 الفكرة والمنطق الرياضي من السلايد (سلايد 19 و 20):</h3>
+          <p class="mb-3">لدينا مصفوفة اسمها <code class="inline-code">list</code> تمتد من الفهرس <code class="inline-code">lowerIndex</code> (البداية) إلى الفهرس <code class="inline-code">upperIndex</code> (النهاية):</p>
+          <ul class="list-disc list-inside spaced-list">
+            <li><strong>حالة التوقف (<span class="ltr-token">Base Case</span>):</strong> إذا كان <code class="inline-code">lowerIndex == upperIndex</code>، فهذا يعني أن النطاق يحتوي على <strong>عنصر واحد فقط</strong>، فيكون هو أكبر عنصر تلقائياً ونرجعه فوراً: <code class="inline-code">return list[lowerIndex];</code>.</li>
+            <li><strong>الحالة العامة (<span class="ltr-token">General Case</span>):</strong> نقارن العنصر الأول في النطاق الحالي <code class="inline-code">list[lowerIndex]</code> مع أكبر عنصر في باقي المصفوفة <code class="inline-code">largest(list, lowerIndex + 1, upperIndex)</code> ونرجع الأكبر بينهما. في كل استدعاء يقل حجم النطاق بمقدار عنصر واحد.</li>
+          </ul>
+        </div>
+
+        <pre class="code-block"><code>int largest(const int list[], int lowerIndex, int upperIndex) {
+    int max;
+
+    if (lowerIndex == upperIndex) {
+        return list[lowerIndex]; // Base Case
+    } else {
+        max = largest(list, lowerIndex + 1, upperIndex); // General Case
+
+        if (list[lowerIndex] &gt;= max)
+            return list[lowerIndex];
+        else
+            return max;
+    }
+}</code></pre>
+
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة (سلايد 22):</div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">int largest(const int list[], int lowerIndex, int upperIndex)</code>
+            <p class="font-semibold mb-1">الوظيفة: ترويسة الدالة؛ تستقبل المصفوفة وفهرس البداية وفهرس النهاية، وترجع أكبر قيمة صحيحة.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">const int list[]</code> <span>المصفوفة المراد البحث فيها، ومسبوقة بـ <code class="inline-code">const</code> لضمان عدم تعديل عناصرها عن طريق الخطأ.</span></div>
+              <div class="word-chip"><code class="inline-code">int lowerIndex</code> <span>فهرس بداية النطاق الحالي للبحث.</span></div>
+              <div class="word-chip"><code class="inline-code">int upperIndex</code> <span>فهرس نهاية النطاق الحالي للبحث.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">int max;</code>
+            <p class="font-semibold mb-1">الوظيفة: متغير محلي لحفظ أكبر قيمة عائدة من باقي المصفوفة.</p>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">if (lowerIndex == upperIndex) return list[lowerIndex];</code>
+            <p class="font-semibold mb-1">الوظيفة: <strong>حالة الأساس (Base Case)</strong>؛ عندما يتساوى فهرس البداية مع فهرس النهاية نرجع هذا العنصر الوحيد مباشرة.</p>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">max = largest(list, lowerIndex + 1, upperIndex);</code>
+            <p class="font-semibold mb-1">الوظيفة: استدعاء ذاتي يبحث عن أكبر رقم في بقية المصفوفة بدءاً من الخانة التالية <code class="inline-code">lowerIndex + 1</code> حتى النهاية، ويخزن الناتج في <code class="inline-code">max</code>.</p>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">if (list[lowerIndex] &gt;= max) return list[lowerIndex]; else return max;</code>
+            <p class="font-semibold mb-1">الوظيفة: مقارنة العنصر الحالي <code class="inline-code">list[lowerIndex]</code> مع أكبر عنصر في الباقي <code class="inline-code">max</code> وإرجاع القيمة الأكبر بينهما.</p>
+          </div>
+        </div>
+
+        <!-- رسمة SVG 5: تتبع largest(list, 0, 3) على المصفوفة {23, 43, 35, 20} (سلايد 23 و 24) -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-blue-600">🎨 رسم توضيحي: تتبع <code class="inline-code">largest(list, 0, 3)</code> على المصفوفة <code class="inline-code">{23, 43, 35, 20}</code> (سلايد 23 و 24)</h4>
+          <svg viewBox="0 0 760 320" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <!-- المصفوفة في الأعلى -->
+            <text x="160" y="36" text-anchor="middle" direction="rtl" fill="#1e293b" font-family="Cairo, sans-serif" font-weight="800" font-size="15">المصفوفة:</text>
+            <rect x="220" y="12" width="90" height="38" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+            <text x="265" y="36" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="14">[0]: 23</text>
+            <rect x="320" y="12" width="90" height="38" rx="6" fill="#2563eb" />
+            <text x="365" y="36" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">[1]: 43</text>
+            <rect x="420" y="12" width="90" height="38" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+            <text x="465" y="36" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="14">[2]: 35</text>
+            <rect x="520" y="12" width="90" height="38" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+            <text x="565" y="36" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="14">[3]: 20</text>
+
+            <!-- خطوات الاستدعاء والرجوع -->
+            <rect x="25" y="70" width="330" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" />
+            <text x="190" y="97" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="13">1) largest(list, 0, 3) -&gt; calls (1, 3)</text>
+
+            <rect x="25" y="126" width="330" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" />
+            <text x="190" y="153" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="13">2) largest(list, 1, 3) -&gt; calls (2, 3)</text>
+
+            <rect x="25" y="182" width="330" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" />
+            <text x="190" y="209" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="13">3) largest(list, 2, 3) -&gt; calls (3, 3)</text>
+
+            <!-- Base Case at (3,3) -->
+            <rect x="195" y="248" width="370" height="50" rx="10" fill="#10b981" />
+            <text x="380" y="270" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">4) largest(list, 3, 3) ==&gt; Base Case (3 == 3)</text>
+            <text x="380" y="290" text-anchor="middle" direction="ltr" fill="#ecfdf5" font-family="JetBrains Mono" font-weight="700" font-size="13">Returns list[3] = 20</text>
+
+            <!-- خطوات المقارنة والرجوع -->
+            <rect x="405" y="182" width="330" height="44" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" />
+            <text x="570" y="209" text-anchor="middle" direction="ltr" fill="#065f46" font-family="JetBrains Mono" font-weight="700" font-size="13">Compare(list[2]=35, max=20) -&gt; 35</text>
+
+            <rect x="405" y="126" width="330" height="44" rx="8" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" />
+            <text x="570" y="153" text-anchor="middle" direction="ltr" fill="#065f46" font-family="JetBrains Mono" font-weight="700" font-size="13">Compare(list[1]=43, max=35) -&gt; 43</text>
+
+            <rect x="405" y="70" width="330" height="44" rx="8" fill="#059669" />
+            <text x="570" y="97" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="13">Compare(list[0]=23, max=43) -&gt; 43</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- ثانياً: طباعة القائمة المتصلة بالمعكوس reversePrint -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 25 إلى 30</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">ثانياً: طباعة القائمة المتصلة بالمعكوس (<span class="ltr-token">Print Linked List in Reverse</span>)</h2>
+        </div>
+
+        <div class="reading-block colloquial-box">
+          <h3 class="text-xl font-heading font-bold text-teal-800 dark:text-teal-300 mb-3">💡 المشكلة والحل الذكي بالـ Call Stack (سلايد 25 و 26):</h3>
+          <p class="mb-3">
+            في القائمة المتصلة الأحادية (<span class="ltr-token">Singly Linked List</span>)، المؤشرات تسير في <strong>اتجاه واحد فقط للأمام</strong>، ولا يوجد مؤشر يرجع للخلف!
+          </p>
+          <p>
+            <strong>الحل بالـ Recursion:</strong> نستدعي الدالة للعقدة التالية <code class="inline-code">reversePrint(current-&gt;next)</code> <strong>أولاً</strong>، ونجعل أمر الطباعة <code class="inline-code">cout</code> <strong>مؤجلاً في السطر الذي يليه</strong>! وبذلك تتأجل طباعة كل عقدة في الـ <span class="ltr-token">Call Stack</span> حتى نصل لنهاية القائمة (<code class="inline-code">NULL</code>)، وعند الرجوع تُطبع العقد من الأخيرة إلى الأولى تلقائياً!
+          </p>
+        </div>
+
+        <pre class="code-block"><code>void reversePrint(Node* current) {
+    if (current != NULL) {
+        reversePrint(current-&gt;next); // 1. Recursive call FIRST
+        cout &lt;&lt; current-&gt;data &lt;&lt; " "; // 2. Print AFTER return
+    }
+}</code></pre>
+
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة (سلايد 27):</div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">void reversePrint(Node* current)</code>
+            <p class="font-semibold mb-1">الوظيفة: دالة لا ترجع قيمة (<code class="inline-code">void</code>) لأن مهمتها الطباعة فقط، وتستقبل مؤشراً <code class="inline-code">current</code> يشير للعقدة الحالية.</p>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">if (current != NULL)</code>
+            <p class="font-semibold mb-1">الوظيفة: فحص أننا لم نخرج بعد خارج نهاية القائمة. (أما عندما يصبح <code class="inline-code">current == NULL</code> فهذا هو الـ <strong>Base Case</strong> الضمني فتتوقف الدالة عن النداء).</p>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">reversePrint(current-&gt;next);</code>
+            <p class="font-semibold mb-1">الوظيفة: <strong>السر كله هنا!</strong> الذهاب للعقدة التالية أولاً وتجميد العقدة الحالية في الـ Stack قبل طباعتها.</p>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">cout &lt;&lt; current-&gt;data &lt;&lt; " ";</code>
+            <p class="font-semibold mb-1">الوظيفة: طباعة قيمة العقدة الحالية <strong>بعد</strong> أن تنتهي جميع العقد التي بعدها وتعود من الاستدعاء.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><span class="font-bold text-rose-600">تريكة امتحانية هامة:</span> <span>لو عكسنا السطرين (كتبنا <code class="inline-code">cout</code> قبل <code class="inline-code">reversePrint</code>) ستُطبع القائمة بالترتيب العادي للأمام (<code class="inline-code">5 10 15 20</code>)!</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- رسمة SVG 6: تتبع reversePrint على القائمة 5 -> 10 -> 15 -> 20 -> NULL -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-teal-600">🎨 رسم توضيحي: تتبع <code class="inline-code">reversePrint(first)</code> على القائمة <code class="inline-code">5 -&gt; 10 -&gt; 15 -&gt; 20 -&gt; NULL</code> (سلايد 29)</h4>
+          <svg viewBox="0 0 760 265" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrowLL" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#2563eb" />
+              </marker>
+            </defs>
+
+            <!-- عنوان القائمة الأصلية -->
+            <text x="380" y="25" text-anchor="middle" direction="rtl" fill="#1e293b" font-family="Cairo, sans-serif" font-weight="800" font-size="15">١. شكل القائمة المتصلة واتجاه الاستدعاءات (تأجيل الطباعة):</text>
+
+            <!-- عقد القائمة -->
+            <rect x="40" y="45" width="105" height="46" rx="10" fill="#2563eb" />
+            <text x="92" y="73" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="15">Node: 5</text>
+            <line x1="145" y1="68" x2="185" y2="68" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowLL)" />
+
+            <rect x="195" y="45" width="105" height="46" rx="10" fill="#2563eb" />
+            <text x="247" y="73" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="15">Node: 10</text>
+            <line x1="300" y1="68" x2="340" y2="68" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowLL)" />
+
+            <rect x="350" y="45" width="105" height="46" rx="10" fill="#2563eb" />
+            <text x="402" y="73" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="15">Node: 15</text>
+            <line x1="455" y1="68" x2="495" y2="68" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowLL)" />
+
+            <rect x="505" y="45" width="105" height="46" rx="10" fill="#2563eb" />
+            <text x="557" y="73" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="15">Node: 20</text>
+            <line x1="610" y1="68" x2="645" y2="68" stroke="#2563eb" stroke-width="3" marker-end="url(#arrowLL)" />
+
+            <rect x="655" y="45" width="75" height="46" rx="10" fill="#dc2626" />
+            <text x="692" y="73" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">NULL</text>
+
+            <!-- مرحلة الرجوع والطباعة -->
+            <text x="380" y="135" text-anchor="middle" direction="rtl" fill="#0f766e" font-family="Cairo, sans-serif" font-weight="800" font-size="15">٢. مرحلة الرجوع من الـ Call Stack (ترتيب الطباعة بالمعكوس):</text>
+
+            <rect x="505" y="155" width="105" height="44" rx="8" fill="#0d9488" />
+            <text x="557" y="182" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">1st: 20</text>
+
+            <rect x="350" y="155" width="105" height="44" rx="8" fill="#0d9488" />
+            <text x="402" y="182" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">2nd: 15</text>
+
+            <rect x="195" y="155" width="105" height="44" rx="8" fill="#0d9488" />
+            <text x="247" y="182" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">3rd: 10</text>
+
+            <rect x="40" y="155" width="105" height="44" rx="8" fill="#0d9488" />
+            <text x="92" y="182" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">4th: 5</text>
+
+            <!-- الشاشة النهائية -->
+            <rect x="180" y="216" width="400" height="38" rx="8" fill="#0f172a" />
+            <text x="380" y="240" text-anchor="middle" direction="ltr" fill="#38bdf8" font-family="JetBrains Mono" font-weight="700" font-size="15">Screen Output:  20   15   10   5</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- تطبيق عملي الجزء الثالث + شرح سطر بسطر وكلمة بكلمة -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="rule-badge mb-2">💻 كود رقم (7) • تطبيق عملي شامل للجزء الثالث</span>
+          <h3 class="text-xl font-heading font-extrabold mt-2">تطبيق عملي: دمج دالتي <span class="ltr-token">largest</span> و <span class="ltr-token">reversePrint</span> في برنامج واحد</h3>
+        </div>
+
+        <pre class="code-block"><code>#include &lt;iostream&gt;
+using namespace std;
+
+int largest(const int list[], int lowerIndex, int upperIndex) {
+    int max;
+    if (lowerIndex == upperIndex) {
+        return list[lowerIndex];
+    } else {
+        max = largest(list, lowerIndex + 1, upperIndex);
+        if (list[lowerIndex] &gt;= max)
+            return list[lowerIndex];
+        else
+            return max;
+    }
+}
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+void reversePrint(Node* current) {
+    if (current != NULL) {
+        reversePrint(current-&gt;next);
+        cout &lt;&lt; current-&gt;data &lt;&lt; " ";
+    }
+}
+
+int main() {
+    int arr[4] = {23, 43, 35, 20};
+    cout &lt;&lt; "Largest element in array: " &lt;&lt; largest(arr, 0, 3) &lt;&lt; endl; // 43
+
+    Node* n1 = new Node{5, NULL};
+    Node* n2 = new Node{10, NULL};
+    Node* n3 = new Node{15, NULL};
+    Node* n4 = new Node{20, NULL};
+    n1-&gt;next = n2;
+    n2-&gt;next = n3;
+    n3-&gt;next = n4;
+
+    cout &lt;&lt; "Linked list in reverse: ";
+    reversePrint(n1); // 20 15 10 5
+    cout &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك السطور الجديدة في هذا التطبيق:</div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">struct Node { int data; Node* next; };</code>
+            <p class="font-semibold mb-1">الوظيفة: تعريف هيكل العقدة الواحدة في القائمة المتصلة؛ تحتوي على القيمة <code class="inline-code">data</code> ومؤشر <code class="inline-code">next</code> يشير للعقدة التالية.</p>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">Node* n1 = new Node{5, NULL}; ... n1-&gt;next = n2;</code>
+            <p class="font-semibold mb-1">الوظيفة: إنشاء 4 عقد ديناميكية في الذاكرة بقيم (5، 10، 15، 20) وربط كل عقدة بالعقدة التي تليها.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">new Node{5, NULL}</code> <span>حجز عقدة جديدة في الـ Heap تحمل الرقم 5 ومؤشرها الابتدائي <code class="inline-code">NULL</code>.</span></div>
+              <div class="word-chip"><code class="inline-code">n1-&gt;next = n2;</code> <span>ربط مؤشر العقدة الأولى ليُشير إلى عنوان العقدة الثانية.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">reversePrint(n1);</code>
+            <p class="font-semibold mb-1">الوظيفة: تمرير رأس القائمة <code class="inline-code">n1</code> لدالة الطباعة العكسية، فتطبع <code class="inline-code">20 15 10 5</code>.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================================================================
+         قسم الملخص الشامل والزتونة (Summary)
+    ==================================================================== -->
+    <section id="section-summary" class="chapter-section">
+      <div class="mb-6 mt-10 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">📌 ملخص المحاضرة الثالثة بالكامل</span>
+        <span class="text-sm text-[var(--text-muted)]">الزتونة الامتحانية لسلايدات 1 إلى 30</span>
+      </div>
+
+      <article class="reading-card">
+        <h2 class="text-2xl sm:text-3xl font-heading font-extrabold mb-6 text-blue-600">📌 الزتونة الامتحانية للمحاضرة الثالثة (Recursion)</h2>
+
+        <div class="space-y-4">
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-blue-600 mb-1">1. مفهوم الـ Recursion وركيزتاه (سلايد 4 إلى 6)</h3>
+            <p><strong>التعريف:</strong> حل المشكلة عن طريق تقليصها إلى نسخ أصغر من نفسها (<span dir="ltr">Reducing a problem to smaller versions of itself</span>).</p>
+            <p class="mt-1"><strong>Base Case:</strong> حالة التوقف المباشرة التي تُنهي الاستدعاء.</p>
+            <p class="mt-1"><strong>General Case:</strong> الحالة المتكررة التي تنادي فيها الدالة نفسها بقيمة أصغر تقترب من الـ <span class="ltr-token">Base Case</span>.</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-teal-600 mb-1">2. أنواع الـ Recursion والـ Infinite Recursion (سلايد 9 و 10)</h3>
+            <p>• <strong>Direct:</strong> الدالة تنادي نفسها مباشرة.</p>
+            <p class="mt-1">• <strong>Indirect:</strong> دالة تنادي دالة ثانية، والثانية تنادي الأولى.</p>
+            <p class="mt-1">• <strong>Tail Recursion:</strong> الاستدعاء الذاتي هو <strong>آخر أمر يتنفذ</strong> في الدالة.</p>
+            <p class="mt-1">• <strong>Infinite Recursion:</strong> عدم الوصول للـ <span class="ltr-token">Base Case</span> أبداً، مما يملأ الـ <span class="ltr-token">Call Stack</span> ويسبب انهيار البرنامج (<span class="ltr-token">Stack Overflow / Abnormal Termination</span>).</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-purple-600 mb-1">3. الدوال الأربعة الرسمية في المحاضرة الثالثة</h3>
+            <p>1. <strong>المضروب <code class="inline-code">fact(num)</code>:</strong> حالة التوقف <code class="inline-code">num == 0</code> ترجع <code class="inline-code">1</code>، والحالة العامة <code class="inline-code">num * fact(num - 1)</code>.</p>
+            <p class="mt-1">2. <strong>فيبوناتشي <code class="inline-code">rFibNum(a, b, n)</code>:</strong> لها حالتا توقف (<code class="inline-code">n == 1</code> ترجع <code class="inline-code">a</code>، و <code class="inline-code">n == 2</code> ترجع <code class="inline-code">b</code>)، وفي <code class="inline-code">rFibNum(2, 3, 4)</code> الناتج <strong>8</strong> ونصل للـ Base Case <strong>3 مرات</strong>.</p>
+            <p class="mt-1">3. <strong>أكبر عنصر <code class="inline-code">largest(list, lower, upper)</code>:</strong> حالة التوقف <code class="inline-code">lowerIndex == upperIndex</code> ترجع <code class="inline-code">list[lowerIndex]</code>.</p>
+            <p class="mt-1">4. <strong>عكس القائمة <code class="inline-code">reversePrint(current)</code>:</strong> تنادي <code class="inline-code">reversePrint(current-&gt;next)</code> قبل <code class="inline-code">cout</code> لتأجيل الطباعة في الـ Stack حتى النهاية.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================================================================
+         قسم الكويز التفاعلي (أسئلة الاختر فقط — 12 سؤال من الأجزاء الثلاثة)
+    ==================================================================== -->
+    <section id="section-quiz" class="chapter-section">
+      <div class="mb-6 mt-10 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">🎯 الكويز التفاعلي (MCQ Quiz)</span>
+        <span class="text-sm text-[var(--text-muted)]">جميع أسئلة الاختيار من متعدد (12 سؤالاً) مع التصحيح والتفسير الفوري</span>
+      </div>
+
+      <!-- لوحة نتيجة الكويز والفلترة -->
+      <div class="reading-card bg-gradient-to-br from-blue-600/10 to-teal-500/10 border-2 border-blue-500/30">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">اختبر فهمك — كويز المحاضرة الثالثة (MCQ)</h2>
+            <p class="text-[var(--text-muted)] mt-1">اختر الإجابة لكل سؤال ليظهر لك التصحيح الفوري مع التفسير الأكاديمي والعامي من السلايدات.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="px-4 py-2 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-center">
+              <span class="text-xs text-[var(--text-muted)] block">النتيجة الحالية</span>
+              <span id="quizScoreDisplay" class="font-heading font-extrabold text-xl text-blue-600">0 / 12</span>
+            </div>
+            <button id="btnResetQuiz" type="button" class="px-4 py-2.5 rounded-xl bg-rose-600 text-white font-heading font-bold text-sm hover:bg-rose-700 transition shadow-sm">
+              🔄 إعادة الكويز
+            </button>
+          </div>
+        </div>
+
+        <!-- فلاتر أقسام الكويز -->
+        <div class="flex flex-wrap gap-2">
+          <button data-quiz-filter="all" class="quiz-filter-btn active px-3.5 py-1.5 rounded-xl bg-blue-600 text-white text-xs sm:text-sm font-heading font-bold">
+            كل الأسئلة (12)
+          </button>
+          <button data-quiz-filter="p1" class="quiz-filter-btn px-3.5 py-1.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-xs sm:text-sm font-heading font-semibold">
+            الجزء 1: التأسيس والمضروب fact (4)
+          </button>
+          <button data-quiz-filter="p2" class="quiz-filter-btn px-3.5 py-1.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-xs sm:text-sm font-heading font-semibold">
+            الجزء 2: فيبوناتشي rFibNum (4)
+          </button>
+          <button data-quiz-filter="p3" class="quiz-filter-btn px-3.5 py-1.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-xs sm:text-sm font-heading font-semibold">
+            الجزء 3: المصفوفات والقوائم المتصلة (4)
+          </button>
+        </div>
+      </div>
+
+      <!-- حاوية بطاقات الأسئلة -->
+      <div id="quizQuestionsContainer" class="space-y-6"></div>
+    </section>
+
+  </main>
+
+  <script>
+    // بيانات أسئلة الكويز (الـ 12 سؤال اختر بالكامل من الملفات المرفقة للمحاضرة الثالثة)
+    const quizQuestions = [
+      // الجزء الأول (part1.txt)
+      {
+        id: 1,
+        part: "p1",
+        partLabel: "الجزء الأول • سلايد 5",
+        question: "Q1: What is the primary role of the \"Base Case\" in a recursive function?",
+        options: [
+          "A) To allocate additional heap memory for recursive calls.",
+          "B) To provide a direct solution and terminate the recursion.",
+          "C) To execute the largest subproblem iteratively.",
+          "D) To call the main function once execution completes."
+        ],
+        correct: 1,
+        explanation: "وظيفة الـ Base Case الأساسية هي توفير الحل المباشر لأبسط صورة وإيقاف استدعاء الدالة لنفسها (Stops recursion) حتى لا يستمر البرنامج للأبد."
+      },
+      {
+        id: 2,
+        part: "p1",
+        partLabel: "الجزء الأول • سلايد 9",
+        question: "Q2: What is a recursive function called when the LAST statement executed is the recursive call?",
+        options: [
+          "A) Indirect Recursion",
+          "B) Infinite Recursion",
+          "C) Tail Recursion",
+          "D) Base Recursion"
+        ],
+        correct: 2,
+        explanation: "التعريف النصي في سلايد 9: الدالة التي يكون آخر أمر تنفيذي فيها هو استدعاء نفسها تسمى Tail Recursive Function."
+      },
+      {
+        id: 3,
+        part: "p1",
+        partLabel: "الجزء الأول • سلايد 10",
+        question: "Q3: What causes an \"Infinite Recursion\" error during program runtime?",
+        options: [
+          "A) Using too many for loops inside the recursive function.",
+          "B) Absence of a base case, or recursive steps that never reach the base case.",
+          "C) Passing pointers by value instead of by reference.",
+          "D) Declaring the function return type as void."
+        ],
+        correct: 1,
+        explanation: "الاستدعاء اللانهائي (Infinite Recursion) يحدث عندما ننسى الـ Base Case أو عندما لا تقترب الخطوات المتكررة منه أبداً، فيمتلئ الـ Call Stack وتنفد الذاكرة وينهار البرنامج."
+      },
+      {
+        id: 4,
+        part: "p1",
+        partLabel: "الجزء الأول • سلايد 7 و 8",
+        question: "Q4: In executing `fact(4)`, which function call returns a value FIRST?",
+        options: [
+          "A) fact(4)",
+          "B) fact(1)",
+          "C) fact(0)",
+          "D) All calls return at the exact same time."
+        ],
+        correct: 2,
+        explanation: "في تتبع الذاكرة (Call Stack)، الدالة fact(0) هي التي تصل إلى الـ Base Case أولاً وترجع بالرقم 1 فوراً، وبعدها تبدأ الدوال المتجمدة بحساب قيمها تباعاً."
+      },
+
+      // الجزء الثاني (part2.txt)
+      {
+        id: 5,
+        part: "p2",
+        partLabel: "الجزء الثاني • سلايد 15 و 16",
+        question: "Q5: Why does the recursive Fibonacci function `rFibNum` require TWO base cases instead of just one?",
+        options: [
+          "A) Because it stores numbers in an array of size 2.",
+          "B) Because calculating the n-th Fibonacci number depends on the previous TWO values.",
+          "C) To prevent the function from compiling as a tail recursion.",
+          "D) Because Fibonacci numbers cannot be negative."
+        ],
+        correct: 1,
+        explanation: "دالة فيبوناتشي تحتاج إلى حالتي توقف (n == 1 و n == 2) لأن معادلة السلسلة تعتمد على حاصل جمع رقمين سابقين (n - 1 و n - 2)، فلا يمكن التوقف عند حد واحد فقط."
+      },
+      {
+        id: 6,
+        part: "p2",
+        partLabel: "الجزء الثاني • سلايد 17",
+        question: "Q6: What is the return value of calling `rFibNum(2, 3, 4)` as traced in Lecture 3?",
+        options: [
+          "A) 5",
+          "B) 6",
+          "C) 8",
+          "D) 13"
+        ],
+        correct: 2,
+        explanation: "السلسلة تبدأ بالرقم الأول 2 ثم الثاني 3؛ إذن الرقم الثالث هو 2 + 3 = 5، والرقم الرابع هو 3 + 5 = 8، وهذا هو الناتج الرسمي في سلايد 17."
+      },
+      {
+        id: 7,
+        part: "p2",
+        partLabel: "الجزء الثاني • سلايد 17",
+        question: "Q7: How many times is the base case reached in the execution of `rFibNum(2, 3, 4)`?",
+        options: [
+          "A) 1 time",
+          "B) 2 times",
+          "C) 3 times",
+          "D) 4 times"
+        ],
+        correct: 2,
+        explanation: "من واقع شجرة الاستدعاء الرسمية في سلايد 17، وصلنا للـ Base Case ثلاث مرات: مرتان لـ rFibNum(2, 3, 2) ومرة واحدة لـ rFibNum(2, 3, 1)."
+      },
+      {
+        id: 8,
+        part: "p2",
+        partLabel: "الجزء الثاني • سلايد 13",
+        question: "Q8: What is the general mathematical formula for the n-th Fibonacci number when n >= 3?",
+        options: [
+          "A) a_n = a_{n-1} * a_{n-2}",
+          "B) a_n = a_{n-1} + a_{n-2}",
+          "C) a_n = 2 * a_{n-1}",
+          "D) a_n = a_{n-1} - a_{n-2}"
+        ],
+        correct: 1,
+        explanation: "التعريف الرياضي الدقيق المذكور في سلايد 13 هو جمع الحدين السابقين مباشرة: a_n = a_{n-1} + a_{n-2}."
+      },
+
+      // الجزء الثالث (Part3.txt)
+      {
+        id: 9,
+        part: "p3",
+        partLabel: "الجزء الثالث • سلايد 22",
+        question: "Q9: What is the base case condition for finding the largest element in an array `largest(list, lowerIndex, upperIndex)`?",
+        options: [
+          "A) lowerIndex == 0",
+          "B) upperIndex == 0",
+          "C) lowerIndex == upperIndex",
+          "D) list[lowerIndex] == NULL"
+        ],
+        correct: 2,
+        explanation: "حالة التوقف تكون عندما يتساوى الفهرسان (lowerIndex == upperIndex)، مما يعني أن النطاق الفرعي أصبح يحتوي على عنصر واحد فقط فهو الأكبر تلقائياً."
+      },
+      {
+        id: 10,
+        part: "p3",
+        partLabel: "الجزء الثالث • سلايد 26 و 27",
+        question: "Q10: How does `reversePrint` print a singly linked list in reverse order without using backward pointers?",
+        options: [
+          "A) By converting the linked list into an array first.",
+          "B) By utilizing the system call stack to delay printing each node until all subsequent nodes have been processed.",
+          "C) By swapping the data fields of nodes iteratively.",
+          "D) By moving the head pointer to the tail node."
+        ],
+        correct: 1,
+        explanation: "الدالة تستفيد من مكدس الاستدعاءات (System Call Stack)؛ حيث تؤجل طباعة العقدة الحالية وتستدعي العقدة التالية أولاً، وعند ارتداد الاستدعاءات من النهاية تُطبع العقد بالعكس."
+      },
+      {
+        id: 11,
+        part: "p3",
+        partLabel: "الجزء الثالث • سلايد 24",
+        question: "Q11: In the execution of `largest(list, 0, 3)` on `{23, 43, 35, 20}`, what value is returned by the base case call `largest(list, 3, 3)`?",
+        options: [
+          "A) 43",
+          "B) 35",
+          "C) 20",
+          "D) 23"
+        ],
+        correct: 2,
+        explanation: "الاستدعاء largest(list, 3, 3) يمثل الـ Base Case ويرجع بقيمة العنصر الموجود عند الفهرس 3 مباشرة وهو الرقم 20."
+      },
+      {
+        id: 12,
+        part: "p3",
+        partLabel: "الجزء الثالث • سلايد 27",
+        question: "Q12: What would happen if we swapped the two statements in `reversePrint` so that `cout << current->data << \" \";` appears BEFORE `reversePrint(current->next);`?",
+        options: [
+          "A) The list would be printed in normal forward order.",
+          "B) An infinite recursion error would occur.",
+          "C) A compilation syntax error would be generated.",
+          "D) Only the last node would be printed."
+        ],
+        correct: 0,
+        explanation: "لو قمنا بالطباعة قبل الاستدعاء الذاتي، فستُطبع كل عقدة فور زيارتها، مما يطبع عناصر القائمة بالترتيب الطبيعي للأمام (Forward order)."
+      }
+    ];
+
+    // حالة المستخدم في الكويز
+    let userAnswers = {};
+    let currentQuizFilter = "all";
+
+    // حالة إعدادات القراءة
+    let fontScale = 100;
+    let lineSpacingMode = "relaxed";
+
+    function renderQuiz() {
+      const container = document.getElementById("quizQuestionsContainer");
+      const filtered = currentQuizFilter === "all"
+        ? quizQuestions
+        : quizQuestions.filter(q => q.part === currentQuizFilter);
+
+      container.innerHTML = filtered.map((q) => {
+        const answered = userAnswers[q.id];
+        const isAnswered = answered !== undefined;
+
+        const optionsHtml = q.options.map((opt, idx) => {
+          let stateClass = "";
+          if (isAnswered) {
+            if (idx === q.correct) {
+              stateClass = "correct font-bold";
+            } else if (idx === answered && answered !== q.correct) {
+              stateClass = "wrong";
+            }
+          }
+          return `
+            <button
+              type="button"
+              data-qid="${q.id}"
+              data-opt="${idx}"
+              ${isAnswered ? "disabled" : ""}
+              class="quiz-option w-full text-left p-4 rounded-xl flex items-center justify-between gap-3 ${stateClass}"
+              dir="ltr"
+            >
+              <span class="font-mono text-sm sm:text-base">${opt}</span>
+              ${isAnswered && idx === q.correct ? '<span class="text-emerald-600 font-bold text-lg">✓</span>' : ''}
+              ${isAnswered && idx === answered && answered !== q.correct ? '<span class="text-rose-600 font-bold text-lg">✗</span>' : ''}
+            </button>
+          `;
+        }).join("");
+
+        const feedbackHtml = isAnswered ? `
+          <div class="mt-4 p-4 rounded-xl ${answered === q.correct ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-rose-500/10 border border-rose-500/30'}">
+            <div class="font-heading font-bold text-base mb-1 ${answered === q.correct ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}">
+              ${answered === q.correct ? '✅ إجابة صحيحة ممتازة!' : '❌ إجابة غير صحيحة — راجع التفسير:'}
+            </div>
+            <p class="text-sm sm:text-base">${q.explanation}</p>
+          </div>
+        ` : "";
+
+        return `
+          <article class="reading-card !mb-0">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="rule-badge">${q.partLabel}</span>
+              <span class="text-xs font-mono text-[var(--text-muted)]" dir="ltr">Question #${q.id}</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold mb-4 text-left font-sans" dir="ltr">${q.question}</h3>
+            <div class="space-y-3">
+              ${optionsHtml}
+            </div>
+            ${feedbackHtml}
+          </article>
+        `;
+      }).join("");
+
+      container.querySelectorAll(".quiz-option").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const qid = parseInt(btn.getAttribute("data-qid"), 10);
+          const optIdx = parseInt(btn.getAttribute("data-opt"), 10);
+          userAnswers[qid] = optIdx;
+          updateScoreDisplay();
+          renderQuiz();
+        });
+      });
+    }
+
+    function updateScoreDisplay() {
+      let score = 0;
+      quizQuestions.forEach(q => {
+        if (userAnswers[q.id] === q.correct) {
+          score++;
+        }
+      });
+      const scoreEl = document.getElementById("quizScoreDisplay");
+      if (scoreEl) {
+        scoreEl.textContent = `${score} / ${quizQuestions.length}`;
+      }
+    }
+
+    function applyReadingTypography() {
+      const baseRem = 1.15 * (fontScale / 100);
+      document.documentElement.style.setProperty("--reading-size", `${baseRem.toFixed(2)}rem`);
+      const label = document.getElementById("fontSizeLabel");
+      if (label) label.textContent = `${fontScale}%`;
+    }
+
+    document.getElementById("btnFontInc").addEventListener("click", () => {
+      if (fontScale < 140) {
+        fontScale += 10;
+        applyReadingTypography();
+      }
+    });
+
+    document.getElementById("btnFontDec").addEventListener("click", () => {
+      if (fontScale > 80) {
+        fontScale -= 10;
+        applyReadingTypography();
+      }
+    });
+
+    document.getElementById("btnLineSpacing").addEventListener("click", (e) => {
+      const btn = e.currentTarget;
+      if (lineSpacingMode === "relaxed") {
+        lineSpacingMode = "spacious";
+        document.documentElement.style.setProperty("--reading-lh", "2.5");
+        btn.textContent = "تباعد: واسع جداً";
+      } else if (lineSpacingMode === "spacious") {
+        lineSpacingMode = "normal";
+        document.documentElement.style.setProperty("--reading-lh", "1.85");
+        btn.textContent = "تباعد: قياسي";
+      } else {
+        lineSpacingMode = "relaxed";
+        document.documentElement.style.setProperty("--reading-lh", "2.15");
+        btn.textContent = "تباعد: مريح جداً";
+      }
+    });
+
+    document.getElementById("btnThemeSepia").addEventListener("click", () => {
+      document.body.classList.remove("theme-white", "theme-dark");
+    });
+    document.getElementById("btnThemeWhite").addEventListener("click", () => {
+      document.body.classList.remove("theme-dark");
+      document.body.classList.add("theme-white");
+    });
+    document.getElementById("btnThemeDark").addEventListener("click", () => {
+      document.body.classList.remove("theme-white");
+      document.body.classList.add("theme-dark");
+    });
+
+    document.querySelectorAll(".chapter-pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        document.querySelectorAll(".chapter-pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+
+        const target = pill.getAttribute("data-target");
+        const sections = {
+          part1: document.getElementById("section-part1"),
+          part2: document.getElementById("section-part2"),
+          part3: document.getElementById("section-part3"),
+          summary: document.getElementById("section-summary"),
+          quiz: document.getElementById("section-quiz")
+        };
+
+        if (target === "all") {
+          Object.values(sections).forEach(sec => sec.classList.remove("hidden"));
+        } else {
+          Object.entries(sections).forEach(([key, sec]) => {
+            if (key === target) {
+              sec.classList.remove("hidden");
+            } else {
+              sec.classList.add("hidden");
+            }
+          });
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+
+    document.querySelectorAll(".quiz-filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".quiz-filter-btn").forEach(b => {
+          b.classList.remove("bg-blue-600", "text-white", "font-bold");
+          b.classList.add("bg-[var(--bg-card)]");
+        });
+        btn.classList.add("bg-blue-600", "text-white", "font-bold");
+        btn.classList.remove("bg-[var(--bg-card)]");
+        currentQuizFilter = btn.getAttribute("data-quiz-filter");
+        renderQuiz();
+      });
+    });
+
+    document.getElementById("btnResetQuiz").addEventListener("click", () => {
+      userAnswers = {};
+      updateScoreDisplay();
+      renderQuiz();
+    });
+
+    let lastScrollY = window.scrollY;
+    window.addEventListener("scroll", () => {
+      const currentY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = docHeight > 0 ? (currentY / docHeight) * 100 : 0;
+      const bar = document.getElementById("readingProgressBar");
+      if (bar) bar.style.width = `${Math.min(100, Math.max(0, scrolled))}%`;
+
+      const headerEl = document.getElementById("mainReadingHeader");
+      if (headerEl) {
+        if (currentY > 120 && currentY > lastScrollY + 6) {
+          headerEl.classList.add("nav-hidden");
+        } else if (currentY < lastScrollY - 6 || currentY <= 80) {
+          headerEl.classList.remove("nav-hidden");
+        }
+      }
+      lastScrollY = currentY;
+    });
+
+    renderQuiz();
+  </script>
+</body>
+</html>

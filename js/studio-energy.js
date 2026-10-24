@@ -56,8 +56,6 @@
         host.classList.toggle('energy-awake',visible && !document.hidden && !reduce.matches);
         if(visible && !document.hidden && !reduce.matches){last=window.performance.now();frame=window.requestAnimationFrame(tick);}else if(reduce.matches)draw(0);
       }
-      host.addEventListener('pointermove',event=>{const rect=host.getBoundingClientRect();pointerX=(event.clientX-rect.left)/width-.5;pointerY=(event.clientY-rect.top)/height-.5;});
-      host.addEventListener('pointerleave',()=>{pointerX=0;pointerY=0;});
       host.addEventListener('pointerdown',event=>{const rect=host.getBoundingClientRect();explode(event.clientX-rect.left,event.clientY-rect.top);});
       const observer=new window.IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();},{threshold:.05});observer.observe(host);
       const size=new window.ResizeObserver(resize);size.observe(host);resize();

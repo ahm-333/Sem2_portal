@@ -7,7 +7,7 @@
  window.mountProcessorIntro=({host,onSeen,onSkip})=>{
   if(!G||!S||!D||!I)return null;
   const prefix='processor-'+(++serial),nodeW=110,nodeH=94,positions=[[126,116],[944,104],[166,450],[944,450],[540,58],[554,512]],orbit=[[236,136],[864,136],[236,434],[864,434],[550,57],[550,519]];
-  const codes=['CS221','CS222','IS211','CS213','CS214','HUM201'],names=['معمارية الحاسوب','الرسم بالحاسوب','قواعد البيانات','تراكيب البيانات','أنظمة التشغيل','كتابة التقارير'];
+  const codes=['CS221','CS222','IS211','CS213','CS214','HUM201'],names=['معمارية الحاسوب','الرسم بالحاسوب','قواعد البيانات','هياكل البيانات','أنظمة التشغيل','كتابة التقارير'];
   const icons=window.PORTAL_COURSE_ICONS;
   const englishNames=['Architecture','Graphics','Databases','Data Structures','Operating Systems','Report Writing'];
   const el=document.createElement('section');el.className='desktop-intro processor-intro';el.setAttribute('aria-label','مقدمة تفاعلية: المواد تغذّي معالج البوابة');

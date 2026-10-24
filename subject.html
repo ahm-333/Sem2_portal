@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تفاصيل المادة | Study Hub</title>
+  <title>تفاصيل المادة | Kernal</title>
+  <!-- Favicon & App Icons -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="apple-mobile-web-app-title" content="Kernal">
   <script src="js/shared/storage.js"></script>
   <script src="js/theme.js?v=1792424832344"></script>
   
@@ -30,8 +37,8 @@
   <!-- 1. شريط التنقل العلوي (Navbar) -->
   <!-- ========================================== -->
   <header class="a1-navbar studio-topbar" aria-label="التنقل الرئيسي">
-  <a href="index.html" class="a1-brand"><span class="a1-brand-mark" aria-hidden="true"></span><span><strong lang="en">Study Hub</strong><small>مساحتك للمذاكرة</small></span></a>
-  <div class="studio-topbar-title"><i data-lucide="graduation-cap" aria-hidden="true"></i><span>الترم الثاني <span class="studio-dot">/</span> الذكاء الاصطناعي</span></div>
+  <a href="index.html" class="a1-brand"><span class="a1-brand-mark" aria-hidden="true"></span><span><strong lang="en">Kernal</strong><small>The core of every study</small></span></a>
+  <div class="studio-topbar-title"><i data-lucide="graduation-cap" aria-hidden="true"></i><span>الفرقة الثانية — الترم الأول <span class="studio-dot">/</span> الذكاء الاصطناعي</span></div>
   <div class="a1-header-actions">
     <button id="share-btn" aria-label="نسخ رابط المادة" title="نسخ رابط المادة"><i data-lucide="share-2" aria-hidden="true"></i></button>
     <a href="index.html#library" class="studio-search-shortcut" aria-label="البحث في مكتبة المصادر"><i data-lucide="search" aria-hidden="true"></i><span>ابحث في المصادر</span><kbd>/</kbd></a>
@@ -596,7 +603,48 @@
     <!-- ========================================== -->
   <!-- تذييل الصفحة (Footer) -->
   <!-- ========================================== -->
-  <footer class="studio-footer"><a href="index.html" lang="en">Study Hub</a><span>من طلاب، لطلاب. <span lang="en">Zagazig University</span></span><span>تطوير <bdi>Ahmed Amir</bdi> و<bdi>Eyad Ahmed</bdi></span></footer>
+    <footer class="studio-footer" aria-label="Platform Footer">
+    <div class="studio-footer-container">
+      <div class="studio-footer-main">
+        <div class="studio-footer-brand">
+          <a href="index.html" class="studio-footer-logo" lang="en">
+            <span class="studio-footer-mark" aria-hidden="true"></span>
+            <span class="studio-footer-title">
+              <strong>Kernal</strong>
+              <small>The core of every study</small>
+            </span>
+          </a>
+          <p class="studio-footer-desc">
+            Unified academic platform engineered for Computer Science &amp; AI students.
+          </p>
+        </div>
+
+        <div class="studio-footer-creators">
+          <span class="creators-heading">Engineered by</span>
+          <div class="creators-list">
+            <span class="creator-badge"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg><strong>Ahmed Amir</strong></span>
+            <span class="creators-amp">&amp;</span>
+            <span class="creator-badge"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg><strong>Eyad Ahmed</strong></span>
+          </div>
+        </div>
+
+        <div class="studio-footer-motto-wrapper">
+          <span class="studio-footer-motto" dir="rtl">من طلاب لطلاب</span>
+        </div>
+      </div>
+
+      <div class="studio-footer-bottom">
+        <div class="studio-footer-academic">
+          <span>Faculty of Computers and Artificial Intelligence</span>
+          <span class="footer-dot" aria-hidden="true">•</span>
+          <span>Zagazig University</span>
+        </div>
+        <div class="studio-footer-legal">
+          <span>&copy; 2026 Kernal. All rights reserved.</span>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <!-- ملفات الجافاسكربت -->
   <script src="js/shared/dialog.js"></script>
@@ -605,7 +653,7 @@
   <script src="js/courses-data.js?v=1792424832344"></script>
   <script src="js/schedule-data.js?v=1792424832344"></script>
   <script src="js/a1-identity.js"></script>
-<script src="js/a1-cursor.js"></script>
+
   <script src="js/profile-modal.js?v=1792424832344"></script>
   <script src="js/study-catalog.js"></script>
   <script src="js/shared/content-catalog.js"></script>

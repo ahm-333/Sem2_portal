@@ -1,0 +1,2374 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المحاضرة الأولى — هياكل البيانات والمصفوفات والقوالب | وضع القراءة</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #fdfaf5;
+      --bg-card: #ffffff;
+      --bg-soft: #f5efe4;
+      --bg-accent: #eef2ff;
+      --text-main: #1e293b;
+      --text-muted: #526075;
+      --border-color: #e6decb;
+      --brand-primary: #2563eb;
+      --brand-secondary: #0f766e;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+      --reading-size: 1.15rem;
+      --reading-lh: 2.15;
+    }
+
+    body.theme-white {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-soft: #f1f5f9;
+      --bg-accent: #eff6ff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #e2e8f0;
+    }
+
+    body.theme-dark {
+      --bg-page: #0b1120;
+      --bg-card: #131c31;
+      --bg-soft: #1e293b;
+      --bg-accent: #1e3a8a33;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border-color: #26354d;
+    }
+
+    body {
+      font-family: 'Tajawal', 'Cairo', sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-size: var(--reading-size);
+      line-height: var(--reading-lh);
+      transition: background-color 0.25s ease, color 0.25s ease;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Cairo', sans-serif;
+      line-height: 1.5;
+    }
+
+    .reading-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .reading-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 1.25rem;
+      padding: 2.25rem 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.04);
+    }
+
+    @media (max-width: 640px) {
+      .reading-card {
+        padding: 1.5rem 1.15rem;
+        margin-bottom: 1.75rem;
+      }
+    }
+
+    .reading-block {
+      margin-bottom: 1.75rem;
+    }
+
+    .reading-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .academic-quote {
+      direction: ltr;
+      text-align: left;
+      background-color: var(--bg-soft);
+      border-left: 5px solid var(--brand-primary);
+      border-radius: 0.75rem;
+      padding: 1.35rem 1.5rem;
+      margin: 1.5rem 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      line-height: 1.85;
+    }
+
+    .colloquial-box {
+      background-color: var(--bg-accent);
+      border-right: 5px solid #0d9488;
+      border-radius: 0.85rem;
+      padding: 1.5rem 1.65rem;
+      margin: 1.5rem 0;
+    }
+
+    .rule-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background-color: var(--bg-soft);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    pre.code-block {
+      direction: ltr;
+      text-align: left;
+      background-color: var(--code-bg);
+      color: var(--code-text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      line-height: 1.85;
+      padding: 1.35rem 1.5rem;
+      border-radius: 0.9rem;
+      overflow-x: auto;
+      margin: 1.25rem 0 0.75rem 0;
+      border: 1px solid #334155;
+    }
+
+    code.inline-code, .ltr-token {
+      direction: ltr;
+      unicode-bidi: isolate;
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88em;
+      background-color: var(--bg-soft);
+      padding: 0.1rem 0.55rem;
+      border-radius: 0.45rem;
+      border: 1px solid var(--border-color);
+      color: #e11d48;
+      font-weight: 600;
+    }
+
+    body.theme-dark code.inline-code,
+    body.theme-dark .ltr-token {
+      color: #fb7185;
+    }
+
+    /* صندوق تفكيك الكود سطر بسطر وكلمة بكلمة */
+    .code-walkthrough {
+      background-color: var(--bg-soft);
+      border: 1px solid var(--border-color);
+      border-right: 5px solid #2563eb;
+      border-radius: 1rem;
+      padding: 1.35rem 1.5rem;
+      margin: 0.85rem 0 1.85rem 0;
+    }
+
+    .walkthrough-title {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #2563eb;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    body.theme-dark .walkthrough-title {
+      color: #60a5fa;
+    }
+
+    .walkthrough-item {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0.85rem;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .walkthrough-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .walkthrough-line-code {
+      direction: ltr;
+      unicode-bidi: isolate;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 600;
+      background-color: #0f172a;
+      color: #38bdf8;
+      padding: 0.55rem 0.9rem;
+      border-radius: 0.55rem;
+      margin-bottom: 0.75rem;
+      display: block;
+      overflow-x: auto;
+    }
+
+    .word-breakdown-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+      margin-top: 0.65rem;
+      padding-top: 0.65rem;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    .word-chip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .spaced-list li {
+      margin-bottom: 1rem;
+      padding-right: 0.5rem;
+    }
+
+    .spaced-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .diagram-frame {
+      background-color: var(--bg-soft);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 1.75rem 0;
+      text-align: center;
+    }
+
+    .formula-box {
+      direction: ltr;
+      unicode-bidi: isolate;
+      text-align: center;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #f8fafc;
+      padding: 1.35rem 1.5rem;
+      border-radius: 0.9rem;
+      margin: 1.5rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.02rem;
+      line-height: 1.8;
+      border: 1px solid #334155;
+    }
+
+    .chapter-pill {
+      transition: all 0.2s ease;
+    }
+
+    .chapter-pill.active {
+      background-color: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .quiz-option {
+      transition: all 0.2s ease;
+      border: 2px solid var(--border-color);
+      background-color: var(--bg-card);
+    }
+
+    .quiz-option:hover:not(:disabled) {
+      border-color: #3b82f6;
+      background-color: var(--bg-soft);
+    }
+
+    .quiz-option.correct {
+      border-color: #10b981 !important;
+      background-color: rgba(16, 185, 129, 0.12) !important;
+    }
+
+    .quiz-option.wrong {
+      border-color: #ef4444 !important;
+      background-color: rgba(239, 68, 68, 0.12) !important;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+      .compact-header {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .compact-header.nav-hidden {
+      transform: translateY(-100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-20">
+
+  <!-- شريط تقدم القراءة العلوي -->
+  <div class="fixed top-0 left-0 right-0 h-1.5 bg-slate-200/60 z-50">
+    <div id="readingProgressBar" class="h-full bg-blue-600 transition-all duration-150" style="width: 0%"></div>
+  </div>
+
+  <!-- الهيدر الثابت لوضع القراءة -->
+  <header id="mainReadingHeader" class="compact-header sticky top-0 z-40 backdrop-blur-md bg-[var(--bg-page)]/95 border-b border-[var(--border-color)] shadow-sm">
+    <div class="reading-container px-3 py-1.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="../../subject.html?id=data-structure" title="الرجوع إلى صفحة مقرر هياكل البيانات" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 text-white hover:bg-blue-600 font-bold text-xs shadow-sm transition">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span class="hidden sm:inline">الرجوع للمقرر</span>
+        </a>
+        <a href="index.html" title="فهرس شروحات هياكل البيانات" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] hover:bg-[var(--bg-soft)] font-bold text-xs shadow-sm transition">
+          <span>📚 الفهرس</span>
+        </a>
+        <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-heading font-bold text-xs shadow-sm shrink-0">L1</span>
+        <div>
+          <h1 class="font-heading font-bold text-xs sm:text-sm leading-tight truncate">المحاضرة الأولى: هياكل البيانات (Lecture 1)</h1>
+        </div>
+      </div>
+
+      <!-- أدوات القراءة والتنقل -->
+      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+        <a href="lecture-2.html" title="الانتقال للمحاضرة التالية: القوائم المتصلة" class="px-2.5 py-1 rounded-lg border border-blue-500/30 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 text-xs font-heading font-bold hover:bg-blue-100 transition inline-flex items-center gap-1">
+          <span>L2: القوائم المتصلة</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        </a>
+
+        <!-- تكبير وتصغير الخط -->
+        <div class="flex items-center rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-0.5">
+          <button id="btnFontDec" type="button" title="تصغير النص" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-[var(--bg-soft)] transition">A-</button>
+          <span id="fontSizeLabel" class="px-1.5 text-[11px] font-semibold text-[var(--text-muted)]">100%</span>
+          <button id="btnFontInc" type="button" title="تكبير النص" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-[var(--bg-soft)] transition">A+</button>
+        </div>
+
+        <!-- تباعد الأسطر -->
+        <button id="btnLineSpacing" type="button" title="تغيير تباعد السطور" class="px-2 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[11px] font-heading font-bold hover:bg-[var(--bg-soft)] transition">
+          تباعد: مريح جداً
+        </button>
+
+        <!-- ألوان الخلفية لراحة العين -->
+        <div class="flex items-center gap-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-1">
+          <button id="btnThemeSepia" type="button" title="ورقي دافئ لراحة العين" class="w-4 h-4 rounded-full bg-[#fdfaf5] border-2 border-amber-600 shadow-sm"></button>
+          <button id="btnThemeWhite" type="button" title="أبيض نقي" class="w-4 h-4 rounded-full bg-white border border-slate-300"></button>
+          <button id="btnThemeDark" type="button" title="ليلي مريح" class="w-4 h-4 rounded-full bg-slate-900 border border-slate-600"></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="reading-container px-4 pt-8">
+
+    <!-- ===================================================================
+         الجزء الأول: التأسيس، الـ ADTs، وأنواع البيانات (p1.txt)
+    ==================================================================== -->
+    <section id="section-part1" class="chapter-section">
+      <div class="mb-6 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">📘 الجزء الأول • سلايدات 3 إلى 11</span>
+        <span class="text-sm text-[var(--text-muted)]">التأسيس، الـ ADTs، وأنواع البيانات</span>
+      </div>
+
+      <!-- 1.1 ما هو هيكل البيانات؟ -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايد 3</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">1. ما هو هيكل البيانات؟ (1.1 Definition of Data Structure)</h2>
+        </div>
+
+        <div class="reading-block">
+          <h3 class="text-lg font-heading font-bold mb-2 text-[var(--text-muted)]">النص الأكاديمي الرسمي من السلايد:</h3>
+          <div class="academic-quote">
+            <strong class="block text-blue-600 mb-2">Data Structure Definition:</strong>
+            A Data Structure is a way of organizing and storing data in a computer so that it can be accessed and modified efficiently. It defines the relationship between data elements and the operations that can be performed on them.
+          </div>
+        </div>
+
+        <div class="reading-block colloquial-box">
+          <h3 class="text-xl font-heading font-bold text-teal-800 dark:text-teal-300 mb-3">💡 الشرح بالعامية البسيطة:</h3>
+          <p class="mb-4">
+            في علوم الحاسب، الكمبيوتر ميعرفش حاجة اسمها "قائمة أصدقاء" أو "سجل درجات طلاب"؛ المعالج (<span class="ltr-token">CPU</span>) أثناء تشغيل أي برنامج معندوش غير شريط الذاكرة العشوائية (<span class="ltr-token">RAM</span>).
+          </p>
+          <p class="mb-4 font-semibold">
+            هيكل البيانات (<span class="ltr-token">Data Structure</span>) هو ببساطة: طريقة المهندسين في تنظيم وتخزين ورص البيانات جوة خلايا الـ <span class="ltr-token">RAM</span> بهدفين أساسيين:
+          </p>
+          <ol class="list-decimal list-inside spaced-list">
+            <li><strong>تحديد العلاقة المنطقية بين البيانات:</strong> مين قاعد جنب مين، ومين قبل مين، ومين بعد مين.</li>
+            <li><strong>إمكانية عمل العمليات الأساسية:</strong> (زي القراءة، الإضافة، الحذف، والبحث، والترتيب) <strong>بأعلى سرعة وأقل استهلاك للميموري</strong>.</li>
+          </ol>
+        </div>
+
+        <div class="reading-block">
+          <h3 class="text-lg font-heading font-bold mb-4">الأمثلة المذكورة في سلايد 3:</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div class="p-3.5 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)] flex items-center justify-between">
+              <span class="font-bold">المصفوفات</span>
+              <span class="font-mono text-sm text-blue-600 font-semibold" dir="ltr">Arrays</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)] flex items-center justify-between">
+              <span class="font-bold">القوائم المتصلة</span>
+              <span class="font-mono text-sm text-blue-600 font-semibold" dir="ltr">Linked Lists</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)] flex items-center justify-between">
+              <span class="font-bold">المكدس</span>
+              <span class="font-mono text-sm text-blue-600 font-semibold" dir="ltr">Stacks</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)] flex items-center justify-between">
+              <span class="font-bold">الطوابير</span>
+              <span class="font-mono text-sm text-blue-600 font-semibold" dir="ltr">Queues</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)] flex items-center justify-between">
+              <span class="font-bold">الأشجار</span>
+              <span class="font-mono text-sm text-blue-600 font-semibold" dir="ltr">Trees</span>
+            </div>
+            <div class="p-3.5 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)] flex items-center justify-between">
+              <span class="font-bold">الرسوم البيانية</span>
+              <span class="font-mono text-sm text-blue-600 font-semibold" dir="ltr">Graphs</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1.2 المفهوم المجرد ADT -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 4 و 5</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">2. المفهوم المجرد: ما هو الـ ADT؟ (1.2 Abstract Data Type)</h2>
+        </div>
+
+        <div class="reading-block">
+          <h3 class="text-lg font-heading font-bold mb-2 text-[var(--text-muted)]">النص الأكاديمي الرسمي من السلايد:</h3>
+          <div class="academic-quote">
+            <strong class="block text-blue-600 mb-2">Abstract Data Type (ADT):</strong>
+            An Abstract Data Type (ADT) is a mathematical model for a certain class of data structures that specifies the behavior (operations) of the data type without specifying how it is implemented.<br><br>
+            • It focuses on <strong>WHAT</strong> operations are to be performed rather than <strong>HOW</strong> these operations are implemented.<br>
+            • ADT provides a logical description of the data and the operations on it.<br>
+            • ADT is a conceptual model; it hides the implementation details.<br><br>
+            <strong>Examples of ADTs:</strong> Stack, Queue, List, Deque, Priority Queue, Set.
+          </div>
+        </div>
+
+        <div class="reading-block colloquial-box">
+          <h3 class="text-xl font-heading font-bold text-teal-800 dark:text-teal-300 mb-3">💡 الشرح بالعامية البسيطة:</h3>
+          <p class="mb-4">
+            الـ <span class="ltr-token">ADT</span> ده هو المبدأ اللي بنسميه في هندسة البرمجيات <span class="ltr-token">Data Abstraction</span>، يعني التجريد وإخفاء التفاصيل:
+          </p>
+          <ul class="list-disc list-inside spaced-list mb-4">
+            <li><strong>مثال التاكسي:</strong> تخيل إنك راكب تاكسي؛ أنت بتقول للسائق: "وديني الجامعة". دي العملية اللي أنت عايزها (<span class="ltr-token">WHAT</span>). هل أنت بتشغل بالك هو هيغير التروس إزاي في الفتيس؟ أو الموتور هيحرق بنزين قد إيه؟ طبعاً لأ (<span class="ltr-token">HOW</span>)؛ التفاصيل الميكانيكية دي مسؤولية السائق.</li>
+            <li><strong>مثال زرار النور:</strong> عامل زي زرار النور في الحيطة؛ أنت عارف إنه لما تدوس عليه النور هيشتغل (<span class="ltr-token">WHAT</span>)، لكن مبيشغلكش السلك جوة الحيطة متوصل إزاي بالكهرباء (<span class="ltr-token">HOW</span>).</li>
+          </ul>
+          <p class="font-semibold">
+            في البرمجة: الـ <span class="ltr-token">ADT</span> يقولك: "أنا عايز هيكل بيعمل إضافة وقراءة وحذف"، ومبيشغلش باله نهائي بالتفاصيل الداخلية في الذاكرة. أما الـ <span class="ltr-token">Data Structure</span> الفعلي هو اللي بيحدد هل هنستخدم مصفوفة متصلة (<span class="ltr-token">Array</span>) ولا مؤشرات وقوائم (<span class="ltr-token">Linked List</span>) لتنفيذ تلك العمليات.
+          </p>
+        </div>
+
+        <!-- رسمة جرافيك SVG لتوضيح مفهوم WHAT مقابل HOW في الـ ADT -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-blue-600">🎨 رسم توضيحي: الفارق بين واجهة الـ ADT (ماذا نفعل) والتنفيذ الفعلي في الذاكرة (كيف ننفذ)</h4>
+          <svg viewBox="0 0 760 245" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="adtBox" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#2563eb"/>
+                <stop offset="100%" stop-color="#1d4ed8"/>
+              </linearGradient>
+              <linearGradient id="implBox" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#0f766e"/>
+                <stop offset="100%" stop-color="#0d9488"/>
+              </linearGradient>
+            </defs>
+            <!-- صندوق الـ ADT -->
+            <rect x="20" y="25" width="310" height="190" rx="16" fill="url(#adtBox)" />
+            <text x="175" y="58" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono, monospace" font-weight="700" font-size="16">Abstract Data Type (ADT)</text>
+            <text x="175" y="85" text-anchor="middle" direction="rtl" fill="#bfdbfe" font-family="Cairo, sans-serif" font-weight="700" font-size="14">يركز على: ماذا نفعل بالبيانات؟</text>
+            <text x="175" y="106" text-anchor="middle" direction="ltr" fill="#fde047" font-family="JetBrains Mono, monospace" font-weight="700" font-size="13">Focuses on: WHAT</text>
+            <rect x="45" y="120" width="260" height="75" rx="10" fill="#1e40af" />
+            <text x="175" y="148" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono, monospace" font-size="13">• Insert()   • Delete()</text>
+            <text x="175" y="176" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono, monospace" font-size="13">• Access()   • Update()</text>
+
+            <!-- السهم الفاصل (جدار التجريد) -->
+            <line x1="380" y1="15" x2="380" y2="230" stroke="#94a3b8" stroke-width="3" stroke-dasharray="7,7" />
+            <rect x="332" y="98" width="96" height="44" rx="8" fill="#f59e0b" />
+            <text x="380" y="125" text-anchor="middle" direction="rtl" fill="#ffffff" font-family="Cairo, sans-serif" font-weight="800" font-size="13">إخفاء التفاصيل</text>
+
+            <!-- صندوق الـ Implementation -->
+            <rect x="430" y="25" width="310" height="190" rx="16" fill="url(#implBox)" />
+            <text x="585" y="58" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono, monospace" font-weight="700" font-size="16">Data Structure in RAM</text>
+            <text x="585" y="85" text-anchor="middle" direction="rtl" fill="#99f6e4" font-family="Cairo, sans-serif" font-weight="700" font-size="14">يركز على: كيف ننفذها في الذاكرة؟</text>
+            <text x="585" y="106" text-anchor="middle" direction="ltr" fill="#fde047" font-family="JetBrains Mono, monospace" font-weight="700" font-size="13">Focuses on: HOW</text>
+            <rect x="455" y="120" width="260" height="75" rx="10" fill="#115e59" />
+            <text x="585" y="148" text-anchor="middle" direction="rtl" fill="#ffffff" font-family="Cairo, sans-serif" font-size="14">١. مصفوفة متصلة بالذاكرة</text>
+            <text x="585" y="176" text-anchor="middle" direction="rtl" fill="#ffffff" font-family="Cairo, sans-serif" font-size="14">٢. أو قائمة متصلة بالمؤشرات</text>
+          </svg>
+        </div>
+
+        <div class="reading-block">
+          <h3 class="text-xl font-heading font-bold mb-4">العمليات الأساسية الأربعة لأي ADT (سلايد 5):</h3>
+          <div class="grid grid-cols-1 gap-4">
+            <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+              <div class="font-heading font-bold text-blue-600 text-lg mb-1">1. الإضافة (<span class="ltr-token">Insertion</span>)</div>
+              <p>إدخال عنصر جديد إلى هيكل البيانات (<span dir="ltr">Adding new elements</span>).</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+              <div class="font-heading font-bold text-rose-600 text-lg mb-1">2. الحذف (<span class="ltr-token">Deletion</span>)</div>
+              <p>إزالة عنصر موجود من هيكل البيانات (<span dir="ltr">Removing existing elements</span>).</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+              <div class="font-heading font-bold text-emerald-600 text-lg mb-1">3. الوصول والقراءة (<span class="ltr-token">Access / Retrieval</span>)</div>
+              <p>قراءة وفحص واسترجاع قيمة عنصر معين (<span dir="ltr">Reading or getting an element</span>).</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+              <div class="font-heading font-bold text-amber-600 text-lg mb-1">4. التعديل (<span class="ltr-token">Update / Modification</span>)</div>
+              <p>استبدال أو تغيير قيمة عنصر مخزن بالفعل (<span dir="ltr">Changing the value of an existing element</span>).</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. أمثلة الـ ADTs الرسمية: Stack & Queue -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 6 و 7</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">3. أمثلة الـ ADTs الرسمية في السلايد (Stack & Queue)</h2>
+          <p class="text-[var(--text-muted)] mt-2">ضربت السلايد مثالين شهيرين جداً لتوضيح كيف أن المفهوم المجرد يحدد فقط السلوك (<span class="ltr-token">Behavior</span>):</p>
+        </div>
+
+        <!-- أ) المكدس Stack -->
+        <div class="reading-block p-5 rounded-2xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+          <h3 class="text-xl font-heading font-extrabold text-blue-600 mb-3">أ) المكدس كـ ADT مجرد (<span class="ltr-token">The Stack ADT</span>) — سلايد 6</h3>
+          <div class="academic-quote">
+            <strong>Definition:</strong> A stack is a collection where elements are added and removed in a <strong>Last In, First Out (LIFO)</strong> order.<br>
+            <strong>Implementation:</strong> Can be done using an array or linked list.
+          </div>
+          <ul class="list-disc list-inside spaced-list mt-3">
+            <li><strong>القاعدة (<span class="ltr-token">LIFO</span>):</strong> آخر عنصر يدخل هو أول عنصر يخرج، زي بالظبط رصة الأطباق فوق بعضها؛ آخر طبق بتحطه على القمة هو أول طبق بتشيله.</li>
+            <li><strong>التنفيذ في الـ <span class="ltr-token">RAM</span>:</strong> مفهوم المكدس مجرد، ويمكن برمجته إما بمصفوفة (<span class="ltr-token">Array</span>) أو بقائمة متصلة (<span class="ltr-token">Linked List</span>).</li>
+          </ul>
+        </div>
+
+        <!-- ب) الطابور Queue -->
+        <div class="reading-block p-5 rounded-2xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+          <h3 class="text-xl font-heading font-extrabold text-teal-600 mb-3">ب) الطابور كـ ADT مجرد (<span class="ltr-token">The Queue ADT</span>) — سلايد 7</h3>
+          <div class="academic-quote">
+            <strong>Definition:</strong> A queue is a collection where elements are added at the rear and removed from the front: <strong>First In, First Out (FIFO)</strong>.<br>
+            <strong>Example:</strong> People waiting in a line → first person to come is first person served.
+          </div>
+          <ul class="list-disc list-inside spaced-list mt-3">
+            <li><strong>القاعدة (<span class="ltr-token">FIFO</span>):</strong> أول عنصر يدخل الطابور هو أول عنصر يتم خدمته وخروجه (مثل طابور بنك أو سوبرماركت).</li>
+            <li><strong>اتجاه الحركة:</strong> الإضافة بتتم من الخلف (<code class="inline-code">Rear</code>) والسحب والخروج بيتم من الأمام (<code class="inline-code">Front</code>).</li>
+          </ul>
+        </div>
+
+        <!-- رسمة SVG مقارنة بين Stack (LIFO) و Queue (FIFO) بدون خلط عربي وإنجليزي في نفس عنصر الـ text -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-blue-600">🎨 رسم توضيحي: الفرق بين حركة العناصر في المكدس (Stack) والطابور (Queue)</h4>
+          <svg viewBox="0 0 760 275" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <!-- القسم الأيسر: Stack -->
+            <rect x="20" y="15" width="330" height="245" rx="14" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2" />
+            <text x="185" y="42" text-anchor="middle" direction="rtl" fill="#1e40af" font-family="Cairo, sans-serif" font-weight="800" font-size="17">المكدس — آخر داخل أول خارج</text>
+            <text x="185" y="64" text-anchor="middle" direction="ltr" fill="#2563eb" font-family="JetBrains Mono" font-weight="700" font-size="13">Stack ADT (LIFO)</text>
+
+            <!-- وعاء الـ Stack -->
+            <path d="M125 98 L125 235 L245 235 L245 98" fill="none" stroke="#1e3a8a" stroke-width="4" stroke-linecap="round"/>
+            <rect x="135" y="194" width="100" height="32" rx="6" fill="#93c5fd" />
+            <text x="185" y="215" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="13">Item 1 (First)</text>
+            <rect x="135" y="156" width="100" height="32" rx="6" fill="#60a5fa" />
+            <text x="185" y="177" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="13">Item 2</text>
+            <rect x="135" y="118" width="100" height="32" rx="6" fill="#2563eb" />
+            <text x="185" y="139" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="13">Item 3 (Top)</text>
+
+            <!-- أسهم الدخول والخروج للـ Stack -->
+            <path d="M95 85 L155 110" stroke="#16a34a" stroke-width="3" />
+            <text x="78" y="92" text-anchor="middle" direction="ltr" fill="#16a34a" font-family="JetBrains Mono" font-weight="700" font-size="12">Push (In)</text>
+            <path d="M215 110 L275 85" stroke="#dc2626" stroke-width="3" />
+            <text x="292" y="92" text-anchor="middle" direction="ltr" fill="#dc2626" font-family="JetBrains Mono" font-weight="700" font-size="12">Pop (Out)</text>
+
+            <!-- القسم الأيمن: Queue -->
+            <rect x="390" y="15" width="350" height="245" rx="14" fill="#f0fdfa" stroke="#99f6e4" stroke-width="2" />
+            <text x="565" y="42" text-anchor="middle" direction="rtl" fill="#115e59" font-family="Cairo, sans-serif" font-weight="800" font-size="17">الطابور — أول داخل أول خارج</text>
+            <text x="565" y="64" text-anchor="middle" direction="ltr" fill="#0d9488" font-family="JetBrains Mono" font-weight="700" font-size="13">Queue ADT (FIFO)</text>
+
+            <!-- أنبوب الطابور -->
+            <line x1="435" y1="120" x2="695" y2="120" stroke="#115e59" stroke-width="4" />
+            <line x1="435" y1="180" x2="695" y2="180" stroke="#115e59" stroke-width="4" />
+
+            <rect x="450" y="130" width="70" height="40" rx="6" fill="#0d9488" />
+            <text x="485" y="155" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="13">First</text>
+
+            <rect x="530" y="130" width="70" height="40" rx="6" fill="#14b8a6" />
+            <text x="565" y="155" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="13">Second</text>
+
+            <rect x="610" y="130" width="70" height="40" rx="6" fill="#5eead4" />
+            <text x="645" y="155" text-anchor="middle" direction="ltr" fill="#115e59" font-family="JetBrains Mono" font-weight="700" font-size="13">Last</text>
+
+            <text x="475" y="208" text-anchor="middle" direction="rtl" fill="#dc2626" font-family="Cairo, sans-serif" font-weight="700" font-size="13">خروج من الأمام</text>
+            <text x="475" y="228" text-anchor="middle" direction="ltr" fill="#dc2626" font-family="JetBrains Mono" font-weight="700" font-size="12">Front (Out)</text>
+
+            <text x="655" y="208" text-anchor="middle" direction="rtl" fill="#16a34a" font-family="Cairo, sans-serif" font-weight="700" font-size="13">دخول من الخلف</text>
+            <text x="655" y="228" text-anchor="middle" direction="ltr" fill="#16a34a" font-family="JetBrains Mono" font-weight="700" font-size="12">Rear (In)</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- 4. الأنواع الأولية مقابل غير الأولية -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 8 و 9</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">4. الأنواع الأولية مقابل غير الأولية (1.3 Primitive vs. 1.4 Non-Primitive)</h2>
+        </div>
+
+        <div class="reading-block">
+          <h3 class="text-xl font-heading font-bold text-blue-600 mb-3">أ) الأنواع الأولية (<span class="ltr-token">Primitive Data Types</span>) — سلايد 8:</h3>
+          <p class="mb-3">
+            <strong>التعريف:</strong> هي اللبنات الأساسية البسيطة المعرفة مسبقاً والمبنية داخل لغة البرمجة (<span dir="ltr">Basic building blocks, predefined by the language</span>).
+          </p>
+          <p class="font-bold mb-2">الخصائص المذكورة نصاً في سلايد 8:</p>
+          <ol class="list-decimal list-inside spaced-list mb-4">
+            <li>تخزن <strong>قيمة مفردة واحدة فقط</strong> داخل المتغير (<span dir="ltr">Stores single values</span>).</li>
+            <li>كفاءة عالية ومباشرة في استهلاك الذاكرة (<span dir="ltr">Efficient in memory usage</span>).</li>
+            <li>معرفة مسبقاً في المترجم (<span dir="ltr">Predefined by the language</span>).</li>
+          </ol>
+          <p>
+            <strong>أمثلة:</strong>
+            <code class="inline-code">int</code>
+            <code class="inline-code">float</code>
+            <code class="inline-code">char</code>
+            <code class="inline-code">double</code>
+            <code class="inline-code">bool</code>
+          </p>
+        </div>
+
+        <hr class="my-6 border-[var(--border-color)]" />
+
+        <div class="reading-block">
+          <h3 class="text-xl font-heading font-bold text-teal-600 mb-3">ب) الأنواع غير الأولية / المركبة (<span class="ltr-token">Non-Primitive Data Types</span>) — سلايد 9:</h3>
+          <p class="mb-3">
+            <strong>التعريف:</strong> هي هياكل أكثر تعقيداً يقوم المبرمج بإنشائها بنفسه أو تأتي بها المكتبات الجاهزة (<span dir="ltr">Created by the programmer or provided by libraries</span>).
+          </p>
+          <p class="font-bold mb-2">الخصائص المذكورة نصاً في سلايد 9:</p>
+          <ol class="list-decimal list-inside spaced-list mb-4">
+            <li>غير معرفة مسبقاً بشكل بدائي (<span dir="ltr">Not predefined, except some like String in Java</span>).</li>
+            <li>تخزن <strong>مجموعات من القيم</strong> معاً (<span dir="ltr">Can store collections of values</span>).</li>
+            <li>يتم التعامل معها وتعديلها عبر دوال وطرق برمجية (<span dir="ltr">Manipulated with methods/functions</span>).</li>
+            <li>تعتمد غالباً على المؤشرات وعناوين الذاكرة المباشرة (<span dir="ltr">Typically reference types: store memory addresses instead of actual values</span>).</li>
+          </ol>
+          <p>
+            <strong>أمثلة:</strong> المصفوفات (<span class="ltr-token">Arrays</span>)، القوائم (<span class="ltr-token">Lists</span>)، الأصناف (<span class="ltr-token">Classes</span>)، المكدس (<span class="ltr-token">Stacks</span>)، الطوابير (<span class="ltr-token">Queues</span>)، الأشجار (<span class="ltr-token">Trees</span>).
+          </p>
+        </div>
+
+        <!-- جدول المقارنة النظيف -->
+        <div class="reading-block overflow-x-auto mt-6">
+          <h4 class="font-heading font-bold text-lg mb-3">📊 جدول المقارنة الرسمي للامتحان (سلايد 8 و 9):</h4>
+          <table class="w-full comparison-table rounded-xl overflow-hidden border border-[var(--border-color)] bg-[var(--bg-soft)] text-right">
+            <thead class="bg-blue-600 text-white font-heading">
+              <tr>
+                <th>وجه المقارنة</th>
+                <th>الأنواع الأولية (Primitive - سلايد 8)</th>
+                <th>الأنواع المركبة (Non-Primitive - سلايد 9)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-bold">القيم المخزنة</td>
+                <td>تخزن قيمة مفردة واحدة (<span dir="ltr">Stores SINGLE values</span>)</td>
+                <td>تخزن مجموعات من القيم (<span dir="ltr">Stores COLLECTIONS of values</span>)</td>
+              </tr>
+              <tr>
+                <td class="font-bold">التعريف المسبق</td>
+                <td>معرفة مسبقاً داخل اللغة (<span dir="ltr">Predefined by the language</span>)</td>
+                <td>يبنيها المبرمج أو المكتبات (<span dir="ltr">User-defined or libraries</span>)</td>
+              </tr>
+              <tr>
+                <td class="font-bold">تمثيل الذاكرة</td>
+                <td>تحمل القيمة الخام مباشرة (<span dir="ltr">Holds raw value directly</span>)</td>
+                <td>غالباً أنواع مرجعية وعناوين (<span dir="ltr">Typically reference types</span>)</td>
+              </tr>
+              <tr>
+                <td class="font-bold">الكفاءة</td>
+                <td>عالية الكفاءة ومباشرة في الذاكرة</td>
+                <td>تتطلب هيكلية إضافية ودوال للتعامل معها</td>
+              </tr>
+              <tr>
+                <td class="font-bold">الأمثلة</td>
+                <td><code class="inline-code">int, float, char, double, bool</code></td>
+                <td><code class="inline-code">Arrays, Lists, Stacks, Queues, Trees</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- تطبيق عملي الجزء الأول + شرح سطر بسطر وكلمة بكلمة -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="rule-badge mb-2">💻 كود رقم (1) • تطبيق عملي وشرح تفصيلي</span>
+          <h3 class="text-xl font-heading font-extrabold mt-2">تطبيق عملي: الفرق في الذاكرة بين المتغير الأولي والمصفوفة</h3>
+          <p class="mt-2">
+            هذا البرنامج يوضح الفرق العملي في حجز الذاكرة (<span class="ltr-token">RAM</span>) بين متغير أولي مفرد يحمل درجة طالب واحد، ومصفوفة تحمل درجات 3 طلاب معاً:
+          </p>
+        </div>
+
+        <pre class="code-block"><code>#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    int score = 95;
+    int scores[3] = {85, 90, 78};
+
+    cout &lt;&lt; "Size of single primitive int: " &lt;&lt; sizeof(score) &lt;&lt; " bytes" &lt;&lt; endl;
+    cout &lt;&lt; "Size of array (3 elements): " &lt;&lt; sizeof(scores) &lt;&lt; " bytes" &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+
+        <!-- شرح الكود (1) سطر بسطر وكلمة بكلمة -->
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">#include &lt;iostream&gt;</code>
+            <p class="font-semibold mb-1">الوظيفة: استدعاء مكتبة الإدخال والإخراج القياسية في لغة <span class="ltr-token">C++</span> عشان نقدر نستخدم أمر الطباعة <span class="ltr-token">cout</span>.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">#include</code> <span>أمر للمترجم (Preprocessor Directive) معناه: "ضمّن أو استورد الملف التالي قبل الترجمة".</span></div>
+              <div class="word-chip"><code class="inline-code">&lt;iostream&gt;</code> <span>اختصار لـ <strong>Input/Output Stream</strong> أي مجرى الإدخال والإخراج المسؤول عن الشاشة ولوحة المفاتيح.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">using namespace std;</code>
+            <p class="font-semibold mb-1">الوظيفة: السماح باستخدام أوامر اللغة القياسية مباشرة بدون كتابة <span class="ltr-token">std::</span> قبل كل أمر.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">using</code> <span>كلمة محجوزة معناها: "استخدم".</span></div>
+              <div class="word-chip"><code class="inline-code">namespace</code> <span>نطاق الأسماء (مساحة تنظيمية تجمع أدوات اللغة لمنع تشابه الأسماء).</span></div>
+              <div class="word-chip"><code class="inline-code">std</code> <span>اختصار لـ <strong>Standard</strong> (النطاق القياسي للغة C++).</span></div>
+              <div class="word-chip"><code class="inline-code">;</code> <span>الفاصلة المنقوطة (Semicolon) تعني انتهاء الأمر البرمجي.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">int main() {</code>
+            <p class="font-semibold mb-1">الوظيفة: نقطة البداية الرسمية التي يبدأ المعالج بتشغيل البرنامج من عندها.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">int</code> <span>نوع القيمة الراجعة من الدالة (عدد صحيح Integer يُرسل لنظام التشغيل).</span></div>
+              <div class="word-chip"><code class="inline-code">main</code> <span>الاسم الرسمي للدالة الرئيسية في أي برنامج C++.</span></div>
+              <div class="word-chip"><code class="inline-code">()</code> <span>قوسا المعاملات (فارغان هنا لأن الدالة لا تستقبل مدخلات خارجية).</span></div>
+              <div class="word-chip"><code class="inline-code">{</code> <span>قوس بداية جسم الدالة الرئيسية.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">int score = 95;</code>
+            <p class="font-semibold mb-1">الوظيفة: تعريف متغير أولي (<span class="ltr-token">Primitive</span>) يحجز خلية واحدة في الذاكرة حجمها 4 بايت ويضع فيها الرقم 95.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">int</code> <span>نوع بيانات أولي للأعداد الصحيحة (يحجز 4 بايت في الـ RAM).</span></div>
+              <div class="word-chip"><code class="inline-code">score</code> <span>اسم المتغير الذي اخترناه ليمثل درجة الطالب.</span></div>
+              <div class="word-chip"><code class="inline-code">=</code> <span>معامل التخصيص (Assignment Operator) يضع القيمة التي على اليمين داخل المتغير الذي على اليسار.</span></div>
+              <div class="word-chip"><code class="inline-code">95</code> <span>القيمة العددية المفردة المخزنة.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">int scores[3] = {85, 90, 78};</code>
+            <p class="font-semibold mb-1">الوظيفة: تعريف هيكل بيانات مصفوفة (<span class="ltr-token">Non-Primitive Array</span>) يحجز 3 خانات متلاصقة في الـ RAM (3 × 4 = 12 بايت).</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">int</code> <span>نوع كل عنصر داخل المصفوفة (كلها أعداد صحيحة).</span></div>
+              <div class="word-chip"><code class="inline-code">scores</code> <span>اسم المصفوفة.</span></div>
+              <div class="word-chip"><code class="inline-code">[3]</code> <span>مُحدد الحجم (Size Declarator) يخبر المترجم بحجز 3 عناصر متتالية.</span></div>
+              <div class="word-chip"><code class="inline-code">{85, 90, 78}</code> <span>قائمة التهيئة (Initializer List): تضع 85 في <code class="inline-code">scores[0]</code>، و90 في <code class="inline-code">scores[1]</code>، و78 في <code class="inline-code">scores[2]</code>.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">cout &lt;&lt; "Size of single primitive int: " &lt;&lt; sizeof(score) &lt;&lt; " bytes" &lt;&lt; endl;</code>
+            <p class="font-semibold mb-1">الوظيفة: حساب وطباعة حجم المتغير المفرد بالبايت على الشاشة (يطبع 4 bytes).</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">cout</code> <span>كائن الطباعة على الشاشة (Console Output).</span></div>
+              <div class="word-chip"><code class="inline-code">&lt;&lt;</code> <span>معامل الإدراج (Insertion Operator) يدفع النص أو القيمة نحو الشاشة.</span></div>
+              <div class="word-chip"><code class="inline-code">sizeof(score)</code> <span>معامل مدمج في C++ يقيس المساحة الفعلية المحجوزة في الـ RAM بالبايت للمتغير <code class="inline-code">score</code> (والنتيجة 4).</span></div>
+              <div class="word-chip"><code class="inline-code">endl</code> <span>اختصار <strong>End Line</strong> ينزل سطراً جديداً بعد الطباعة.</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">cout &lt;&lt; "Size of array (3 elements): " &lt;&lt; sizeof(scores) &lt;&lt; " bytes" &lt;&lt; endl;</code>
+            <p class="font-semibold mb-1">الوظيفة: حساب وطباعة الحجم الكلي للمصفوفة في الذاكرة (يطبع 12 bytes لأن 3 عناصر × 4 بايت = 12).</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">sizeof(scores)</code> <span>يحسب المساحة الكلية للمصفوفة بالكامل في الذاكرة المتصلة (3 × 4 = 12 بايت).</span></div>
+            </div>
+          </div>
+
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">return 0; }</code>
+            <p class="font-semibold mb-1">الوظيفة: إنهاء البرنامج بنجاح وإغلاق الدالة الرئيسية.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">return 0;</code> <span>إرجاع القيمة 0 لنظام التشغيل كإشارة أن البرنامج انتهى بدون أي أخطاء.</span></div>
+              <div class="word-chip"><code class="inline-code">}</code> <span>قوس الإغلاق النهائي للدالة <code class="inline-code">main</code>.</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================================================================
+         الجزء الثاني: الهياكل الخطية وغير الخطية والمصفوفة أحادية البعد (p2.txt)
+    ==================================================================== -->
+    <section id="section-part2" class="chapter-section">
+      <div class="mb-6 mt-10 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">📗 الجزء الثاني • سلايدات 12 إلى 20</span>
+        <span class="text-sm text-[var(--text-muted)]">الهياكل الخطية وغير الخطية والمصفوفة 1D Array</span>
+      </div>
+
+      <!-- 1. تصنيف هياكل البيانات: خطية مقابل غير خطية -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 12 إلى 15</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">1. تصنيف هياكل البيانات: خطية مقابل غير خطية (Linear vs. Non-Linear DS)</h2>
+          <p class="mt-2 text-[var(--text-muted)]">تقسم السلايد هياكل البيانات إلى عائلتين رئيسيتين بحسب كيفية ترابط العناصر في الذاكرة:</p>
+        </div>
+
+        <!-- أ) الهياكل الخطية -->
+        <div class="reading-block">
+          <h3 class="text-xl font-heading font-extrabold text-blue-600 mb-3">أ) هياكل البيانات الخطية (<span class="ltr-token">Linear Data Structures - LDS</span>) — سلايد 12:</h3>
+          <div class="academic-quote">
+            A linear data structure is a structure in which elements are arranged sequentially, and each element is connected to its previous and next element (except the first and last).
+          </div>
+          <p class="font-bold mb-2">الخصائص المذكورة نصاً في سلايد 12:</p>
+          <ol class="list-decimal list-inside spaced-list mb-4">
+            <li>العناصر مخزنة في ترتيب متتابع (<span dir="ltr">Elements are stored in order</span>).</li>
+            <li>تنظيم أحادي المستوى (<span dir="ltr">Single level organization</span>).</li>
+            <li>المرور على العناصر بسيط ومباشر خطوة تلو الأخرى (<span dir="ltr">Traversal is simple: one after another</span>).</li>
+            <li>طريقة حجز الذاكرة قد تكون متصلة كالمصفوفات أو متفرقة بمؤشرات كالقوائم المتصلة (<span dir="ltr">Memory can be contiguous like arrays or linked like linked lists</span>).</li>
+          </ol>
+          <p><strong>الأمثلة:</strong> <code class="inline-code">Arrays</code>, <code class="inline-code">Linked Lists</code>, <code class="inline-code">Stacks</code>, <code class="inline-code">Queues</code>.</p>
+        </div>
+
+        <!-- رسمة جرافيك SVG للهيكل الخطي -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-blue-600">🎨 رسم توضيحي: الهيكل الخطي (مسار مستقيم متسلسل بمستوى واحد)</h4>
+          <svg viewBox="0 0 760 125" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrowLinear" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+              </marker>
+            </defs>
+            <!-- عنصر 1 -->
+            <rect x="25" y="25" width="135" height="68" rx="12" fill="#2563eb" />
+            <text x="92" y="54" text-anchor="middle" direction="rtl" fill="#ffffff" font-family="Cairo, sans-serif" font-weight="700" font-size="15">العنصر الأول</text>
+            <text x="92" y="76" text-anchor="middle" direction="ltr" fill="#bfdbfe" font-family="JetBrains Mono" font-weight="700" font-size="12">Node 1</text>
+
+            <line x1="160" y1="59" x2="210" y2="59" stroke="#2563eb" stroke-width="3.5" marker-end="url(#arrowLinear)" />
+
+            <!-- عنصر 2 -->
+            <rect x="220" y="25" width="135" height="68" rx="12" fill="#3b82f6" />
+            <text x="287" y="54" text-anchor="middle" direction="rtl" fill="#ffffff" font-family="Cairo, sans-serif" font-weight="700" font-size="15">العنصر الثاني</text>
+            <text x="287" y="76" text-anchor="middle" direction="ltr" fill="#dbeafe" font-family="JetBrains Mono" font-weight="700" font-size="12">Node 2</text>
+
+            <line x1="355" y1="59" x2="405" y2="59" stroke="#2563eb" stroke-width="3.5" marker-end="url(#arrowLinear)" />
+
+            <!-- عنصر 3 -->
+            <rect x="415" y="25" width="135" height="68" rx="12" fill="#3b82f6" />
+            <text x="482" y="54" text-anchor="middle" direction="rtl" fill="#ffffff" font-family="Cairo, sans-serif" font-weight="700" font-size="15">العنصر الثالث</text>
+            <text x="482" y="76" text-anchor="middle" direction="ltr" fill="#dbeafe" font-family="JetBrains Mono" font-weight="700" font-size="12">Node 3</text>
+
+            <line x1="550" y1="59" x2="600" y2="59" stroke="#2563eb" stroke-width="3.5" marker-end="url(#arrowLinear)" />
+
+            <!-- عنصر 4 -->
+            <rect x="610" y="25" width="135" height="68" rx="12" fill="#1d4ed8" />
+            <text x="677" y="54" text-anchor="middle" direction="rtl" fill="#ffffff" font-family="Cairo, sans-serif" font-weight="700" font-size="15">العنصر الأخير</text>
+            <text x="677" y="76" text-anchor="middle" direction="ltr" fill="#bfdbfe" font-family="JetBrains Mono" font-weight="700" font-size="12">Node 4</text>
+          </svg>
+        </div>
+
+        <hr class="my-6 border-[var(--border-color)]" />
+
+        <!-- ب) الهياكل غير الخطية -->
+        <div class="reading-block">
+          <h3 class="text-xl font-heading font-extrabold text-teal-600 mb-3">ب) هياكل البيانات غير الخطية (<span class="ltr-token">Non-Linear Data Structures - NLDS</span>) — سلايد 14:</h3>
+          <div class="academic-quote">
+            A non-linear data structure is a structure in which elements are not arranged sequentially. Each element can connect to multiple elements, forming a hierarchy or network.
+          </div>
+          <p class="font-bold mb-2">الخصائص المذكورة نصاً في سلايد 14:</p>
+          <ol class="list-decimal list-inside spaced-list mb-4">
+            <li>العناصر ليست في ترتيب متتابع (<span dir="ltr">Elements are not in order</span>).</li>
+            <li>تنظيم متعدد المستويات (<span dir="ltr">Multi-level organization</span>).</li>
+            <li>المرور على العناصر يحتاج خوارزميات أكثر تعقيداً كالاستدعاء الذاتي والبحث بالعمق والاتساع (<span dir="ltr">Traversal requires more complex algorithms like recursion, DFS, BFS</span>).</li>
+            <li>الذاكرة عادة ما تكون ديناميكية (<span dir="ltr">Memory is usually dynamic</span>).</li>
+          </ol>
+          <ul class="list-disc list-inside spaced-list">
+            <li><strong>الأشجار (<span class="ltr-token">Trees</span>):</strong> تمثل علاقات هرمية متعددة المستويات (<span dir="ltr">Hierarchy</span>).</li>
+            <li><strong>الرسوم البيانية (<span class="ltr-token">Graphs</span>):</strong> تمثل شبكات معقدة متعددة المسارات (<span dir="ltr">Network</span>).</li>
+          </ul>
+        </div>
+
+        <!-- رسمة جرافيك SVG للهيكل غير الخطي (الشجرة) -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-teal-600">🎨 رسم توضيحي: الهيكل غير الخطي (شجرة هرمية متعددة المستويات — Tree)</h4>
+          <svg viewBox="0 0 760 250" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <!-- خطوط التوصيل -->
+            <line x1="380" y1="55" x2="230" y2="120" stroke="#0d9488" stroke-width="3.5" />
+            <line x1="380" y1="55" x2="530" y2="120" stroke="#0d9488" stroke-width="3.5" />
+            <line x1="230" y1="145" x2="140" y2="205" stroke="#0d9488" stroke-width="3" />
+            <line x1="230" y1="145" x2="320" y2="205" stroke="#0d9488" stroke-width="3" />
+            <line x1="530" y1="145" x2="620" y2="205" stroke="#0d9488" stroke-width="3" />
+
+            <!-- المستوى 1: Root -->
+            <rect x="310" y="18" width="140" height="48" rx="24" fill="#0f766e" />
+            <text x="380" y="47" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="15">Root (Level 0)</text>
+
+            <!-- المستوى 2: Children -->
+            <rect x="165" y="105" width="130" height="44" rx="12" fill="#0d9488" />
+            <text x="230" y="133" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="15">Child 1</text>
+
+            <rect x="465" y="105" width="130" height="44" rx="12" fill="#0d9488" />
+            <text x="530" y="133" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="15">Child 2</text>
+
+            <!-- المستوى 3: Leaves -->
+            <rect x="80" y="190" width="120" height="42" rx="10" fill="#14b8a6" />
+            <text x="140" y="216" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">Leaf 1</text>
+
+            <rect x="260" y="190" width="120" height="42" rx="10" fill="#14b8a6" />
+            <text x="320" y="216" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">Leaf 2</text>
+
+            <rect x="560" y="190" width="120" height="42" rx="10" fill="#14b8a6" />
+            <text x="620" y="216" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">Leaf 3</text>
+          </svg>
+        </div>
+
+        <!-- جدول المقارنة النظيف بين Linear و Non-Linear -->
+        <div class="reading-block overflow-x-auto mt-6">
+          <h4 class="font-heading font-bold text-lg mb-3">📊 جدول مقارنة الهياكل الخطية وغير الخطية للامتحان (سلايدات 12 إلى 15):</h4>
+          <table class="w-full comparison-table rounded-xl overflow-hidden border border-[var(--border-color)] bg-[var(--bg-soft)] text-right">
+            <thead class="bg-blue-600 text-white font-heading">
+              <tr>
+                <th>وجه المقارنة</th>
+                <th>الهياكل الخطية (Linear DS - سلايد 12)</th>
+                <th>الهياكل غير الخطية (Non-Linear DS - سلايد 14)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="font-bold">ترتيب العناصر</td>
+                <td>متسلسل ورا بعض (<span dir="ltr">Sequential</span>)</td>
+                <td>غير متسلسل (<span dir="ltr">Not sequential</span>)</td>
+              </tr>
+              <tr>
+                <td class="font-bold">التنظيم والمستويات</td>
+                <td>مستوى واحد فقط (<span dir="ltr">Single-level organization</span>)</td>
+                <td>متعدد المستويات (<span dir="ltr">Multi-level organization</span>)</td>
+              </tr>
+              <tr>
+                <td class="font-bold">الترابط</td>
+                <td>كل عنصر يتصل بالسابق والتالي فقط</td>
+                <td>العنصر يرتبط بعدة عناصر (هرمي أو شبكي)</td>
+              </tr>
+              <tr>
+                <td class="font-bold">المرور على العناصر</td>
+                <td>بسيط ومباشر في خط واحد (<span dir="ltr">Simple loop</span>)</td>
+                <td>يحتاج خوارزميات معقدة (<span dir="ltr">Recursion, DFS, BFS</span>)</td>
+              </tr>
+              <tr>
+                <td class="font-bold">حجز الذاكرة</td>
+                <td>متصلة (<span dir="ltr">Contiguous</span>) أو مترابطة (<span dir="ltr">Linked</span>)</td>
+                <td>غالباً ديناميكية (<span dir="ltr">Mostly dynamic</span>)</td>
+              </tr>
+              <tr>
+                <td class="font-bold">الأمثلة</td>
+                <td><code class="inline-code">Array, Linked List, Stack, Queue</code></td>
+                <td><code class="inline-code">Tree (Hierarchy), Graph (Network)</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- 2. المصفوفة أحادية البعد 1.6 Array -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايد 16</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">2. المصفوفة أحادية البعد (1.6 One-Dimensional Array)</h2>
+        </div>
+
+        <div class="reading-block">
+          <div class="academic-quote">
+            <strong class="block text-blue-600 mb-2">Array Definition (Slide 16):</strong>
+            An array is a collection of elements of the same data type stored in contiguous memory locations.<br>
+            All elements are accessed using an index. Indexing starts from 0 in C++.
+          </div>
+        </div>
+
+        <div class="reading-block colloquial-box">
+          <h3 class="text-xl font-heading font-bold text-teal-800 dark:text-teal-300 mb-3">💡 الشرح بالعامية البسيطة:</h3>
+          <p class="mb-3">المصفوفة هي أقدم وأهم هيكل بيانات خطي في علوم الحاسب. المترجم لما بيشوف مصفوفة بيشترط 3 قواعد صارمة:</p>
+          <ol class="list-decimal list-inside spaced-list">
+            <li><strong>نفس نوع البيانات (<span class="ltr-token">Same Data Type</span>):</strong> مينفعش مصفوفة تشيل رقم صحيح مع نص مع حرف؛ لازم كلها أرقام <code class="inline-code">int</code> أو كلها حروف <code class="inline-code">char</code>.</li>
+            <li><strong>التخزين المتصل (<span class="ltr-token">Contiguous Memory</span>):</strong> العناصر كلها بتنزل في الـ <span class="ltr-token">RAM</span> محشورة ولازقة ورا بعضها مباشرة بدون أي مسافة أو فجوة بايت واحدة بينها!</li>
+            <li><strong>الفهرسة تبدأ من الصفر (<span class="ltr-token">Zero-based indexing</span>):</strong> في لغة <span class="ltr-token">C++</span>، أول عنصر في المصفوفة مكانه دايماً عند الفهرس رقم <code class="inline-code">[0]</code> وآخر عنصر عند <code class="inline-code">[SIZE - 1]</code>.</li>
+          </ol>
+        </div>
+
+        <!-- 3. السر الرياضي للوصول اللحظي O(1) -->
+        <div class="reading-block mt-6">
+          <h3 class="text-xl font-heading font-extrabold text-blue-600 mb-3">3. السر الرياضي للوصول اللحظي <span class="ltr-token">O(1)</span> بالمعادلة (<span class="ltr-token">Offset Address</span>)</h3>
+          <p class="mb-3">
+            لماذا تستطيع المصفوفة قراءة أي عنصر بالرقم (<code class="inline-code">arr[i]</code>) في <strong>زمن ثابت لحظي <span class="ltr-token">O(1)</span></strong> دون الحاجة لأي حلقات تكرار أو بحث؟
+          </p>
+          <p class="mb-3">
+            لأن الذاكرة متصلة؛ فالمعالج (<span class="ltr-token">CPU</span>) لا يبحث، بل يطبق <strong>معادلة حسابية مباشرة في خطوة واحدة</strong>:
+          </p>
+          <div class="formula-box">
+            Address(arr[i]) = Base_Address + (i × sizeof(Element))
+          </div>
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h4 class="font-heading font-bold mb-2">مثال عملي من كواليس الـ RAM:</h4>
+            <p class="mb-2">لنفترض أن لدينا مصفوفة أعداد صحيحة <code class="inline-code">int arr[4]</code>، حيث حجم كل <code class="inline-code">int</code> يساوي 4 بايت، وعنوان أول عنصر (<span class="ltr-token">Base Address</span>) هو <strong>2000</strong>:</p>
+            <ul class="list-disc list-inside spaced-list">
+              <li>أين يقع العنصر <code class="inline-code">arr[2]</code>؟ المعالج يحسب فوراً: <code class="inline-code">2000 + (2 * 4) = 2008</code> ويقفز للعنوان 2008 في دورة معالج واحدة!</li>
+              <li><strong>لماذا يبدأ الفهرس من 0؟</strong> لأن العنصر الأول يقع عند نقطة البداية مباشرة، وعدد خطوات القفز عنه يساوي صفر: <code class="inline-code">2000 + (0 * 4) = 2000</code>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- رسمة SVG للمصفوفة المتصلة في الذاكرة -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-blue-600">🎨 رسم توضيحي: شكل المصفوفة المتصلة في الـ RAM ومعادلة الإزاحة</h4>
+          <svg viewBox="0 0 760 190" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <text x="145" y="30" text-anchor="middle" direction="ltr" fill="#dc2626" font-family="JetBrains Mono" font-weight="700" font-size="14">Base: 2000</text>
+            <text x="305" y="30" text-anchor="middle" direction="ltr" fill="#475569" font-family="JetBrains Mono" font-weight="700" font-size="14">2004</text>
+            <text x="465" y="30" text-anchor="middle" direction="ltr" fill="#2563eb" font-family="JetBrains Mono" font-weight="700" font-size="14">2008</text>
+            <text x="625" y="30" text-anchor="middle" direction="ltr" fill="#475569" font-family="JetBrains Mono" font-weight="700" font-size="14">2012</text>
+
+            <rect x="65" y="45" width="160" height="80" fill="#dbeafe" stroke="#2563eb" stroke-width="3" />
+            <text x="145" y="92" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="18">arr[0]</text>
+
+            <rect x="225" y="45" width="160" height="80" fill="#eff6ff" stroke="#2563eb" stroke-width="3" />
+            <text x="305" y="92" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="18">arr[1]</text>
+
+            <rect x="385" y="45" width="160" height="80" fill="#2563eb" stroke="#1e40af" stroke-width="3" />
+            <text x="465" y="92" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="18">arr[2]</text>
+
+            <rect x="545" y="45" width="160" height="80" fill="#eff6ff" stroke="#2563eb" stroke-width="3" />
+            <text x="625" y="92" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="18">arr[3]</text>
+
+            <text x="145" y="155" text-anchor="middle" direction="ltr" fill="#64748b" font-family="JetBrains Mono" font-size="13">Offset: 0 × 4 = 0</text>
+            <text x="305" y="155" text-anchor="middle" direction="ltr" fill="#64748b" font-family="JetBrains Mono" font-size="13">Offset: 1 × 4 = +4</text>
+            <text x="465" y="155" text-anchor="middle" direction="ltr" fill="#2563eb" font-family="JetBrains Mono" font-weight="700" font-size="13">Offset: 2 × 4 = +8</text>
+            <text x="625" y="155" text-anchor="middle" direction="ltr" fill="#64748b" font-family="JetBrains Mono" font-size="13">Offset: 3 × 4 = +12</text>
+          </svg>
+        </div>
+
+        <!-- 4. أكواد C++ الرسمية للمصفوفة مع شرح كل كود سطر بسطر وكلمة بكلمة -->
+        <div class="reading-block mt-6">
+          <h3 class="text-xl font-heading font-extrabold mb-4">4. أكواد <span class="ltr-token">C++</span> الرسمية للمصفوفة من السلايدات (سلايد 17 إلى 20):</h3>
+
+          <!-- كود 2: الإعلان عن مصفوفة -->
+          <div class="mb-6">
+            <h4 class="font-heading font-bold text-lg text-blue-600 mb-1">أ) الإعلان عن مصفوفة (<span class="ltr-token">Declaration Syntax</span>) — سلايد 17:</h4>
+            <pre class="code-block"><code>int numbers[5];</code></pre>
+            <div class="code-walkthrough">
+              <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+              <div class="walkthrough-item">
+                <code class="walkthrough-line-code">int numbers[5];</code>
+                <p class="font-semibold mb-1">الوظيفة: حجز مصفوفة ثابتة في الذاكرة تتسع لـ 5 أعداد صحيحة متجاورة.</p>
+                <div class="word-breakdown-grid">
+                  <div class="word-chip"><code class="inline-code">int</code> <span>نوع بيانات كل عنصر في المصفوفة (عدد صحيح 4 بايت).</span></div>
+                  <div class="word-chip"><code class="inline-code">numbers</code> <span>اسم المصفوفة الذي نستخدمه للوصول إليها.</span></div>
+                  <div class="word-chip"><code class="inline-code">[5]</code> <span>عدد العناصر المحجوزة (5 خانات تبدأ من الفهرس <code class="inline-code">0</code> إلى الفهرس <code class="inline-code">4</code>).</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- كود 3: تهيئة المصفوفة -->
+          <div class="mb-6">
+            <h4 class="font-heading font-bold text-lg text-blue-600 mb-1">ب) تهيئة المصفوفة بالقيم (<span class="ltr-token">Initializing an Array</span>) — سلايد 18:</h4>
+            <pre class="code-block"><code>int days[7] = {1, 2, 3, 4, 5, 6, 7};
+int primes[] = {2, 3, 5, 7, 11};</code></pre>
+            <div class="code-walkthrough">
+              <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+              <div class="walkthrough-item">
+                <code class="walkthrough-line-code">int days[7] = {1, 2, 3, 4, 5, 6, 7};</code>
+                <p class="font-semibold mb-1">الوظيفة: إنشاء مصفوفة حجمها 7 خانات وتعبئتها فوراً بالأرقام من 1 إلى 7.</p>
+                <div class="word-breakdown-grid">
+                  <div class="word-chip"><code class="inline-code">int days[7]</code> <span>حجز مصفوفة اسمها <code class="inline-code">days</code> مكونة من 7 عناصر صحيحة.</span></div>
+                  <div class="word-chip"><code class="inline-code">= {1, 2, ... , 7}</code> <span>قائمة التهيئة الابتدائية؛ تضع القيمة الأولى في الفهرس <code class="inline-code">0</code> والأخيرة في الفهرس <code class="inline-code">6</code>.</span></div>
+                </div>
+              </div>
+              <div class="walkthrough-item">
+                <code class="walkthrough-line-code">int primes[] = {2, 3, 5, 7, 11};</code>
+                <p class="font-semibold mb-1">الوظيفة: إنشاء مصفوفة مع ترك قوس الحجم فارغاً لكي يعدّ المترجم العناصر بنفسه ويضبط الحجم على 5 تلقائياً.</p>
+                <div class="word-breakdown-grid">
+                  <div class="word-chip"><code class="inline-code">primes[]</code> <span>قوسان فارغان بدون رقم؛ مسموح فقط لأننا أعطيناه قائمة قيم فورية على اليمين.</span></div>
+                  <div class="word-chip"><code class="inline-code">{2, 3, 5, 7, 11}</code> <span>5 قيم أولية، فيستنتج المترجم أن حجم المصفوفة هو <code class="inline-code">5</code>.</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- كود 4: الوصول للعناصر وتعديلها -->
+          <div class="mb-6">
+            <h4 class="font-heading font-bold text-lg text-blue-600 mb-1">ج) الوصول للعناصر وتعديلها (<span class="ltr-token">Accessing Array Elements</span>) — سلايد 19:</h4>
+            <pre class="code-block"><code>cout &lt;&lt; days[0];
+days[0] = 10;</code></pre>
+            <div class="code-walkthrough">
+              <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+              <div class="walkthrough-item">
+                <code class="walkthrough-line-code">cout &lt;&lt; days[0];</code>
+                <p class="font-semibold mb-1">الوظيفة: قراءة وطباعة أول عنصر في المصفوفة <code class="inline-code">days</code> في زمن لحظي <span class="ltr-token">O(1)</span>.</p>
+                <div class="word-breakdown-grid">
+                  <div class="word-chip"><code class="inline-code">days[0]</code> <span>الوصول إلى الخلية الأولى في المصفوفة (لأن الفهرسة تبدأ من الصفر).</span></div>
+                </div>
+              </div>
+              <div class="walkthrough-item">
+                <code class="walkthrough-line-code">days[0] = 10;</code>
+                <p class="font-semibold mb-1">الوظيفة: عملية تعديل (<span class="ltr-token">Update</span>) تستبدل القيمة القديمة في الخانة الأولى بالرقم الجديد 10.</p>
+                <div class="word-breakdown-grid">
+                  <div class="word-chip"><code class="inline-code">days[0]</code> <span>عنوان الخلية الأولى المراد الكتابة داخلها.</span></div>
+                  <div class="word-chip"><code class="inline-code">= 10;</code> <span>إحلال وتخزين القيمة 10 مكان القيمة السابقة 1.</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- كود 5: المرور على المصفوفة وطباعتها -->
+          <div class="mb-2">
+            <h4 class="font-heading font-bold text-lg text-blue-600 mb-1">د) المرور على المصفوفة وطباعتها (<span class="ltr-token">Traversing an Array</span>) — سلايد 20:</h4>
+            <pre class="code-block"><code>const int SIZE = 5;
+int scores[SIZE] = {88, 92, 79, 85, 90};
+
+for (int i = 0; i &lt; SIZE; i++) {
+    cout &lt;&lt; scores[i] &lt;&lt; " ";
+}
+cout &lt;&lt; endl;</code></pre>
+            <div class="code-walkthrough">
+              <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+              <div class="walkthrough-item">
+                <code class="walkthrough-line-code">const int SIZE = 5;</code>
+                <p class="font-semibold mb-1">الوظيفة: تعريف ثابت عددي اسمه <code class="inline-code">SIZE</code> قيمته 5 لاستخدامه كحجم للمصفوفة.</p>
+                <div class="word-breakdown-grid">
+                  <div class="word-chip"><code class="inline-code">const</code> <span>كلمة محجوزة تعني <strong>Constant</strong> (ثابت لا يمكن تغيير قيمته أبداً أثناء تشغيل البرنامج، وهو شرط لحجم المصفوفة الثابتة).</span></div>
+                  <div class="word-chip"><code class="inline-code">int SIZE = 5;</code> <span>تحديد اسم الثابت <code class="inline-code">SIZE</code> وإعطاؤه القيمة 5.</span></div>
+                </div>
+              </div>
+              <div class="walkthrough-item">
+                <code class="walkthrough-line-code">int scores[SIZE] = {88, 92, 79, 85, 90};</code>
+                <p class="font-semibold mb-1">الوظيفة: تعريف مصفوفة من 5 عناصر وتعبئتها بالدرجات الخمس.</p>
+              </div>
+              <div class="walkthrough-item">
+                <code class="walkthrough-line-code">for (int i = 0; i &lt; SIZE; i++) {</code>
+                <p class="font-semibold mb-1">الوظيفة: حلقة تكرار تمر على جميع فهارس المصفوفة من 0 إلى 4 بالترتيب.</p>
+                <div class="word-breakdown-grid">
+                  <div class="word-chip"><code class="inline-code">for</code> <span>كلمة محجوزة لبدء حلقة تكرار محددة العدد.</span></div>
+                  <div class="word-chip"><code class="inline-code">int i = 0;</code> <span>نقطة البداية: تعريف عداد الفهرس <code class="inline-code">i</code> ويبدأ من <code class="inline-code">0</code> (أول عنصر).</span></div>
+                  <div class="word-chip"><code class="inline-code">i &lt; SIZE;</code> <span>شرط الاستمرار: تستمر الحلقة طالما <code class="inline-code">i</code> أصغر من 5 (أي عند 0، 1، 2، 3، 4 وتتوقف عند 5).</span></div>
+                  <div class="word-chip"><code class="inline-code">i++</code> <span>خطوة الزيادة: زود قيمة <code class="inline-code">i</code> بمقدار 1 بعد كل لفة للانتقال للعنصر التالي.</span></div>
+                </div>
+              </div>
+              <div class="walkthrough-item">
+                <code class="walkthrough-line-code">cout &lt;&lt; scores[i] &lt;&lt; " ";</code>
+                <p class="font-semibold mb-1">الوظيفة: طباعة العنصر الموجود في الفهرس الحالي <code class="inline-code">i</code> متبوعاً بمسافة فارغة للفصل بين الأرقام.</p>
+                <div class="word-breakdown-grid">
+                  <div class="word-chip"><code class="inline-code">scores[i]</code> <span>يجلب قيمة العنصر رقم <code class="inline-code">i</code> في اللفة الحالية.</span></div>
+                  <div class="word-chip"><code class="inline-code">" "</code> <span>يطبع مسافة بيضاء بين كل رقم والرقم الذي يليه.</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- تطبيق عملي الجزء الثاني + شرح سطر بسطر -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="rule-badge mb-2">💻 كود رقم (6) • تطبيق عملي متكامل</span>
+          <h3 class="text-xl font-heading font-extrabold mt-2">تطبيق عملي: الوصول والتعديل والمرور على المصفوفة</h3>
+          <p class="mt-2">برنامج <span class="ltr-token">C++</span> كامل يطبق الإعلان، الوصول لأول وآخر عنصر، تعديل العنصر الأوسط بضربه في 2، وطباعة المصفوفة:</p>
+        </div>
+        <pre class="code-block"><code>#include &lt;iostream&gt;
+using namespace std;
+
+int main() {
+    const int SIZE = 5;
+    int data[SIZE] = {10, 20, 30, 40, 50};
+
+    cout &lt;&lt; "First element (index 0): " &lt;&lt; data[0] &lt;&lt; endl;
+    cout &lt;&lt; "Last element (index 4): " &lt;&lt; data[SIZE - 1] &lt;&lt; endl;
+
+    data[2] = data[2] * 2;
+
+    cout &lt;&lt; "Array after modification: ";
+    for (int i = 0; i &lt; SIZE; i++) {
+        cout &lt;&lt; data[i] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك السطور الأساسية في هذا التطبيق:</div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">cout &lt;&lt; "Last element (index 4): " &lt;&lt; data[SIZE - 1] &lt;&lt; endl;</code>
+            <p class="font-semibold mb-1">الوظيفة: طباعة آخر عنصر في المصفوفة دائماً باستخدام القاعدة العامة <code class="inline-code">SIZE - 1</code>.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">SIZE - 1</code> <span>بما أن الحجم 5 والفهرسة تبدأ من 0، فإن آخر خانة تقع عند <code class="inline-code">5 - 1 = 4</code>.</span></div>
+              <div class="word-chip"><code class="inline-code">data[4]</code> <span>يجلب القيمة المخزنة في الخانة الأخيرة وهي <code class="inline-code">50</code>.</span></div>
+            </div>
+          </div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">data[2] = data[2] * 2;</code>
+            <p class="font-semibold mb-1">الوظيفة: قراءة قيمة العنصر الأوسط (الفهرس 2 وقيمته 30)، ضربها في 2، وتخزين الناتج الجديد (60) في نفس الخانة.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">data[2]</code> (على اليمين) <span>قراءة القيمة الحالية في الفهرس 2 وهي <code class="inline-code">30</code>.</span></div>
+              <div class="word-chip"><code class="inline-code">* 2</code> <span>عملية الضرب الحسابية في 2 ليصبح الناتج <code class="inline-code">60</code>.</span></div>
+              <div class="word-chip"><code class="inline-code">data[2] =</code> (على اليسار) <span>تخزين الناتج 60 داخل نفس الخلية في الـ RAM.</span></div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================================================================
+         الجزء الثالث: المصفوفات ثنائية ومتعددة الأبعاد (p3.txt)
+    ==================================================================== -->
+    <section id="section-part3" class="chapter-section">
+      <div class="mb-6 mt-10 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">📙 الجزء الثالث • سلايدات 21 إلى 40</span>
+        <span class="text-sm text-[var(--text-muted)]">المصفوفات ثنائية ومتعددة الأبعاد (2D & Multi-D Arrays)</span>
+      </div>
+
+      <!-- 1. تعريف المصفوفة ثنائية الأبعاد -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 21 إلى 24</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">1. ما هي المصفوفة ثنائية الأبعاد؟ (Two-Dimensional Arrays)</h2>
+        </div>
+
+        <div class="reading-block">
+          <div class="academic-quote">
+            <strong class="block text-blue-600 mb-2">2D Array Definition (Slide 23):</strong>
+            Can define one array for multiple sets of data. Like a table in a spreadsheet with rows and columns.<br>
+            Use two size declarators in definition: <code>int exams[ROWS][COLS];</code><br>
+            • First declarator is number of rows.<br>
+            • Second declarator is number of columns.
+          </div>
+        </div>
+
+        <div class="reading-block colloquial-box">
+          <h3 class="text-xl font-heading font-bold text-teal-800 dark:text-teal-300 mb-3">💡 الشرح بالعامية البسيطة:</h3>
+          <p class="mb-3">
+            المصفوفة ثنائية الأبعاد (<span class="ltr-token">2D Array</span>) بنستخدمها لما تكون البيانات عبارة عن <strong>جدول</strong> له بُعدين: <strong>صفوف (<span class="ltr-token">Rows</span>)</strong> و<strong>أعمدة (<span class="ltr-token">Columns</span>)</strong> (زي جدول درجات الطلاب في المواد، أو رقعة شطرنج):
+          </p>
+          <ul class="list-disc list-inside spaced-list">
+            <li><strong>القوس الأول <code class="inline-code">[ROWS]</code>:</strong> يحدد عدد الصفوف (عدد مجموعات البيانات أو عدد الطلاب).</li>
+            <li><strong>القوس الثاني <code class="inline-code">[COLS]</code>:</strong> يحدد عدد الأعمدة (عدد العناصر في كل صف أو عدد المواد).</li>
+          </ul>
+        </div>
+
+        <pre class="code-block"><code>const int ROWS = 4, COLS = 3;
+int exams[ROWS][COLS];
+exams[2][2] = 86;</code></pre>
+
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">const int ROWS = 4, COLS = 3;</code>
+            <p class="font-semibold mb-1">الوظيفة: تعريف ثابتين صحيحين؛ الأول لعدد الصفوف (4) والثاني لعدد الأعمدة (3).</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">ROWS = 4</code> <span>ثابت يمثل عدد الصفوف في الجدول.</span></div>
+              <div class="word-chip"><code class="inline-code">COLS = 3</code> <span>ثابت يمثل عدد الأعمدة في كل صف.</span></div>
+            </div>
+          </div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">int exams[ROWS][COLS];</code>
+            <p class="font-semibold mb-1">الوظيفة: حجز جدول في الذاكرة مكون من 4 صفوف × 3 أعمدة (إجمالي 12 خلية صحيحة).</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">[ROWS]</code> <span>القوس الأول دائماً وأبداً هو عدد الصفوف.</span></div>
+              <div class="word-chip"><code class="inline-code">[COLS]</code> <span>القوس الثاني دائماً وأبداً هو عدد الأعمدة.</span></div>
+            </div>
+          </div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">exams[2][2] = 86;</code>
+            <p class="font-semibold mb-1">الوظيفة: وضع الدرجة 86 في خلية تقاطع الصف الثالث (الفهرس 2) مع العمود الثالث (الفهرس 2).</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">exams[2][2]</code> <span>الفهرس الأول <code class="inline-code">[2]</code> يحدد الصف (Row 2)، والفهرس الثاني <code class="inline-code">[2]</code> يحدد العمود (Col 2).</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- رسمة SVG لجدول 2D Array -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-blue-600">🎨 رسم توضيحي: جدول المصفوفة ثنائية الأبعاد <code class="inline-code">exams[4][3]</code> والوصول للخلية <code class="inline-code">exams[2][2] = 86</code></h4>
+          <svg viewBox="0 0 760 280" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <text x="275" y="32" text-anchor="middle" direction="ltr" fill="#2563eb" font-family="JetBrains Mono" font-weight="700" font-size="15">Column 0</text>
+            <text x="455" y="32" text-anchor="middle" direction="ltr" fill="#2563eb" font-family="JetBrains Mono" font-weight="700" font-size="15">Column 1</text>
+            <text x="635" y="32" text-anchor="middle" direction="ltr" fill="#2563eb" font-family="JetBrains Mono" font-weight="700" font-size="15">Column 2</text>
+
+            <text x="110" y="80" text-anchor="middle" direction="ltr" fill="#0f766e" font-family="JetBrains Mono" font-weight="700" font-size="15">Row 0</text>
+            <text x="110" y="135" text-anchor="middle" direction="ltr" fill="#0f766e" font-family="JetBrains Mono" font-weight="700" font-size="15">Row 1</text>
+            <text x="110" y="190" text-anchor="middle" direction="ltr" fill="#dc2626" font-family="JetBrains Mono" font-weight="700" font-size="15">Row 2</text>
+            <text x="110" y="245" text-anchor="middle" direction="ltr" fill="#0f766e" font-family="JetBrains Mono" font-weight="700" font-size="15">Row 3</text>
+
+            <rect x="190" y="50" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="275" y="78" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[0][0]</text>
+            <rect x="370" y="50" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="455" y="78" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[0][1]</text>
+            <rect x="550" y="50" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="635" y="78" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[0][2]</text>
+
+            <rect x="190" y="105" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="275" y="133" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[1][0]</text>
+            <rect x="370" y="105" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="455" y="133" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[1][1]</text>
+            <rect x="550" y="105" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="635" y="133" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[1][2]</text>
+
+            <rect x="190" y="160" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="275" y="188" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[2][0]</text>
+            <rect x="370" y="160" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="455" y="188" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[2][1]</text>
+            <rect x="550" y="160" width="170" height="46" rx="8" fill="#2563eb" stroke="#1d4ed8" stroke-width="3" />
+            <text x="635" y="188" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">exams[2][2] = 86</text>
+
+            <rect x="190" y="215" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="275" y="243" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[3][0]</text>
+            <rect x="370" y="215" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="455" y="243" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[3][1]</text>
+            <rect x="550" y="215" width="170" height="46" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2" />
+            <text x="635" y="243" text-anchor="middle" direction="ltr" fill="#334155" font-family="JetBrains Mono" font-size="14">exams[3][2]</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- 2. التخزين في الذاكرة الفعلية Row-Major Order + التهيئة + التمرير للدوال -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold mb-3">2. التخزين الفعلي في الـ RAM (Row-Major Order) وقواعد التهيئة والتمرير</h2>
+          <p class="mb-3">
+            الذاكرة العشوائية (<span class="ltr-token">RAM</span>) فيزيائياً شريط خطي من بُعد واحد، ولا توجد ذاكرة مربعة الشكل! فكيف يخزن الحاسوب جدولاً مكوناً من صفوف وأعمدة في شريط الذاكرة الخطي؟
+          </p>
+          <p class="mb-3">
+            تقوم لغة <span class="ltr-token">C++</span> بتسطيح الجدول وتخزينه بنظام <strong>ترتيب الصفوف المتتالية (<span class="ltr-token">Row-Major Order</span>)</strong>: يُخزن الصف 0 بالكامل بجميع أعمدته ورا بعضها، يليه مباشرة الصف 1 بالكامل، وهكذا.
+          </p>
+          <div class="formula-box">
+            Linear Index = (r × COLS) + c<br>
+            Address = Base_Address + [ (r × COLS) + c ] × sizeof(Element)
+          </div>
+        </div>
+
+        <!-- رسمة SVG لتوضيح Row-Major Order -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-teal-600">🎨 رسم توضيحي: كيف يتسطح الجدول في الـ RAM صفاً وراء صف (Row-Major Order)</h4>
+          <svg viewBox="0 0 760 135" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="38" width="340" height="65" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5" />
+            <text x="190" y="26" text-anchor="middle" direction="rtl" fill="#1e40af" font-family="Cairo, sans-serif" font-weight="700" font-size="14">الصف الأول بالكامل في الذاكرة</text>
+            <text x="85" y="76" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="14">[0][0]</text>
+            <line x1="135" y1="38" x2="135" y2="103" stroke="#93c5fd" stroke-width="2" />
+            <text x="190" y="76" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="14">[0][1]</text>
+            <line x1="245" y1="38" x2="245" y2="103" stroke="#93c5fd" stroke-width="2" />
+            <text x="302" y="76" text-anchor="middle" direction="ltr" fill="#1e3a8a" font-family="JetBrains Mono" font-weight="700" font-size="14">[0][2]</text>
+
+            <rect x="370" y="38" width="340" height="65" rx="10" fill="#ccfbf1" stroke="#0d9488" stroke-width="2.5" />
+            <text x="540" y="26" text-anchor="middle" direction="rtl" fill="#115e59" font-family="Cairo, sans-serif" font-weight="700" font-size="14">يليه مباشرة الصف الثاني بالكامل</text>
+            <text x="435" y="76" text-anchor="middle" direction="ltr" fill="#115e59" font-family="JetBrains Mono" font-weight="700" font-size="14">[1][0]</text>
+            <line x1="485" y1="38" x2="485" y2="103" stroke="#5eead4" stroke-width="2" />
+            <text x="540" y="76" text-anchor="middle" direction="ltr" fill="#115e59" font-family="JetBrains Mono" font-weight="700" font-size="14">[1][1]</text>
+            <line x1="595" y1="38" x2="595" y2="103" stroke="#5eead4" stroke-width="2" />
+            <text x="652" y="76" text-anchor="middle" direction="ltr" fill="#115e59" font-family="JetBrains Mono" font-weight="700" font-size="14">[1][2]</text>
+          </svg>
+        </div>
+
+        <!-- تهيئة المصفوفة ثنائية الأبعاد (سلايد 28) -->
+        <div class="reading-block mt-6">
+          <h3 class="text-xl font-heading font-extrabold text-blue-600 mb-3">3. قواعد تهيئة المصفوفة ثنائية الأبعاد (سلايد 28):</h3>
+          <pre class="code-block"><code>const int ROWS = 2, COLS = 2;
+int exams[ROWS][COLS] = { {84, 78}, {92, 97} };
+int data[2][3] = { {1, 2}, {4} };</code></pre>
+
+          <div class="code-walkthrough">
+            <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">int exams[ROWS][COLS] = { {84, 78}, {92, 97} };</code>
+              <p class="font-semibold mb-1">الوظيفة: تهيئة مصفوفة 2×2 صفاً بصف باستخدام أقواس داخلية لكل صف.</p>
+              <div class="word-breakdown-grid">
+                <div class="word-chip"><code class="inline-code">{84, 78}</code> <span>القوس الداخلي الأول يملأ عناصر الصف الأول (<code class="inline-code">Row 0</code>).</span></div>
+                <div class="word-chip"><code class="inline-code">{92, 97}</code> <span>القوس الداخلي الثاني يملأ عناصر الصف الثاني (<code class="inline-code">Row 1</code>).</span></div>
+              </div>
+            </div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">int data[2][3] = { {1, 2}, {4} };</code>
+              <p class="font-semibold mb-1">الوظيفة: تهيئة جزئية ناقصة لمصفوفة 2×3؛ العناصر المتروكة تُملأ تلقائياً بأصفار (<code class="inline-code">0</code>).</p>
+              <div class="word-breakdown-grid">
+                <div class="word-chip"><code class="inline-code">{1, 2}</code> <span>الصف 0 يحتاج 3 عناصر، أعطيناه عنصرين فقط فيصبح <code class="inline-code">{1, 2, 0}</code>.</span></div>
+                <div class="word-chip"><code class="inline-code">{4}</code> <span>الصف 1 يحتاج 3 عناصر، أعطيناه عنصراً واحداً فيصبح <code class="inline-code">{4, 0, 0}</code>.</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="colloquial-box">
+            <h4 class="font-heading font-bold text-lg text-amber-700 dark:text-amber-400 mb-2">⚠️ القاعدة الامتحانية الذهبية للتهيئة الناقصة (سلايد 28 نصاً):</h4>
+            <p class="font-mono font-bold mb-2" dir="ltr">"Array elements without initial values will be set to 0 or NULL."</p>
+            <p>أي عنصر لا نعطيه قيمة ابتدائية صريحة يقوم المترجم تلقائياً بملئه بصفر (<code class="inline-code">0</code> أو <code class="inline-code">NULL</code>).</p>
+          </div>
+        </div>
+
+        <!-- تمرير المصفوفة ثنائية الأبعاد إلى دالة (سلايد 29 و 30) -->
+        <div class="reading-block mt-6">
+          <h3 class="text-xl font-heading font-extrabold text-teal-600 mb-3">4. تمرير المصفوفة ثنائية ومتعددة الأبعاد إلى دالة (سلايد 29 و 40):</h3>
+          <pre class="code-block"><code>const int COLS = 3;
+void showArray(const int arr[][COLS], int rows) {
+    for (int r = 0; r &lt; rows; r++) {
+        for (int c = 0; c &lt; COLS; c++) {
+            cout &lt;&lt; arr[r][c] &lt;&lt; " ";
+        }
+        cout &lt;&lt; endl;
+    }
+}
+
+void getRectSolid(short arr[][3][5]);</code></pre>
+
+          <div class="code-walkthrough">
+            <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">void showArray(const int arr[][COLS], int rows)</code>
+              <p class="font-semibold mb-1">الوظيفة: ترويسة دالة تستقبل مصفوفة ثنائية الأبعاد وعدد صفوفها لطباعتها دون تعديلها.</p>
+              <div class="word-breakdown-grid">
+                <div class="word-chip"><code class="inline-code">void</code> <span>الدالة لا ترجع أي قيمة بعد انتهاء الطباعة.</span></div>
+                <div class="word-chip"><code class="inline-code">const int arr[][COLS]</code> <span>استقبال المصفوفة: القوس الأول <code class="inline-code">[]</code> فارغ (مسموح للصفوف)، والقوس الثاني <code class="inline-code">[COLS]</code> محدد إجبارياً عشان المترجم يحسب معادلة القفز بين الصفوف.</span></div>
+                <div class="word-chip"><code class="inline-code">int rows</code> <span>معامل ثانٍ يمرر عدد الصفوف الفعلي للدالة.</span></div>
+              </div>
+            </div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">for (int r = 0; r &lt; rows; r++)</code>
+              <p class="font-semibold mb-1">الوظيفة: الحلقة الخارجية تثبت رقم الصف الحالي <code class="inline-code">r</code> وتنتقل صفاً تلو الآخر.</p>
+            </div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">for (int c = 0; c &lt; COLS; c++)</code>
+              <p class="font-semibold mb-1">الوظيفة: الحلقة الداخلية تمر على جميع الأعمدة <code class="inline-code">c</code> داخل الصف الحالي <code class="inline-code">r</code>.</p>
+            </div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">void getRectSolid(short arr[][3][5]);</code>
+              <p class="font-semibold mb-1">الوظيفة: نموذج أولي (<span class="ltr-token">Prototype</span>) لدالة تستقبل مصفوفة ثلاثية الأبعاد (سلايد 40).</p>
+              <div class="word-breakdown-grid">
+                <div class="word-chip"><code class="inline-code">arr[][3][5]</code> <span>تطبيق قاعدة السلايد 40: نترك البُعد الأول فقط فارغاً <code class="inline-code">[]</code>، ويجب تحديد كل الأبعاد التالية <code class="inline-code">[3][5]</code> إجبارياً.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- الخوارزميات الأربعة في السلايدات (سلايد 33 إلى 40) + شرح سطر بسطر -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايدات 33 إلى 40</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">3. الخوارزميات الرسمية للمصفوفة ثنائية الأبعاد (Nested Loops)</h2>
+        </div>
+
+        <!-- أ) جمع جميع العناصر -->
+        <div class="reading-block">
+          <h3 class="text-lg font-heading font-bold text-blue-600 mb-2">أ) جمع جميع عناصر المصفوفة ثنائية الأبعاد (سلايد 33 و 34):</h3>
+          <pre class="code-block"><code>int total = 0;
+for (int row = 0; row &lt; NUM_ROWS; row++) {
+    for (int col = 0; col &lt; NUM_COLS; col++) {
+        total += numbers[row][col];
+    }
+}
+cout &lt;&lt; "The total is " &lt;&lt; total &lt;&lt; endl;</code></pre>
+          <div class="code-walkthrough">
+            <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">int total = 0;</code>
+              <p class="font-semibold mb-1">الوظيفة: تعريف متغير المجمع التراكمي (<span class="ltr-token">Accumulator</span>) وتصفيره قبل بدء الحلقات.</p>
+            </div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">total += numbers[row][col];</code>
+              <p class="font-semibold mb-1">الوظيفة: إضافة قيمة الخلية الحالية في الصف <code class="inline-code">row</code> والعمود <code class="inline-code">col</code> إلى الحصالة <code class="inline-code">total</code>.</p>
+              <div class="word-breakdown-grid">
+                <div class="word-chip"><code class="inline-code">+=</code> <span>معامل الجمع التراكمي، وهو اختصار لـ <code class="inline-code">total = total + numbers[row][col]</code>.</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ب) جمع كل صف وحساب متوسطه -->
+        <div class="reading-block">
+          <h3 class="text-lg font-heading font-bold text-teal-600 mb-2">ب) جمع كل صف على حدة وحساب متوسطه — متوسط كل طالب (سلايد 35 و 36):</h3>
+          <pre class="code-block"><code>for (int row = 0; row &lt; NUM_STUDENTS; row++) {
+    double total = 0;
+    for (int col = 0; col &lt; NUM_SCORES; col++) {
+        total += scores[row][col];
+    }
+    double average = total / NUM_SCORES;
+    cout &lt;&lt; "Score average for student " &lt;&lt; (row + 1) &lt;&lt; " is " &lt;&lt; average &lt;&lt; endl;
+}</code></pre>
+          <div class="code-walkthrough">
+            <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">for (int row = 0; row &lt; NUM_STUDENTS; row++)</code>
+              <p class="font-semibold mb-1">الوظيفة: الحلقة الخارجية تمر على الطلاب (الصفوف) طالباً تلو الآخر.</p>
+            </div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">double total = 0;</code>
+              <p class="font-semibold mb-1">الوظيفة: <strong>أهم سطر امتحاني!</strong> نصفر المجمع <code class="inline-code">total = 0</code> داخل الحلقة الخارجية في بداية كل صف جديد حتى لا تندمج درجات الطالب الحالي مع الطالب السابق.</p>
+            </div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">double average = total / NUM_SCORES;</code>
+              <p class="font-semibold mb-1">الوظيفة: بعد انتهاء الحلقة الداخلية لجمع درجات الطالب، نقسم مجموعه على عدد المواد <code class="inline-code">NUM_SCORES</code> لحساب متوسطه.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ج) جمع كل عمود وحساب متوسطه -->
+        <div class="reading-block">
+          <h3 class="text-lg font-heading font-bold text-purple-600 mb-2">ج) جمع كل عمود على حدة وحساب متوسطه — متوسط كل اختبار (سلايد 37 و 38):</h3>
+          <pre class="code-block"><code>for (int col = 0; col &lt; NUM_SCORES; col++) {
+    double total = 0;
+    for (int row = 0; row &lt; NUM_STUDENTS; row++) {
+        total += scores[row][col];
+    }
+    double average = total / NUM_STUDENTS;
+    cout &lt;&lt; "Class average for test " &lt;&lt; (col + 1) &lt;&lt; " is " &lt;&lt; average &lt;&lt; endl;
+}</code></pre>
+          <div class="code-walkthrough">
+            <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">for (int col = 0; col &lt; NUM_SCORES; col++)</code>
+              <p class="font-semibold mb-1">الوظيفة: عكسنا ترتيب الحلقات! جعلنا حلقة الأعمدة <code class="inline-code">col</code> هي الحلقة الخارجية لتثبيت رقم الامتحان/العمود.</p>
+            </div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">for (int row = 0; row &lt; NUM_STUDENTS; row++)</code>
+              <p class="font-semibold mb-1">الوظيفة: الحلقة الداخلية تنزل رأسياً عبر جميع الصفوف (الطلاب) لجمع درجاتهم في نفس العمود المثبت <code class="inline-code">col</code>.</p>
+            </div>
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">double average = total / NUM_STUDENTS;</code>
+              <p class="font-semibold mb-1">الوظيفة: قسمة مجموع درجات العمود على عدد الطلاب <code class="inline-code">NUM_STUDENTS</code> لإيجاد متوسط الفصل في هذا الاختبار.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- تطبيق عملي الجزء الثالث + شرح سطر بسطر -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="rule-badge mb-2">💻 كود رقم (12) • تطبيق عملي متكامل على 2D Array</span>
+          <h3 class="text-xl font-heading font-extrabold mt-2">تطبيق عملي: دالة جمع عناصر مصفوفة ثنائية الأبعاد وجمع الصف الأول</h3>
+        </div>
+        <pre class="code-block"><code>#include &lt;iostream&gt;
+using namespace std;
+
+const int COLS = 3;
+
+int sumAll(const int arr[][COLS], int rows) {
+    int total = 0;
+    for (int r = 0; r &lt; rows; r++) {
+        for (int c = 0; c &lt; COLS; c++) {
+            total += arr[r][c];
+        }
+    }
+    return total;
+}
+
+int main() {
+    const int ROWS = 2;
+    int matrix[ROWS][COLS] = { {1, 2, 3}, {4, 5, 6} };
+
+    cout &lt;&lt; "Total sum of matrix: " &lt;&lt; sumAll(matrix, ROWS) &lt;&lt; endl;
+
+    int row0_sum = 0;
+    for (int c = 0; c &lt; COLS; c++) {
+        row0_sum += matrix[0][c];
+    }
+    cout &lt;&lt; "Sum of row 0: " &lt;&lt; row0_sum &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك السطور الأساسية في هذا التطبيق:</div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">sumAll(matrix, ROWS)</code>
+            <p class="font-semibold mb-1">الوظيفة: استدعاء الدالة وتمرير اسم المصفوفة <code class="inline-code">matrix</code> فقط بدون أي أقواس مربعة، متبوعاً بعدد الصفوف <code class="inline-code">ROWS</code> (يرجع 21).</p>
+          </div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">row0_sum += matrix[0][c];</code>
+            <p class="font-semibold mb-1">الوظيفة: جمع عناصر الصف الأول فقط، لذلك ثبتنا فهرس الصف عند <code class="inline-code">[0]</code> وحركنا عداد الأعمدة <code class="inline-code">[c]</code> من 0 إلى 2 (فيجمع 1 + 2 + 3 = 6).</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================================================================
+         الجزء الرابع: القوالب في ++C (Templates - P4.txt)
+    ==================================================================== -->
+    <section id="section-part4" class="chapter-section">
+      <div class="mb-6 mt-10 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">📕 الجزء الرابع • سلايدات 41 إلى 44</span>
+        <span class="text-sm text-[var(--text-muted)]">القوالب في C++ (Templates in C++)</span>
+      </div>
+
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600 block mb-1">المصدر: سلايد 42 و 43</span>
+          <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">1. ما هي القوالب؟ (1.9 Templates in C++)</h2>
+        </div>
+
+        <div class="reading-block">
+          <div class="academic-quote">
+            <strong class="block text-blue-600 mb-2">Templates Definition & Purpose (Slide 42):</strong>
+            • <strong>Definition:</strong> Templates allow writing <strong>generic and reusable code</strong>.<br>
+            • <strong>Purpose:</strong> <strong>Write once, use with different data types.</strong><br><br>
+            <strong>Types of Templates:</strong><br>
+            1. Function Templates<br>
+            2. Class Templates<br><br>
+            <strong>Three Official Benefits:</strong><br>
+            1. <strong>Code reusability</strong><br>
+            2. <strong>Type safety</strong><br>
+            3. <strong>Performance</strong> (Compile-time resolution)
+          </div>
+        </div>
+
+        <div class="reading-block colloquial-box">
+          <h3 class="text-xl font-heading font-bold text-teal-800 dark:text-teal-300 mb-3">💡 الشرح بالعامية البسيطة:</h3>
+          <p class="mb-3">
+            في لغة <span class="ltr-token">C++</span> العادية، لو كتبت دالة <code class="inline-code">int add(int a, int b)</code> فهي مقيدة بالأعداد الصحيحة فقط. لو أردت جمع <code class="inline-code">double</code> أو <code class="inline-code">string</code> كنت ستضطر لتكرار كتابة الدالة!
+          </p>
+          <p>
+            <strong>الحل هو القوالب (<span class="ltr-token">Templates</span>):</strong> تكتب الكود مرة واحدة فقط باستخدام <strong>نوع بيانات رمزي عام (<span class="ltr-token">Generic Type</span>)</strong> وليكن <code class="inline-code">T</code>، وعند استدعاء الدالة يكتشف المترجم (<span class="ltr-token">Compiler</span>) النوع تلقائياً ويولد النسخة المناسبة وقت الترجمة (<span class="ltr-token">Compile-time</span>) بدون أي بطء أثناء التشغيل.
+          </p>
+        </div>
+
+        <!-- رسمة SVG مقارنة بين Function Overloading و Template -->
+        <div class="diagram-frame">
+          <h4 class="font-heading font-bold text-base mb-4 text-blue-600">🎨 رسم توضيحي: مقارنة السلايد 43 بين Overloading و Template</h4>
+          <svg viewBox="0 0 760 235" class="w-full max-w-2xl mx-auto h-auto" xmlns="http://www.w3.org/2000/svg">
+            <!-- Overloading Side -->
+            <rect x="20" y="15" width="340" height="205" rx="14" fill="#fff1f2" stroke="#fecdd3" stroke-width="2" />
+            <text x="190" y="42" text-anchor="middle" direction="rtl" fill="#be123c" font-family="Cairo, sans-serif" font-weight="800" font-size="16">التحميل الزائد (تكرار الكود لكل نوع)</text>
+            <rect x="45" y="58" width="290" height="34" rx="6" fill="#ffe4e6" />
+            <text x="190" y="80" text-anchor="middle" direction="ltr" fill="#881337" font-family="JetBrains Mono" font-size="13">int max(int a, int b) { ... }</text>
+            <rect x="45" y="100" width="290" height="34" rx="6" fill="#ffe4e6" />
+            <text x="190" y="122" text-anchor="middle" direction="ltr" fill="#881337" font-family="JetBrains Mono" font-size="13">double max(double a, double b) { ... }</text>
+            <rect x="45" y="142" width="290" height="34" rx="6" fill="#ffe4e6" />
+            <text x="190" y="164" text-anchor="middle" direction="ltr" fill="#881337" font-family="JetBrains Mono" font-size="13">char max(char a, char b) { ... }</text>
+            <text x="190" y="202" text-anchor="middle" direction="rtl" fill="#be123c" font-family="Cairo, sans-serif" font-weight="700" font-size="13">المبرمج يكرر كتابة الدالة يدوياً</text>
+
+            <!-- Template Side -->
+            <rect x="390" y="15" width="350" height="205" rx="14" fill="#ecfdf5" stroke="#a7f3d0" stroke-width="2" />
+            <text x="565" y="42" text-anchor="middle" direction="rtl" fill="#047857" font-family="Cairo, sans-serif" font-weight="800" font-size="16">القوالب (كود واحد عام لجميع الأنواع)</text>
+            <rect x="420" y="65" width="290" height="65" rx="10" fill="#059669" />
+            <text x="565" y="91" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">template &lt;typename T&gt;</text>
+            <text x="565" y="115" text-anchor="middle" direction="ltr" fill="#d1fae5" font-family="JetBrains Mono" font-weight="700" font-size="14">T max(T a, T b) { ... }</text>
+            <text x="565" y="162" text-anchor="middle" direction="rtl" fill="#065f46" font-family="Cairo, sans-serif" font-weight="700" font-size="14">المترجم يولد النسخ المطلوبة آلياً وقت الترجمة</text>
+            <text x="565" y="198" text-anchor="middle" direction="ltr" fill="#047857" font-family="JetBrains Mono" font-weight="700" font-size="12">Write once, use with different data types</text>
+          </svg>
+        </div>
+
+        <!-- كود قالب الدالة وقالب الصنف مع شرح تفصيلي سطر بسطر وكلمة بكلمة -->
+        <div class="reading-block mt-6">
+          <h3 class="text-xl font-heading font-bold mb-3">2. تشريح كود قالب الدالة (<span class="ltr-token">Function Template</span>) وقالب الصنف (<span class="ltr-token">Class Template</span>):</h3>
+          <pre class="code-block"><code>#include &lt;iostream&gt;
+using namespace std;
+
+// 1. قالب دالة عام (Function Template)
+template &lt;typename T&gt;
+T findMax(T a, T b) {
+    if (a &gt; b)
+        return a;
+    else
+        return b;
+}
+
+// 2. قالب كلاس عام (Class Template)
+template &lt;typename T&gt;
+class Box {
+private:
+    T item;
+public:
+    void setItem(T val) { item = val; }
+    T getItem() { return item; }
+};
+
+int main() {
+    cout &lt;&lt; findMax(10, 20) &lt;&lt; endl;
+    cout &lt;&lt; findMax(3.14, 2.71) &lt;&lt; endl;
+
+    Box&lt;int&gt; intBox;
+    intBox.setItem(100);
+
+    Box&lt;string&gt; strBox;
+    strBox.setItem("Data Structures");
+    return 0;
+}</code></pre>
+
+          <div class="code-walkthrough">
+            <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">template &lt;typename T&gt;</code>
+              <p class="font-semibold mb-1">الوظيفة: إعلان للمترجم أن الدالة أو الكلاس التالي هو قالب عام يستخدم نوع بيانات رمزي اسمه <code class="inline-code">T</code>.</p>
+              <div class="word-breakdown-grid">
+                <div class="word-chip"><code class="inline-code">template</code> <span>الكلمة المحجوزة الأساسية في C++ لإنشاء قالب.</span></div>
+                <div class="word-chip"><code class="inline-code">&lt; &gt;</code> <span>قوسا معاملات القالب (Template Angle Brackets).</span></div>
+                <div class="word-chip"><code class="inline-code">typename</code> <span>كلمة محجوزة تعني أن الرمز التالي هو "اسم نوع بيانات" (ويمكن استبدالها بالكلمة <code class="inline-code">class</code>).</span></div>
+                <div class="word-chip"><code class="inline-code">T</code> <span>الاسم الرمزي للنوع العام (Type Parameter) الذي سيستبدله المترجم لاحقاً بـ <code class="inline-code">int</code> أو <code class="inline-code">double</code> أو <code class="inline-code">string</code>.</span></div>
+              </div>
+            </div>
+
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">T findMax(T a, T b)</code>
+              <p class="font-semibold mb-1">الوظيفة: ترويسة دالة عامة تقبل معاملين من النوع <code class="inline-code">T</code> وترجع الناتج الأكبر من نفس النوع <code class="inline-code">T</code>.</p>
+              <div class="word-breakdown-grid">
+                <div class="word-chip"><code class="inline-code">T</code> (الأولى) <span>نوع القيمة الراجعة من الدالة (Return Type).</span></div>
+                <div class="word-chip"><code class="inline-code">findMax</code> <span>اسم الدالة.</span></div>
+                <div class="word-chip"><code class="inline-code">(T a, T b)</code> <span>معاملان <code class="inline-code">a</code> و <code class="inline-code">b</code> كلاهما من نفس النوع العام <code class="inline-code">T</code>.</span></div>
+              </div>
+            </div>
+
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">class Box { private: T item; ... };</code>
+              <p class="font-semibold mb-1">الوظيفة: تعريف كلاس عام اسمه <code class="inline-code">Box</code> يمتلك متغيراً داخلياً <code class="inline-code">item</code> نوعه يتحدد عند إنشاء الكائن.</p>
+              <div class="word-breakdown-grid">
+                <div class="word-chip"><code class="inline-code">T item;</code> <span>متغير عضو خاص (Private Member) من النوع العام <code class="inline-code">T</code>.</span></div>
+                <div class="word-chip"><code class="inline-code">void setItem(T val)</code> <span>دالة لتخزين قيمة من النوع <code class="inline-code">T</code> داخل الصندوق.</span></div>
+                <div class="word-chip"><code class="inline-code">T getItem()</code> <span>دالة لإرجاع القيمة المخزنة من النوع <code class="inline-code">T</code>.</span></div>
+              </div>
+            </div>
+
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">Box&lt;int&gt; intBox;</code>
+              <p class="font-semibold mb-1">الوظيفة: إنشاء كائن اسمه <code class="inline-code">intBox</code> من القالب <code class="inline-code">Box</code> مع تحديد النوع الحقيقي بـ <code class="inline-code">int</code>.</p>
+              <div class="word-breakdown-grid">
+                <div class="word-chip"><code class="inline-code">Box&lt;int&gt;</code> <span>يخبر المترجم باستبدال كل حرف <code class="inline-code">T</code> داخل الكلاس <code class="inline-code">Box</code> بالنوع <code class="inline-code">int</code> لهذه النسخة.</span></div>
+              </div>
+            </div>
+
+            <div class="walkthrough-item">
+              <code class="walkthrough-line-code">Box&lt;string&gt; strBox;</code>
+              <p class="font-semibold mb-1">الوظيفة: إنشاء كائن ثانٍ من نفس الكلاس لكنه مخصص لتخزين النصوص <code class="inline-code">string</code> بدون إعادة كتابة الكلاس!</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- تطبيق عملي الجزء الرابع: دالة التبديل mySwap + شرح سطر بسطر وكلمة بكلمة -->
+      <article class="reading-card">
+        <div class="reading-block">
+          <span class="rule-badge mb-2">💻 كود رقم (14) • تطبيق عملي على القوالب (Templates)</span>
+          <h3 class="text-xl font-heading font-extrabold mt-2">تطبيق عملي: قالب دالة التبديل العامة <span class="ltr-token">mySwap</span></h3>
+          <p class="mt-2">برنامج <span class="ltr-token">C++</span> كامل يعرف قالب دالة واحد يقوم بتبديل قيمتي متغيرين من أي نوع بيانات (<code class="inline-code">int</code> أو <code class="inline-code">double</code>):</p>
+        </div>
+
+        <pre class="code-block"><code>#include &lt;iostream&gt;
+using namespace std;
+
+template &lt;typename T&gt;
+void mySwap(T &amp;a, T &amp;b) {
+    T temp = a;
+    a = b;
+    b = temp;
+}
+
+int main() {
+    int x = 5, y = 10;
+    mySwap(x, y);
+    cout &lt;&lt; "After swapping ints: x = " &lt;&lt; x &lt;&lt; ", y = " &lt;&lt; y &lt;&lt; endl;
+
+    double p = 1.5, q = 9.8;
+    mySwap(p, q);
+    cout &lt;&lt; "After swapping doubles: p = " &lt;&lt; p &lt;&lt; ", q = " &lt;&lt; q &lt;&lt; endl;
+
+    return 0;
+}</code></pre>
+
+        <div class="code-walkthrough">
+          <div class="walkthrough-title">🔍 تفكيك الكود سطر بسطر وكلمة بكلمة:</div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">void mySwap(T &amp;a, T &amp;b)</code>
+            <p class="font-semibold mb-1">الوظيفة: استلام متغيرين من النوع <code class="inline-code">T</code> بالمرجع (<span class="ltr-token">Pass by Reference</span>) لتبديل قيمتيهما الأصليتين في الـ RAM.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">void</code> <span>الدالة لا ترجع قيمة لأنها تعدل المتغيرين الأصليين مباشرة.</span></div>
+              <div class="word-chip"><code class="inline-code">T &amp;a</code> <span>علامة <code class="inline-code">&amp;</code> تعني <strong>Reference</strong> (مرجع للعنوان الأصلي في الذاكرة)، وبدونها لن يتأثر المتغيران في <code class="inline-code">main</code>.</span></div>
+            </div>
+          </div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">T temp = a;  a = b;  b = temp;</code>
+            <p class="font-semibold mb-1">الوظيفة: خوارزمية التبديل الثلاثية باستخدام متغير مؤقت <code class="inline-code">temp</code> من نفس النوع العام <code class="inline-code">T</code>.</p>
+            <div class="word-breakdown-grid">
+              <div class="word-chip"><code class="inline-code">T temp = a;</code> <span>حفظ قيمة <code class="inline-code">a</code> مؤقتاً داخل متغير مساعد <code class="inline-code">temp</code> من نفس النوع <code class="inline-code">T</code> حتى لا تضيع.</span></div>
+              <div class="word-chip"><code class="inline-code">a = b;</code> <span>نقل قيمة <code class="inline-code">b</code> إلى داخل <code class="inline-code">a</code>.</span></div>
+              <div class="word-chip"><code class="inline-code">b = temp;</code> <span>وضع القيمة المحفوظة في <code class="inline-code">temp</code> داخل <code class="inline-code">b</code>.</span></div>
+            </div>
+          </div>
+          <div class="walkthrough-item">
+            <code class="walkthrough-line-code">mySwap(x, y);   /   mySwap(p, q);</code>
+            <p class="font-semibold mb-1">الوظيفة: استدعاء نفس القالب مرة مع أعداد صحيحة (<code class="inline-code">int</code>) ومرة مع أعداد عشرية (<code class="inline-code">double</code>) فيولد المترجم النسختين تلقائياً.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================================================================
+         قسم الملخص الشامل والزتونة (Summary.txt)
+    ==================================================================== -->
+    <section id="section-summary" class="chapter-section">
+      <div class="mb-6 mt-10 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">📌 ملخص المحاضرة الأولى بالكامل</span>
+        <span class="text-sm text-[var(--text-muted)]">مراجعة سريعة مركزة قبل الحل</span>
+      </div>
+
+      <article class="reading-card">
+        <h2 class="text-2xl sm:text-3xl font-heading font-extrabold mb-6 text-blue-600">📌 الزتونة الامتحانية للمحاضرة الأولى (سلايد 3 إلى 44)</h2>
+
+        <div class="space-y-4">
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-blue-600 mb-1">1. Data Structure vs. ADT (سلايد 3 إلى 5)</h3>
+            <p><strong>هيكل البيانات (<span class="ltr-token">Data Structure</span>):</strong> طريقة تنظيم وتخزين البيانات في الـ <span class="ltr-token">RAM</span> للوصول إليها وتعديلها بكفاءة، وتحدد العلاقات والعمليات.</p>
+            <p class="mt-1"><strong>المفهوم المجرد (<span class="ltr-token">ADT</span>):</strong> نموذج رياضي مجرد يحدد <span class="ltr-token">WHAT</span> (ما هي العمليات: <code class="inline-code">Insertion, Deletion, Access, Update</code>) ويخفي <span class="ltr-token">HOW</span> (تفاصيل البرمجة والتنفيذ).</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-teal-600 mb-1">2. Stack vs. Queue (سلايد 6 و 7)</h3>
+            <p><strong>المكدس (<span class="ltr-token">Stack</span>):</strong> يعمل بقاعدة <code class="inline-code">LIFO (Last In, First Out)</code> — آخر داخل هو أول خارج.</p>
+            <p class="mt-1"><strong>الطابور (<span class="ltr-token">Queue</span>):</strong> يعمل بقاعدة <code class="inline-code">FIFO (First In, First Out)</code> — الإضافة من الخلف (<span class="ltr-token">Rear</span>) والحذف من الأمام (<span class="ltr-token">Front</span>).</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-purple-600 mb-1">3. Primitive vs. Non-Primitive & Linear vs. Non-Linear (سلايد 8 إلى 15)</h3>
+            <p><strong>الأنواع الأولية (<span class="ltr-token">Primitive</span>):</strong> معرفة مسبقاً باللغة وتخزن قيمة مفردة واحدة (<code class="inline-code">int, float, char, bool</code>).</p>
+            <p class="mt-1"><strong>الأنواع المركبة (<span class="ltr-token">Non-Primitive</span>):</strong> تخزن مجموعات من القيم وغالباً عناوين مرجعية (<code class="inline-code">Arrays, Lists, Stacks, Trees</code>).</p>
+            <p class="mt-1"><strong>الهياكل الخطية (<span class="ltr-token">Linear DS</span>):</strong> عناصر متتالية في مستوى واحد (<code class="inline-code">Array, Linked List, Stack, Queue</code>).</p>
+            <p class="mt-1"><strong>الهياكل غير الخطية (<span class="ltr-token">Non-Linear DS</span>):</strong> متعددة المستويات، هرمية أو شبكية (<code class="inline-code">Trees, Graphs</code>).</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-amber-600 mb-1">4. قواعد المصفوفات 1D & 2D & Multi-D (سلايد 16 إلى 40)</h3>
+            <p>• عناصر من نفس النوع في ذاكرة متصلة (<span class="ltr-token">Contiguous Memory</span>)، والفهرسة تبدأ من <code class="inline-code">0</code> إلى <code class="inline-code">SIZE - 1</code>، والوصول يأخذ <code class="inline-code">O(1)</code>.</p>
+            <p class="mt-1">• العناصر غير المهيأة تأخذ تلقائياً <code class="inline-code">0</code> أو <code class="inline-code">NULL</code>.</p>
+            <p class="mt-1">• عند تمرير مصفوفة ثنائية أو متعددة الأبعاد لدالة: يُسمح بترك البُعد الأول فقط فارغاً و<strong>يجب تحديد باقي الأبعاد (الأعمدة) إجبارياً</strong> مثل <code class="inline-code">void fn(int arr[][COLS])</code> أو <code class="inline-code">void fn(short arr[][3][5])</code>.</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
+            <h3 class="font-heading font-bold text-lg text-emerald-600 mb-1">5. القوالب Templates (سلايد 41 إلى 44)</h3>
+            <p>• الغرض: <code class="inline-code">Write once, use with different data types</code> عبر الكلمة المحجوزة <code class="inline-code">template &lt;typename T&gt;</code>.</p>
+            <p class="mt-1">• الفوائد الثلاث الرسمية: <span class="ltr-token">Code reusability</span> + <span class="ltr-token">Type safety</span> + <span class="ltr-token">Performance (compile-time resolution)</span>.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===================================================================
+         قسم الكويز التفاعلي (أسئلة الاختر فقط — 16 سؤال من الأجزاء الأربعة)
+    ==================================================================== -->
+    <section id="section-quiz" class="chapter-section">
+      <div class="mb-6 mt-10 flex flex-wrap items-center justify-between gap-2">
+        <span class="rule-badge">🎯 الكويز التفاعلي (MCQ Quiz)</span>
+        <span class="text-sm text-[var(--text-muted)]">جميع أسئلة الاختيار من متعدد (16 سؤالاً) مع التصحيح والتفسير الفوري</span>
+      </div>
+
+      <!-- لوحة نتيجة الكويز والفلترة -->
+      <div class="reading-card bg-gradient-to-br from-blue-600/10 to-teal-500/10 border-2 border-blue-500/30">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-heading font-extrabold">اختبر فهمك — كويز أسئلة الاختر (MCQ)</h2>
+            <p class="text-[var(--text-muted)] mt-1">اختر الإجابة لكل سؤال ليظهر لك التصحيح الفوري مع التفسير الأكاديمي والعامي من السلايدات.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="px-4 py-2 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-center">
+              <span class="text-xs text-[var(--text-muted)] block">النتيجة الحالية</span>
+              <span id="quizScoreDisplay" class="font-heading font-extrabold text-xl text-blue-600">0 / 16</span>
+            </div>
+            <button id="btnResetQuiz" type="button" class="px-4 py-2.5 rounded-xl bg-rose-600 text-white font-heading font-bold text-sm hover:bg-rose-700 transition shadow-sm">
+              🔄 إعادة الكويز
+            </button>
+          </div>
+        </div>
+
+        <!-- فلاتر أقسام الكويز -->
+        <div class="flex flex-wrap gap-2">
+          <button data-quiz-filter="all" class="quiz-filter-btn active px-3.5 py-1.5 rounded-xl bg-blue-600 text-white text-xs sm:text-sm font-heading font-bold">
+            كل الأسئلة (16)
+          </button>
+          <button data-quiz-filter="p1" class="quiz-filter-btn px-3.5 py-1.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-xs sm:text-sm font-heading font-semibold">
+            الجزء 1: التأسيس والـ ADTs (4)
+          </button>
+          <button data-quiz-filter="p2" class="quiz-filter-btn px-3.5 py-1.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-xs sm:text-sm font-heading font-semibold">
+            الجزء 2: الخطية و 1D Array (4)
+          </button>
+          <button data-quiz-filter="p3" class="quiz-filter-btn px-3.5 py-1.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-xs sm:text-sm font-heading font-semibold">
+            الجزء 3: 2D & Multi-D Arrays (4)
+          </button>
+          <button data-quiz-filter="p4" class="quiz-filter-btn px-3.5 py-1.5 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] text-xs sm:text-sm font-heading font-semibold">
+            الجزء 4: القوالب Templates (4)
+          </button>
+        </div>
+      </div>
+
+      <!-- حاوية بطاقات الأسئلة -->
+      <div id="quizQuestionsContainer" class="space-y-6"></div>
+    </section>
+
+  </main>
+
+  <script>
+    // بيانات أسئلة الكويز (الـ 16 سؤال اختر بالكامل من الملفات المرفقة)
+    const quizQuestions = [
+      // الجزء الأول (p1.txt)
+      {
+        id: 1,
+        part: "p1",
+        partLabel: "الجزء الأول • سلايد 4",
+        question: "Q1: What does an Abstract Data Type (ADT) primarily focus on?",
+        options: [
+          "A) The exact number of bytes allocated in RAM.",
+          "B) WHAT operations are to be performed rather than HOW they are implemented.",
+          "C) The assembly language instructions generated by the compiler.",
+          "D) The physical disk sectors used for data storage."
+        ],
+        correct: 1,
+        explanation: "نصت السلايد 4 صراحة على أن الـ ADT يركز على ما هي العمليات المطلوبة (WHAT operations are to be performed) وليس كيفية تنفيذها في الذاكرة (rather than HOW they are implemented)."
+      },
+      {
+        id: 2,
+        part: "p1",
+        partLabel: "الجزء الأول • سلايد 8",
+        question: "Q2: Which of the following is considered a characteristic of Primitive Data Types?",
+        options: [
+          "A) They can store dynamic collections of mixed data.",
+          "B) They store a single value and are predefined by the language.",
+          "C) They require complex algorithms like recursion to traverse.",
+          "D) They are always implemented using pointers and linked structures."
+        ],
+        correct: 1,
+        explanation: "نصت السلايد 8 على أن الأنواع الأولية (Primitive Data Types) تخزن قيمة مفردة واحدة فقط (Stores single values) وتكون معرفة مسبقاً داخل اللغة (Predefined by the language)."
+      },
+      {
+        id: 3,
+        part: "p1",
+        partLabel: "الجزء الأول • سلايد 6",
+        question: "Q3: The Stack ADT operates under which data access rule?",
+        options: [
+          "A) FIFO (First In, First Out)",
+          "B) LIFO (Last In, First Out)",
+          "C) Random Access",
+          "D) Binary Search"
+        ],
+        correct: 1,
+        explanation: "نصت السلايد 6 على أن المكدس (Stack) يعمل بقاعدة LIFO (Last In, First Out) أي أن آخر عنصر يدخل هو أول عنصر يخرج."
+      },
+      {
+        id: 4,
+        part: "p1",
+        partLabel: "الجزء الأول • سلايد 5",
+        question: "Q4: What is the main purpose of an Abstract Data Type (ADT) in software engineering?",
+        options: [
+          "A) To eliminate the need for CPU memory.",
+          "B) To provide data abstraction by hiding implementation details from the user.",
+          "C) To force all data structures to use contiguous arrays.",
+          "D) To prevent the program from using primitive data types."
+        ],
+        correct: 1,
+        explanation: "نصت السلايد 5 على أن الـ ADT يقدم وصفاً منطقياً ويوفر التجريد عبر إخفاء تفاصيل التنفيذ (ADT is a conceptual model; it hides the implementation details)."
+      },
+
+      // الجزء الثاني (p2.txt)
+      {
+        id: 5,
+        part: "p2",
+        partLabel: "الجزء الثاني • سلايد 12 و 14",
+        question: "Q5: What is the primary characteristic that distinguishes a Linear Data Structure from a Non-Linear Data Structure according to Lecture 1?",
+        options: [
+          "A) Linear structures use dynamic memory; Non-linear use static memory.",
+          "B) Linear structures arrange elements sequentially in a single level, while Non-linear structures arrange elements in multi-level hierarchies or networks.",
+          "C) Linear structures can only store integer types.",
+          "D) Non-linear structures can only be traversed using simple for loops."
+        ],
+        correct: 1,
+        explanation: "نصت السلايد 12 و 14 على أن الهياكل الخطية ترتب العناصر بالتتابع في مستوى واحد (Single-level)، بينما الهياكل غير الخطية تتفرع وترتبط بعدة عناصر في مستويات هرمية أو شبكية (Multi-level)."
+      },
+      {
+        id: 6,
+        part: "p2",
+        partLabel: "الجزء الثاني • سلايد 16",
+        question: "Q6: In C++, how are elements of a standard one-dimensional array laid out in RAM?",
+        options: [
+          "A) Non-contiguously across random heap fragments.",
+          "B) In contiguous (adjacent) memory locations with no gaps.",
+          "C) Inside CPU registers only.",
+          "D) Linked together using pointers."
+        ],
+        correct: 1,
+        explanation: "نصت السلايد 16 صراحة على أن عناصر المصفوفة تُخزن في أماكن ذاكرة متصلة ومتجاورة بدون أي فواصل (stored in contiguous memory locations)."
+      },
+      {
+        id: 7,
+        part: "p2",
+        partLabel: "الجزء الثاني • سلايد 16",
+        question: "Q7: Why is accessing an element in an array by its index an O(1) operation?",
+        options: [
+          "A) The CPU executes binary search on the array keys.",
+          "B) The physical memory address is calculated directly via an arithmetic formula: Base_Address + (index * Element_Size).",
+          "C) The compiler copies all array elements into the stack.",
+          "D) Array elements are sorted in ascending order automatically."
+        ],
+        correct: 1,
+        explanation: "الوصول يأخذ زمناً ثابتاً O(1) لأن المعالج يحسب العنوان الفيزيائي مباشرة بالمعادلة الرياضية (Base_Address + index * Element_Size) ولا يحتاج للبحث."
+      },
+      {
+        id: 8,
+        part: "p2",
+        partLabel: "الجزء الثاني • سلايد 16",
+        question: "Q8: Given the declaration `int exams[5];`, what is the valid index range to access elements of this array in C++?",
+        options: [
+          "A) 1 to 5",
+          "B) 0 to 4",
+          "C) 0 to 5",
+          "D) -1 to 4"
+        ],
+        correct: 1,
+        explanation: "الفهرسة في لغة C++ تبدأ من 0، إذن لمصفوفة حجمها 5 تكون الفهارس المتاحة هي: 0, 1, 2, 3, 4 (أي من 0 إلى SIZE - 1)."
+      },
+
+      // الجزء الثالث (p3.txt)
+      {
+        id: 9,
+        part: "p3",
+        partLabel: "الجزء الثالث • سلايد 29",
+        question: "Q9: When passing a two-dimensional array to a function in C++, which dimension size is MANDATORY to include in the parameter list?",
+        options: [
+          "A) The row dimension only.",
+          "B) The column dimension only.",
+          "C) Both row and column dimensions.",
+          "D) Neither dimension is needed."
+        ],
+        correct: 1,
+        explanation: "نصت السلايد 29 صراحة على ترك قوس الصفوف فارغاً وتحديد حجم الأعمدة إجبارياً (Use empty [] for row, size declarator for column) حتى يتمكن المترجم من حساب عناوين الصفوف في الذاكرة."
+      },
+      {
+        id: 10,
+        part: "p3",
+        partLabel: "الجزء الثالث • سلايد 28",
+        question: "Q10: According to Lecture 1, what happens to array elements that are omitted during initialization, such as: `int exams[2][2] = {{84}, {92, 97}};`?",
+        options: [
+          "A) They contain garbage values.",
+          "B) They cause a compilation syntax error.",
+          "C) They will automatically be set to 0 or NULL.",
+          "D) The program crashes at runtime."
+        ],
+        correct: 2,
+        explanation: "نصت السلايد 28 صراحة على أن العناصر التي لا تُعطى قيمة ابتدائية تُضبط تلقائياً على صفر أو NULL (Array elements without initial values will be set to 0 or NULL)."
+      },
+      {
+        id: 11,
+        part: "p3",
+        partLabel: "الجزء الثالث • سلايد 40",
+        question: "Q11: Given the 3D array declaration `double timeGrid[3][4][5];`, what is the correct function prototype to accept this array as a parameter?",
+        options: [
+          "A) void process(double [][][]);",
+          "B) void process(double [3][][]);",
+          "C) void process(double [][4][5]);",
+          "D) void process(double [3][4][]);"
+        ],
+        correct: 2,
+        explanation: "نصت السلايد 40 على القاعدة: تحديد جميع الأبعاد ما عدا البُعد الأول فقط (specify all BUT the 1st dimension in prototype and header)؛ فنترك الأول فارغاً ونحدد [4][5]."
+      },
+      {
+        id: 12,
+        part: "p3",
+        partLabel: "الجزء الثالث • سلايد 38",
+        question: "Q12: To calculate the average score of each test (column by column) across all students, how should the nested loops be structured?",
+        options: [
+          "A) Outer loop iterates over rows; inner loop iterates over columns.",
+          "B) Outer loop iterates over columns; inner loop iterates over rows.",
+          "C) Single loop from 0 to (ROWS * COLS).",
+          "D) Using recursion with two base cases."
+        ],
+        correct: 1,
+        explanation: "لحساب كل عمود على حدة (سلايد 38)، نجعل حلقة الأعمدة (col) في الخارج ونصفر المجمع في بداية كل عمود، ونجعل حلقة الصفوف (row) في الداخل."
+      },
+
+      // الجزء الرابع (P4.txt)
+      {
+        id: 13,
+        part: "p4",
+        partLabel: "الجزء الرابع • سلايد 42",
+        question: "Q13: What is the primary purpose of Templates in C++ according to Lecture 1?",
+        options: [
+          "A) To speed up execution time using dynamic pointers.",
+          "B) To write generic and reusable code: \"Write once, use with different data types\".",
+          "C) To replace the need for arrays in linear memory.",
+          "D) To prevent functions from returning values."
+        ],
+        correct: 1,
+        explanation: "نصت السلايد 42 صراحة على أن الغرض الأساسي من القوالب هو كتابة الكود مرة واحدة واستخدامه مع أنواع بيانات مختلفة (Write once, use with different data types)."
+      },
+      {
+        id: 14,
+        part: "p4",
+        partLabel: "الجزء الرابع • سلايد 42",
+        question: "Q14: Which of the following is NOT listed as a benefit of Templates in slide 42?",
+        options: [
+          "A) Code reusability",
+          "B) Type safety",
+          "C) Runtime heap compression",
+          "D) Performance (compile-time resolution)"
+        ],
+        correct: 2,
+        explanation: "الفوائد الثلاث المذكورة في سلايد 42 هي: إعادة استخدام الكود (Code reusability)، وأمان الأنواع (Type safety)، والأداء العالي وقت الترجمة (Performance). خيار C لا علاقة له بالقوالب."
+      },
+      {
+        id: 15,
+        part: "p4",
+        partLabel: "الجزء الرابع • سلايد 43",
+        question: "Q15: How does a Template differ from Function Overloading when handling multiple types?",
+        options: [
+          "A) Templates require writing separate code bodies for every data type.",
+          "B) Overloading avoids writing redundant code, whereas Templates duplicate code.",
+          "C) Templates allow writing a single generic function, whereas Overloading requires writing multiple function definitions.",
+          "D) Overloading executes at compile-time, while Templates execute at runtime."
+        ],
+        correct: 2,
+        explanation: "سلايد 43 وضعت مقارنة توضح أن الـ Template يسمح بكتابة دالة عامة واحدة فقط، بينما الـ Overloading يضطر المبرمج لتكرار كتابة الدالة لكل نوع بيانات."
+      },
+      {
+        id: 16,
+        part: "p4",
+        partLabel: "الجزء الرابع • سلايد 42",
+        question: "Q16: What keyword in C++ is used to introduce a template definition?",
+        options: [
+          "A) generic",
+          "B) virtual",
+          "C) template",
+          "D) typedef"
+        ],
+        correct: 2,
+        explanation: "تبدأ صياغة القوالب دائماً بالكلمة المحجوزة template متبوعة بـ <typename T> أو <class T>."
+      }
+    ];
+
+    // حالة المستخدم في الكويز
+    let userAnswers = {};
+    let currentQuizFilter = "all";
+
+    // حالة إعدادات القراءة
+    let fontScale = 100; // بالمائة
+    let lineSpacingMode = "relaxed"; // relaxed | spacious | compact
+
+    function renderQuiz() {
+      const container = document.getElementById("quizQuestionsContainer");
+      const filtered = currentQuizFilter === "all"
+        ? quizQuestions
+        : quizQuestions.filter(q => q.part === currentQuizFilter);
+
+      container.innerHTML = filtered.map((q) => {
+        const answered = userAnswers[q.id];
+        const isAnswered = answered !== undefined;
+
+        const optionsHtml = q.options.map((opt, idx) => {
+          let stateClass = "";
+          if (isAnswered) {
+            if (idx === q.correct) {
+              stateClass = "correct font-bold";
+            } else if (idx === answered && answered !== q.correct) {
+              stateClass = "wrong";
+            }
+          }
+          return `
+            <button
+              type="button"
+              data-qid="${q.id}"
+              data-opt="${idx}"
+              ${isAnswered ? "disabled" : ""}
+              class="quiz-option w-full text-left p-4 rounded-xl flex items-center justify-between gap-3 ${stateClass}"
+              dir="ltr"
+            >
+              <span class="font-mono text-sm sm:text-base">${opt}</span>
+              ${isAnswered && idx === q.correct ? '<span class="text-emerald-600 font-bold text-lg">✓</span>' : ''}
+              ${isAnswered && idx === answered && answered !== q.correct ? '<span class="text-rose-600 font-bold text-lg">✗</span>' : ''}
+            </button>
+          `;
+        }).join("");
+
+        const feedbackHtml = isAnswered ? `
+          <div class="mt-4 p-4 rounded-xl ${answered === q.correct ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-rose-500/10 border border-rose-500/30'}">
+            <div class="font-heading font-bold text-base mb-1 ${answered === q.correct ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}">
+              ${answered === q.correct ? '✅ إجابة صحيحة ممتازة!' : '❌ إجابة غير صحيحة — راجع التفسير:'}
+            </div>
+            <p class="text-sm sm:text-base">${q.explanation}</p>
+          </div>
+        ` : "";
+
+        return `
+          <article class="reading-card !mb-0">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <span class="rule-badge">${q.partLabel}</span>
+              <span class="text-xs font-mono text-[var(--text-muted)]" dir="ltr">Question #${q.id}</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold mb-4 text-left font-sans" dir="ltr">${q.question}</h3>
+            <div class="space-y-3">
+              ${optionsHtml}
+            </div>
+            ${feedbackHtml}
+          </article>
+        `;
+      }).join("");
+
+      // ربط أحداث أزرار الاختيارات
+      container.querySelectorAll(".quiz-option").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const qid = parseInt(btn.getAttribute("data-qid"), 10);
+          const optIdx = parseInt(btn.getAttribute("data-opt"), 10);
+          userAnswers[qid] = optIdx;
+          updateScoreDisplay();
+          renderQuiz();
+        });
+      });
+    }
+
+    function updateScoreDisplay() {
+      let score = 0;
+      quizQuestions.forEach(q => {
+        if (userAnswers[q.id] === q.correct) {
+          score++;
+        }
+      });
+      const scoreEl = document.getElementById("quizScoreDisplay");
+      if (scoreEl) {
+        scoreEl.textContent = `${score} / ${quizQuestions.length}`;
+      }
+    }
+
+    // التحكم في حجم الخط وتباعد السطور
+    function applyReadingTypography() {
+      const baseRem = 1.15 * (fontScale / 100);
+      document.documentElement.style.setProperty("--reading-size", `${baseRem.toFixed(2)}rem`);
+      const label = document.getElementById("fontSizeLabel");
+      if (label) label.textContent = `${fontScale}%`;
+    }
+
+    document.getElementById("btnFontInc").addEventListener("click", () => {
+      if (fontScale < 140) {
+        fontScale += 10;
+        applyReadingTypography();
+      }
+    });
+
+    document.getElementById("btnFontDec").addEventListener("click", () => {
+      if (fontScale > 80) {
+        fontScale -= 10;
+        applyReadingTypography();
+      }
+    });
+
+    document.getElementById("btnLineSpacing").addEventListener("click", (e) => {
+      const btn = e.currentTarget;
+      if (lineSpacingMode === "relaxed") {
+        lineSpacingMode = "spacious";
+        document.documentElement.style.setProperty("--reading-lh", "2.5");
+        btn.textContent = "تباعد: واسع جداً";
+      } else if (lineSpacingMode === "spacious") {
+        lineSpacingMode = "normal";
+        document.documentElement.style.setProperty("--reading-lh", "1.85");
+        btn.textContent = "تباعد: قياسي";
+      } else {
+        lineSpacingMode = "relaxed";
+        document.documentElement.style.setProperty("--reading-lh", "2.15");
+        btn.textContent = "تباعد: مريح جداً";
+      }
+    });
+
+    // التحكم في الثيمات (ورقي دافئ / أبيض / ليلي)
+    document.getElementById("btnThemeSepia").addEventListener("click", () => {
+      document.body.classList.remove("theme-white", "theme-dark");
+    });
+    document.getElementById("btnThemeWhite").addEventListener("click", () => {
+      document.body.classList.remove("theme-dark");
+      document.body.classList.add("theme-white");
+    });
+    document.getElementById("btnThemeDark").addEventListener("click", () => {
+      document.body.classList.remove("theme-white");
+      document.body.classList.add("theme-dark");
+    });
+
+    // التنقل بين الفصول (القراءة المتواصلة أو فصل محدد)
+    document.querySelectorAll(".chapter-pill").forEach(pill => {
+      pill.addEventListener("click", () => {
+        document.querySelectorAll(".chapter-pill").forEach(p => p.classList.remove("active"));
+        pill.classList.add("active");
+
+        const target = pill.getAttribute("data-target");
+        const sections = {
+          part1: document.getElementById("section-part1"),
+          part2: document.getElementById("section-part2"),
+          part3: document.getElementById("section-part3"),
+          part4: document.getElementById("section-part4"),
+          summary: document.getElementById("section-summary"),
+          quiz: document.getElementById("section-quiz")
+        };
+
+        if (target === "all") {
+          Object.values(sections).forEach(sec => sec.classList.remove("hidden"));
+        } else {
+          Object.entries(sections).forEach(([key, sec]) => {
+            if (key === target) {
+              sec.classList.remove("hidden");
+            } else {
+              sec.classList.add("hidden");
+            }
+          });
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+
+    
+    // إخفاء الهيدر تلقائياً عند التمرير لأسفل وإظهاره عند الصعود
+    let lastScrollY = window.scrollY;
+    window.addEventListener("scroll", () => {
+      const currentY = window.scrollY;
+      const headerEl = document.getElementById("mainReadingHeader");
+      if (headerEl) {
+        if (currentY > 120 && currentY > lastScrollY + 6) {
+          headerEl.classList.add("nav-hidden");
+        } else if (currentY < lastScrollY - 6 || currentY <= 80) {
+          headerEl.classList.remove("nav-hidden");
+        }
+      }
+      lastScrollY = currentY;
+    });
+
+    // فلاتر الكويز وإعادة الكويز
+    document.querySelectorAll(".quiz-filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".quiz-filter-btn").forEach(b => {
+          b.classList.remove("bg-blue-600", "text-white", "font-bold");
+          b.classList.add("bg-[var(--bg-card)]");
+        });
+        btn.classList.add("bg-blue-600", "text-white", "font-bold");
+        btn.classList.remove("bg-[var(--bg-card)]");
+        currentQuizFilter = btn.getAttribute("data-quiz-filter");
+        renderQuiz();
+      });
+    });
+
+    document.getElementById("btnResetQuiz").addEventListener("click", () => {
+      userAnswers = {};
+      updateScoreDisplay();
+      renderQuiz();
+    });
+
+    // شريط تقدم القراءة العلوي
+    window.addEventListener("scroll", () => {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrolled = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+      const bar = document.getElementById("readingProgressBar");
+      if (bar) bar.style.width = `${Math.min(100, Math.max(0, scrolled))}%`;
+    });
+
+    // التهيئة الأولية
+    renderQuiz();
+  </script>
+</body>
+</html>

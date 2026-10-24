@@ -1,0 +1,12 @@
+node_modules
+test-results
+coverage
+.git
+.github
+tests
+tools
+design-exploration
+docs
+*.log
+*.tmp
+.vercel

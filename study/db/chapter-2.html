@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>موسوعة قواعد البيانات — الفصل الثاني: معمارية ومفاهيم نظم قواعد البيانات (وضع القراءة المريح)</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            tajawal: ['Tajawal', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --reader-font-size: 1.15rem;
+      --reader-line-height: 2.1;
+      --reader-letter-spacing: 0.01em;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    h1, h2, h3, h4, .heading-font {
+      font-family: 'Cairo', sans-serif;
+    }
+
+    /* Reading Themes */
+    body.theme-dark {
+      background-color: #0b1120;
+      color: #e2e8f0;
+    }
+    body.theme-sepia {
+      background-color: #f6f0e0;
+      color: #3d3122;
+    }
+    body.theme-light {
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+
+    .reading-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .compact-header {
+      transition: transform 0.28s ease, box-shadow 0.2s ease;
+    }
+    .compact-header.nav-hidden {
+      transform: translateY(-100%);
+    }
+
+    .reader-text {
+      font-size: var(--reader-font-size);
+      line-height: var(--reader-line-height);
+      letter-spacing: var(--reader-letter-spacing);
+    }
+
+    /* Card adaptation across themes */
+    body.theme-dark .reader-card {
+      background-color: #151f32;
+      border-color: #263554;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+    body.theme-sepia .reader-card {
+      background-color: #fdf9ee;
+      border-color: #e3d5b8;
+      box-shadow: 0 8px 25px -8px rgba(92, 72, 42, 0.12);
+    }
+    body.theme-light .reader-card {
+      background-color: #ffffff;
+      border-color: #e2e8f0;
+      box-shadow: 0 8px 25px -8px rgba(15, 23, 42, 0.07);
+    }
+
+    body.theme-dark .sub-box {
+      background-color: #0f172a;
+      border-color: #1e293b;
+    }
+    body.theme-sepia .sub-box {
+      background-color: #f2e9d2;
+      border-color: #decb9e;
+    }
+    body.theme-light .sub-box {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    body.theme-dark .slide-quote {
+      background-color: #111c2d;
+      border-right-color: #38bdf8;
+      color: #bae6fd;
+    }
+    body.theme-sepia .slide-quote {
+      background-color: #efe5cc;
+      border-right-color: #b45309;
+      color: #451a03;
+    }
+    body.theme-light .slide-quote {
+      background-color: #f0f9ff;
+      border-right-color: #0284c7;
+      color: #0c4a6e;
+    }
+
+    body.theme-dark .balady-box {
+      background-color: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    body.theme-sepia .balady-box {
+      background-color: rgba(21, 128, 61, 0.08);
+      border-color: rgba(21, 128, 61, 0.25);
+    }
+    body.theme-light .balady-box {
+      background-color: #ecfdf5;
+      border-color: #a7f3d0;
+    }
+
+    body.theme-dark .header-bar {
+      background-color: rgba(15, 23, 42, 0.92);
+      border-bottom-color: #1e293b;
+    }
+    body.theme-sepia .header-bar {
+      background-color: rgba(246, 240, 224, 0.94);
+      border-bottom-color: #decb9e;
+    }
+    body.theme-light .header-bar {
+      background-color: rgba(255, 255, 255, 0.94);
+      border-bottom-color: #e2e8f0;
+    }
+
+    .en-badge {
+      direction: ltr;
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.15rem 0.55rem;
+      border-radius: 0.375rem;
+      font-size: 0.85em;
+      font-weight: 600;
+      margin: 0 0.2rem;
+    }
+    body.theme-dark .en-badge {
+      background-color: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    body.theme-sepia .en-badge {
+      background-color: rgba(180, 83, 9, 0.12);
+      color: #92400e;
+      border: 1px solid rgba(180, 83, 9, 0.28);
+    }
+    body.theme-light .en-badge {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    /* ASCII Diagrams & Tables */
+    .ascii-diagram {
+      direction: ltr;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.5;
+      background-color: #0f172a;
+      color: #38bdf8;
+      padding: 1.25rem 1.5rem;
+      border-radius: 1rem;
+      overflow-x: auto;
+      border: 1px solid #334155;
+    }
+
+    .schema-table th {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #334155;
+      text-align: center;
+    }
+    .schema-table td {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #334155;
+      text-align: center;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.5);
+      border-radius: 9999px;
+    }
+
+    .cipher-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cipher-card:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="theme-dark min-h-screen pb-24 selection:bg-emerald-500 selection:text-white">
+
+  <!-- Top Reading Progress Bar -->
+  <div class="fixed top-0 left-0 right-0 h-1.5 z-50 bg-slate-700/30">
+    <div id="readingProgress" class="h-full bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 transition-all duration-150" style="width: 0%"></div>
+  </div>
+
+  <!-- Sticky Compact Reading Mode Control Header -->
+  <header id="mainReadingHeader" class="header-bar compact-header sticky top-0 z-40 backdrop-blur-md border-b transition-all">
+    <div class="reading-container px-3 py-1.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="../../subject.html?id=database-systems" title="الرجوع إلى صفحة مقرر أنظمة قواعد البيانات" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 text-white hover:bg-emerald-600 font-bold text-xs shadow-sm transition">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span class="hidden sm:inline">الرجوع للمقرر</span>
+        </a>
+        <a href="index.html" title="فهرس شروحات قواعد البيانات" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-slate-500/30 bg-slate-500/10 text-xs font-bold shadow-sm transition hover:bg-slate-500/20">
+          <span>📚 الفهرس</span>
+        </a>
+        <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-heading font-bold text-xs shadow-sm shrink-0">Ch2</span>
+        <div>
+          <h1 class="font-heading font-bold text-xs sm:text-sm leading-tight truncate">الفصل الثاني: معمارية ومفاهيم النظم (Chapter 2)</h1>
+        </div>
+      </div>
+
+      <!-- Reading Controls Toolbar -->
+      <div class="flex items-center flex-wrap gap-1.5 sm:gap-2">
+        <a href="chapter-1.html" title="الانتقال للفصل السابق: أساسيات النظم والمستخدمين" class="px-2.5 py-1 rounded-lg border border-emerald-500/40 bg-emerald-500/15 text-emerald-400 text-xs font-heading font-bold hover:bg-emerald-500/25 transition inline-flex items-center gap-1">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span>Ch1: أساسيات النظم</span>
+        </a>
+
+        <!-- Font Size Adjuster -->
+        <div class="flex items-center rounded-lg border border-slate-500/30 bg-slate-500/10 p-0.5">
+          <button id="btnFontDec" type="button" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-emerald-500/20 transition" title="تصغير الخط">A-</button>
+          <span id="fontSizeLabel" class="px-1.5 text-[11px] font-semibold opacity-80">100%</span>
+          <button id="btnFontInc" type="button" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-emerald-500/20 transition" title="تكبير الخط">A+</button>
+        </div>
+
+        <!-- Line Spacing Adjuster -->
+        <button id="btnSpacingToggle" type="button" class="px-2 py-1 rounded-lg border border-slate-500/30 bg-slate-500/10 text-[11px] font-heading font-bold hover:bg-emerald-500/20 transition">
+          تباعد: مريح جداً
+        </button>
+
+        <!-- Themes: Sepia, White, Dark -->
+        <div class="flex items-center gap-1 rounded-lg border border-slate-500/30 bg-slate-500/10 p-1">
+          <button id="btnThemeSepia" type="button" title="ورقي دافئ لراحة العين" class="w-4 h-4 rounded-full bg-[#fdfaf5] border-2 border-amber-600 shadow-sm"></button>
+          <button id="btnThemeLight" type="button" title="أبيض نقي" class="w-4 h-4 rounded-full bg-white border border-slate-300"></button>
+          <button id="btnThemeDark" type="button" title="ليلي مريح" class="w-4 h-4 rounded-full bg-slate-900 border border-slate-600"></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main id="mainContainer" class="reading-container px-4 py-8 space-y-16 reader-text">
+
+    <!-- Hero Overview Card -->
+    <section class="reader-card p-6 sm:p-10 rounded-3xl border border-emerald-500/30 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+      
+      <div class="space-y-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 heading-font">الفصل الثاني • المفاهيم والمعمارية</span>
+          <span class="px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 font-mono">Slides 1 - 33 • د. محمد ماهر</span>
+        </div>
+
+        <h1 class="text-2xl sm:text-4xl font-black heading-font leading-tight">
+          معمارية ومفاهيم نظم قواعد البيانات
+        </h1>
+        <p class="text-sm sm:text-base font-mono text-emerald-400 font-semibold" dir="ltr">
+          Database System Concepts and Architecture
+        </p>
+
+        <p class="text-sm sm:text-base leading-relaxed opacity-90">
+          دليل المذاكرة الفائق: تفكيك تجريد البيانات (<span class="en-badge">Data Abstraction</span>)، تصنيفات نماذج البيانات الثلاثة، الفرق الحاسم بين المخطط (<span class="en-badge">Schema</span>) والحالة (<span class="en-badge">State</span>)، معمارية المستويات الثلاثة (<span class="en-badge">Three-Schema Architecture</span>)، استقلالية البيانات المنطقية والفيزيائية، ولغات ومعماريات الـ <span class="en-badge">Client/Server</span> مع رسومات معمارية تفاعلية وكويز امتحانات فوري.
+        </p>
+
+        <!-- Topic Chips -->
+        <div class="flex flex-wrap gap-2 pt-2">
+          <span class="px-3 py-1 rounded-xl sub-box border text-xs font-bold">1. تجريد ونماذج البيانات</span>
+          <span class="px-3 py-1 rounded-xl sub-box border text-xs font-bold">2. المخطط والحالة والـ Snapshot</span>
+          <span class="px-3 py-1 rounded-xl sub-box border text-xs font-bold">3. معمارية المستويات الـ 3 (Three-Schema)</span>
+          <span class="px-3 py-1 rounded-xl sub-box border text-xs font-bold">4. استقلالية البيانات (Data Independence)</span>
+          <span class="px-3 py-1 rounded-xl sub-box border text-xs font-bold">5. معماريات السيرفرات (2-Tier &amp; 3-Tier)</span>
+          <span class="px-3 py-1 rounded-xl sub-box border text-xs font-bold">6. كويز شامل وتريكات الامتحان</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         البلوك الأول: نماذج البيانات، تجريد البيانات، والتصنيفات الثلاثة
+    ==================================================================== -->
+    <article id="block-1" class="reader-card p-6 sm:p-9 rounded-3xl border space-y-8">
+      
+      <div class="border-b border-slate-500/20 pb-4">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">المحور الأول • سلايدات 1 إلى 10</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font">
+          1. تجريد البيانات ونماذج البيانات (Data Abstraction &amp; Data Models)
+        </h2>
+      </div>
+
+      <!-- 1.1 Data Abstraction -->
+      <div class="space-y-4">
+        <h3 class="text-xl font-bold heading-font text-emerald-400 flex items-center gap-2">
+          <span>1.1 تجريد البيانات (Data Abstraction)</span>
+        </h3>
+
+        <div class="slide-quote p-4 rounded-2xl border-r-4 text-sm font-medium" dir="ltr">
+          <strong class="block text-sky-400 mb-1">Slide 3 Official Academic Text:</strong>
+          • Suppression of details of data organization and storage.<br>
+          • Highlighting of the essential features for an improved understanding of data.
+        </div>
+
+        <div class="balady-box p-5 rounded-2xl border text-sm sm:text-base leading-relaxed space-y-2">
+          <h4 class="font-bold text-emerald-300 text-base flex items-center gap-2">
+            <span>💡 الفكرة بالبلدي الفصيح:</span>
+          </h4>
+          <p>
+            الكمبيوتر في الأصل بيتعامل مع أصفار ووحايد، بلوكات ومسارات مغناطيسية على القرص الصلب (<span class="en-badge">Hard Disk</span>). لو كل مبرمج أو مستخدم شال هم مكان البايت فين ورقم القطاع كام، مستحيل حد يقدر يبني أي برنامج!
+          </p>
+          <p>
+            عشان كده نظام الـ <span class="en-badge">DBMS</span> بيعمل حاجتين عبقريتين:
+          </p>
+          <ul class="list-disc list-inside pr-2 space-y-1">
+            <li><strong>كبت وإخفاء التفاصيل (<span class="en-badge">Suppression of details</span>):</strong> يخفي تماماً طريقة التخزين المعقدة في الـ Hard Drive.</li>
+            <li><strong>إبراز الخصائص الجوهرية (<span class="en-badge">Highlighting essential features</span>):</strong> يظهرلك بس اللي يهمك كإنسان: "فيه جدول اسمه طالب، فيه عمود اسم ورقم ومعدل".</li>
+            <li><strong>النتيجة النهائية:</strong> فهم أفضل وأسهل للبيانات بمراحل (<span class="en-badge">Improved understanding</span>).</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 1.2 Data Model Concept & Operations -->
+      <div class="space-y-4 pt-4 border-t border-slate-500/20">
+        <h3 class="text-xl font-bold heading-font text-emerald-400 flex items-center gap-2">
+          <span>1.2 ما هو نموذج البيانات؟ (What is a Data Model?)</span>
+        </h3>
+
+        <div class="slide-quote p-4 rounded-2xl border-r-4 text-sm font-medium" dir="ltr">
+          <strong class="block text-sky-400 mb-1">Slide 4 Official Academic Text:</strong>
+          • Collection of concepts that describe the structure of a database.<br>
+          • Provides means to achieve data abstraction.<br>
+          • Basic operations: Specify retrievals and updates; the dynamic aspect or behavior of a database application.<br>
+          • Example of user-defined operation: <code>COMPUTE_GPA</code> applied to a <code>STUDENT</code> object.
+        </div>
+
+        <div class="sub-box p-5 rounded-2xl border text-sm sm:text-base leading-relaxed space-y-3">
+          <p>
+            الـ <span class="en-badge">Data Model</span> هو الكتالوج والأداة اللي بنحقق بيها تجريد البيانات. وهو عبارة عن مجموعة مفاهيم بتوصف <strong>هيكل قاعدة البيانات (Structure)</strong> عبر 3 مكونات:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+              <span class="font-bold text-emerald-300 block mb-1">1. أنواع البيانات</span>
+              <span class="text-xs opacity-80">Data Types (أرقام، نصوص، تواريخ، ملفات).</span>
+            </div>
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+              <span class="font-bold text-cyan-300 block mb-1">2. العلاقات</span>
+              <span class="text-xs opacity-80">Relationships (الروابط بين الكيانات والجداول).</span>
+            </div>
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+              <span class="font-bold text-amber-300 block mb-1">3. القيود والشروط</span>
+              <span class="text-xs opacity-80">Constraints (الـ Primary Key، عدم التكرار، والمدى).</span>
+            </div>
+          </div>
+          <p class="pt-2 text-xs sm:text-sm text-slate-300">
+            📌 <strong>تريكة السلايد:</strong> نموذج البيانات مش مجرد هيكل ثابت ميت! هو بيحدد كمان <strong>الجانب الديناميكي أو السلوك (<span class="en-badge">Dynamic aspect / behavior</span>)</strong> عن طريق تحديد عمليات الاسترجاع والتحديث وعمليات خاصة يحددها المصمم، ومثال السلايد الرسمي: دالة <code class="font-mono text-emerald-400">COMPUTE_GPA</code> التي تحسب المعدل لكائن الطالب.
+          </p>
+        </div>
+      </div>
+
+      <!-- 1.3 Data Models Categories -->
+      <div class="space-y-4 pt-4 border-t border-slate-500/20">
+        <h3 class="text-xl font-bold heading-font text-emerald-400 flex items-center gap-2">
+          <span>1.3 الفئات الثلاث لنماذج البيانات (Categories of Data Models)</span>
+        </h3>
+        <p class="text-sm opacity-90">السلايدات 5 إلى 10 بتقسم نماذج البيانات لـ 3 مستويات حسب قربها من فهم الإنسان أو قربها من عتاد التخزين:</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <!-- Category 1 -->
+          <div class="sub-box p-5 rounded-2xl border border-emerald-500/30 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-emerald-400 font-mono">الفئة 1 • الأقرب للإنسان</span>
+                <span class="text-lg">🧠</span>
+              </div>
+              <h4 class="font-black text-base text-white">النموذج المفاهيمي عالي المستوى</h4>
+              <p class="text-xs font-mono text-emerald-300 mb-2" dir="ltr">High-level or Conceptual</p>
+              <p class="text-xs leading-relaxed opacity-80">
+                أقرب ما يكون لطريقة إدراك وفهم البشر للبيانات في الواقع (<span class="en-badge">Close to user perception</span>).
+              </p>
+              <div class="mt-3 pt-2 border-t border-white/10 text-xs space-y-1">
+                <p><strong>مفاهيمه الثلاثة (سلايد 6):</strong></p>
+                <p>• <strong>Entity (الكيان):</strong> شيء واقعي (طالب، موظف).</p>
+                <p>• <strong>Attribute (الخاصية):</strong> صفة بتوصف الكيان (الاسم، العمر).</p>
+                <p>• <strong>Relationship (العلاقة):</strong> رابطة بين الكيانات (الطالب يسجل في كورس).</p>
+              </div>
+            </div>
+            <span class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 p-1.5 rounded-lg border border-emerald-500/20 block text-center">
+              مثاله الرسمي: نموذج ER Model
+            </span>
+          </div>
+
+          <!-- Category 2 -->
+          <div class="sub-box p-5 rounded-2xl border border-cyan-500/30 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-cyan-400 font-mono">الفئة 2 • حلقة الوصل</span>
+                <span class="text-lg">⚖️</span>
+              </div>
+              <h4 class="font-black text-base text-white">النموذج التمثيلي / التطبيقي</h4>
+              <p class="text-xs font-mono text-cyan-300 mb-2" dir="ltr">Representational / Implementation</p>
+              <p class="text-xs leading-relaxed opacity-80">
+                حلقة وصل: سهل على المستخدم يفهمه، وفي نفس الوقت متطابق مع طريقة تنظيم الملفات في الكمبيوتر.
+              </p>
+              <div class="mt-3 pt-2 border-t border-white/10 text-xs space-y-1">
+                <p><strong>أهم نوعين (سلايد 7 و 8):</strong></p>
+                <p>• <strong>Relational Data Model:</strong> الأكثر انتشاراً في الـ DBMS التجاري، ويمثل البيانات في جداول وسجلات، لذا يسمى <span class="en-badge">Record-based</span>.</p>
+                <p>• <strong>Object Data Model:</strong> عائلة حديثة أقرب للـ Conceptual وللـ OOP.</p>
+              </div>
+            </div>
+            <span class="text-[11px] font-bold text-cyan-400 bg-cyan-500/10 p-1.5 rounded-lg border border-cyan-500/20 block text-center">
+              مثاله الرسمي: Relational Model (SQL)
+            </span>
+          </div>
+
+          <!-- Category 3 -->
+          <div class="sub-box p-5 rounded-2xl border border-amber-500/30 flex flex-col justify-between space-y-3">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-amber-400 font-mono">الفئة 3 • الأقرب للهاردوير</span>
+                <span class="text-lg">💾</span>
+              </div>
+              <h4 class="font-black text-base text-white">النموذج الفيزيائي منخفض المستوى</h4>
+              <p class="text-xs font-mono text-amber-300 mb-2" dir="ltr">Low-level or Physical</p>
+              <p class="text-xs leading-relaxed opacity-80">
+                بيوصف التفاصيل الدقيقة لكيفية حفظ وتخزين الملفات على الأقراص الصلبة (شكل السجلات، ترتيبها، ومسارات الوصول).
+              </p>
+              <div class="mt-3 pt-2 border-t border-white/10 text-xs space-y-1">
+                <p><strong>أهم مفهومين (سلايد 9):</strong></p>
+                <p>• <strong>Access Path (مسار الوصول):</strong> هيكل برمجي يجعل البحث عن السجلات فائق السرعة والكفاءة.</p>
+                <p>• <strong>Index (الفهرس):</strong> مثال مباشر لمسار الوصول يتيح البحث بمفتاح زي فهرس الكتاب.</p>
+              </div>
+            </div>
+            <span class="text-[11px] font-bold text-amber-400 bg-amber-500/10 p-1.5 rounded-lg border border-amber-500/20 block text-center">
+              مثاله الرسمي: مسارات الوصول والفهارس
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+    </article>
+
+    <!-- ===================================================================
+         البلوك الثاني: المخطط والحالة واللقطة (Schema vs State)
+    ==================================================================== -->
+    <article id="block-2" class="reader-card p-6 sm:p-9 rounded-3xl border space-y-8">
+      
+      <div class="border-b border-slate-500/20 pb-4">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">المحور الثاني • سلايدات 11 إلى 17</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font">
+          2. المخطط، الحالة، واللقطة (Schemas, Instances, and Database State)
+        </h2>
+      </div>
+
+      <div class="space-y-4">
+        <p class="text-sm sm:text-base leading-relaxed">
+          ده قلب أسئلة الامتحانات! الدكتور في السلايد بيفرق بدقة رياضية شديدة بين <strong>الهيكل النظري الثابت</strong> وبين <strong>البيانات الحية المتغيرة كل ثانية</strong>:
+        </p>
+
+        <!-- Definition Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          
+          <!-- Schema (Intension) -->
+          <div class="sub-box p-5 rounded-2xl border border-sky-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-500/20 text-sky-400">الهيكل النظري</span>
+              <span class="font-mono text-xs text-sky-300" dir="ltr">Intension</span>
+            </div>
+            <h3 class="text-lg font-black text-white">مخطط قاعدة البيانات (Database Schema)</h3>
+            
+            <div class="slide-quote p-3 rounded-xl border-r-4 text-xs font-medium" dir="ltr">
+              • <strong>Description</strong> of a database specified during database design.<br>
+              • Is <strong>not expected to change frequently</strong>.<br>
+              • Also called <strong>Intension</strong>.
+            </div>
+
+            <ul class="text-xs space-y-1.5 opacity-90 pr-2 list-disc list-inside">
+              <li><strong>Schema Diagram (رسمة المخطط):</strong> رسمة بتعرض هيكل الجداول وأسمائها وحقولها، لكن <strong>لا تعرض أي سجلات فعلية</strong> نهائياً!</li>
+              <li><strong>Schema Construct (عنصر المخطط):</strong> كل كائن أو جدول داخل المخطط زي <code class="font-mono text-emerald-300">STUDENT</code> أو <code class="font-mono text-emerald-300">COURSE</code>.</li>
+              <li><strong>Schema Evolution (تطور المخطط):</strong> التعديلات النادرة جداً اللي بتتعمل لما متطلبات السيستم تتغير (زي إضافة عمود جديد).</li>
+            </ul>
+          </div>
+
+          <!-- State (Extension) -->
+          <div class="sub-box p-5 rounded-2xl border border-emerald-500/30 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400">البيانات الحية</span>
+              <span class="font-mono text-xs text-emerald-300" dir="ltr">Extension</span>
+            </div>
+            <h3 class="text-lg font-black text-white">حالة قاعدة البيانات (Database State / Snapshot)</h3>
+            
+            <div class="slide-quote p-3 rounded-xl border-r-4 text-xs font-medium" dir="ltr">
+              • Refers to the <strong>content</strong> of a database at a <strong>moment in time</strong>.<br>
+              • The <strong>actual data</strong> stored in a database at a particular moment.<br>
+              • Every time an update is applied, we get <strong>another database state</strong>.<br>
+              • Also called <strong>Extension</strong> or <strong>Instance</strong> or <strong>Snapshot</strong>.
+            </div>
+
+            <ul class="text-xs space-y-1.5 opacity-90 pr-2 list-disc list-inside">
+              <li><strong>Initial State (الحالة المبدئية):</strong> أول ما بنبني الداتابيز ونحمل فيها أول دفعة داتا.</li>
+              <li><strong>Valid State (الحالة الصالحة):</strong> حالة بتحترم كل القيود والشروط والـ DBMS بيضمن بقاء الداتابيز صالحة دائماً.</li>
+              <li>الـ State بتتغير مع كل عملية إضافة أو حذف أو تعديل تجري على أي جدول!</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- The Distinction Table (Slide 15) -->
+        <div class="pt-4">
+          <h4 class="font-bold text-base text-white mb-2">📌 الجدول الذهبي للمقارنة الحاسمة (من سلايد 15):</h4>
+          <div class="overflow-x-auto rounded-2xl border border-slate-500/20">
+            <table class="w-full text-xs sm:text-sm text-right">
+              <thead class="bg-slate-900 text-white font-heading">
+                <tr>
+                  <th class="p-3 border-b border-slate-700">وجه المقارنة</th>
+                  <th class="p-3 border-b border-slate-700 text-sky-400 font-mono" dir="ltr">Database Schema (المخطط)</th>
+                  <th class="p-3 border-b border-slate-700 text-emerald-400 font-mono" dir="ltr">Database State (الحالة)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-700/50">
+                <tr class="hover:bg-white/5">
+                  <td class="p-3 font-bold">المعنى الجوهري</td>
+                  <td class="p-3">وصف وتصميم وهيكل البيانات (Description)</td>
+                  <td class="p-3">المحتوى والبيانات الفعلية في لحظة معينة (Content)</td>
+                </tr>
+                <tr class="hover:bg-white/5">
+                  <td class="p-3 font-bold">معدل التغيير</td>
+                  <td class="p-3 text-amber-300 font-semibold">يتغير نادراً جداً (Changes very infrequently)</td>
+                  <td class="p-3 text-emerald-300 font-semibold">يتغير باستمرار مع كل تحديث (Changes with every update)</td>
+                </tr>
+                <tr class="hover:bg-white/5">
+                  <td class="p-3 font-bold">الاسم العلمي البديل</td>
+                  <td class="p-3 font-mono font-bold text-sky-400">Intension</td>
+                  <td class="p-3 font-mono font-bold text-emerald-400">Extension (أو Snapshot أو Instance)</td>
+                </tr>
+                <tr class="hover:bg-white/5">
+                  <td class="p-3 font-bold">وقت التحديد</td>
+                  <td class="p-3">أثناء مرحلة التصميم وبناء النظام (Design Phase)</td>
+                  <td class="p-3">أثناء تشغيل النظام الفعلي على مدار اليوم (Runtime)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Schema vs State Visual Example (Slides 12 & 16) -->
+        <div class="pt-4 space-y-3">
+          <h4 class="font-bold text-base text-white">📊 مثال السلايدات الرسمي المقارن (جامعة UNIVERSITY):</h4>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Schema Diagram Box -->
+            <div class="sub-box p-4 rounded-xl border space-y-2">
+              <span class="text-xs font-bold text-sky-400 block font-mono">1. Schema Diagram (سلايد 12: هيكل فقط بلا داتا)</span>
+              <div class="space-y-2">
+                <div class="p-2 rounded bg-slate-900 border border-slate-700 text-center font-mono text-xs">
+                  <strong class="text-amber-300 block">STUDENT</strong>
+                  <span class="underline">Name</span> | Student_number | Class | Major
+                </div>
+                <div class="p-2 rounded bg-slate-900 border border-slate-700 text-center font-mono text-xs">
+                  <strong class="text-amber-300 block">COURSE</strong>
+                  Course_name | <span class="underline">Course_number</span> | Credit_hours | Department
+                </div>
+              </div>
+              <p class="text-[11px] opacity-75">مفيش أي طالب حقيقي هنا؛ مجرد حقول وأعمدة ومفاتيح أساسية مسطرة.</p>
+            </div>
+
+            <!-- Database State Box -->
+            <div class="sub-box p-4 rounded-xl border space-y-2">
+              <span class="text-xs font-bold text-emerald-400 block font-mono">2. Database State (سلايد 16: السجلات الحية)</span>
+              <div class="overflow-x-auto">
+                <table class="w-full schema-table text-xs">
+                  <thead>
+                    <tr><th>Name</th><th>Student_num</th><th>Class</th><th>Major</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Smith</td><td>17</td><td>1</td><td>CS</td></tr>
+                    <tr><td>Brown</td><td>8</td><td>2</td><td>CS</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="text-[11px] opacity-75">دي لقطة حية (Snapshot) للسجلات المسجلة في رامات وهارد السيرفر في اللحظة دي.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </article>
+
+    <!-- ===================================================================
+         البلوك الثالث: معمارية المستويات الثلاثة واستقلالية البيانات
+    ==================================================================== -->
+    <article id="block-3" class="reader-card p-6 sm:p-9 rounded-3xl border space-y-8">
+      
+      <div class="border-b border-slate-500/20 pb-4">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">المحور الثالث • سلايدات 18 إلى 23</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font">
+          3. معمارية المستويات الثلاثة واستقلالية البيانات (Three-Schema &amp; Data Independence)
+        </h2>
+      </div>
+
+      <!-- 3.1 The Goal -->
+      <div class="space-y-4">
+        <h3 class="text-xl font-bold heading-font text-emerald-400">
+          3.1 الهدف الرئيسي من معمارية المستويات الثلاثة (The Goal - سلايد 18)
+        </h3>
+
+        <div class="slide-quote p-4 rounded-2xl border-r-4 text-sm font-medium" dir="ltr">
+          <strong class="block text-sky-400 mb-1">Slide 18 Official Academic Goal:</strong>
+          The goal of the three-schema architecture is to <strong>separate the user applications from the physical database</strong>.
+        </div>
+
+        <p class="text-sm sm:text-base leading-relaxed">
+          الهدف الأسمى للمعمارية هو <strong>فصل برامج وشاشات المستخدمين تماماً عن التخزين الفيزيائي الفعلي على الهارد ديسك</strong>؛ عشان لو غيرنا مكان تخزين الملفات أو ضفنا فهارس جديدة، البرامج متتعطلش ولا تتأثر!
+        </p>
+      </div>
+
+      <!-- 3.2 The 3 Levels -->
+      <div class="space-y-4 pt-4 border-t border-slate-500/20">
+        <h3 class="text-xl font-bold heading-font text-emerald-400">
+          3.2 المستويات الثلاثة بالتفصيل الحرفي (سلايد 18 إلى 20)
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <!-- External Level -->
+          <div class="sub-box p-5 rounded-2xl border border-sky-500/30 space-y-2">
+            <span class="px-2 py-0.5 rounded text-xs font-bold bg-sky-500/20 text-sky-400 font-mono">1. المستوى الخارجي</span>
+            <h4 class="font-bold text-white text-base">External or View Level</h4>
+            <p class="text-xs leading-relaxed opacity-85">
+              • بيوصف <strong>جزء فقط من الداتابيز</strong> يهم مجموعة محددة من المستخدمين (<span class="en-badge">Part of database</span>).<br>
+              • <strong>يخفي باقي الداتابيز</strong> عن تلك الفئة.<br>
+              • <em>مثال:</em> شاشة موظف الخزينة يظهرله جدول المصاريف فقط ويحجب عنه درجات الطلاب ومرتبات الدكاترة.
+            </p>
+          </div>
+
+          <!-- Conceptual Level -->
+          <div class="sub-box p-5 rounded-2xl border border-emerald-500/30 space-y-2">
+            <span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 font-mono">2. المستوى المفاهيمي</span>
+            <h4 class="font-bold text-white text-base">Conceptual Level</h4>
+            <p class="text-xs leading-relaxed opacity-85">
+              • بيوصف هيكل <strong>الداتابيز كلها بالكامل</strong> لكل المستخدمين (<span class="en-badge">Structure of whole database</span>).<br>
+              • <strong>يخفي تماماً</strong> تفاصيل التخزين والمسارات الفيزيائية.<br>
+              • يركز على الكيانات والأنواع والعلاقات والقيود وعمليات المستخدمين (<span class="en-badge">Entities, Constraints</span>).
+            </p>
+          </div>
+
+          <!-- Internal Level -->
+          <div class="sub-box p-5 rounded-2xl border border-amber-500/30 space-y-2">
+            <span class="px-2 py-0.5 rounded text-xs font-bold bg-amber-500/20 text-amber-400 font-mono">3. المستوى الداخلي</span>
+            <h4 class="font-bold text-white text-base">Internal Level</h4>
+            <p class="text-xs leading-relaxed opacity-85">
+              • بيوصف <strong>هيكل التخزين الفيزيائي الفعلي</strong> لقاعدة البيانات (<span class="en-badge">Physical storage structure</span>).<br>
+              • يستخدم نموذج بيانات فيزيائي (<span class="en-badge">Physical data model</span>).<br>
+              • بيوصف تفاصيل حفظ البيانات ومسارات الوصول والفهارس (<span class="en-badge">Access paths &amp; storage</span>).
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 3.3 Mappings & Reformatting -->
+      <div class="space-y-4 pt-4 border-t border-slate-500/20">
+        <h3 class="text-xl font-bold heading-font text-emerald-400">
+          3.3 عمليات التحويل وإعادة التشكيل (Mappings &amp; Reformatting - سلايد 21)
+        </h3>
+
+        <div class="balady-box p-5 rounded-2xl border text-sm sm:text-base leading-relaxed space-y-2">
+          <p>
+            لما المستخدم يطلب داتا من شاشته الخارجية، الطلب بيعدي على طبقتين تحويل (<span class="en-badge">Mappings</span>):
+          </p>
+          <div class="space-y-1 pr-2 text-xs sm:text-sm">
+            <p>1. <strong>External / Conceptual Mapping:</strong> تحويل طلب الشاشة الخارجية للمخطط المفاهيمي العام.</p>
+            <p>2. <strong>Conceptual / Internal Mapping:</strong> تحويل المخطط المفاهيمي لأوامر قراءة مباشرة من الهارد ديسك.</p>
+          </div>
+          <p class="text-xs text-amber-300 font-semibold pt-2">
+            🚨 <strong>سؤال امتحان مؤكد:</strong> أين تتم عملية إعادة تشكيل البيانات (<span class="en-badge">Reformatting</span>) لتطابق شاشة المستخدم (مثل نتائج SQL في صفحة ويب)؟<br>
+            → عند طبقة الـ <strong>External / Conceptual Mapping</strong>.
+          </p>
+        </div>
+      </div>
+
+      <!-- 3.4 Data Independence -->
+      <div class="space-y-4 pt-4 border-t border-slate-500/20">
+        <h3 class="text-xl font-bold heading-font text-emerald-400">
+          3.4 استقلالية البيانات (Data Independence - سلايد 22)
+        </h3>
+
+        <div class="slide-quote p-4 rounded-2xl border-r-4 text-sm font-medium" dir="ltr">
+          <strong class="block text-sky-400 mb-1">Slide 22 Official Definition:</strong>
+          The capacity to change the schema at one level of a database system <strong>without having to change the schema at the next higher level</strong>.
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+          
+          <div class="sub-box p-5 rounded-2xl border border-sky-500/30 space-y-2">
+            <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-sky-500/20 text-sky-400">النوع الأول</span>
+            <h4 class="font-bold text-white text-base">استقلالية البيانات المنطقية (Logical Data Independence)</h4>
+            <p class="text-xs text-sky-300 font-mono" dir="ltr">Change Conceptual → External unchanged</p>
+            <p class="text-xs leading-relaxed opacity-85">
+              • <strong>نص السلايد:</strong> القدرة على تعديل المخطط المفاهيمي (<span class="en-badge">Conceptual Schema</span>) دون الحاجة لتعديل المخططات الخارجية (<span class="en-badge">External Schemas</span>) أو البرامج التطبيقية.<br>
+              • <em>مثال:</em> ضفنا جدول جديد أو عمود جديد في قاعدة البيانات، برامج ومستخدمي الشاشات القديمة يفضلوا شغالين تماماً بدون أي تعديل في كودهم.
+            </p>
+          </div>
+
+          <div class="sub-box p-5 rounded-2xl border border-emerald-500/30 space-y-2">
+            <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400">النوع الثاني</span>
+            <h4 class="font-bold text-white text-base">استقلالية البيانات الفيزيائية (Physical Data Independence)</h4>
+            <p class="text-xs text-emerald-300 font-mono" dir="ltr">Change Internal → Conceptual unchanged</p>
+            <p class="text-xs leading-relaxed opacity-85">
+              • <strong>نص السلايد:</strong> القدرة على تعديل المخطط الداخلي والتخزين الفيزيائي (<span class="en-badge">Internal Schema</span>) دون الحاجة لتعديل المخطط المفاهيمي (<span class="en-badge">Conceptual Schema</span>).<br>
+              • <em>مثال:</em> غيرنا الهارد ديسك، أو نقلنا ملفات الداتابيز لمسار تاني، أو بنينا فهرس جديد (<span class="en-badge">Index</span>) لتسريع البحث؛ المخطط المفاهيمي والشاشات مش هيحسوا بأي فرق إطلاقاً!
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 3.5 DBMS Languages -->
+      <div class="space-y-4 pt-4 border-t border-slate-500/20">
+        <h3 class="text-xl font-bold heading-font text-emerald-400">
+          3.5 لغات نظم إدارة قواعد البيانات (DBMS Languages - سلايد 23)
+        </h3>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          <div class="sub-box p-3 rounded-xl border">
+            <span class="font-mono text-sm font-bold text-sky-400 block mb-1">DDL</span>
+            <span class="text-xs font-semibold block">Data Definition</span>
+            <span class="text-[11px] opacity-75">Defines both schemas (تحدد المخططات)</span>
+          </div>
+          <div class="sub-box p-3 rounded-xl border">
+            <span class="font-mono text-sm font-bold text-amber-400 block mb-1">SDL</span>
+            <span class="text-xs font-semibold block">Storage Definition</span>
+            <span class="text-[11px] opacity-75">Specifies internal schema (التخزين الفيزيائي)</span>
+          </div>
+          <div class="sub-box p-3 rounded-xl border">
+            <span class="font-mono text-sm font-bold text-purple-400 block mb-1">VDL</span>
+            <span class="text-xs font-semibold block">View Definition</span>
+            <span class="text-[11px] opacity-75">Specifies user views (واجهات المستخدمين)</span>
+          </div>
+          <div class="sub-box p-3 rounded-xl border">
+            <span class="font-mono text-sm font-bold text-emerald-400 block mb-1">DML</span>
+            <span class="text-xs font-semibold block">Data Manipulation</span>
+            <span class="text-[11px] opacity-75">Retrievals, Updates (استرجاع وتعديل)</span>
+          </div>
+        </div>
+
+        <p class="text-xs opacity-80 pt-1">
+          💡 <strong>واقع اليوم العملي:</strong> في قواعد البيانات الحديثة (مثل Oracle و SQL Server و MySQL)، لغة <strong>SQL</strong> الموحدة تدمج ببراعة مهام الـ DDL والـ VDL والـ DML معاً في بيئة واحدة متكاملة.
+        </p>
+      </div>
+
+    </article>
+
+    <!-- ===================================================================
+         البلوك الرابع: معماريات نظم قواعد البيانات والـ Client/Server
+    ==================================================================== -->
+    <article id="block-4" class="reader-card p-6 sm:p-9 rounded-3xl border space-y-8">
+      
+      <div class="border-b border-slate-500/20 pb-4">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">المحور الرابع • سلايدات 24 إلى 33</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font">
+          4. معماريات نظم قواعد البيانات والـ Client/Server
+        </h2>
+      </div>
+
+      <div class="space-y-6">
+        
+        <!-- Centralized Architecture -->
+        <div class="sub-box p-5 rounded-2xl border border-slate-500/30 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-slate-500/20 text-slate-300 font-mono">1. المعمارية المركزية</span>
+            <span class="text-xs opacity-75 font-mono" dir="ltr">Centralized DBMS</span>
+          </div>
+          <h3 class="text-lg font-black text-white">المعمارية المركزية (Centralized DBMS Architecture - سلايد 24)</h3>
+          <p class="text-xs sm:text-sm leading-relaxed opacity-85">
+            • <strong>نص السلايد:</strong> كل وظائف الـ DBMS، وتشغيل البرامج التطبيقية، ومعالجة واجهات المستخدمين بتتم على <strong>جهاز واحد فقط (<span class="en-badge">One machine</span>)</strong>.<br>
+            • شاشات الموظفين زمان كانت شاشات صامتة (<span class="en-badge">Dumb terminals</span>) بلا معالج؛ جهاز المين فريم المركزي هو اللي بيعمل كل العمليات الحسابية والتخزين.
+          </p>
+        </div>
+
+        <!-- 2-Tier Architecture -->
+        <div class="sub-box p-5 rounded-2xl border border-sky-500/30 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-sky-500/20 text-sky-400 font-mono">2. معمارية المستويين</span>
+            <span class="text-xs opacity-75 font-mono" dir="ltr">Two-Tier Client/Server</span>
+          </div>
+          <h3 class="text-lg font-black text-white">معمارية العميل / الخادم ذات المستويين (2-Tier Architecture - سلايد 29)</h3>
+          <p class="text-xs sm:text-sm leading-relaxed opacity-85">
+            • تم فصل العمل بين جهازين متصلين بشبكة:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-1">
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+              <strong class="text-sky-300 block mb-1">العميل (Client):</strong>
+              بيشغل واجهة المستخدم (UI) + كود التطبيق نفسه (<span class="en-badge">Application Programs</span>).
+            </div>
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+              <strong class="text-emerald-300 block mb-1">الخادم (Database Server):</strong>
+              مسؤول عن استقبال وتنفيذ استعلامات الـ SQL وإدارة المعاملات (<span class="en-badge">SQL Query Processing</span>).
+            </div>
+          </div>
+          <p class="text-xs text-amber-300 font-semibold pt-1">
+            🚨 <strong>تريكة الامتحان:</strong> في معمارية الـ 2-Tier كود التطبيق نفسه (<span class="en-badge">Application Program</span>) موجود على <strong>العميل (Client)</strong> وليس السيرفر!
+          </p>
+        </div>
+
+        <!-- 3-Tier Architecture -->
+        <div class="sub-box p-5 rounded-2xl border border-emerald-500/30 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-400 font-mono">3. معمارية الثلاثة مستويات</span>
+            <span class="text-xs opacity-75 font-mono" dir="ltr">Three-Tier (n-Tier) Web Architecture</span>
+          </div>
+          <h3 class="text-lg font-black text-white">معمارية الويب ذات المستويات الثلاثة (Three-Tier Architecture - سلايد 30 و 31)</h3>
+          <p class="text-xs sm:text-sm leading-relaxed opacity-85">
+            مع ظهور الويب وتطبيقات الإنترنت، اتفصل كود التطبيق عن جهاز المستخدم تماماً، وبقى النظام مقسوم لـ 3 طبقات:
+          </p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1">
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+              <strong class="text-sky-300 block mb-1">Tier 1: Client</strong>
+              شاشة متصفح الويب الخفيف (<span class="en-badge">Thin Client / Browser</span>) لعرض الواجهة فقط بدون أي برامج ثقيلة.
+            </div>
+            <div class="p-3 rounded-xl bg-white/5 border border-emerald-500/30">
+              <strong class="text-emerald-300 block mb-1">Tier 2: Application Server</strong>
+              <strong>السيرفر الوسيط (Intermediate Layer):</strong> بيشغل كود التطبيق ويخزن قواعد العمل المعقدة (<span class="en-badge">Business Rules</span>).
+            </div>
+            <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+              <strong class="text-amber-300 block mb-1">Tier 3: Database Server</strong>
+              خادم قاعدة البيانات المسؤول حصراً عن تخزين وتعديل وحماية البيانات.
+            </div>
+          </div>
+          <p class="text-xs text-emerald-300 font-semibold pt-1">
+            🚨 <strong>سؤال الامتحان الأكيد:</strong> أين يتم تخزين وتنفيذ قواعد العمل (<span class="en-badge">Business Rules</span>) في الـ 3-Tier؟<br>
+            → في الطبقة الوسيطة: <strong>سيرفر التطبيقات (Application Server / Web Server)</strong>.
+          </p>
+        </div>
+
+      </div>
+
+    </article>
+
+    <!-- ===================================================================
+         البلوك الخامس: الرسومات المعمارية الأربعة الرسمية (من Add.txt)
+    ==================================================================== -->
+    <article id="block-5" class="reader-card p-6 sm:p-9 rounded-3xl border space-y-8">
+      
+      <div class="border-b border-slate-500/20 pb-4">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">المحور الخامس • رسومات السلايدات الرسمية</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font">
+          5. الرسومات المعمارية الأربعة الرسمية (Official Architectural Visuals)
+        </h2>
+      </div>
+
+      <div class="space-y-6">
+
+        <!-- Diagram 1 -->
+        <div class="space-y-2">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>الرسمة 1: معمارية المستويات الثلاثة وعمليات التحويل (Three-Schema &amp; Mappings)</span>
+          </h3>
+          <p class="text-xs opacity-75">سلايد 19 و 20 توضح تدفق الطلب من الشاشة الخارجية وحتى التخزين الفيزيائي:</p>
+          <pre class="ascii-diagram">
+               [ المستخدم النهائي 1 ]              [ المستخدم النهائي 2 ]
+                        │                                   │
+                        ▼                                   ▼
+          ┌───────────────────────────┐       ┌───────────────────────────┐
+          │   External View 1         │       │   External View 2         │
+          │   (واجهة شاشة موظف الخزينة)   │       │   (واجهة شاشة شؤون الطلاب)│
+          └─────────────┬─────────────┘       └─────────────┬─────────────┘
+                        │                                   │
+          ══════════════╪═══════════════════════════════════╪══════════════
+                        ▼                                   ▼
+             ◄─── [ External / Conceptual Mapping ] ───►  (تحويل الرؤية الخارجية)
+                        │                                   │
+                        └─────────────────┬─────────────────┘
+                                          │
+                                          ▼
+                               ┌─────────────────────┐
+                               │  Conceptual Schema  │
+                               │  (المخطط المفاهيمي)  │
+                               │ الهيكل الشامل للجامعة │
+                               └──────────┬──────────┘
+                                          │
+          ════════════════════════════════╪════════════════════════════════
+                                          ▼
+             ◄─── [ Conceptual / Internal Mapping ] ───►  (تحويل المفاهيمي للفيزيائي)
+                                          │
+                                          ▼
+                               ┌─────────────────────┐
+                               │   Internal Schema   │
+                               │   (المخطط الداخلي)   │
+                               │  طرق التخزين والفهارس │
+                               └──────────┬──────────┘
+                                          │
+                                          ▼
+                             [( Stored Database )]
+                             القرص الصلب الفيزيائي الفعلي</pre>
+        </div>
+
+        <!-- Diagram 2 & 3 Side by Side -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-500/20">
+          
+          <div class="space-y-2">
+            <h4 class="text-sm font-bold text-white">الرسمة 2: المعمارية المركزية (سلايد 24)</h4>
+            <pre class="ascii-diagram text-xs">
+ [شاشة موظف 1] ──┐
+ [شاشة موظف 2] ──┼───> ( Central Computer / Mainframe )
+ [شاشة موظف 3] ──┘     ├── Hardware & Operating System
+                       ├── Application Programs (كود البرنامج)
+                       ├── DBMS Software (محرك الداتابيز)
+                       └── Database Storage (الملفات الفعلية)</pre>
+            <p class="text-[11px] opacity-75">جهاز واحد فقط يتولى كل شيء (One single machine).</p>
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="text-sm font-bold text-white">الرسمة 3: معمارية المستويين 2-Tier (سلايد 29)</h4>
+            <pre class="ascii-diagram text-xs">
+      ┌─────────────────────────┐
+      │      Client Machine     │
+      │ ├── User Interface      │
+      │ └── Application Program │
+      └────────────┬────────────┘
+                   │ SQL Queries (ODBC / JDBC)
+                   ▼
+      ┌─────────────────────────┐
+      │     Database Server     │
+      │ ├── DBMS Engine         │
+      │ └── Stored Database     │
+      └─────────────────────────┘</pre>
+            <p class="text-[11px] opacity-75">كود التطبيق والواجهة على العميل، والداتابيز على السيرفر.</p>
+          </div>
+
+        </div>
+
+        <!-- Diagram 4: 3-Tier -->
+        <div class="space-y-2 pt-4 border-t border-slate-500/20">
+          <h4 class="text-sm font-bold text-white">الرسمة 4: معمارية الويب ذات المستويات الثلاثة 3-Tier (سلايد 31)</h4>
+          <pre class="ascii-diagram">
+ [ Tier 1: Client ]
+ ├── Web Browser / Thin Client (مجرد متصفح خفيف يعرض شاشة HTML)
+          │
+          │ Internet / Network
+          ▼
+ [ Tier 2: Application Server or Web Server ]  (الطبقة الوسيطة)
+ ├── Runs Application Programs (كود البرنامج)
+ └── Stores Business Rules (قواعد العمل والحسابات المعقدة)
+          │
+          │ Local Network / Queries
+          ▼
+ [ Tier 3: Database Server ]
+ └── DBMS Software + Stored Database (تخزين ومعالجة البيانات فقط)</pre>
+          <p class="text-xs text-emerald-400 font-semibold">
+            📌 يسمى العميل هنا <strong>Thin Client</strong>، وقواعد العمل <span class="en-badge">Business Rules</span> في الطبقة الوسيطة.
+          </p>
+        </div>
+
+      </div>
+
+    </article>
+
+    <!-- ===================================================================
+         البلوك السادس: جدول فك شفرات وتريكات الامتحان الحرفية
+    ==================================================================== -->
+    <article id="block-6" class="reader-card p-6 sm:p-9 rounded-3xl border space-y-6">
+      
+      <div class="border-b border-slate-500/20 pb-4">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">المحور السادس • حصاد الامتحان</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font">
+          6. فك شفرات وتريكات الامتحان الحرفية (Exam Cipher &amp; Traps)
+        </h2>
+      </div>
+
+      <p class="text-xs sm:text-sm opacity-90 leading-relaxed">
+        الجدول ده بيختصر أهم الكلمات المفتاحية (<span class="en-badge">Triggers</span>) اللي بتيجي بنصها في امتحانات الـ MCQs للدكتور:
+      </p>
+
+      <div class="overflow-x-auto rounded-2xl border border-slate-500/20">
+        <table class="w-full text-xs sm:text-sm text-right">
+          <thead class="bg-slate-900 text-white font-heading">
+            <tr>
+              <th class="p-3 border-b border-slate-700">العبارة الحرفية في رأس السؤال (Trigger)</th>
+              <th class="p-3 border-b border-slate-700 text-emerald-400">الإجابة الصحيحة مباشرة</th>
+              <th class="p-3 border-b border-slate-700 text-amber-400">تريكة الخداع (The Trap)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-700/50">
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Suppression of details... highlighting essential features"</td>
+              <td class="p-3 font-bold text-emerald-400">Data Abstraction</td>
+              <td class="p-3 text-xs opacity-80">بيحط Data Model عشان تتلخبط، التجريد هو المبدأ العام.</td>
+            </tr>
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Specifies dynamic aspect / behavior, e.g. COMPUTE_GPA"</td>
+              <td class="p-3 font-bold text-emerald-400">Basic Operations of Data Model</td>
+              <td class="p-3 text-xs opacity-80">العمليات الديناميكية جزء أساسي من نموذج البيانات.</td>
+            </tr>
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Entity, Attribute, Relationship"</td>
+              <td class="p-3 font-bold text-emerald-400">Conceptual Data Models</td>
+              <td class="p-3 text-xs opacity-80">دي مفاهيم النموذج المفاهيمي عالي المستوى فقط.</td>
+            </tr>
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Record-based data models"</td>
+              <td class="p-3 font-bold text-emerald-400">Relational Data Model</td>
+              <td class="p-3 text-xs opacity-80">النموذج العلائقي يسمى Record-based.</td>
+            </tr>
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Structure that makes the search efficient, e.g. Index"</td>
+              <td class="p-3 font-bold text-emerald-400">Physical Data Model / Access Path</td>
+              <td class="p-3 text-xs opacity-80">الفهرس هو مسار وصول فيزيائي.</td>
+            </tr>
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Structure of each record type but NOT actual instances"</td>
+              <td class="p-3 font-bold text-emerald-400">Schema Diagram</td>
+              <td class="p-3 text-xs opacity-80">رسمة المخطط تعرض الهيكل فقط بلا أي سجلات.</td>
+            </tr>
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Schema is called... while State is called..."</td>
+              <td class="p-3 font-bold text-emerald-400">Intension, Extension</td>
+              <td class="p-3 text-xs opacity-80">المخطط = Intension، والحالة = Extension أو Snapshot.</td>
+            </tr>
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Separate user applications from physical database"</td>
+              <td class="p-3 font-bold text-emerald-400">Three-Schema Architecture Goal</td>
+              <td class="p-3 text-xs opacity-80">ده الهدف الأسمى لمعمارية المستويات الثلاثة.</td>
+            </tr>
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Change conceptual schema without changing external schemas"</td>
+              <td class="p-3 font-bold text-emerald-400">Logical Data Independence</td>
+              <td class="p-3 text-xs opacity-80">منطقية = تعديل Conceptual دون تأثر الشاشات الخارجية.</td>
+            </tr>
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Change internal schema without changing conceptual schema"</td>
+              <td class="p-3 font-bold text-emerald-400">Physical Data Independence</td>
+              <td class="p-3 text-xs opacity-80">فيزيائية = تعديل الهاردوير والتخزين دون تأثر المخطط.</td>
+            </tr>
+            <tr class="cipher-card hover:bg-white/5">
+              <td class="p-3 font-semibold" dir="ltr">"Stores business rules in intermediate layer"</td>
+              <td class="p-3 font-bold text-emerald-400">Three-Tier Architecture (Application Server)</td>
+              <td class="p-3 text-xs opacity-80">الـ Business Rules توجد في الـ Application Server.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </article>
+
+    <!-- ===================================================================
+         البلوك السابع: كويز التقييم التفاعلي الذكي (Diagnostic Quiz)
+    ==================================================================== -->
+    <article id="quiz-section" class="reader-card p-6 sm:p-9 rounded-3xl border border-amber-500/30 space-y-8">
+      
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-500/20 pb-5">
+        <div>
+          <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block mb-1">🎯 التقييم التشخيصي الفوري</span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold heading-font text-white">
+            كويز أسئلة الامتحان التفاعلي (MCQ Diagnostic Quiz)
+          </h2>
+          <p class="text-xs sm:text-sm opacity-80 mt-1">
+            20 سؤالاً اختيار من متعدد تغطي كل كلمة وفكرة في سلايدات الشابتر الثاني
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="px-4 py-2 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-center">
+            <span class="text-[11px] text-amber-400 font-bold block">النتيجة الحالية</span>
+            <span id="quizScoreDisplay" class="text-xl font-black text-amber-300 font-mono">0 / 20</span>
+          </div>
+          <button id="btnResetQuiz" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition border border-white/10 flex items-center gap-1.5">
+            <span>↺ إعادة المحاولة</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quiz Filter Pills -->
+      <div class="flex flex-wrap items-center gap-1.5" id="quizFilterBar">
+        <button data-qfilter="all" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font transition bg-amber-500 text-slate-950">كل الأسئلة (20)</button>
+        <button data-qfilter="b1" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font transition bg-slate-500/10 hover:bg-amber-500/20 border border-slate-500/20">نماذج البيانات (7)</button>
+        <button data-qfilter="b2" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font transition bg-slate-500/10 hover:bg-amber-500/20 border border-slate-500/20">المخطط والحالة (5)</button>
+        <button data-qfilter="b3" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font transition bg-slate-500/10 hover:bg-amber-500/20 border border-slate-500/20">المستويات الـ 3 والاستقلالية (5)</button>
+        <button data-qfilter="b4" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font transition bg-slate-500/10 hover:bg-amber-500/20 border border-slate-500/20">معماريات السيرفرات (3)</button>
+      </div>
+
+      <!-- Quiz Questions Container -->
+      <div id="quizContainer" class="space-y-6">
+        <!-- Rendered via JS -->
+      </div>
+
+    </article>
+
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // ==========================================
+      // 20 HIGH-YIELD MCQ QUESTIONS FOR CHAPTER 2
+      // ==========================================
+      const mcqQuestions = [
+        // Topic 1: Data Abstraction & Data Models
+        {
+          id: 1,
+          block: 'b1',
+          blockTitle: 'نماذج البيانات وتجريد البيانات',
+          q: 'The suppression of details of data organization and storage and the highlighting of essential features is formally defined as:',
+          options: ['Database Instance', 'Data Abstraction', 'Data Model Construct', 'Schema Evolution'],
+          correct: 1,
+          explanation: 'التعريف الحرفي في سلايد 3: تجريد البيانات (Data Abstraction) هو إخفاء التفاصيل التخزينية وإبراز الخصائص الجوهرية لفهم أفضل.'
+        },
+        {
+          id: 2,
+          block: 'b1',
+          blockTitle: 'نماذج البيانات وتجريد البيانات',
+          q: 'Which component of a data model specifies the dynamic aspect or behavior of a database application (e.g., COMPUTE_GPA)?',
+          options: ['Data types', 'Constraints', 'Basic operations', 'Internal mappings'],
+          correct: 2,
+          explanation: 'سلايد 4: العمليات الأساسية (Basic operations) هي التي تحدد الجانب الديناميكي أو السلوك لقاعدة البيانات مثل استدعاء دالة COMPUTE_GPA.'
+        },
+        {
+          id: 3,
+          block: 'b1',
+          blockTitle: 'نماذج البيانات وتجريد البيانات',
+          q: 'Conceptual (high-level) data models provide concepts that are:',
+          options: [
+            'Close to the hardware registers and magnetic tracks',
+            'Close to the way many users perceive data',
+            'Dependent on the physical network protocol',
+            'Only understandable by the database kernel'
+          ],
+          correct: 1,
+          explanation: 'سلايد 5 و 6: النماذج المفاهيمية (Conceptual models) تقدم مفاهيم قريبة جداً من طريقة إدراك وفهم البشر للبيانات في العالم الحقيقي.'
+        },
+        {
+          id: 4,
+          block: 'b1',
+          blockTitle: 'نماذج البيانات وتجريد البيانات',
+          q: 'The three core concepts provided by conceptual data models (such as the ER model) are:',
+          options: [
+            'Bytes, Sectors, and Tracks',
+            'Entities, Attributes, and Relationships',
+            'Tables, Primary Keys, and Foreign Keys',
+            'Procedures, Triggers, and Cursors'
+          ],
+          correct: 1,
+          explanation: 'سلايد 6: المفاهيم الثلاثة المكونة للنموذج المفاهيمي هي: الكيان (Entity)، الخاصية (Attribute)، والعلاقة (Relationship).'
+        },
+        {
+          id: 5,
+          block: 'b1',
+          blockTitle: 'نماذج البيانات وتجريد البيانات',
+          q: 'The Relational Data Model is classified under which category of data models?',
+          options: ['Physical data models', 'Conceptual data models', 'Representational (Implementation) data models', 'Low-level models'],
+          correct: 2,
+          explanation: 'سلايد 5 و 7: النموذج العلائقي (Relational model) يصنف ضمن النماذج التمثيلية / التطبيقية (Representational data models).'
+        },
+        {
+          id: 6,
+          block: 'b1',
+          blockTitle: 'نماذج البيانات وتجريد البيانات',
+          q: 'Because traditional commercial relational DBMSs represent data as record structures, they are also referred to as:',
+          options: ['Object-based data models', 'Record-based data models', 'Network-less models', 'Pointer-based models'],
+          correct: 1,
+          explanation: 'سلايد 7: النموذج العلائقي يمثل البيانات كهياكل سجلات، ولذلك يسمى أيضاً Record-based data models.'
+        },
+        {
+          id: 7,
+          block: 'b1',
+          blockTitle: 'نماذج البيانات وتجريد البيانات',
+          q: 'A structure that makes the search for particular database records efficient, such as an Index, is classified under which model category?',
+          options: ['Conceptual data models', 'Representational data models', 'Physical (low-level) data models', 'View models'],
+          correct: 2,
+          explanation: 'سلايد 5 و 9: مسارات الوصول (Access paths) والفهارس (Indexes) تقع ضمن النماذج الفيزيائية منخفضة المستوى (Physical data models).'
+        },
+
+        // Topic 2: Schemas vs States
+        {
+          id: 8,
+          block: 'b2',
+          blockTitle: 'المخطط والحالة واللقطة',
+          q: 'The description of a database that is specified during database design and is NOT expected to change frequently is called the:',
+          options: ['Database State', 'Database Schema (Intension)', 'Database Snapshot', 'Database Instance'],
+          correct: 1,
+          explanation: 'سلايد 11: المخطط (Schema) أو الـ Intension هو وصف وتصميم قاعدة البيانات ويتغير نادراً جداً.'
+        },
+        {
+          id: 9,
+          block: 'b2',
+          blockTitle: 'المخطط والحالة واللقطة',
+          q: 'What does a "Schema Diagram" display?',
+          options: [
+            'The actual data values of all rows',
+            'The structure of each record type, but NOT actual instances',
+            'The physical sector addresses on the disk',
+            'The history of all delete operations'
+          ],
+          correct: 1,
+          explanation: 'سلايد 11 و 12: رسمة المخطط (Schema Diagram) تعرض هيكل وسجلات الجداول فقط، ولا تعرض أي سجلات أو قيم فعلية إطلاقاً.'
+        },
+        {
+          id: 10,
+          block: 'b2',
+          blockTitle: 'المخطط والحالة واللقطة',
+          q: 'The actual data stored in a database at a particular moment in time is called the:',
+          options: ['Schema Diagram', 'Database Construct', 'Database State (Extension)', 'Data Abstraction'],
+          correct: 2,
+          explanation: 'سلايد 13: البيانات الفعلية المخزنة في لحظة زمنية معينة تسمى حالة قاعدة البيانات (Database State) أو Extension أو Snapshot.'
+        },
+        {
+          id: 11,
+          block: 'b2',
+          blockTitle: 'المخطط والحالة واللقطة',
+          q: 'Every time an insert, update, or delete operation is executed on the database, what happens?',
+          options: [
+            'The database schema changes',
+            'The database transitions to another database state',
+            'The conceptual schema must be recompiled',
+            'The DDL statements are re-executed'
+          ],
+          correct: 1,
+          explanation: 'سلايد 13 و 15: مع كل عملية تعديل أو إضافة نحصل على حالة جديدة لقاعدة البيانات (another database state).'
+        },
+        {
+          id: 12,
+          block: 'b2',
+          blockTitle: 'المخطط والحالة واللقطة',
+          q: 'A database state that satisfies all the specified structure and constraints of the database is called a:',
+          options: ['Initial State', 'Valid State', 'Static State', 'Intension'],
+          correct: 1,
+          explanation: 'سلايد 13: الحالة الصالحة (Valid State) هي الحالة التي تحترم وتلبي جميع الشروط والقيود المعرفة لقاعدة البيانات.'
+        },
+
+        // Topic 3: Three-Schema Architecture & Data Independence
+        {
+          id: 13,
+          block: 'b3',
+          blockTitle: 'المستويات الثلاثة والاستقلالية',
+          q: 'What is the primary goal of the Three-Schema Architecture?',
+          options: [
+            'To merge hardware and software into one layer',
+            'To separate the user applications from the physical database',
+            'To eliminate the need for SQL queries',
+            'To enforce centralization on a single computer'
+          ],
+          correct: 1,
+          explanation: 'سلايد 18: الهدف الأساسي لمعمارية المستويات الثلاثة هو فصل برامج وشاشات المستخدمين عن قاعدة البيانات الفيزيائية.'
+        },
+        {
+          id: 14,
+          block: 'b3',
+          blockTitle: 'المستويات الثلاثة والاستقلالية',
+          q: 'Which schema level describes the physical storage structure, file allocation, and access paths?',
+          options: ['External schema', 'Conceptual schema', 'Internal schema', 'View schema'],
+          correct: 2,
+          explanation: 'سلايد 18 و 20: المستوى الداخلي (Internal schema) هو الذي يصف البنية الفيزيائية للتخزين ومسارات الوصول.'
+        },
+        {
+          id: 15,
+          block: 'b3',
+          blockTitle: 'المستويات الثلاثة والاستقلالية',
+          q: 'Which schema level describes the structure of the entire database for a community of users while hiding physical storage details?',
+          options: ['Internal Level', 'Conceptual Level', 'External View', 'SDL Layer'],
+          correct: 1,
+          explanation: 'سلايد 18 و 20: المستوى المفاهيمي (Conceptual level) يصف هيكل قاعدة البيانات بالكامل ويخفي التفاصيل الفيزيائية.'
+        },
+        {
+          id: 16,
+          block: 'b3',
+          blockTitle: 'المستويات الثلاثة والاستقلالية',
+          q: 'The capacity to alter the conceptual schema without having to alter external schemas or application programs is called:',
+          options: ['Physical data independence', 'Logical data independence', 'Schema evolution', 'Program-storage independence'],
+          correct: 1,
+          explanation: 'سلايد 22: استقلالية البيانات المنطقية (Logical Data Independence) تعني تعديل الـ Conceptual Schema دون أن تتأثر شاشات المستخدمين.'
+        },
+        {
+          id: 17,
+          block: 'b3',
+          blockTitle: 'المستويات الثلاثة والاستقلالية',
+          q: 'The capacity to alter the internal schema (e.g., adding an index or moving disk files) without having to alter the conceptual schema is called:',
+          options: ['Logical data independence', 'Physical data independence', 'VDL Independence', 'Conceptual Evolution'],
+          correct: 1,
+          explanation: 'سلايد 22: استقلالية البيانات الفيزيائية (Physical Data Independence) تعني تعديل الـ Internal Schema دون تعديل الـ Conceptual Schema.'
+        },
+
+        // Topic 4: Client/Server Architectures
+        {
+          id: 18,
+          block: 'b4',
+          blockTitle: 'معماريات السيرفرات والأنظمة',
+          q: 'In a Two-Tier Client/Server architecture, where do application programs typically run?',
+          options: [
+            'On the Database Server',
+            'On the Client machine',
+            'On the Print Server',
+            'On the Storage Area Network'
+          ],
+          correct: 1,
+          explanation: 'سلايد 29: في معمارية الـ Two-Tier يعمل كود التطبيق وبرامج المستخدم على جهاز العميل (Client machine).'
+        },
+        {
+          id: 19,
+          block: 'b4',
+          blockTitle: 'معماريات السيرفرات والأنظمة',
+          q: 'In a Three-Tier Client/Server architecture, the intermediate layer (Application/Web server) is responsible for:',
+          options: [
+            'Formatting magnetic disk sectors',
+            'Running application programs and storing business rules',
+            'Displaying the physical CRT monitor beam',
+            'Compiling database BIOS routines'
+          ],
+          correct: 1,
+          explanation: 'سلايد 30 و 31: السيرفر الوسيط (Application server) يشغل كود التطبيق ويخزن قواعد العمل (Business rules).'
+        },
+        {
+          id: 20,
+          block: 'b4',
+          blockTitle: 'معماريات السيرفرات والأنظمة',
+          q: 'Which DBMS language is specifically used to define user views and their mappings to the conceptual schema?',
+          options: ['DDL', 'SDL', 'VDL (View Definition Language)', 'DML'],
+          correct: 2,
+          explanation: 'سلايد 23: لغة الـ VDL (View Definition Language) مخصصة لتحديد واجهات ورؤى المستخدمين وربطها بالمستوى المفاهيمي.'
+        }
+      ];
+
+      // State
+      let userAnswers = {};
+      let currentQuizFilter = 'all';
+      let fontScale = 100;
+      let wideSpacing = false;
+
+      // Theme Elements
+      const body = document.body;
+      const btnDark = document.getElementById('btnThemeDark');
+      const btnSepia = document.getElementById('btnThemeSepia');
+      const btnLight = document.getElementById('btnThemeLight');
+
+      function setActiveTheme(active) {
+        body.classList.remove('theme-dark', 'theme-sepia', 'theme-light');
+        body.classList.add(active);
+      }
+
+      btnDark.addEventListener('click', () => setActiveTheme('theme-dark'));
+      btnSepia.addEventListener('click', () => setActiveTheme('theme-sepia'));
+      btnLight.addEventListener('click', () => setActiveTheme('theme-light'));
+
+      // Typography Controls
+      const fontSizeLabel = document.getElementById('fontSizeLabel');
+      function applyTypography() {
+        const remSize = (1.15 * (fontScale / 100)).toFixed(2);
+        document.documentElement.style.setProperty('--reader-font-size', remSize + 'rem');
+        if (fontSizeLabel) fontSizeLabel.textContent = fontScale + '%';
+      }
+
+      document.getElementById('btnFontInc').addEventListener('click', () => {
+        if (fontScale < 140) {
+          fontScale += 10;
+          applyTypography();
+        }
+      });
+      document.getElementById('btnFontDec').addEventListener('click', () => {
+        if (fontScale > 80) {
+          fontScale -= 10;
+          applyTypography();
+        }
+      });
+
+      const btnSpacingToggle = document.getElementById('btnSpacingToggle');
+      btnSpacingToggle.addEventListener('click', () => {
+        wideSpacing = !wideSpacing;
+        if (wideSpacing) {
+          document.documentElement.style.setProperty('--reader-line-height', '2.3');
+          btnSpacingToggle.textContent = 'تباعد: واسع جداً';
+        } else {
+          document.documentElement.style.setProperty('--reader-line-height', '2.1');
+          btnSpacingToggle.textContent = 'تباعد: مريح جداً';
+        }
+      });
+
+      // Auto-Hide Header on scroll
+      let lastScrollY = window.scrollY;
+      window.addEventListener('scroll', () => {
+        const currentY = window.scrollY;
+        const headerEl = document.getElementById('mainReadingHeader');
+        if (headerEl) {
+          if (currentY > 120 && currentY > lastScrollY + 6) {
+            headerEl.classList.add('nav-hidden');
+          } else if (currentY < lastScrollY - 6 || currentY <= 80) {
+            headerEl.classList.remove('nav-hidden');
+          }
+        }
+        lastScrollY = currentY;
+
+        // Progress bar
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, Math.max(0, (currentY / docHeight) * 100)) : 0;
+        const prog = document.getElementById('readingProgress');
+        if (prog) prog.style.width = pct + '%';
+      });
+
+      // Quiz Rendering & Logic
+      const quizContainer = document.getElementById('quizContainer');
+      const scoreDisplay = document.getElementById('quizScoreDisplay');
+
+      function updateScore() {
+        let score = 0;
+        mcqQuestions.forEach(q => {
+          if (userAnswers[q.id] === q.correct) score++;
+        });
+        if (scoreDisplay) scoreDisplay.textContent = score + ' / ' + mcqQuestions.length;
+      }
+
+      function renderQuiz() {
+        const filtered = currentQuizFilter === 'all'
+          ? mcqQuestions
+          : mcqQuestions.filter(q => q.block === currentQuizFilter);
+
+        quizContainer.innerHTML = filtered.map((item, idx) => {
+          const answered = userAnswers[item.id] !== undefined;
+          const userChoice = userAnswers[item.id];
+          const isCorrect = userChoice === item.correct;
+
+          return `
+            <div class="sub-box p-5 sm:p-6 rounded-2xl border transition-all ${answered ? (isCorrect ? 'border-emerald-500/50' : 'border-rose-500/50') : 'border-slate-500/20'}">
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-amber-500/10 text-amber-400 font-mono">سؤال ${item.id}</span>
+                <span class="text-xs opacity-75">${item.blockTitle}</span>
+              </div>
+
+              <h4 class="text-sm sm:text-base font-bold text-white mb-4 leading-relaxed" dir="ltr">${item.q}</h4>
+
+              <div class="grid grid-cols-1 gap-2.5">
+                ${item.options.map((opt, oIdx) => {
+                  let btnStyle = 'bg-white/5 border-slate-500/20 text-slate-200 hover:bg-white/10';
+                  if (answered) {
+                    if (oIdx === item.correct) {
+                      btnStyle = 'bg-emerald-600 text-white border-emerald-500 font-bold';
+                    } else if (oIdx === userChoice) {
+                      btnStyle = 'bg-rose-600 text-white border-rose-500 font-bold';
+                    } else {
+                      btnStyle = 'opacity-40 bg-white/5 border-slate-500/10';
+                    }
+                  }
+
+                  return `
+                    <button 
+                      type="button" 
+                      data-qid="${item.id}" 
+                      data-oidx="${oIdx}" 
+                      ${answered ? 'disabled' : ''} 
+                      class="quiz-opt-btn p-3 rounded-xl border text-xs sm:text-sm text-left font-mono transition flex items-center justify-between ${btnStyle}"
+                      dir="ltr"
+                    >
+                      <span>${String.fromCharCode(65 + oIdx)}. ${opt}</span>
+                      ${answered && oIdx === item.correct ? '<span>✓</span>' : ''}
+                      ${answered && oIdx === userChoice && !isCorrect ? '<span>✕</span>' : ''}
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+
+              ${answered ? `
+                <div class="mt-4 p-3.5 rounded-xl text-xs sm:text-sm leading-relaxed ${isCorrect ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-300 border border-rose-500/30'}">
+                  <strong>${isCorrect ? '✨ إجابة صحيحة ممتازة!' : '❌ إجابة خاطئة — الشرح والتصحيح:'}</strong>
+                  <p class="mt-1 opacity-90">${item.explanation}</p>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }).join('');
+
+        // Attach option click listeners
+        quizContainer.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const qid = parseInt(btn.getAttribute('data-qid'), 10);
+            const oidx = parseInt(btn.getAttribute('data-oidx'), 10);
+            userAnswers[qid] = oidx;
+            updateScore();
+            renderQuiz();
+          });
+        });
+      }
+
+      // Filter Buttons
+      document.querySelectorAll('.qfilter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentQuizFilter = btn.getAttribute('data-qfilter');
+          document.querySelectorAll('.qfilter-btn').forEach(b => {
+            b.classList.remove('bg-amber-500', 'text-slate-950');
+            b.classList.add('bg-slate-500/10');
+          });
+          btn.classList.add('bg-amber-500', 'text-slate-950');
+          btn.classList.remove('bg-slate-500/10');
+          renderQuiz();
+        });
+      });
+
+      // Reset
+      document.getElementById('btnResetQuiz').addEventListener('click', () => {
+        userAnswers = {};
+        updateScore();
+        renderQuiz();
+      });
+
+      // Initial Quiz Render
+      renderQuiz();
+    });
+  </script>
+</body>
+</html>

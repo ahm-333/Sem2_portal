@@ -72,7 +72,7 @@ body.a1 .text-sm {font-size:14px;line-height:1.8}
 .a1-navbar {position:fixed;inset-inline:0;top:0;z-index:40;border-bottom:1px solid var(--line)}
 .a1-header-inner {max-width:1220px;min-height:86px;margin:auto;padding:16px 24px;display:flex;align-items:center;gap:24px}
 .a1-brand {display:flex;align-items:center;gap:11px;flex-shrink:0;color:var(--ink)}
-.a1-brand-mark {display:block;width:20px;height:26px;flex-shrink:0;border-radius:3px 3px 9px 3px;background:#2357ae;box-shadow:-5px 5px 0 #e8f0ff;color:#fff}
+.a1-brand-mark {display:block;width:28px;height:28px;flex-shrink:0;border-radius:4px;background-color:transparent;background-image:url("../favicon.svg");background-position:center;background-size:contain;background-repeat:no-repeat;box-shadow:none;color:#fff}
 .a1-brand strong {display:block;font-size:17px;font-weight:700}
 .a1-brand small {display:block;color:var(--muted);font-size:11px;margin-top:2px}
 .a1-header-actions {display:flex;gap:10px;align-items:center;margin-inline-start:auto;flex-shrink:0}
@@ -190,7 +190,7 @@ body.a1 .processor-intro * {transition:none}
 .cursor-study[data-dark="true"] .cursor-accent {fill:#78d3ff;opacity:.18}
 .cursor-study[data-interactive="true"] .cursor-tip {fill:#2357ae;stroke:#fff}
 .cursor-study[data-pressed="true"] .cursor-tip {filter:drop-shadow(0 0 2px #3685ce88)}
-@media(hover:hover) and (pointer:fine) {body[data-cursor-preview],body[data-cursor-preview] * {cursor:none!important}}
+.cursor-study {display:none!important}
 
 @media(max-width:1099px) {
   body.a1 #courses-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -201,7 +201,7 @@ body.a1 .processor-intro * {transition:none}
 @media(max-width:760px) {
   .a1-header-inner {min-height:76px;padding:14px 16px;gap:8px;flex-wrap:nowrap!important}
   .a1-brand {gap:8px;min-width:0;flex:0 1 auto}
-  .a1-brand-mark {width:20px;height:26px;border-radius:3px 3px 9px 3px;flex-shrink:0}
+  .a1-brand-mark {width:28px;height:28px;border-radius:4px;flex-shrink:0}
   .a1-brand-mark svg {width:26px;height:26px}
   .a1-brand strong {font-size:13px;line-height:1.6}
   body.a1[data-page="subject"] .a1-brand strong {display:none}

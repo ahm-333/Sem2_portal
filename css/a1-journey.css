@@ -549,14 +549,22 @@ body.a1 .a1-navbar {
 
 /* Accepted lesson-preview mark; keep the header identity consistent across themes. */
 .a1-brand-mark {
-  background-color: #2357ae !important;
-  background-image: none !important;
-  box-shadow: -5px 5px 0 #e8f0ff;
-  transition: none;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 4px !important;
+  background-color: transparent !important;
+  background-image: url("../favicon.svg") !important;
+  background-position: center !important;
+  background-size: contain !important;
+  background-repeat: no-repeat !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 2px 4px rgba(0, 208, 250, 0.3));
+  transition: filter 0.2s ease, transform 0.2s ease;
 }
 .a1-brand:hover .a1-brand-mark {
-  transform: none;
-  box-shadow: -5px 5px 0 #e8f0ff;
+  transform: scale(1.06);
+  box-shadow: none !important;
+  filter: drop-shadow(0 3px 8px rgba(0, 208, 250, 0.5));
 }
 
 /* Nav links & header action buttons */

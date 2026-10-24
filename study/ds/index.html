@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة الشرح التفاعلي — هياكل البيانات والخوارزميات (Data Structures)</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(245, 158, 11, 0.3);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Cairo', sans-serif;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(245, 158, 11, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(139, 92, 246, 0.06) 0px, transparent 60%);
+      background-attachment: fixed;
+    }
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      border-color: var(--border-highlight);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px -10px rgba(245, 158, 11, 0.15);
+    }
+    .btn-gradient {
+      background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+      transition: all 0.25s ease;
+    }
+    .btn-gradient:hover {
+      box-shadow: 0 8px 24px -4px rgba(245, 158, 11, 0.4);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen">
+
+  <!-- Main Container -->
+  <div class="max-w-5xl mx-auto w-full space-y-8">
+    
+    <!-- Top Navigation Bar -->
+    <nav class="flex flex-wrap items-center justify-between gap-4 py-3 px-5 rounded-2xl glass-card border">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-black text-lg border border-amber-500/30">
+          DS
+        </div>
+        <div>
+          <span class="text-xs text-amber-400 font-bold block">منصة الشرح التفاعلي الذكي</span>
+          <h2 class="text-sm sm:text-base font-extrabold text-white">هياكل البيانات والخوارزميات (CS213)</h2>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="../../subject.html?id=data-structure" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition border border-white/10">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span>الرجوع لصفحة المادة</span>
+        </a>
+        <a href="../../index.html" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/60 hover:bg-slate-800 text-slate-300 font-bold text-xs transition border border-white/5">
+          <span>🏠 الرئيسية</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <header class="glass-card rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+      <div class="absolute -top-24 -left-24 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 max-w-3xl space-y-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span>شروحات تفاعلية مستقلة مع تتبع الذاكرة والكويزات</span>
+        </div>
+
+        <h1 class="text-2xl sm:text-4xl font-black text-white leading-tight">
+          دليل مذاكرة <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-400 to-amber-200">هياكل البيانات (Data Structures)</span>
+        </h1>
+
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-medium">
+          شرح تفاعلي كامل ومفصل لكل محاضرة على حدة بالعامية المصرية الممتعة ممزوجة بالمصطلحات الأكاديمية الرسمية؛ يتضمن تفكيك الـ RAM سطراً بسطر، رسومات توضيحية للعقد والروابط، أوضاع قراءة مريحة للعين، وكويزات فورية على كل جزء.
+        </p>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-white/10">
+          <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+            <span class="text-lg font-black text-amber-400 block font-mono">3</span>
+            <span class="text-xs text-slate-400">محاضرات مشروحة</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+            <span class="text-lg font-black text-sky-400 block font-mono">100%</span>
+            <span class="text-xs text-slate-400">تغطية للسلايدات</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+            <span class="text-lg font-black text-emerald-400 block font-mono">40+</span>
+            <span class="text-xs text-slate-400">سؤال كويز تدريبي</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+            <span class="text-lg font-black text-purple-400 block font-mono">4</span>
+            <span class="text-xs text-slate-400">أوضاع لراحة العين</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Lectures Cards Section -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg sm:text-xl font-extrabold text-white flex items-center gap-2">
+          <span>📖</span>
+          <span>فهرس المحاضرات والشروحات التفاعلية</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-mono">3 Chapters Available</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Card: Lecture 1 -->
+        <article class="glass-card rounded-3xl p-6 flex flex-col justify-between space-y-5 border relative overflow-hidden group">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="w-12 h-12 rounded-2xl bg-blue-600 text-white font-mono font-black text-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
+                L1
+              </span>
+              <span class="text-[11px] px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold">
+                وضع القراءة المريح
+              </span>
+            </div>
+
+            <div>
+              <span class="text-xs font-mono text-slate-400 block mb-1">Lecture 1</span>
+              <h4 class="text-base sm:text-lg font-black text-white group-hover:text-amber-300 transition-colors">
+                المحاضرة الأولى: هياكل البيانات والمصفوفات والقوالب
+              </h4>
+              <p class="text-xs text-slate-400 mt-1 font-mono">Data Structures, Arrays & Templates</p>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+              تأسيس مفهوم الـ Data Structure والـ ADTs، مقارنة الأنواع الأولية وغير الأولية، المصفوفات أحادية وثنائية الأبعاد (Row-Major)، والقوالب (Function & Class Templates).
+            </p>
+
+            <div class="space-y-1.5 pt-2 border-t border-white/10 text-[11px] text-slate-400">
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>تفكيك الكود سطر بسطر وكلمة بكلمة</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>تمثيل الذاكرة والـ RAM الحقيقي</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>كويز فوري بـ 16 سؤالاً تفاعلياً</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="lecture-1.html" class="btn-gradient w-full py-3 px-4 rounded-2xl text-white font-black text-xs text-center flex items-center justify-center gap-2 shadow-lg">
+            <span>فتح الشرح التفاعلي (L1)</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          </a>
+        </article>
+
+        <!-- Card: Lecture 2 -->
+        <article class="glass-card rounded-3xl p-6 flex flex-col justify-between space-y-5 border relative overflow-hidden group">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="w-12 h-12 rounded-2xl bg-emerald-600 text-white font-mono font-black text-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                L2
+              </span>
+              <span class="text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">
+                الأجزاء الستة كاملة
+              </span>
+            </div>
+
+            <div>
+              <span class="text-xs font-mono text-slate-400 block mb-1">Lecture 2</span>
+              <h4 class="text-base sm:text-lg font-black text-white group-hover:text-amber-300 transition-colors">
+                المحاضرة الثانية: القوائم المتصلة (Linked Lists)
+              </h4>
+              <p class="text-xs text-slate-400 mt-1 font-mono">Singly, Doubly, Circular Linked Lists</p>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+              الدليل الشامل للقوائم المتصلة من الصفر: تشريح العقد (Nodes)، ربط المؤشرات، عمليات الإضافة (First, Last, At Pos)، الحذف وتجنب تسريب الذاكرة (Memory Leak)، والقوائم الدائرية والمزدوجة.
+            </p>
+
+            <div class="space-y-1.5 pt-2 border-t border-white/10 text-[11px] text-slate-400">
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>شامل لجميع الأجزاء الستة (Part 1 إلى Part 6)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>فهرس جانبي تفاعلي ذكي سريع للقفز لأي قسم</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>رسومات ذهنية للـ Pointer Reassignment</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="lecture-2.html" class="btn-gradient w-full py-3 px-4 rounded-2xl text-white font-black text-xs text-center flex items-center justify-center gap-2 shadow-lg">
+            <span>فتح الشرح التفاعلي (L2)</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          </a>
+        </article>
+
+        <!-- Card: Lecture 3 -->
+        <article class="glass-card rounded-3xl p-6 flex flex-col justify-between space-y-5 border relative overflow-hidden group">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="w-12 h-12 rounded-2xl bg-purple-600 text-white font-mono font-black text-lg flex items-center justify-center shadow-lg shadow-purple-500/20">
+                L3
+              </span>
+              <span class="text-[11px] px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-bold">
+                تشريح مكدس الذاكرة
+              </span>
+            </div>
+
+            <div>
+              <span class="text-xs font-mono text-slate-400 block mb-1">Lecture 3</span>
+              <h4 class="text-base sm:text-lg font-black text-white group-hover:text-amber-300 transition-colors">
+                المحاضرة الثالثة: الاستدعاء الذاتي (Recursion)
+              </h4>
+              <p class="text-xs text-slate-400 mt-1 font-mono">Recursion & Call Stack Tracing</p>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+              منطق الـ Recursion من الصفر، الركيزتان الإلزاميتان (Base & Recursive Case)، كود المضروب fact(n)، متتالية فيبوناتشي rFibNum، الاستدعاء الذاتي على المصفوفات والقوائم المتصلة.
+            </p>
+
+            <div class="space-y-1.5 pt-2 border-t border-white/10 text-[11px] text-slate-400">
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>تشريح بالرسم لما يحدث في الـ Call Stack</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>شجرة استدعاء فيبوناتشي وتتبع القيم خطوة بخطوة</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>كويز فوري بـ 12 سؤالاً تفاعلياً شاملاً</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="lecture-3.html" class="btn-gradient w-full py-3 px-4 rounded-2xl text-white font-black text-xs text-center flex items-center justify-center gap-2 shadow-lg">
+            <span>فتح الشرح التفاعلي (L3)</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          </a>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Study Guide Footer / Tips -->
+    <footer class="glass-card rounded-2xl p-5 text-center text-xs text-slate-400 border space-y-2">
+      <p class="font-bold text-slate-300">💡 نصيحة للمذاكرة:</p>
+      <p class="max-w-2xl mx-auto leading-relaxed">
+        ابدأ بقراءة كل قسم بتركيز مع تتبع حركة الذاكرة، ثم اكتب الكود بيدك قبل الانتقال للقسم التالي، واختبر استيعابك فورياً عبر أسئلة الكويز في نهاية المحاضرة.
+      </p>
+      <div class="pt-2 border-t border-white/10 flex items-center justify-center gap-4 text-[11px] text-slate-500">
+        <span>بوابة الذكاء الاصطناعي — سنة ثانية (الترم الأول) 2026</span>
+        <span>•</span>
+        <a href="../../subject.html?id=data-structure" class="hover:text-amber-400 transition">العودة إلى صفحة مقرر هياكل البيانات</a>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>

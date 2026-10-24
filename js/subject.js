@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const display = window.PortalPresentation.course(course);
 
   // 2. تحديث عنوان الصفحة
-  document.title = `${display.name} (${course.arabicName}) | Study Hub`;
+  document.title = `${display.name} (${course.arabicName}) | Kernal`;
 
   // 3. ملء القائمة المنسدلة للانتقال السريع
   const quickSelect = document.getElementById("quick-course-select");
@@ -348,6 +348,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     <span>مذاكرة السلايدات والشرح التفاعلي</span>
                   </button>
                 ` : ""}
+                ${lec.studyManualUrl ? `
+                  <!-- زر الشرح التفاعلي للمحاضرة -->
+                  <a 
+                    href="${lec.studyManualUrl}" 
+                    class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-amber-500/25 btn-smooth"
+                    title="فتح موقع الشرح التفاعلي للمحاضرة وتفكيك الأكواد والرسومات"
+                  >
+                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-100"></i>
+                    <span>الشرح التفاعلي</span>
+                  </a>
+                ` : ""}
 
                 <!-- زر المعاينة داخل الصفحة -->
                 <button 
@@ -389,19 +400,6 @@ document.addEventListener("DOMContentLoaded", function () {
                   <span>تحميل مباشر</span>
                 </a>
               </div>
-
-              <!-- رابط موقع الشرح التفاعلي -->
-              ${lec.studyManualUrl ? `
-                <a 
-                  href="${lec.studyManualUrl}" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  class="px-3.5 py-2 rounded-xl glass-panel border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                >
-                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
-                  <span>موقع الشرح التفاعلي</span>
-                </a>
-              ` : ""}
             </div>
           </div>
         `;

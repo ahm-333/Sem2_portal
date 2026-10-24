@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الفصل السابع: معمارية الإدخال والإخراج (Chapter 7: I/O) - وضع القراءة</title>
+    <!-- خط القاهرة و تجوال لقراءة عربية مريحة جداً، وخط Inter للإنجليزية -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-primary: #faf8f5;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --accent: #0f766e;
+            --accent-light: #f0fdfa;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            line-height: 2.1;
+            font-size: 1.15rem;
+            letter-spacing: 0.01em;
+        }
+
+        h1, h2, h3, h4, .font-heading {
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.5;
+        }
+
+        .en-text {
+            font-family: 'Inter', sans-serif;
+            direction: ltr;
+            text-align: left;
+            line-height: 1.85;
+        }
+
+        .en-inline {
+            font-family: 'Inter', sans-serif;
+            direction: ltr;
+            display: inline-block;
+            background-color: #f1f5f9;
+            padding: 0.05rem 0.45rem;
+            border-radius: 0.375rem;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+            margin: 0 0.15rem;
+        }
+
+        /* Reading Container */
+        .reading-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 6rem 1.25rem;
+        }
+
+        /* Section Card Spacing */
+        .reading-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 1.25rem;
+            padding: 2.5rem 2.25rem;
+            margin-bottom: 2.75rem;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+        }
+
+        @media (max-width: 640px) {
+            .reading-block {
+                padding: 1.5rem 1.25rem;
+                margin-bottom: 2rem;
+            }
+            body {
+                font-size: 1.05rem;
+                line-height: 1.95;
+            }
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Active Tab Styling */
+        .nav-tab.active {
+            background-color: #0f766e;
+            color: #ffffff;
+            border-color: #0f766e;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+        }
+
+        /* Diagram Box Hover */
+        .diagram-node {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .diagram-node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+        }
+    
+        /* Reading Mode Themes */
+        body.theme-sepia {
+            --bg-primary: #faf8f5;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #475569;
+            --border-color: #e2e8f0;
+        }
+        body.theme-light {
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #334155;
+            --border-color: #e2e8f0;
+        }
+        body.theme-dark {
+            --bg-primary: #0b1120;
+            --bg-card: #131d33;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
+        }
+        body.theme-dark .bg-slate-50 {
+            background-color: #17233d !important;
+            border-color: #263859 !important;
+        }
+        body.theme-dark .bg-white {
+            background-color: #131d33 !important;
+            color: #f1f5f9 !important;
+            border-color: #263859 !important;
+        }
+        body.theme-dark .text-slate-900,
+        body.theme-dark .text-slate-800,
+        body.theme-dark .text-slate-700 {
+            color: #e2e8f0 !important;
+        }
+        body.theme-dark .text-slate-600,
+        body.theme-dark .text-slate-500 {
+            color: #94a3b8 !important;
+        }
+        body.theme-dark header {
+            background-color: rgba(11, 17, 32, 0.95) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        body.theme-dark .en-inline {
+            background-color: #1e293b !important;
+            color: #38bdf8 !important;
+            border-color: #334155 !important;
+        }
+        body.theme-dark .border-slate-200,
+        body.theme-dark .border-slate-300 {
+            border-color: #263859 !important;
+        }
+
+    </style>
+</head>
+<body class="antialiased selection:bg-teal-100 selection:text-teal-900">
+
+    <!-- شريط القراءة العلوي الثابت -->
+    <header class="sticky top-0 z-50 bg-[#faf8f5]/95 backdrop-blur-md border-b border-slate-200/80 transition-all">
+        <!-- شريط التقدم في القراءة -->
+        <div class="w-full h-1 bg-slate-200">
+            <div id="reading-progress" class="h-full bg-teal-600 transition-all duration-150" style="width: 0%"></div>
+        </div>
+
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <span class="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center font-heading font-bold text-lg shadow-sm">
+                    Ch7
+                </span>
+                <div>
+                    <h1 class="font-heading font-bold text-slate-900 text-base sm:text-lg">معمارية الإدخال والإخراج (I/O Architecture)</h1>
+                    <p class="text-xs text-slate-500 font-medium">وضع القراءة المريحة • شرح كامل + رسومات هندسية + كويز الـ 25 سؤال</p>
+                </div>
+            </div>
+
+            <!-- التحكم في حجم الخط أثناء القراءة -->
+            
+            <!-- أزرار التنقل والرجوع للموقع -->
+            <div class="flex items-center gap-2">
+                <a href="../../subject.html?id=computer-architecture" class="flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-300 bg-white/80 hover:bg-slate-100 text-slate-700 text-xs font-heading font-bold transition shadow-sm" title="العودة لصفحة مادة المعمارية">
+                    <span>←</span>
+                    <span class="hidden sm:inline">صفحة المادة</span>
+                </a>
+                <a href="index.html" class="flex items-center gap-1 px-3 py-1.5 rounded-xl border border-teal-300 bg-teal-50 hover:bg-teal-100 text-teal-800 text-xs font-heading font-bold transition shadow-sm" title="فهرس فصول المعمارية">
+                    <span>📚</span>
+                    <span class="hidden sm:inline">فهرس الفصول</span>
+                </a>
+            </div>
+
+            <!-- تبديل الثيم (سيبيا / فاتح / داكن) -->
+            <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+                <button onclick="setTheme('sepia')" id="btn-theme-sepia" class="px-2 py-1 rounded-lg text-xs font-heading font-bold transition bg-amber-100/70 text-amber-900" title="وضع سيبيا مريح">سيبيا</button>
+                <button onclick="setTheme('light')" id="btn-theme-light" class="px-2 py-1 rounded-lg text-xs font-heading font-bold transition text-slate-600 hover:bg-slate-100" title="وضع فاتح">فاتح</button>
+                <button onclick="setTheme('dark')" id="btn-theme-dark" class="px-2 py-1 rounded-lg text-xs font-heading font-bold transition text-slate-600 hover:bg-slate-100" title="وضع داكن ليلي">داكن</button>
+            </div>
+
+            <div class="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+                <span class="text-xs text-slate-500 px-2 font-heading">حجم الخط:</span>
+                <button onclick="changeFontSize(-1)" class="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-700 font-bold text-sm flex items-center justify-center transition" title="تصغير الخط">A-</button>
+                <button onclick="changeFontSize(0)" class="px-2 h-8 rounded-lg hover:bg-slate-100 text-slate-600 text-xs font-heading flex items-center justify-center transition" title="الحجم الافتراضي">افتراضي</button>
+                <button onclick="changeFontSize(1)" class="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-700 font-bold text-base flex items-center justify-center transition" title="تكبير الخط">A+</button>
+            </div>
+        </div>
+
+        <!-- التبويبات السريعة للتنقل -->
+        <nav class="max-w-5xl mx-auto px-4 pb-3 pt-1 overflow-x-auto">
+            <div class="flex items-center gap-2 min-w-max">
+                <button onclick="switchSection('lesson1')" id="tab-lesson1" class="nav-tab active px-4 py-2 rounded-xl font-heading font-bold text-sm border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition flex items-center gap-2">
+                    <span>📖</span> 1. الدرس الأول: الـ I/O Module
+                </button>
+                <button onclick="switchSection('lesson2')" id="tab-lesson2" class="nav-tab px-4 py-2 rounded-xl font-heading font-bold text-sm border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition flex items-center gap-2">
+                    <span>⚡</span> 2. الدرس الثاني: تقنيات النقل والعنونة
+                </button>
+                <button onclick="switchSection('capsule')" id="tab-capsule" class="nav-tab px-4 py-2 rounded-xl font-heading font-bold text-sm border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition flex items-center gap-2">
+                    <span>💊</span> 3. كبسولة أسئلة الدكتور (مختصرة)
+                </button>
+                <button onclick="switchSection('quiz')" id="tab-quiz" class="nav-tab px-4 py-2 rounded-xl font-heading font-bold text-sm border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 transition flex items-center gap-2">
+                    <span>🎯</span> 4. كويز الأسئلة الاختيارية (25 MCQ)
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- المحتوى الرئيسي لوضع القراءة -->
+    
+<main id="main-content" class="reading-container">
+
+        <!-- تنبيه نطاق المنهج المعتمد رسمياً -->
+        <div class="mb-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-teal-500/10 via-amber-500/10 to-indigo-500/10 border-2 border-teal-500/30 shadow-sm transition-all">
+            <div class="flex items-center justify-between flex-wrap gap-2 mb-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">📌</span>
+                    <h3 class="font-heading font-extrabold text-slate-900 text-lg sm:text-xl">
+                        دليل المنهج المعتمد لمادة معمارية الحاسوب (المقرر والملغي)
+                    </h3>
+                </div>
+                <span class="text-xs font-heading font-bold bg-amber-100 text-amber-900 border border-amber-300 px-3 py-1 rounded-full">
+                    تنبيه الدفعة الرسمي
+                </span>
+            </div>
+
+            <p class="text-sm sm:text-base text-slate-700 leading-relaxed mb-4">
+                توضيح هام للدفعة: وفق ما تم شرحه واعتماده في المحاضرات، <strong>ليست كل الفصول كاملة</strong>، ويرجى التركيز على السكاشن المقررة فقط كما هو موضح أدناه:
+            </p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs sm:text-sm font-medium mb-4">
+                <div class="p-3 rounded-xl bg-white/90 border border-emerald-300 shadow-sm text-center">
+                    <strong class="block text-emerald-700 font-heading text-sm mb-1">شابتر 1</strong>
+                    <span class="text-emerald-950 font-bold block">مقرر بالكامل ✅</span>
+                    <span class="text-[11px] text-slate-500">كامل بجميع أقسامه</span>
+                </div>
+                <div class="p-3 rounded-xl bg-white/90 border border-amber-300 shadow-sm text-center">
+                    <strong class="block text-amber-700 font-heading text-sm mb-1">شابتر 3</strong>
+                    <span class="text-amber-950 font-bold block">حتى سكشن 3.5 ⚠️</span>
+                    <span class="text-[11px] text-slate-500">ما بعد 3.5 ملغي</span>
+                </div>
+                <div class="p-3 rounded-xl bg-white/90 border border-amber-300 shadow-sm text-center">
+                    <strong class="block text-amber-700 font-heading text-sm mb-1">شابتر 4</strong>
+                    <span class="text-amber-950 font-bold block">حتى سكشن 4.3 ⚠️</span>
+                    <span class="text-[11px] text-slate-500">ما بعد 4.3 ملغي</span>
+                </div>
+                <div class="p-3 rounded-xl bg-white/90 border border-rose-300 shadow-sm text-center">
+                    <strong class="block text-rose-700 font-heading text-sm mb-1">شابتر 5</strong>
+                    <span class="text-rose-950 font-bold block">سكشن 5.1 فقط 🟠</span>
+                    <span class="text-[11px] text-slate-500">باقي الشابتر ملغي</span>
+                </div>
+                <div class="p-3 rounded-xl bg-teal-50 border-2 border-teal-500 shadow-sm text-center ring-2 ring-teal-500/20">
+                    <strong class="block text-teal-800 font-heading text-sm mb-1">شابتر 7 (هذا الفصل)</strong>
+                    <span class="text-teal-950 font-bold block">حتى سكشن 7.5 ⭐</span>
+                    <span class="text-[11px] text-teal-700 font-bold">شرح تفاعلي كامل متاح</span>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-white/80 border border-slate-200 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                💡 <strong>تغطية هذا الموقع التفاعلي:</strong> هذا الموقع يغطي تحديداً كل ما تم شرحه في <strong>شابتر 7 حتى سكشن 7.5</strong> (الأجهزة الخارجية، موديول الـ I/O ووظائفه الخمس، البرمجة المباشرة Programmed I/O، المقاطعات Interrupts، عنونة الذاكرة Memory-Mapped vs Isolated، الوصول المباشر للذاكرة DMA، وطرق كشف الجهاز المقاطع) + أسئلة الدكتور بالإنجليزية وبالبلدي + كويز الـ 25 سؤال MCQ. السكاشن التالية (7.6 DCA و 7.7 و 7.8) غير مشمولة في الامتحان.
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- القسم الأول: الدرس الأول (p1)              -->
+        <!-- ========================================== -->
+        <section id="section-lesson1" class="space-y-8">
+            
+            <!-- عنوان الدرس الأول -->
+            <div class="bg-gradient-to-l from-teal-900 to-teal-800 text-white rounded-2xl p-7 sm:p-9 shadow-md">
+                <span class="inline-block bg-teal-700/80 text-teal-100 text-xs font-heading font-bold px-3 py-1 rounded-full mb-3 border border-teal-600">
+                    شابتر 7 • السكشن 7.1 و 7.2 و 7.3 | أسئلة الدكتور: 7.1 و 7.2 و 7.3
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-heading font-extrabold mb-3">
+                    الدرس 1: مدخل معمارية الإدخال والإخراج ولغز الـ I/O Module
+                </h2>
+                <p class="text-teal-100 text-base sm:text-lg leading-relaxed opacity-95">
+                    قراءة متأنية من الصفر لفهم سبب استحالة توصيل الأجهزة بالمعالج مباشرة، وكيف يعمل المترجم الذكي (I/O Module) وتصنيف الأجهزة ونظام حروف الـ IRA.
+                </p>
+            </div>
+
+            <!-- 1. الحكاية من الصفر -->
+            <article class="reading-block">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <span class="w-9 h-9 rounded-lg bg-teal-100 text-teal-800 font-heading font-bold flex items-center justify-center text-lg">1</span>
+                    <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                        الحكاية من الصفر: ليه المعالج مقدرش يكلم الأجهزة الخارجية مباشرة؟
+                    </h3>
+                </div>
+
+                <p class="mb-6 text-slate-700">
+                    بص يا سيدي، لو جالك مهندس كمبيوتر مبتدئ وقال لك:
+                </p>
+
+                <blockquote class="bg-amber-50/70 border-r-4 border-amber-500 p-5 rounded-xl mb-7 text-slate-800 font-medium">
+                    "إحنا عندنا <span class="en-inline">System Bus</span> (خطوط عناوين وداتا وتحكم) واصلة بين المعالج والرامة.. طب ما نوصل الكيبورد، والماوس، والشاشة، والهارد بنفس خطوط الباص دي مباشرة ونوفر فلوس وتصميم!"
+                </blockquote>
+
+                <p class="mb-8 text-slate-800 font-semibold">
+                    الفكرة دي هندسياً تعتبر <span class="text-red-600 font-bold underline decoration-red-300 underline-offset-8">كارثة مستحيلة</span>! لـ 3 أسباب فيزيائية ومعمارية قاطعة:
+                </p>
+
+                <!-- رسمة هندسية مرسومة بدلاً من الرسمة النصية 1 -->
+                <div class="my-8 bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-6 sm:p-8">
+                    <div class="text-center mb-6">
+                        <span class="text-xs font-heading font-bold uppercase tracking-wider text-teal-700 bg-teal-100 px-3 py-1 rounded-full">مخطط معماري توضيحي 1</span>
+                        <h4 class="font-heading font-bold text-slate-800 text-lg mt-2">لماذا يستحيل توصيل الأجهزة الطرفية بـ System Bus مباشرة؟</h4>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <!-- المعالج والذاكرة -->
+                        <div class="diagram-node bg-slate-900 text-white px-8 py-4 rounded-xl shadow-md text-center w-full max-w-md border-2 border-slate-700">
+                            <div class="font-heading font-bold text-lg">المعالج والذاكرة الرئيسية</div>
+                            <div class="text-xs text-teal-300 font-mono mt-1" dir="ltr">CPU &amp; Main Memory</div>
+                        </div>
+
+                        <!-- سهم -->
+                        <div class="flex flex-col items-center my-2">
+                            <div class="w-1 h-6 bg-teal-600"></div>
+                            <span class="bg-teal-50 text-teal-800 border border-teal-200 text-xs font-heading font-bold px-3 py-1 rounded-full">
+                                System Bus (سريع جداً / إلكتروني بحت)
+                            </span>
+                            <div class="w-1 h-6 bg-teal-600"></div>
+                            <div class="w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[10px] border-t-teal-600"></div>
+                        </div>
+
+                        <!-- صندوق التساؤل -->
+                        <div class="bg-red-50 border-2 border-red-300 text-red-900 px-6 py-3 rounded-xl font-heading font-bold text-center w-full max-w-lg mb-6 shadow-sm">
+                            ⛔ ليه مينفعش نوصل الأجهزة الخارجية هنا مباشرة؟
+                        </div>
+
+                        <!-- الفروع الثلاثة -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                            <div class="diagram-node bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-700 font-bold flex items-center justify-center mb-3 font-heading">1</div>
+                                    <h5 class="font-heading font-bold text-slate-900 mb-2">فجوة السرعة المرعبة</h5>
+                                    <p class="text-sm text-slate-600 leading-relaxed">
+                                        المعالج شغال بالجيجاهرتز (<span class="en-inline">GHz</span>) بينما الكيبورد يرسل بضعة بايتات في الثانية.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="diagram-node bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 font-bold flex items-center justify-center mb-3 font-heading">2</div>
+                                    <h5 class="font-heading font-bold text-slate-900 mb-2">لغات وإشارات مختلفة</h5>
+                                    <p class="text-sm text-slate-600 leading-relaxed">
+                                        الأجهزة ميكانيكية وكهرومغناطيسية وضوئية، بينما المعالج ديجيتال كهربائي نقي.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="diagram-node bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                                <div>
+                                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center mb-3 font-heading">3</div>
+                                    <h5 class="font-heading font-bold text-slate-900 mb-2">أحجام وتنسيقات البيانات</h5>
+                                    <p class="text-sm text-slate-600 leading-relaxed">
+                                        المعالج يسحب بلوك <span class="en-inline">64-bit</span> على التوازي، والكيبورد يرسل حرفاً بحرف <span class="en-inline">7-bit</span>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الشرح التفصيلي للأسباب الثلاثة تحت بعض -->
+                <div class="space-y-5 mt-6">
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200/70">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            1. فجوة السرعة الهائلة (<span class="en-inline">Speed Mismatch</span>):
+                        </h4>
+                        <p class="text-slate-700">
+                            المعالج شغال بمليارات العمليات في الثانية (<span class="en-inline">Gigahertz</span>)، بينما كيبورد بتكتب عليه حرفين في الثانية، أو هارد ديسك بيلف ميكانيكياً. لو المعالج شبك فيهم مباشرة هيفضل "مشلول" مستني أجهزة سلحفائية.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200/70">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            2. اختلاف الإشارات والفيزياء (<span class="en-inline">Operating Principles</span>):
+                        </h4>
+                        <p class="text-slate-700">
+                            المعالج بيفهم إشارات كهربائية رقمية نقية، بينما الأجهزة الخارجية فيها محركات ميكانيكية، ليزر ضوئي (<span class="en-inline">CD</span>)، مجالات مغناطيسية (<span class="en-inline">Hard Disk</span>)، وموجات راديو (<span class="en-inline">Wi-Fi</span>).
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200/70">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            3. تضارب أحجام البيانات (<span class="en-inline">Data Format &amp; Word Length</span>):
+                        </h4>
+                        <p class="text-slate-700">
+                            المعالج بينقل كلمات كاملة (<span class="en-inline">32-bit</span> أو <span class="en-inline">64-bit</span> على التوازي)، بينما كيبورد أو كابل إنترنت بيبعت تيار سيريال متتابع بت ورا بت أو حرف حرف.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 2. الحل المعماري الحتمي -->
+            <article class="reading-block">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <span class="w-9 h-9 rounded-lg bg-teal-100 text-teal-800 font-heading font-bold flex items-center justify-center text-lg">2</span>
+                    <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                        الحل المعماري الحتمي: اختراع "المترجم والمنظم" (<span class="en-inline">I/O Module</span>)
+                    </h3>
+                </div>
+
+                <p class="mb-6 text-slate-700">
+                    عشان نحل الكارثة دي، كان لازم نحط "حلقة وصل وسيطة" ذكية بين عالم المعالج الداخلي فائق السرعة، وعالم الأجهزة الخارجية الفوضوي، القطعة دي سميناها <strong>وحدة الإدخال والإخراج (<span class="en-inline">I/O Module</span>)</strong>:
+                </p>
+
+                <!-- رسمة مرسومة بدلاً من الرسمة النصية 2 -->
+                <div class="my-8 bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-6 sm:p-8">
+                    <div class="text-center mb-6">
+                        <span class="text-xs font-heading font-bold uppercase tracking-wider text-teal-700 bg-teal-100 px-3 py-1 rounded-full">مخطط معماري توضيحي 2</span>
+                        <h4 class="font-heading font-bold text-slate-800 text-lg mt-2">موقع الـ I/O Module كوسيط ومترجم في النظام</h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-5 items-center gap-4">
+                        <!-- المعالج -->
+                        <div class="diagram-node bg-slate-900 text-white p-5 rounded-xl text-center shadow-md">
+                            <div class="text-xs text-slate-400 font-mono mb-1">PROCESSOR</div>
+                            <div class="font-heading font-bold text-lg">المعالج (CPU)</div>
+                        </div>
+
+                        <!-- رابط الباص -->
+                        <div class="flex flex-col items-center justify-center py-2">
+                            <span class="text-xs font-mono font-bold text-teal-800 bg-teal-100 px-2.5 py-1 rounded mb-1" dir="ltr">System Bus</span>
+                            <div class="w-full h-1.5 bg-teal-600 rounded-full my-1"></div>
+                            <span class="text-[11px] text-slate-500 font-mono text-center" dir="ltr">[Data / Addr / Ctrl]</span>
+                        </div>
+
+                        <!-- وحدة I/O -->
+                        <div class="diagram-node bg-teal-700 text-white p-5 rounded-xl text-center shadow-lg border-2 border-teal-500">
+                            <div class="text-xs text-teal-200 font-mono mb-1">TRANSLATOR</div>
+                            <div class="font-heading font-bold text-lg">I/O Module</div>
+                            <div class="text-xs text-teal-100 mt-1">(المترجم والوسيط)</div>
+                        </div>
+
+                        <!-- رابط الجهاز -->
+                        <div class="flex flex-col items-center justify-center py-2">
+                            <span class="text-xs font-mono font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded mb-1" dir="ltr">Interface Link</span>
+                            <div class="w-full h-1.5 bg-amber-500 rounded-full my-1"></div>
+                            <span class="text-[11px] text-slate-500 font-mono text-center" dir="ltr">[Control / Status / Data]</span>
+                        </div>
+
+                        <!-- الجهاز الخارجي -->
+                        <div class="diagram-node bg-white border-2 border-slate-300 text-slate-800 p-5 rounded-xl text-center shadow-sm">
+                            <div class="text-xs text-slate-500 font-mono mb-1">PERIPHERAL</div>
+                            <div class="font-heading font-bold text-lg">الجهاز الخارجي</div>
+                            <div class="text-xs text-slate-500 mt-1">(كيبورد / هارد / شاشة)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-teal-50/70 border border-teal-200 rounded-xl p-6 mt-6">
+                    <h4 class="font-heading font-bold text-teal-950 text-lg mb-3">
+                        الـ <span class="en-inline">I/O Module</span> واقف في النص كأنه سفير دبلوماسي:
+                    </h4>
+                    <ul class="space-y-3 text-slate-800">
+                        <li class="flex items-start gap-3">
+                            <span class="text-teal-700 font-bold mt-1">●</span>
+                            <span><strong>من ناحية المعالج:</strong> لابس بدلة سريعة وشغال بلغة الـ <span class="en-inline">System Bus</span> الداخلية.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-teal-700 font-bold mt-1">●</span>
+                            <span><strong>من ناحية الجهاز الخارجي:</strong> شغال بالكابلات وطريقة الإشارات الخاصة بالجهاز نفسه.</span>
+                        </li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- 3. تصنيف الأجهزة الخارجية -->
+            <article class="reading-block">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-6 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-lg bg-teal-100 text-teal-800 font-heading font-bold flex items-center justify-center text-lg">3</span>
+                        <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                            تصنيف الأجهزة الخارجية في العالم (<span class="en-inline">Three Peripheral Classes</span>)
+                        </h3>
+                    </div>
+                    <span class="text-xs font-heading font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full">فكرة سؤال الدكتور 7.1</span>
+                </div>
+
+                <p class="mb-6 text-slate-700">
+                    كل جهاز خارجي (<span class="en-inline">Peripheral</span>) بيتوصل بالكمبيوتر في كوكب الأرض بيقع تحت تصنيف من <strong>3 عائلات رئيسية</strong> حسب "الطرف التاني" اللي بيتكلم معاه:
+                </p>
+
+                <!-- رسمة شجرة التصنيف بدلاً من كود Mermaid -->
+                <div class="my-8 bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-6 sm:p-8">
+                    <div class="text-center mb-6">
+                        <span class="text-xs font-heading font-bold uppercase tracking-wider text-teal-700 bg-teal-100 px-3 py-1 rounded-full">مخطط شجري 3</span>
+                        <h4 class="font-heading font-bold text-slate-800 text-lg mt-2">أصناف الأجهزة الخارجية (Peripheral Devices)</h4>
+                    </div>
+
+                    <div class="flex flex-col items-center">
+                        <div class="bg-slate-900 text-white font-heading font-bold px-6 py-3.5 rounded-xl shadow text-center mb-6">
+                            أصناف الأجهزة الخارجية (Peripheral Devices)
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
+                            <!-- صنف 1 -->
+                            <div class="diagram-node bg-white rounded-xl border-2 border-emerald-200 p-5 shadow-sm flex flex-col">
+                                <div class="bg-emerald-50 text-emerald-900 font-heading font-bold p-3 rounded-lg text-center mb-4 border border-emerald-200">
+                                    1. مقروءة للبشر<br>
+                                    <span class="font-mono text-xs text-emerald-700">Human Readable</span>
+                                </div>
+                                <p class="text-sm text-slate-600 mb-3 flex-grow">
+                                    مناسبة للتواصل المباشر مع البني آدم (إدخال باليد أو إخراج للعين).
+                                </p>
+                                <div class="bg-slate-50 p-3 rounded-lg text-xs text-slate-700 font-medium border border-slate-200">
+                                    <strong>أمثلة:</strong> الشاشة (<span class="en-inline">Monitor/VDT</span>)، الكيبورد، الطابعة (<span class="en-inline">Printer</span>).
+                                </div>
+                            </div>
+
+                            <!-- صنف 2 -->
+                            <div class="diagram-node bg-white rounded-xl border-2 border-blue-200 p-5 shadow-sm flex flex-col">
+                                <div class="bg-blue-50 text-blue-900 font-heading font-bold p-3 rounded-lg text-center mb-4 border border-blue-200">
+                                    2. مقروءة للآلات<br>
+                                    <span class="font-mono text-xs text-blue-700">Machine Readable</span>
+                                </div>
+                                <p class="text-sm text-slate-600 mb-3 flex-grow">
+                                    مناسبة لتخزين البيانات وتشغيل المعدات والآلات بدون تدخل بشري مباشر.
+                                </p>
+                                <div class="bg-slate-50 p-3 rounded-lg text-xs text-slate-700 font-medium border border-slate-200">
+                                    <strong>أمثلة:</strong> القرص الصلب (<span class="en-inline">Hard Disk</span>)، الأشرطة، الحساسات (<span class="en-inline">Sensors</span>)، المحركات (<span class="en-inline">Actuators</span>).
+                                </div>
+                            </div>
+
+                            <!-- صنف 3 -->
+                            <div class="diagram-node bg-white rounded-xl border-2 border-purple-200 p-5 shadow-sm flex flex-col">
+                                <div class="bg-purple-50 text-purple-900 font-heading font-bold p-3 rounded-lg text-center mb-4 border border-purple-200">
+                                    3. أجهزة اتصالات وشبكات<br>
+                                    <span class="font-mono text-xs text-purple-700">Communication</span>
+                                </div>
+                                <p class="text-sm text-slate-600 mb-3 flex-grow">
+                                    مناسبة للتواصل وتبادل البيانات مع كمبيوترات وأجهزة بعيدة عبر خطوط النقل.
+                                </p>
+                                <div class="bg-slate-50 p-3 rounded-lg text-xs text-slate-700 font-medium border border-slate-200">
+                                    <strong>أمثلة:</strong> كارت الشبكة (<span class="en-inline">NIC</span>)، المودم (<span class="en-inline">Modem</span>).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4 mt-6">
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <strong class="text-slate-900 font-heading">1. Human Readable (تخاطب الإنسان):</strong>
+                        <span class="text-slate-700"> أجهزة وظيفتها تطلع داتا يفهمها البشر بالعين أو تسمح للإنسان يدخل بياناته (شاشات العرض VDTs، الطابعات Printers، لوحة المفاتيح Keyboards).</span>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <strong class="text-slate-900 font-heading">2. Machine Readable (تخاطب الآلات والمعدات):</strong>
+                        <span class="text-slate-700"> أجهزة وظيفتها تخزين كتل البيانات الكبيرة بدون تدخل بشري مباشر أو قياس البيئة المحيطة (الأقراص الممغنطة Disks، المشغلات والمحركات Actuators، الحساسات Sensors).</span>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <strong class="text-slate-900 font-heading">3. Communication (تخاطب الشبكات والاتصالات):</strong>
+                        <span class="text-slate-700"> أجهزة وظيفتها مد كوبري اتصال لنقل الداتا مع كمبيوترات أو أجهزة طرفية بعيدة عبر خطوط الاتصال (Modems، شبكات الـ Ethernet).</span>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 4. فك شفرة الكيبورد IRA / ASCII -->
+            <article class="reading-block">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-6 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-lg bg-teal-100 text-teal-800 font-heading font-bold flex items-center justify-center text-lg">4</span>
+                        <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                            فك شفرة الكيبورد: ما هي لغة الـ <span class="en-inline">IRA / ASCII</span>؟
+                        </h3>
+                    </div>
+                    <span class="text-xs font-heading font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full">فكرة سؤال الدكتور 7.2</span>
+                </div>
+
+                <p class="mb-4 text-slate-700">
+                    أشهر مثال على الأجهزة التي تقرأ للبشر (<span class="en-inline">Human-Readable</span>) هو الكيبورد والشاشة.
+                </p>
+                <p class="mb-6 text-slate-800 font-semibold">
+                    لما تضغط على زرار حرف <span class="en-inline">A</span> على الكيبورد، إيه اللي بيحصل جوه السلك؟
+                </p>
+
+                <!-- رسمة مسار ضغطة الزرار -->
+                <div class="my-7 bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 items-center gap-3 text-center">
+                        <div class="bg-white p-4 rounded-xl border border-slate-300 shadow-sm">
+                            <span class="text-2xl block mb-1">⌨️</span>
+                            <div class="font-heading font-bold text-slate-900 text-sm">ضغطت زرار A</div>
+                            <div class="text-xs text-slate-500">حركة ميكانيكية بإيدك</div>
+                        </div>
+
+                        <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 shadow-sm">
+                            <span class="text-2xl block mb-1">⚡</span>
+                            <div class="font-heading font-bold text-amber-900 text-sm">محول Transducer</div>
+                            <div class="text-xs text-amber-700">جوه الكيبورد يحول الحركة لإشارة</div>
+                        </div>
+
+                        <div class="bg-teal-50 p-4 rounded-xl border border-teal-200 shadow-sm">
+                            <span class="font-mono font-bold text-teal-800 text-base block mb-1" dir="ltr">1000001 (7-bit)</span>
+                            <div class="font-heading font-bold text-teal-900 text-sm">كود ثنائي (IRA Code)</div>
+                            <div class="text-xs text-teal-700">شفرة موحدة للحرف</div>
+                        </div>
+
+                        <div class="bg-slate-900 text-white p-4 rounded-xl shadow-sm">
+                            <span class="text-2xl block mb-1">📥</span>
+                            <div class="font-heading font-bold text-sm">رايح للـ I/O Module</div>
+                            <div class="text-xs text-slate-300">ليستلمها المعالج</div>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="space-y-3 mb-7 text-slate-700">
+                    <li class="flex items-start gap-2">
+                        <span class="text-teal-600 font-bold">•</span>
+                        <span>وحدة التبادل الأساسية هي <strong>الحرف (<span class="en-inline">Character</span>)</strong>.</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-teal-600 font-bold">•</span>
+                        <span>تم توحيد لغة الحروف دي عالمياً بجدول قياسي اسمه <strong>(<span class="en-inline">IRA - International Reference Alphabet</span>)</strong> وهو هو جدول <strong><span class="en-inline">ASCII</span></strong> المعروف عالمياً.</span>
+                    </li>
+                </ul>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6">
+                    <h4 class="font-heading font-bold text-slate-900 text-lg mb-4">الخصائص الهندسية لجدول IRA:</h4>
+                    
+                    <div class="mb-5 p-4 bg-white rounded-xl border border-slate-200">
+                        <span class="font-heading font-bold text-teal-800">1. طول الكود الثنائي:</span>
+                        <p class="text-slate-700 mt-1">
+                            بيستخدم كود ثنائي طوله <strong><span class="en-inline">7-bit</span></strong>، يعني يقدر يشيل <span class="en-inline">2<sup>7</sup> = 128</span> رمز مختلف.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-white rounded-xl border border-slate-200">
+                        <span class="font-heading font-bold text-teal-800 block mb-3">2. الحروف دي متقسمة لـ نوعين لا ثالث لهما:</span>
+                        <div class="space-y-4">
+                            <div class="p-3.5 rounded-lg bg-emerald-50/70 border border-emerald-200">
+                                <strong class="font-heading text-emerald-950">أ) حروف قابلة للطباعة (Printable Characters):</strong>
+                                <p class="text-slate-700 text-base mt-1">
+                                    زي الحروف الأبجدية (<span class="en-inline">A-Z</span>)، والأرقام (<span class="en-inline">0-9</span>)، وعلامات الترقيم اللي بتظهر قدامك على الشاشة أو الورق.
+                                </p>
+                            </div>
+                            <div class="p-3.5 rounded-lg bg-indigo-50/70 border border-indigo-200">
+                                <strong class="font-heading text-indigo-950">ب) حروف تحكم (Control Characters):</strong>
+                                <p class="text-slate-700 text-base mt-1">
+                                    دي رموز مخفية مش بتطبع شكل، لكن بتنفذ "حركات" وأوامر زي: زرار الرجوع لأول السطر (<span class="en-inline">Carriage Return - Enter</span>)، أو الانتقال لسطر جديد (<span class="en-inline">Line Feed</span>)، أو إشارات تنظيم بروتوكولات الاتصال بين الأجهزة.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 5. الوظائف الخمس الجوهرية لوحدة الـ I/O Module -->
+            <article class="reading-block">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-6 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-lg bg-teal-100 text-teal-800 font-heading font-bold flex items-center justify-center text-lg">5</span>
+                        <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                            الوظائف الخمس الجوهرية لوحدة الـ <span class="en-inline">I/O Module</span>
+                        </h3>
+                    </div>
+                    <span class="text-xs font-heading font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full">فكرة سؤال الدكتور 7.3</span>
+                </div>
+
+                <p class="mb-6 text-slate-700">
+                    الـ <span class="en-inline">I/O Module</span> مش مجرد "فيشة" بنركب فيها السلك! دي شريحة ذكية جداً بتعمل <strong>5 مهمات هندسية</strong> حاسمة لاستقرار الكمبيوتر:
+                </p>
+
+                <!-- رسمة مرسومة للوظائف الخمس -->
+                <div class="my-8 bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-6 sm:p-8">
+                    <div class="text-center mb-6">
+                        <span class="text-xs font-heading font-bold uppercase tracking-wider text-teal-700 bg-teal-100 px-3 py-1 rounded-full">مخطط معماري 4</span>
+                        <h4 class="font-heading font-bold text-slate-800 text-lg mt-2">الوظائف الخمس لوحدة الإدخال والإخراج (I/O Module)</h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                        <div class="diagram-node bg-white p-4 rounded-xl border border-slate-200 text-center shadow-sm">
+                            <div class="w-8 h-8 mx-auto rounded-full bg-teal-700 text-white font-bold flex items-center justify-center text-sm mb-2">1</div>
+                            <div class="font-heading font-bold text-slate-900 text-sm">التحكم والتوقيت</div>
+                            <div class="text-[11px] font-mono text-teal-700 my-1" dir="ltr">Control &amp; Timing</div>
+                            <div class="text-xs text-slate-500">يظبط المرور على الباص</div>
+                        </div>
+
+                        <div class="diagram-node bg-white p-4 rounded-xl border border-slate-200 text-center shadow-sm">
+                            <div class="w-8 h-8 mx-auto rounded-full bg-teal-700 text-white font-bold flex items-center justify-center text-sm mb-2">2</div>
+                            <div class="font-heading font-bold text-slate-900 text-sm">مخاطبة المعالج</div>
+                            <div class="text-[11px] font-mono text-teal-700 my-1" dir="ltr">Processor Comm</div>
+                            <div class="text-xs text-slate-500">يفهم الأوامر والعناوين</div>
+                        </div>
+
+                        <div class="diagram-node bg-white p-4 rounded-xl border border-slate-200 text-center shadow-sm">
+                            <div class="w-8 h-8 mx-auto rounded-full bg-teal-700 text-white font-bold flex items-center justify-center text-sm mb-2">3</div>
+                            <div class="font-heading font-bold text-slate-900 text-sm">مخاطبة الجهاز</div>
+                            <div class="text-[11px] font-mono text-teal-700 my-1" dir="ltr">Device Comm</div>
+                            <div class="text-xs text-slate-500">يبعت الإشارات للطرفية</div>
+                        </div>
+
+                        <div class="diagram-node bg-amber-50 p-4 rounded-xl border-2 border-amber-300 text-center shadow-sm">
+                            <div class="w-8 h-8 mx-auto rounded-full bg-amber-600 text-white font-bold flex items-center justify-center text-sm mb-2">4</div>
+                            <div class="font-heading font-bold text-amber-950 text-sm">تخزين مؤقت ⭐</div>
+                            <div class="text-[11px] font-mono text-amber-800 my-1" dir="ltr">Data Buffering</div>
+                            <div class="text-xs text-amber-900 font-medium">يوازن فرق السرعات</div>
+                        </div>
+
+                        <div class="diagram-node bg-white p-4 rounded-xl border border-slate-200 text-center shadow-sm">
+                            <div class="w-8 h-8 mx-auto rounded-full bg-teal-700 text-white font-bold flex items-center justify-center text-sm mb-2">5</div>
+                            <div class="font-heading font-bold text-slate-900 text-sm">كشف الأخطاء</div>
+                            <div class="text-[11px] font-mono text-teal-700 my-1" dir="ltr">Error Detection</div>
+                            <div class="text-xs text-slate-500">يكشف الأعطال والـ Parity</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تفاصيل الوظائف الخمس تحت بعض -->
+                <div class="space-y-5 mt-6">
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            1. التحكم والتوقيت (<span class="en-inline">Control &amp; Timing</span>):
+                        </h4>
+                        <p class="text-slate-700">
+                            تنسيق حركة المرور بين مصادر المعالج الداخلية والأجهزة الخارجية حتى لا يحدث تصادم في الإشارات الكهربائية على الباص.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            2. التواصل مع المعالج (<span class="en-inline">Processor Communication</span>):
+                        </h4>
+                        <ul class="space-y-2 text-slate-700 pr-4">
+                            <li>• يفك تشفير أوامر المعالج (<span class="en-inline">Command Decoding</span>) مثل: <span class="en-inline">READ</span> و <span class="en-inline">WRITE</span> و <span class="en-inline">STATUS</span>.</li>
+                            <li>• يتعرف على عنوان الجهاز الخاص به (<span class="en-inline">Address Recognition</span>).</li>
+                            <li>• يبلغ المعالج بحالته (<span class="en-inline">Status Reporting</span>) مثل: الجهاز مشغول (<span class="en-inline">Busy</span>)، أو جاهز (<span class="en-inline">Ready</span>).</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            3. التواصل مع الجهاز الخارجي (<span class="en-inline">Device Communication</span>):
+                        </h4>
+                        <p class="text-slate-700">
+                            يرسل الأوامر المناسبة للطرفية (مثلاً: ابدأ لف أسطوانة الهارد، اسحب ورقة في الطابعة) ويتبادل الداتا معها.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-amber-50/80 border-2 border-amber-300">
+                        <h4 class="font-heading font-bold text-amber-950 text-lg mb-2">
+                            4. تخزين البيانات مؤقتاً (<span class="en-inline">Data Buffering</span>) — أهم وظيفة!
+                        </h4>
+                        <p class="text-slate-800">
+                            سرعة نقل البيانات بين المعالج والرامة تصل لجيجابايت/ثانية، بينما الجهاز الخارجي بطيء جداً. الـ <span class="en-inline">I/O Module</span> يستقبل البيانات بسرعة من المعالج ويخزنها في مسجلات داخلية (<span class="en-inline">Buffers</span>)، ثم يقطرها بالراحة للجهاز الخارجي حسب سرعته (أو العكس في الإدخال)، وبالتالي يمنع حبس المعالج وتعطيله.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            5. كشف الأخطاء (<span class="en-inline">Error Detection</span>):
+                        </h4>
+                        <p class="text-slate-700">
+                            مراقبة أي خطأ ميكانيكي في الجهاز (مثل: الورق خلص في الطابعة، أو الباد سيكتور في الهارد) أو خطأ كهربائي في نقل الإشارات (باستخدام بتات الـ <span class="en-inline">Parity</span>).
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 6. كبسولة المفاهيم السريعة للدرس الأول -->
+            <article class="reading-block">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <span class="w-9 h-9 rounded-lg bg-teal-100 text-teal-800 font-heading font-bold flex items-center justify-center text-lg">6</span>
+                    <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                        كبسولة المفاهيم السريعة (<span class="en-inline">Concept Checklist</span>)
+                    </h3>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-teal-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-teal-700 rounded">
+                        <span><strong>Peripheral Device:</strong> أي جهاز خارجي متصل بالكمبيوتر عبر وصلة لـ I/O Module.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-teal-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-teal-700 rounded">
+                        <span><strong>Why I/O Module is needed:</strong> لـ 3 أسباب: فجوة السرعة الكبيرة، واختلاف الإشارات الميكانيكية والكهربائية، واختلاف أطوال الكلمات وتنسيقها.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-teal-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-teal-700 rounded">
+                        <span><strong>Human Readable:</strong> أجهزة للتواصل مع البشر (شاشة، كيبورد، طابعة).</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-teal-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-teal-700 rounded">
+                        <span><strong>Machine Readable:</strong> أجهزة للتخزين والمعدات (هارد، أشرطة، حساسات).</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-teal-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-teal-700 rounded">
+                        <span><strong>Communication:</strong> أجهزة للتواصل والشبكات (مودم، كارت نت).</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-teal-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-teal-700 rounded">
+                        <span><strong>IRA (International Reference Alphabet):</strong> نظام تشفير الأحرف القياسي (ASCII) بطول 7 بت (128 رمز).</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-teal-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-teal-700 rounded">
+                        <span><strong>Printable Characters:</strong> حروف قابلة للعرض (أبجدية وأرقام).</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-teal-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-teal-700 rounded">
+                        <span><strong>Control Characters:</strong> رموز تحكم غير مرئية (تنظيم الشاشة/السطور وبروتوكولات الاتصال).</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-teal-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-teal-700 rounded">
+                        <span><strong>Data Buffering:</strong> عملية موازنة السرعات بتخزين الداتا مؤقتاً داخل موديول الـ I/O.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-teal-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-teal-700 rounded">
+                        <span><strong>Error Detection:</strong> رصد الأعطال الميكانيكية وأخطاء الإرسال الكهربائي وإبلاغ المعالج بها.</span>
+                    </label>
+                </div>
+            </article>
+
+            <!-- 7. بنك أسئلة الدكتور للدرس الأول -->
+            <article class="reading-block">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <span class="w-9 h-9 rounded-lg bg-amber-100 text-amber-800 font-heading font-bold flex items-center justify-center text-lg">7</span>
+                    <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                        بنك أسئلة الدكتور للدرس الأول (نموذج إجابة الامتحان + الكلمات المفتاحية)
+                    </h3>
+                </div>
+
+                <div class="space-y-10">
+                    <!-- سؤال 7.1 -->
+                    <div class="border-2 border-slate-200 rounded-2xl overflow-hidden">
+                        <div class="bg-slate-900 text-white p-5">
+                            <span class="text-xs font-mono uppercase text-teal-300 block mb-1">السؤال 7.1 | Question 7.1</span>
+                            <p class="en-text font-bold text-lg text-white">Q: List three broad classifications of external, or peripheral, devices.</p>
+                            <p class="text-slate-300 text-sm mt-2">الترجمة: اذكر التصنيفات الثلاثة الرئيسية للأجهزة الخارجية (الطرفية) المتصلة بالكمبيوتر.</p>
+                        </div>
+                        <div class="p-6 space-y-5 bg-white">
+                            <div>
+                                <h4 class="font-heading font-bold text-teal-800 text-sm mb-2">الإجابة النموذجية بالإنجليزية (Model Answer):</h4>
+                                <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-800 space-y-3">
+                                    <p>External or peripheral devices are broadly classified into three categories based on the entity they communicate with:</p>
+                                    <ol class="list-decimal list-inside space-y-2">
+                                        <li><strong>Human readable:</strong> Suitable for communicating directly with the computer user.<br><em>Examples:</em> Video Display Terminals (VDTs/monitors), keyboards, and printers.</li>
+                                        <li><strong>Machine readable:</strong> Suitable for communicating with computer equipment and physical systems.<br><em>Examples:</em> Magnetic disk and tape systems, sensors, and actuators.</li>
+                                        <li><strong>Communication:</strong> Suitable for communicating with remote devices or other computers.<br><em>Examples:</em> Modems and Network Interface Cards (NICs).</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+                                <h5 class="font-heading font-bold text-amber-950 text-sm mb-1">الشرح بالبلدي والتركيز للامتحان:</h5>
+                                <p class="text-slate-700 text-base">بنقسم الأجهزة حسب مين الطرف التاني اللي بيتكلم معاها: إنسان، ولا ماكينة تانية، ولا شبكة بعيدة. اذكر التصنيف ومثالين عليه عشان تاخد الدرجة كاملة فوراً.</p>
+                            </div>
+                            <div class="bg-teal-50/60 p-4 rounded-xl border border-teal-200">
+                                <h5 class="font-heading font-bold text-teal-950 text-sm mb-2">🔑 الكلمات المفتاحية (Keywords للدرجة الكاملة):</h5>
+                                <div class="flex flex-wrap gap-2" dir="ltr">
+                                    <span class="en-inline">Human readable (VDTs, printers, keyboards)</span>
+                                    <span class="en-inline">Machine readable (magnetic disk/tape, sensors, actuators)</span>
+                                    <span class="en-inline">Communication (modems, remote devices)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- سؤال 7.2 -->
+                    <div class="border-2 border-slate-200 rounded-2xl overflow-hidden">
+                        <div class="bg-slate-900 text-white p-5">
+                            <span class="text-xs font-mono uppercase text-teal-300 block mb-1">السؤال 7.2 | Question 7.2</span>
+                            <p class="en-text font-bold text-lg text-white">Q: What is the International Reference Alphabet (IRA)?</p>
+                            <p class="text-slate-300 text-sm mt-2">الترجمة: ما هي أبجدية المرجع الدولي (IRA) وما خصائصها؟</p>
+                        </div>
+                        <div class="p-6 space-y-5 bg-white">
+                            <div>
+                                <h4 class="font-heading font-bold text-teal-800 text-sm mb-2">الإجابة النموذجية بالإنجليزية (Model Answer):</h4>
+                                <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-800 space-y-3">
+                                    <p>The <strong>International Reference Alphabet (IRA)</strong> (commonly known as ASCII) is a standardized character-encoding scheme used for the exchange of data between the computer and human-readable peripherals:</p>
+                                    <ol class="list-decimal list-inside space-y-2">
+                                        <li><strong>7-bit Code:</strong> Each character is uniquely represented by a <strong>7-bit binary code</strong>, allowing a total of 2<sup>7</sup> = 128 distinct characters.</li>
+                                        <li><strong>Character Types:</strong>
+                                            <ul class="list-disc list-inside ml-5 mt-1 space-y-1">
+                                                <li><strong>Printable characters:</strong> Alphabetic letters, numeric digits, and special punctuation characters that can be displayed or printed.</li>
+                                                <li><strong>Control characters:</strong> Non-printing codes concerned with controlling the printing/display format (e.g., carriage return) or communications procedures.</li>
+                                            </ul>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+                                <h5 class="font-heading font-bold text-amber-950 text-sm mb-1">الشرح بالبلدي والتركيز للامتحان:</h5>
+                                <p class="text-slate-700 text-base">هو جدول الأسكي الشهير: كل حرف محجوز له كود 7 بت (128 شكل)، وفيه نوعين: حروف بتظهر على الشاشة (Printable)، وأزرار تحكم وتنظيم وظائف (Control).</p>
+                            </div>
+                            <div class="bg-teal-50/60 p-4 rounded-xl border border-teal-200">
+                                <h5 class="font-heading font-bold text-teal-950 text-sm mb-2">🔑 الكلمات المفتاحية (Keywords للدرجة الكاملة):</h5>
+                                <div class="flex flex-wrap gap-2" dir="ltr">
+                                    <span class="en-inline">7-bit binary code (128 different characters)</span>
+                                    <span class="en-inline">Standardized character encoding</span>
+                                    <span class="en-inline">Printable characters</span>
+                                    <span class="en-inline">Control characters</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- سؤال 7.3 -->
+                    <div class="border-2 border-slate-200 rounded-2xl overflow-hidden">
+                        <div class="bg-slate-900 text-white p-5">
+                            <span class="text-xs font-mono uppercase text-teal-300 block mb-1">السؤال 7.3 | Question 7.3</span>
+                            <p class="en-text font-bold text-lg text-white">Q: What are the major functions of an I/O module?</p>
+                            <p class="text-slate-300 text-sm mt-2">الترجمة: ما هي الوظائف والمهام الرئيسية لوحدة الإدخال والإخراج (I/O Module)؟</p>
+                        </div>
+                        <div class="p-6 space-y-5 bg-white">
+                            <div>
+                                <h4 class="font-heading font-bold text-teal-800 text-sm mb-2">الإجابة النموذجية بالإنجليزية (Model Answer):</h4>
+                                <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-800 space-y-3">
+                                    <p>The major functions of an I/O module fall into five key categories:</p>
+                                    <ol class="list-decimal list-inside space-y-2">
+                                        <li><strong>Control and Timing:</strong> Coordinates the flow of traffic between internal computer resources (processor, memory) and external peripheral devices.</li>
+                                        <li><strong>Processor Communication:</strong> Handles command decoding, status reporting, address recognition, and data exchange with the processor.</li>
+                                        <li><strong>Device Communication:</strong> Exchanges commands, device status information, and data directly with the peripheral device.</li>
+                                        <li><strong>Data Buffering:</strong> Temporarily stores data in internal registers to bridge and balance the massive speed disparity between high-speed system buses and low-speed peripherals.</li>
+                                        <li><strong>Error Detection:</strong> Detects and reports mechanical faults (e.g., paper jams) and transmission errors (e.g., bit parity errors).</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+                                <h5 class="font-heading font-bold text-amber-950 text-sm mb-1">الشرح بالبلدي والتركيز للامتحان:</h5>
+                                <p class="text-slate-700 text-base">الدكتور لما يسألك عن وظائف موديول الـ I/O عاوز الـ 5 رؤوس دول: تحكم وتوقيت، كلام مع المعالج، كلام مع الجهاز، تخزين مؤقت للسرعة (Buffering)، وكشف الأخطاء.</p>
+                            </div>
+                            <div class="bg-teal-50/60 p-4 rounded-xl border border-teal-200">
+                                <h5 class="font-heading font-bold text-teal-950 text-sm mb-2">🔑 الكلمات المفتاحية (Keywords للدرجة الكاملة):</h5>
+                                <div class="flex flex-wrap gap-2" dir="ltr">
+                                    <span class="en-inline">Control and timing</span>
+                                    <span class="en-inline">Processor communication</span>
+                                    <span class="en-inline">Device communication</span>
+                                    <span class="en-inline">Data buffering</span>
+                                    <span class="en-inline">Error detection</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- زر الانتقال للدرس الثاني -->
+                <div class="mt-10 pt-6 border-t border-slate-200 flex justify-end">
+                    <button onclick="switchSection('lesson2')" class="bg-teal-700 hover:bg-teal-800 text-white font-heading font-bold px-6 py-3.5 rounded-xl shadow transition flex items-center gap-3">
+                        <span>الانتقال إلى الدرس الثاني: تقنيات النقل والعنونة</span>
+                        <span>←</span>
+                    </button>
+                </div>
+            </article>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- القسم الثاني: الدرس الثاني (p2)            -->
+        <!-- ========================================== -->
+        <section id="section-lesson2" class="space-y-8 hidden">
+
+            <!-- عنوان الدرس الثاني -->
+            <div class="bg-gradient-to-l from-indigo-900 to-slate-900 text-white rounded-2xl p-7 sm:p-9 shadow-md">
+                <span class="inline-block bg-indigo-700/80 text-indigo-100 text-xs font-heading font-bold px-3 py-1 rounded-full mb-3 border border-indigo-500">
+                    شابتر 7 • السكشن 7.3 و 7.4 و 7.5 | أسئلة الدكتور: 7.4 و 7.5 و 7.6
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-heading font-extrabold mb-3">
+                    الدرس 2: طرق تنفيذ الإدخال والإخراج وعنونة المنافذ
+                </h2>
+                <p class="text-indigo-100 text-base sm:text-lg leading-relaxed opacity-95">
+                    كيف ينقل المعالج البيانات فعلياً عبر الـ Programmed I/O والـ Interrupt والـ DMA، والفرق المعماري بين Memory-Mapped و Isolated I/O، وكيف يكتشف المعالج هوية الجهاز المقاطع.
+                </p>
+            </div>
+
+            <!-- 1. الحكاية من الصفر -->
+            <article class="reading-block">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <span class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-800 font-heading font-bold flex items-center justify-center text-lg">1</span>
+                    <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                        الحكاية من الصفر: إزاي المعالج بينقل البيانات فعلياً؟
+                    </h3>
+                </div>
+
+                <p class="mb-4 text-slate-700">
+                    في الدرس الأول، عرفنا إن عندنا <strong><span class="en-inline">I/O Module</span></strong> واقف في النص كمترجم ومنظم بين المعالج والأجهزة الخارجية.
+                </p>
+                <p class="mb-6 text-slate-900 font-bold">
+                    السؤال المعماري الكبير دلوقتي: لو المعالج عاوز يقرا بلوك داتا من القرص الصلب (<span class="en-inline">Hard Disk</span>) أو يستقبل كلمة من لوحة المفاتيح، مين اللي هيدير عملية النقل دي خطوة بخطوة؟
+                </p>
+                <p class="mb-6 text-slate-700">
+                    عبر تاريخ تطور هندسة الحاسب، ظهرت <strong>3 طرق (<span class="en-inline">Techniques</span>)</strong> لنقل البيانات، كل طريقة جت عشان تحل العيب القاتل في الطريقة اللي قبلها:
+                </p>
+
+                <!-- رسمة رحلة تطور تقنيات الـ I/O -->
+                <div class="my-8 bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-6 sm:p-8">
+                    <div class="text-center mb-6">
+                        <span class="text-xs font-heading font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full">مخطط تطوري 1</span>
+                        <h4 class="font-heading font-bold text-slate-800 text-lg mt-2">رحلة تطور تقنيات الإدخال والإخراج (I/O Evolution)</h4>
+                    </div>
+
+                    <div class="space-y-4 max-w-2xl mx-auto">
+                        <!-- المرحلة 1 -->
+                        <div class="diagram-node bg-white border-2 border-rose-200 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+                                <span class="font-heading font-bold text-rose-900 text-lg">1. Programmed I/O</span>
+                                <span class="text-xs bg-rose-100 text-rose-800 px-2.5 py-1 rounded-full font-bold">الجيل الأول</span>
+                            </div>
+                            <p class="text-slate-700 text-sm">المعالج محبوس في اللوب يسأل الجهاز باستمرار (<span class="en-inline">Busy-Waiting</span>).</p>
+                        </div>
+
+                        <!-- سهم للثانية -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-1 h-4 bg-indigo-500"></div>
+                            <span class="bg-indigo-50 text-indigo-800 border border-indigo-200 text-xs font-heading font-bold px-3 py-1 rounded-full">
+                                💡 حل مشكلة تضييع وقت الـ CPU في الانتظار
+                            </span>
+                            <div class="w-1 h-4 bg-indigo-500"></div>
+                        </div>
+
+                        <!-- المرحلة 2 -->
+                        <div class="diagram-node bg-white border-2 border-amber-200 rounded-xl p-5 shadow-sm">
+                            <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+                                <span class="font-heading font-bold text-amber-900 text-lg">2. Interrupt-Driven I/O</span>
+                                <span class="text-xs bg-amber-100 text-amber-800 px-2.5 py-1 rounded-full font-bold">الجيل الثاني</span>
+                            </div>
+                            <p class="text-slate-700 text-sm">المعالج حر يشوف شغله، والجهاز يرن عليه جرس (<span class="en-inline">Interrupt</span>) لما يجهز.</p>
+                        </div>
+
+                        <!-- سهم للثالثة -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-1 h-4 bg-teal-600"></div>
+                            <span class="bg-teal-50 text-teal-800 border border-teal-200 text-xs font-heading font-bold px-3 py-1 rounded-full">
+                                🚀 حل مشكلة نقل كتل الداتا الضخمة كلمة بكلمة
+                            </span>
+                            <div class="w-1 h-4 bg-teal-600"></div>
+                        </div>
+
+                        <!-- المرحلة 3 -->
+                        <div class="diagram-node bg-teal-900 text-white border-2 border-teal-600 rounded-xl p-5 shadow-md">
+                            <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+                                <span class="font-heading font-bold text-white text-lg">3. Direct Memory Access (DMA)</span>
+                                <span class="text-xs bg-teal-700 text-teal-100 px-2.5 py-1 rounded-full font-bold">الحل النهائي للكتل</span>
+                            </div>
+                            <p class="text-teal-100 text-sm">شريحة مستقلة تنقل البلوك كاملاً مباشرة للرامة دون إشغال المعالج!</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 2. التقنيات الثلاث لتنفيذ الإدخال والإخراج -->
+            <article class="reading-block">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-6 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-800 font-heading font-bold flex items-center justify-center text-lg">2</span>
+                        <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                            التقنيات الثلاث لتنفيذ الإدخال والإخراج (<span class="en-inline">Three I/O Techniques</span>)
+                        </h3>
+                    </div>
+                    <span class="text-xs font-heading font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full">فكرة سؤال الدكتور 7.4</span>
+                </div>
+
+                <div class="space-y-7">
+                    <!-- التقنية 1 -->
+                    <div class="p-6 rounded-2xl bg-slate-50 border-2 border-slate-200">
+                        <h4 class="font-heading font-bold text-slate-900 text-xl mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-slate-800 text-white text-sm flex items-center justify-center">1</span>
+                            الإدخال والإخراج المبرمج (<span class="en-inline">Programmed I/O</span>)
+                        </h4>
+                        <div class="space-y-4">
+                            <div>
+                                <strong class="font-heading text-teal-800 block mb-1">كيف يعمل؟</strong>
+                                <p class="text-slate-700">
+                                    المعالج يصدر أمر القراءة/الكتابة لـ <span class="en-inline">I/O Module</span>، وبعدها يدخل في <strong>حلقة تكرارية مستمرة (<span class="en-inline">Loop</span>)</strong> يفضل يسأل فيها مسجل الحالة (<span class="en-inline">Status Register</span>) بتاع الجهاز: <em>"يا جهاز جهزت؟ يا جهاز خلصت؟"</em>، ويفضل واقف مكانه مبيعملش أي حاجة تانية لحد ما الداتا تجهز! العملية دي بنسميها هندسياً: <strong>الانتظار النشط أو الفحص الدوري (<span class="en-inline">Busy-Waiting / Polling</span>)</strong>.
+                                </p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-950">
+                                <strong class="font-heading">⚠️ العيب القاتل:</strong> إهدار مرعب لقوة المعالج الحسابية؛ المعالج السريع جداً بيفضل مشلول ومحبوس في لوب لمجرد انتظار جهاز خارجي بطيء.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- التقنية 2 -->
+                    <div class="p-6 rounded-2xl bg-slate-50 border-2 border-slate-200">
+                        <h4 class="font-heading font-bold text-slate-900 text-xl mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-slate-800 text-white text-sm flex items-center justify-center">2</span>
+                            الإدخال والإخراج المدفوع بالمقاطعة (<span class="en-inline">Interrupt-Driven I/O</span>)
+                        </h4>
+                        <div class="space-y-4">
+                            <div>
+                                <strong class="font-heading text-teal-800 block mb-1">كيف يعمل؟</strong>
+                                <p class="text-slate-700">
+                                    المعالج يصدر أمر القراءة/الكتابة لـ <span class="en-inline">I/O Module</span>، لكن <strong>مش بيقف يستنى نهائياً</strong>! المعالج بيكمل شغله الطبيعي وينفذ برامج تانية في الذاكرة. لما الجهاز الخارجي يجهز البيانات في البافر الداخلي بتاعه، موديول الـ <span class="en-inline">I/O</span> يبعت إشارة كهربائية على سلك تحكم خاص بالمعالج اسمها <strong>إشارة مقاطعة (<span class="en-inline">Interrupt Signal</span>)</strong>. المعالج يوقف شغله مؤقتاً، يستقبل البيانات بسرعة، ثم يرجع يكمل شغله القديم.
+                                </p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-950">
+                                <strong class="font-heading">✅ الميزة:</strong> قضينا تماماً على تضييع وقت المعالج في الانتظار (<span class="en-inline">No busy-waiting</span>).
+                            </div>
+                            <div class="p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-950">
+                                <strong class="font-heading">⚠️ العيب المتبقي:</strong> المعالج لا يزال هو المسؤول عن نقل كل كلمة داتا بنفسه بين مسجلات الـ I/O والذاكرة (<span class="en-inline">CPU is still tied up in transferring data</span>). لو بننقل ملف كبير (جيجابايت)، المعالج هيتقاطع ملايين المرات وهيختنق في النقل الروتيني.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- التقنية 3 -->
+                    <div class="p-6 rounded-2xl bg-teal-50/50 border-2 border-teal-300">
+                        <h4 class="font-heading font-bold text-teal-950 text-xl mb-4 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-teal-800 text-white text-sm flex items-center justify-center">3</span>
+                            الوصول المباشر للذاكرة (<span class="en-inline">Direct Memory Access - DMA</span>)
+                        </h4>
+                        <div class="space-y-4">
+                            <div>
+                                <strong class="font-heading text-teal-800 block mb-1">كيف يعمل؟</strong>
+                                <p class="text-slate-800">
+                                    المعالج قرر "يعيّن مدير مالي" مخصوص لنقل البيانات الضخمة اسمه <strong>وحدة الـ <span class="en-inline">DMA Controller</span></strong>. المعالج يكتفي بإعطاء أمر أولي لـ DMA: <em>"انقل بلوك من <span class="en-inline">1024 Words</span> من القطاع رقم 5 في الهارد ووديهم للعنوان <span class="en-inline">0x5000</span> في الرامة، ولما تخلص خالص رن عليّ!"</em>. وحدة الـ DMA هي اللي بتمسك الباص وتتحكم فيه، وتنقل البلوك بالكامل <strong>مباشرة بين جهاز الإدخال/الإخراج والذاكرة الرئيسية دون أي تدخل من المعالج</strong>!
+                                </p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-teal-100/80 border border-teal-300 text-teal-950">
+                                <strong class="font-heading">🌟 الميزة الكبرى:</strong> المعالج متفرغ بنسبة 100% للعمليات الحسابية، ولا يتدخل إلا في البداية لتوجيه الأمر، وفي النهاية لما الـ DMA يبعت له <span class="en-inline">Interrupt</span> يقول له <em>"البلوك كله اتنقل بنجاح"</em>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 3. معضلة عنونة المنافذ -->
+            <article class="reading-block">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-6 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-800 font-heading font-bold flex items-center justify-center text-lg">3</span>
+                        <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                            معضلة عنونة المنافذ: إزاي المعالج بيوصل لمنافذ الأجهزة؟
+                        </h3>
+                    </div>
+                    <span class="text-xs font-heading font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full">فكرة سؤال الدكتور 7.5</span>
+                </div>
+
+                <p class="mb-6 text-slate-700">
+                    أي جهاز متصل بالكمبيوتر له مسجلات داخلية (<span class="en-inline">Data Register</span> و <span class="en-inline">Status Register</span>) وكل مسجل له <strong>عنوان (<span class="en-inline">Address</span>)</strong>. هنا ظهرت مدرستان هندسيتان في معمارية المعالجات لكيفية تنظيم هذه العناوين:
+                </p>
+
+                <!-- رسمة مقارنة Memory-Mapped vs Isolated I/O -->
+                <div class="my-8 bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-6 sm:p-8">
+                    <div class="text-center mb-6">
+                        <span class="text-xs font-heading font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full">مخطط معماري مقارن 2</span>
+                        <h4 class="font-heading font-bold text-slate-800 text-lg mt-2">مقارنة فضاء العناوين: Memory-Mapped I/O مقابل Isolated I/O</h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Memory-Mapped -->
+                        <div class="bg-white border-2 border-teal-300 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="bg-teal-900 text-white font-heading font-bold text-center py-3 px-4 rounded-xl mb-5">
+                                    1. Memory-Mapped I/O
+                                    <span class="block text-xs text-teal-200 font-normal mt-0.5">فضاء عناوين واحد مشترك</span>
+                                </div>
+
+                                <!-- تمثيل الذاكرة المشتركة -->
+                                <div class="border-2 border-slate-800 rounded-xl overflow-hidden mb-5">
+                                    <div class="bg-slate-800 text-white text-xs font-mono py-1.5 px-3 text-center" dir="ltr">Single Shared Address Space</div>
+                                    <div class="bg-emerald-50 p-5 text-center border-b-2 border-dashed border-slate-300">
+                                        <div class="font-heading font-bold text-emerald-950">مساحة الذاكرة العادية (RAM)</div>
+                                        <div class="text-xs text-emerald-700 mt-1">خلايا بيانات وبرامج</div>
+                                    </div>
+                                    <div class="bg-amber-100 p-4 text-center">
+                                        <div class="font-heading font-bold text-amber-950">عناوين أجهزة الـ I/O</div>
+                                        <div class="text-xs text-amber-800 mt-0.5">مقتطعة من نفس فضاء الرامة</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <ul class="space-y-2 text-sm text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <li>• <strong>العناوين:</strong> فضاء واحد مشترك للرامة والـ I/O.</li>
+                                <li>• <strong>التعليمات:</strong> نفس تعليمات الذاكرة <span class="en-inline">LOAD</span> و <span class="en-inline">STORE</span>.</li>
+                                <li>• <strong>العيب:</strong> يقتطع جزءاً من مساحة عناوين الرامة المتاحة.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Isolated I/O -->
+                        <div class="bg-white border-2 border-indigo-300 rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="bg-indigo-900 text-white font-heading font-bold text-center py-3 px-4 rounded-xl mb-5">
+                                    2. Isolated I/O (Port-Mapped)
+                                    <span class="block text-xs text-indigo-200 font-normal mt-0.5">فضاءين منفصلين ومستقلين تماماً</span>
+                                </div>
+
+                                <!-- تمثيل الفضاءين المنفصلين -->
+                                <div class="grid grid-cols-2 gap-3 mb-5">
+                                    <div class="border-2 border-slate-800 rounded-xl overflow-hidden flex flex-col">
+                                        <div class="bg-slate-800 text-white text-[11px] font-mono py-1.5 px-2 text-center" dir="ltr">Memory Space</div>
+                                        <div class="bg-emerald-50 p-5 text-center flex-grow flex flex-col justify-center">
+                                            <div class="font-heading font-bold text-emerald-950 text-sm">كلها رامات كاملة</div>
+                                            <div class="text-[11px] font-mono text-emerald-700 mt-1" dir="ltr">(0 to 2<sup>N</sup> - 1)</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="border-2 border-indigo-800 rounded-xl overflow-hidden flex flex-col">
+                                        <div class="bg-indigo-800 text-white text-[11px] font-mono py-1.5 px-2 text-center" dir="ltr">I/O Space</div>
+                                        <div class="bg-indigo-50 p-4 text-center flex-grow flex flex-col justify-center">
+                                            <div class="font-heading font-bold text-indigo-950 text-sm">منافذ أجهزة فقط</div>
+                                            <div class="text-[11px] font-mono text-indigo-700 mt-1" dir="ltr">(0 to 2<sup>K</sup> - 1)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <ul class="space-y-2 text-sm text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                <li>• <strong>العناوين:</strong> فضاء للرامة مستقل تماماً عن فضاء الـ I/O.</li>
+                                <li>• <strong>التعليمات:</strong> تعليمات خاصة ومستقلة <span class="en-inline">IN</span> و <span class="en-inline">OUT</span>.</li>
+                                <li>• <strong>الخطوط:</strong> يحتاج سلك تحكم إضافي للتمييز بين الرام والمنفذ.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- المقارنة المعمارية الدقيقة في بطاقات واضحة ومرتبة -->
+                <h4 class="font-heading font-bold text-slate-900 text-xl mb-4 mt-8">المقارنة المعمارية الدقيقة للامتحان:</h4>
+                <div class="overflow-x-auto rounded-2xl border-2 border-slate-200">
+                    <table class="w-full text-right border-collapse bg-white">
+                        <thead>
+                            <tr class="bg-slate-900 text-white font-heading text-base">
+                                <th class="p-4 border-b border-slate-700">وجه المقارنة</th>
+                                <th class="p-4 border-b border-slate-700 bg-teal-900">Memory-Mapped I/O</th>
+                                <th class="p-4 border-b border-slate-700 bg-indigo-900">Isolated I/O (Port-Mapped)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 text-base">
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-heading font-bold text-slate-900 bg-slate-50">فضاء العناوين (Address Space)</td>
+                                <td class="p-4 text-slate-700">فضاء عناوين <strong>واحد مشترك</strong> بين الذاكرة وأجهزة الإدخال/الإخراج.</td>
+                                <td class="p-4 text-slate-700">فضاءين <strong>منفصلين ومستقلين تماماً</strong> (Memory Space مستقل عن I/O Space).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-heading font-bold text-slate-900 bg-slate-50">أوامر المعالج (CPU Instructions)</td>
+                                <td class="p-4 text-slate-700">يستخدم <strong>نفس تعليمات الذاكرة القياسية</strong> (مثل: <span class="en-inline">LOAD</span>, <span class="en-inline">STORE</span>, <span class="en-inline">MOVE</span>).</td>
+                                <td class="p-4 text-slate-700">يتطلب <strong>تعليمات مخصصة ومستقلة للإدخال والإخراج</strong> (مثل: <span class="en-inline">IN</span>, <span class="en-inline">OUT</span>).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-heading font-bold text-slate-900 bg-slate-50">خطوط التحكم بالباص (Bus Lines)</td>
+                                <td class="p-4 text-slate-700">خطوط التحكم العادية للذاكرة فقط (<span class="en-inline">Memory Read</span> / <span class="en-inline">Memory Write</span>).</td>
+                                <td class="p-4 text-slate-700">يحتاج خط تحكم إضافي لتحديد الوجهة (<span class="en-inline">I/O Read</span> / <span class="en-inline">I/O Write</span>).</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-heading font-bold text-slate-900 bg-slate-50">التأثير على الذاكرة (RAM Capacity)</td>
+                                <td class="p-4 text-slate-700"><strong>يقلل</strong> سعة الذاكرة القصوى المتاحة لأن بعض العناوين تخصص للأجهزة.</td>
+                                <td class="p-4 text-slate-700"><strong>لا يقلل</strong> سعة الذاكرة؛ فضاء الذاكرة مخصص بالكامل للرامات.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50">
+                                <td class="p-4 font-heading font-bold text-slate-900 bg-slate-50">مرونة البرمجة (Flexibility)</td>
+                                <td class="p-4 text-slate-700">مرونة عالية جداً؛ كل أوامر معالجة الذاكرة يمكن تطبيقها مباشرة على منافذ الأجهزة.</td>
+                                <td class="p-4 text-slate-700">أقل مرونة؛ نقل البيانات محصور بين مسجل التراكم (Accumulator) ومنفذ الـ I/O فقط.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <!-- 4. لغز تحديد الجهاز المقاطع -->
+            <article class="reading-block">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-6 pb-4 border-b border-slate-100">
+                    <div class="flex items-center gap-3">
+                        <span class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-800 font-heading font-bold flex items-center justify-center text-lg">4</span>
+                        <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                            لغز تحديد الجهاز المقاطع: "مين اللي رن الجرس؟"
+                        </h3>
+                    </div>
+                    <span class="text-xs font-heading font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full">فكرة سؤال الدكتور 7.6</span>
+                </div>
+
+                <p class="mb-4 text-slate-700">
+                    في تقنية <strong><span class="en-inline">Interrupt-Driven I/O</span></strong>، تخيل أن الكيبورد، والماوس، وكارت الشبكة، والقرص الصلب كلهم متوصلين بالمعالج. فجأة.. وصلت إشارة مقاطعة (<span class="en-inline">Interrupt Request</span>) للمعالج!
+                </p>
+                <p class="mb-6 text-slate-900 font-bold">
+                    كيف يعرف المعالج بدقة متناهية أي جهاز بالتحديد هو الذي أرسل المقاطعة وما هو عنوان الكود (<span class="en-inline">ISR</span>) المطلوب لتشغيله؟
+                </p>
+                <p class="mb-6 text-slate-700">
+                    علماء هندسة الحاسوب ابتكروا <strong>4 طرق رئيسية (<span class="en-inline">Four Techniques</span>)</strong> لحل هذا اللغز:
+                </p>
+
+                <!-- رسمة الطرق الأربع لتحديد الجهاز المقاطع -->
+                <div class="my-8 bg-slate-50 border-2 border-slate-200/80 rounded-2xl p-6 sm:p-8">
+                    <div class="text-center mb-6">
+                        <span class="text-xs font-heading font-bold uppercase tracking-wider text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full">مخطط معماري 3</span>
+                        <h4 class="font-heading font-bold text-slate-800 text-lg mt-2">الطرق الأربع لتحديد الجهاز صاحب المقاطعة (Device Identification)</h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="diagram-node bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <div class="w-9 h-9 mx-auto rounded-xl bg-indigo-100 text-indigo-800 font-heading font-bold flex items-center justify-center mb-3">1</div>
+                            <h5 class="font-heading font-bold text-slate-900 text-base">أسلاك منفصلة</h5>
+                            <div class="text-xs font-mono text-indigo-700 my-1" dir="ltr">Multiple Lines</div>
+                            <p class="text-xs text-slate-600 mt-2">خط فيزيائي مستقل لكل جهاز رايح لرجل خاصة بالمعالج</p>
+                        </div>
+
+                        <div class="diagram-node bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <div class="w-9 h-9 mx-auto rounded-xl bg-amber-100 text-amber-800 font-heading font-bold flex items-center justify-center mb-3">2</div>
+                            <h5 class="font-heading font-bold text-slate-900 text-base">الفحص بالسوفتوير</h5>
+                            <div class="text-xs font-mono text-amber-700 my-1" dir="ltr">Software Poll</div>
+                            <p class="text-xs text-slate-600 mt-2">المعالج يشغل كود يلف يسأل مسجل حالة كل جهاز بالترتيب</p>
+                        </div>
+
+                        <div class="diagram-node bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <div class="w-9 h-9 mx-auto rounded-xl bg-teal-100 text-teal-800 font-heading font-bold flex items-center justify-center mb-3">3</div>
+                            <h5 class="font-heading font-bold text-slate-900 text-base">السلسلة المتعاقبة</h5>
+                            <div class="text-xs font-mono text-teal-700 my-1" dir="ltr">Daisy Chain (Vectored)</div>
+                            <p class="text-xs text-slate-600 mt-2">إشارة <span class="en-inline">INTA</span> تمر بالتسلسل، وصاحب الطلب يرسل الـ <span class="en-inline">Vector</span></p>
+                        </div>
+
+                        <div class="diagram-node bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <div class="w-9 h-9 mx-auto rounded-xl bg-purple-100 text-purple-800 font-heading font-bold flex items-center justify-center mb-3">4</div>
+                            <h5 class="font-heading font-bold text-slate-900 text-base">تحكيم خطوط الباص</h5>
+                            <div class="text-xs font-mono text-purple-700 my-1" dir="ltr">Bus Arbitration</div>
+                            <p class="text-xs text-slate-600 mt-2">الجهاز يكسب السيطرة على الباص أولاً ثم يرمي الـ <span class="en-inline">Vector</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الشرح التفصيلي للطرق الأربع تحت بعض -->
+                <div class="space-y-5 mt-6">
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            1) خطوط مقاطعة متعددة (<span class="en-inline">Multiple Interrupt Lines</span>)
+                        </h4>
+                        <ul class="space-y-2 text-slate-700">
+                            <li>• <strong>الفكرة:</strong> المعالج يخصص له عدة أرجل (<span class="en-inline">Pins</span>) فيزيائية في الشريحة، وكل جهاز يتوصل بسلك مستقل تماماً.</li>
+                            <li>• <strong>كيف يعرف الجهاز؟</strong> من رقم السلك اللي الفولت فيه ارتفع!</li>
+                            <li>• <strong>العيوب:</strong> محدودة جداً بعدد أرجل المعالج (<span class="en-inline">Pins</span>) المتاحة، فمن المستحيل توصيل عشرات الأجهزة بهذه الطريقة.</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            2) الاستطلاع البرمجي (<span class="en-inline">Software Poll</span>)
+                        </h4>
+                        <ul class="space-y-2 text-slate-700">
+                            <li>• <strong>الفكرة:</strong> كل الأجهزة تشترك في سلك مقاطعة عام واحد.</li>
+                            <li>• <strong>كيف يعرف الجهاز؟</strong> أول ما المعالج يستقبل المقاطعة، ينط فوراً لبرنامج عام اسمه (<span class="en-inline">Poll Routine</span>)، ويبدأ يسأل مسجل حالة كل جهاز بالترتيب: <em>"أنت يا كيبورد اللي قاطعت؟ لا.. أنت يا طابعة؟ لا.. أنت يا ماوس؟ أيوه أنا"</em>.</li>
+                            <li>• <strong>العيوب:</strong> بطيئة جداً في الاستجابة لأن المعالج يضيع وقتاً في فحص الأجهزة غير المطلوبة.</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            3) السلسلة المتعاقبة (<span class="en-inline">Daisy Chain - Hardware Poll / Vectored</span>)
+                        </h4>
+                        <ul class="space-y-2 text-slate-700">
+                            <li>• <strong>الفكرة:</strong> ربط الأجهزة وراء بعضها بسلسلة إشارات متتالية بترتيب أولوياتها (<span class="en-inline">Priority Order</span>).</li>
+                            <li>• <strong>كيف يعرف الجهاز؟</strong> المعالج يرسل إشارة موافقة على المقاطعة تسمى <strong>(<span class="en-inline">Interrupt Acknowledge - INTA</span>)</strong>. تمر هذه الإشارة على الجهاز الأول؛ إن كان هو صاحب المقاطعة يحتجز الإشارة ويضع <strong>شفرة خاصة به (<span class="en-inline">Interrupt Vector / ID</span>)</strong> على خطوط البيانات مباشرة ليعرف المعالج مكانه فوراً. إن لم يكن هو، يمرر الإشارة للجهاز الذي يليه بالسلسلة.</li>
+                            <li>• <strong>الميزة:</strong> سريعة جداً وهاردوير بحت، وتدمج الأولوية تلقائياً.</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-slate-50 border border-slate-200">
+                        <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
+                            4) تحكيم خطوط الباص (<span class="en-inline">Bus Arbitration - Vectored</span>)
+                        </h4>
+                        <ul class="space-y-2 text-slate-700">
+                            <li>• <strong>الفكرة:</strong> الجهاز الذي يريد طلب مقاطعة يجب أن ينافس أولاً للحصول على حق السيطرة على الباص (<span class="en-inline">Bus Master</span>) عبر دائرة تحكيم (<span class="en-inline">Bus Arbiter</span>).</li>
+                            <li>• <strong>كيف يعرف الجهاز؟</strong> عندما يربح الجهاز السيطرة على الباص، يُصدر إشارة المقاطعة ثم يرسل رقم هويته <strong>(<span class="en-inline">Interrupt Vector</span>)</strong> على خطوط البيانات فوراً، فيقرؤه المعالج مباشرة دون الحاجة لأي فحص برمجي.</li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+
+            <!-- 5. كبسولة المفاهيم السريعة للدرس الثاني -->
+            <article class="reading-block">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <span class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-800 font-heading font-bold flex items-center justify-center text-lg">5</span>
+                    <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                        كبسولة المفاهيم السريعة (<span class="en-inline">Concept Checklist</span>)
+                    </h3>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-indigo-700 rounded">
+                        <span><strong>Programmed I/O:</strong> نقل مباشر يتحكم به المعالج بالكامل، ويعيبه الانتظار النشط (Busy-Waiting / Polling).</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-indigo-700 rounded">
+                        <span><strong>Interrupt-Driven I/O:</strong> نقل يعتمد على تحرير المعالج ليعمل، حتى يرسل موديول الـ I/O إشارة مقاطعة عندما يصبح جاهزاً.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-indigo-700 rounded">
+                        <span><strong>Direct Memory Access (DMA):</strong> نقل كتل البيانات الكبيرة بين الأجهزة والذاكرة مباشرة بواسطة وحدة تحكم مخصصة (DMA Controller) دون إشغال المعالج.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-indigo-700 rounded">
+                        <span><strong>Memory-Mapped I/O:</strong> عنونة موحدة مشتركة بين الذاكرة والأجهزة، تستخدم نفس أوامر الذاكرة القياسية (LOAD, STORE)، وتقلل مساحة الرام المتاحة.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-indigo-700 rounded">
+                        <span><strong>Isolated I/O (Port-Mapped):</strong> فضاء عناوين مستقل للأجهزة عن فضاء الذاكرة، يستخدم أوامر متخصصة (IN, OUT)، ويحافظ على كامل فضاء الرام.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-indigo-700 rounded">
+                        <span><strong>Multiple Interrupt Lines:</strong> وسيلة كشف بتخصيص خط مستقل لكل جهاز (سريعة لكن محدودة بعدد الأرجل).</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-indigo-700 rounded">
+                        <span><strong>Software Poll:</strong> وسيلة كشف برمجية بفحص الأجهزة بالتتابع (بسيطة في الهاردوير لكنها بطيئة).</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-indigo-700 rounded">
+                        <span><strong>Daisy Chain:</strong> وسيلة كشف عتادية بتمرير إشارة INTA تسلسلياً بحسب الأولوية، والجهاز الفائز يضع الـ Vector الخاص به.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 cursor-pointer transition">
+                        <input type="checkbox" class="mt-2 w-5 h-5 accent-indigo-700 rounded">
+                        <span><strong>Bus Arbitration:</strong> وسيلة كشف تنافسية تتطلب فوز الجهاز بالباص أولاً قبل إرسال عنوان المقاطعة (Vector).</span>
+                    </label>
+                </div>
+            </article>
+
+            <!-- 6. بنك أسئلة الدكتور للدرس الثاني -->
+            <article class="reading-block">
+                <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <span class="w-9 h-9 rounded-lg bg-amber-100 text-amber-800 font-heading font-bold flex items-center justify-center text-lg">6</span>
+                    <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
+                        بنك أسئلة الدكتور للدرس الثاني (نموذج إجابة الامتحان + الكلمات المفتاحية)
+                    </h3>
+                </div>
+
+                <div class="space-y-10">
+                    <!-- سؤال 7.4 -->
+                    <div class="border-2 border-slate-200 rounded-2xl overflow-hidden">
+                        <div class="bg-slate-900 text-white p-5">
+                            <span class="text-xs font-mono uppercase text-indigo-300 block mb-1">السؤال 7.4 | Question 7.4</span>
+                            <p class="en-text font-bold text-lg text-white">Q: List and briefly define three techniques for performing I/O.</p>
+                            <p class="text-slate-300 text-sm mt-2">الترجمة: اذكر وعرّف باختصار التقنيات الثلاث المستخدمة في تنفيذ عمليات الإدخال والإخراج.</p>
+                        </div>
+                        <div class="p-6 space-y-5 bg-white">
+                            <div>
+                                <h4 class="font-heading font-bold text-indigo-800 text-sm mb-2">الإجابة النموذجية بالإنجليزية (Model Answer):</h4>
+                                <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-800 space-y-3">
+                                    <p>The three primary techniques for performing I/O operations are:</p>
+                                    <ol class="list-decimal list-inside space-y-2">
+                                        <li><strong>Programmed I/O:</strong> The processor executes a program that gives it direct control of the I/O operation (including sensing device status, issuing read/write commands, and transferring data). The processor must wait until the I/O operation is complete via <strong>busy-waiting (polling)</strong>, which wastes considerable processor time.</li>
+                                        <li><strong>Interrupt-Driven I/O:</strong> The processor issues an I/O command and continues executing other instructions. When the I/O module is ready to exchange data, it sends an <strong>interrupt signal</strong> to the processor. The processor executes the data transfer and then resumes its prior task, eliminating idle waiting.</li>
+                                        <li><strong>Direct Memory Access (DMA):</strong> A specialized hardware module (DMA Controller) manages the direct transfer of large blocks of data <strong>between the I/O module and main memory without continuous processor involvement</strong>. The processor is only involved at the beginning (initialization) and at the end (when receiving a completion interrupt).</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+                                <h5 class="font-heading font-bold text-amber-950 text-sm mb-1">الشرح بالبلدي والتركيز للامتحان:</h5>
+                                <p class="text-slate-700 text-base">التلات طرق هما: البرمجة المباشرة والانتظار (Programmed)، الاستدعاء بالجرس عند الجاهزية (Interrupt)، والاستعانة بمدير ينقل الكتل الضخمة رأساً للذاكرة (DMA).</p>
+                            </div>
+                            <div class="bg-indigo-50/60 p-4 rounded-xl border border-indigo-200">
+                                <h5 class="font-heading font-bold text-indigo-950 text-sm mb-2">🔑 الكلمات المفتاحية (Keywords للدرجة الكاملة):</h5>
+                                <div class="flex flex-wrap gap-2" dir="ltr">
+                                    <span class="en-inline">Programmed I/O (busy-waiting / polling)</span>
+                                    <span class="en-inline">Interrupt-driven I/O (asserts interrupt, eliminates waiting)</span>
+                                    <span class="en-inline">Direct Memory Access / DMA (direct transfer without processor involvement)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- سؤال 7.5 -->
+                    <div class="border-2 border-slate-200 rounded-2xl overflow-hidden">
+                        <div class="bg-slate-900 text-white p-5">
+                            <span class="text-xs font-mono uppercase text-indigo-300 block mb-1">السؤال 7.5 | Question 7.5</span>
+                            <p class="en-text font-bold text-lg text-white">Q: What is the difference between memory-mapped I/O and isolated I/O?</p>
+                            <p class="text-slate-300 text-sm mt-2">الترجمة: ما هو الفرق بين الإدخال والإخراج المعنون بالذاكرة (Memory-Mapped I/O) والإدخال والإخراج المعزول (Isolated I/O)؟</p>
+                        </div>
+                        <div class="p-6 space-y-5 bg-white">
+                            <div>
+                                <h4 class="font-heading font-bold text-indigo-800 text-sm mb-2">الإجابة النموذجية بالإنجليزية (Model Answer):</h4>
+                                <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-800 space-y-3">
+                                    <p>The fundamental architectural differences are:</p>
+                                    <ol class="list-decimal list-inside space-y-2">
+                                        <li><strong>Memory-Mapped I/O:</strong>
+                                            <ul class="list-disc list-inside ml-5 mt-1 space-y-1">
+                                                <li><strong>Single Address Space:</strong> There is a single, shared address space for both memory locations and I/O devices. The processor treats I/O ports as if they were memory locations.</li>
+                                                <li><strong>Standard Instructions:</strong> The processor uses standard memory-referencing instructions (e.g., <code>LOAD</code>, <code>STORE</code>, <code>MOVE</code>) to perform I/O operations.</li>
+                                                <li><strong>Address Space Penalty:</strong> It consumes part of the memory address space, slightly reducing the maximum memory capacity available for RAM.</li>
+                                            </ul>
+                                        </li>
+                                        <li><strong>Isolated I/O (Port-Mapped I/O):</strong>
+                                            <ul class="list-disc list-inside ml-5 mt-1 space-y-1">
+                                                <li><strong>Separate Address Spaces:</strong> Main memory and I/O devices have distinct, independent address spaces (an I/O address does not refer to a memory location).</li>
+                                                <li><strong>Specialized Instructions:</strong> The processor must use specialized I/O instructions (e.g., <code>IN</code>, <code>OUT</code>).</li>
+                                                <li><strong>Control Lines:</strong> Requires a separate control line on the system bus (such as an <code>I/O / MEM</code> signal) to indicate whether the address on the address bus refers to a memory location or an I/O port.</li>
+                                            </ul>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+                                <h5 class="font-heading font-bold text-amber-950 text-sm mb-1">الشرح بالبلدي والتركيز للامتحان:</h5>
+                                <p class="text-slate-700 text-base">قارن بينهما من حيث: مساحة العناوين (واحدة مشتركة ولا منفصلتين؟)، ونوع التعليمات (LOAD/STORE ولا IN/OUT؟)، والتأثير على سعة الرامات.</p>
+                            </div>
+                            <div class="bg-indigo-50/60 p-4 rounded-xl border border-indigo-200">
+                                <h5 class="font-heading font-bold text-indigo-950 text-sm mb-2">🔑 الكلمات المفتاحية (Keywords للدرجة الكاملة):</h5>
+                                <div class="flex flex-wrap gap-2" dir="ltr">
+                                    <span class="en-inline">Memory-Mapped I/O (single/shared address space, standard memory instructions)</span>
+                                    <span class="en-inline">Isolated I/O (separate address spaces, dedicated IN/OUT instructions)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- سؤال 7.6 -->
+                    <div class="border-2 border-slate-200 rounded-2xl overflow-hidden">
+                        <div class="bg-slate-900 text-white p-5">
+                            <span class="text-xs font-mono uppercase text-indigo-300 block mb-1">السؤال 7.6 | Question 7.6</span>
+                            <p class="en-text font-bold text-lg text-white">Q: When a device interrupt occurs, how does the processor determine which device issued the interrupt?</p>
+                            <p class="text-slate-300 text-sm mt-2">الترجمة: عندما تحدث مقاطعة من جهاز ما، كيف يحدد المعالج أي الأجهزة بالتحديد هو الذي أصدر تلك المقاطعة؟</p>
+                        </div>
+                        <div class="p-6 space-y-5 bg-white">
+                            <div>
+                                <h4 class="font-heading font-bold text-indigo-800 text-sm mb-2">الإجابة النموذجية بالإنجليزية (Model Answer):</h4>
+                                <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-800 space-y-3">
+                                    <p>The processor identifies the interrupting device using one of four general schemes:</p>
+                                    <ol class="list-decimal list-inside space-y-2">
+                                        <li><strong>Multiple Interrupt Lines:</strong> The processor provides dedicated, physical interrupt request lines for individual devices. The line that is asserted immediately identifies the specific interrupting device (limited by processor pin count).</li>
+                                        <li><strong>Software Poll:</strong> The processor branches to a general interrupt service routine that polls each I/O module in sequence by reading its status register until it identifies the device requesting service (simple hardware, but slow).</li>
+                                        <li><strong>Daisy Chain (Hardware Poll / Vectored Interrupt):</strong> The processor asserts an interrupt acknowledge signal (<code>INTA</code>) that ripples sequentially through I/O modules connected in priority order. The requesting module intercepts the signal and places its unique identification code or vector (<code>Interrupt Vector</code>) on the data bus.</li>
+                                        <li><strong>Bus Arbitration (Vectored Interrupt):</strong> An I/O module must first request and be granted control of the system bus through a hardware bus arbiter before asserting the interrupt line; it then directly places its interrupt vector on the bus.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+                                <h5 class="font-heading font-bold text-amber-950 text-sm mb-1">الشرح بالبلدي والتركيز للامتحان:</h5>
+                                <p class="text-slate-700 text-base">المعالج بيعرف الجهاز بـ 4 طرق: سلكة مستقلة لكل جهاز (Multiple Lines)، لفة برمجية يسألهم واحد واحد (Software Poll)، تمرير إشارة موافقة بسلسلة هاردوير واللي طلب يحط رقمه (Daisy Chain)، أو الفوز بالباص أولاً ووضع رقم المقاطعة (Bus Arbitration).</p>
+                            </div>
+                            <div class="bg-indigo-50/60 p-4 rounded-xl border border-indigo-200">
+                                <h5 class="font-heading font-bold text-indigo-950 text-sm mb-2">🔑 الكلمات المفتاحية (Keywords للدرجة الكاملة):</h5>
+                                <div class="flex flex-wrap gap-2" dir="ltr">
+                                    <span class="en-inline">Multiple interrupt lines</span>
+                                    <span class="en-inline">Software poll</span>
+                                    <span class="en-inline">Daisy chain (INTA ripples, Interrupt Vector)</span>
+                                    <span class="en-inline">Bus arbitration</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- أزرار التنقل -->
+                <div class="mt-10 pt-6 border-t border-slate-200 flex flex-wrap justify-between gap-4">
+                    <button onclick="switchSection('lesson1')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-heading font-bold px-5 py-3 rounded-xl transition">
+                        → العودة للدرس الأول
+                    </button>
+                    <button onclick="switchSection('capsule')" class="bg-teal-700 hover:bg-teal-800 text-white font-heading font-bold px-6 py-3.5 rounded-xl shadow transition">
+                        الانتقال إلى كبسولة أسئلة الدكتور المختصرة ←
+                    </button>
+                </div>
+            </article>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- القسم الثالث: كبسولة أسئلة الدكتور (q_doc)  -->
+        <!-- ========================================== -->
+        <section id="section-capsule" class="space-y-8 hidden">
+            
+            <div class="bg-gradient-to-l from-emerald-900 to-teal-900 text-white rounded-2xl p-7 sm:p-9 shadow-md">
+                <span class="inline-block bg-emerald-700/80 text-emerald-100 text-xs font-heading font-bold px-3 py-1 rounded-full mb-3 border border-emerald-500">
+                    مراجعة ليلة الامتحان السريعة • 6 أسئلة مقالية أساسية
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-heading font-extrabold mb-3">
+                    كبسولة أسئلة الدكتور لـ Chapter 7 (مختصرة جداً للامتحان + شرح بالبلدي في سطر)
+                </h2>
+                <p class="text-emerald-100 text-base sm:text-lg leading-relaxed opacity-95">
+                    أقصر إجابة نموذجية مركزة باللغة الإنجليزية لضمان الدرجة الكاملة في الامتحان مع خلاصة الفكرة بالبلدي في سطر واحد تحت كل سؤال.
+                </p>
+            </div>
+
+            <!-- الأسئلة الـ 6 تحت بعض في وضع قراءة نظيف -->
+            <div class="space-y-6">
+                
+                <!-- Q 7.1 -->
+                <article class="reading-block !mb-0">
+                    <div class="bg-slate-900 text-white px-5 py-3.5 rounded-xl mb-5 flex items-center justify-between">
+                        <span class="en-text font-bold text-base sm:text-lg">Q 7.1: List three broad classifications of external devices.</span>
+                        <span class="text-xs font-mono bg-teal-600 px-2.5 py-1 rounded text-white shrink-0 mr-2">Q 7.1</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-heading font-bold text-teal-800 uppercase tracking-wide block mb-2">الإنجليزي للامتحان (أقصر إجابة):</span>
+                        <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-900">
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Human readable:</strong> Communicates with users (e.g., monitor, printer, keyboard).</li>
+                                <li><strong>Machine readable:</strong> Communicates with equipment (e.g., magnetic disk, sensors).</li>
+                                <li><strong>Communication:</strong> Communicates with remote devices (e.g., modem, NIC).</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50/90 border-r-4 border-amber-500 p-4 rounded-xl">
+                        <span class="font-heading font-bold text-amber-950 text-sm block mb-1">💡 الشرح بالبلدي في سطر:</span>
+                        <p class="text-slate-800">الأجهزة متقسمة تلاتة حسب مين الطرف التاني: بيكلم <strong>إنسان</strong> (شاشة وطابعة)، بيكلم <strong>ماكينة وهاردوير</strong> (هارد وسنسور)، أو بيكلم <strong>شبكة</strong> (مودم وراوتر).</p>
+                    </div>
+                </article>
+
+                <!-- Q 7.2 -->
+                <article class="reading-block !mb-0">
+                    <div class="bg-slate-900 text-white px-5 py-3.5 rounded-xl mb-5 flex items-center justify-between">
+                        <span class="en-text font-bold text-base sm:text-lg">Q 7.2: What is the International Reference Alphabet (IRA)?</span>
+                        <span class="text-xs font-mono bg-teal-600 px-2.5 py-1 rounded text-white shrink-0 mr-2">Q 7.2</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-heading font-bold text-teal-800 uppercase tracking-wide block mb-2">الإنجليزي للامتحان (أقصر إجابة):</span>
+                        <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-900">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>A standardized <strong>7-bit character encoding</strong> (128 characters), commonly known as <strong>ASCII</strong>.</li>
+                                <li>Consists of two types: <strong>Printable characters</strong> (letters/numbers) and <strong>Control characters</strong> (format/device control).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50/90 border-r-4 border-amber-500 p-4 rounded-xl">
+                        <span class="font-heading font-bold text-amber-950 text-sm block mb-1">💡 الشرح بالبلدي في سطر:</span>
+                        <p class="text-slate-800">ده الاسم الرسمي لجدول الـ ASCII: شفرة طولها 7 بت بتعبر عن 128 حرف، نصها رموز بنشوفها على الشاشة ونصها أزرار تحكم زي زرار الـ Enter.</p>
+                    </div>
+                </article>
+
+                <!-- Q 7.3 -->
+                <article class="reading-block !mb-0">
+                    <div class="bg-slate-900 text-white px-5 py-3.5 rounded-xl mb-5 flex items-center justify-between">
+                        <span class="en-text font-bold text-base sm:text-lg">Q 7.3: What are the major functions of an I/O module?</span>
+                        <span class="text-xs font-mono bg-teal-600 px-2.5 py-1 rounded text-white shrink-0 mr-2">Q 7.3</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-heading font-bold text-teal-800 uppercase tracking-wide block mb-2">الإنجليزي للامتحان (أقصر إجابة):</span>
+                        <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-900">
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Control and Timing:</strong> Coordinates traffic between CPU and devices.</li>
+                                <li><strong>Processor Communication:</strong> Decodes commands, reports status, and recognizes addresses.</li>
+                                <li><strong>Device Communication:</strong> Sends control signals and data to peripherals.</li>
+                                <li><strong>Data Buffering:</strong> Bridges speed differences between fast bus and slow devices.</li>
+                                <li><strong>Error Detection:</strong> Detects transmission and device mechanical errors.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50/90 border-r-4 border-amber-500 p-4 rounded-xl">
+                        <span class="font-heading font-bold text-amber-950 text-sm block mb-1">💡 الشرح بالبلدي في سطر:</span>
+                        <p class="text-slate-800">موديول الـ I/O هو المترجم اللي بيظبط المواعيد، يترجم أوامر المعالج، يكلم الجهاز الخارجي، يخزن الداتا مؤقتاً عشان يوازن السرعات، ويكشف أي عطل.</p>
+                    </div>
+                </article>
+
+                <!-- Q 7.4 -->
+                <article class="reading-block !mb-0">
+                    <div class="bg-slate-900 text-white px-5 py-3.5 rounded-xl mb-5 flex items-center justify-between">
+                        <span class="en-text font-bold text-base sm:text-lg">Q 7.4: List and briefly define three techniques for performing I/O.</span>
+                        <span class="text-xs font-mono bg-teal-600 px-2.5 py-1 rounded text-white shrink-0 mr-2">Q 7.4</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-heading font-bold text-teal-800 uppercase tracking-wide block mb-2">الإنجليزي للامتحان (أقصر إجابة):</span>
+                        <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-900">
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Programmed I/O:</strong> CPU directly controls transfer and wastes time in <strong>busy-waiting (polling)</strong>.</li>
+                                <li><strong>Interrupt-Driven I/O:</strong> CPU issues command and continues working; I/O module sends an <strong>interrupt signal</strong> when ready.</li>
+                                <li><strong>Direct Memory Access (DMA):</strong> Dedicated controller transfers data blocks <strong>directly to/from memory</strong> without CPU intervention.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50/90 border-r-4 border-amber-500 p-4 rounded-xl">
+                        <span class="font-heading font-bold text-amber-950 text-sm block mb-1">💡 الشرح بالبلدي في سطر:</span>
+                        <ul class="text-slate-800 space-y-1">
+                            <li>• <strong>Programmed:</strong> المعالج بيفضل واقف ومحبوس يسأل الجهاز "خلصت ولا لسه؟".</li>
+                            <li>• <strong>Interrupt:</strong> المعالج يرمي الأمر ويشوف شغله، والجهاز يرن عليه جرس أول ما يجهز.</li>
+                            <li>• <strong>DMA:</strong> مدير مخصوص بينقل الداتا للرامة مباشرة والمعالج ملوش أي دعوة.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <!-- Q 7.5 -->
+                <article class="reading-block !mb-0">
+                    <div class="bg-slate-900 text-white px-5 py-3.5 rounded-xl mb-5 flex items-center justify-between">
+                        <span class="en-text font-bold text-base sm:text-lg">Q 7.5: What is the difference between memory-mapped I/O and isolated I/O?</span>
+                        <span class="text-xs font-mono bg-teal-600 px-2.5 py-1 rounded text-white shrink-0 mr-2">Q 7.5</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-heading font-bold text-teal-800 uppercase tracking-wide block mb-2">الإنجليزي للامتحان (أقصر إجابة):</span>
+                        <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-900">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li><strong>Memory-Mapped I/O:</strong> <strong>Single shared address space</strong>; uses standard memory instructions (<code>LOAD</code>/<code>STORE</code>); reduces available RAM space.</li>
+                                <li><strong>Isolated I/O:</strong> <strong>Separate address spaces</strong>; uses dedicated I/O instructions (<code>IN</code>/<code>OUT</code>); preserves full RAM space.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50/90 border-r-4 border-amber-500 p-4 rounded-xl">
+                        <span class="font-heading font-bold text-amber-950 text-sm block mb-1">💡 الشرح بالبلدي في سطر:</span>
+                        <ul class="text-slate-800 space-y-1">
+                            <li>• <strong>Memory-Mapped:</strong> المنافذ واخدة عناوين جوة الرامة وبنستخدم نفس أوامر الذاكرة بس بتاكل من مساحة الرامة.</li>
+                            <li>• <strong>Isolated:</strong> المنافذ ليها شوارع وعناوين لوحدها برة الرامة ومحتاجة أوامر خاصة زي (<code>IN/OUT</code>).</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <!-- Q 7.6 -->
+                <article class="reading-block !mb-0">
+                    <div class="bg-slate-900 text-white px-5 py-3.5 rounded-xl mb-5 flex items-center justify-between">
+                        <span class="en-text font-bold text-base sm:text-lg">Q 7.6: When a device interrupt occurs, how does the processor determine which device issued it?</span>
+                        <span class="text-xs font-mono bg-teal-600 px-2.5 py-1 rounded text-white shrink-0 mr-2">Q 7.6</span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-xs font-heading font-bold text-teal-800 uppercase tracking-wide block mb-2">الإنجليزي للامتحان (أقصر إجابة):</span>
+                        <div class="en-text bg-slate-50 p-5 rounded-xl border border-slate-200 text-slate-900">
+                            <ol class="list-decimal list-inside space-y-2">
+                                <li><strong>Multiple Lines:</strong> Dedicated physical interrupt line for each device.</li>
+                                <li><strong>Software Poll:</strong> CPU polls each device's status register sequentially.</li>
+                                <li><strong>Daisy Chain (Hardware Poll):</strong> Acknowledge signal cascades through devices; requesting device sends its <strong>vector</strong>.</li>
+                                <li><strong>Bus Arbitration:</strong> Device must win bus control first, then asserts its <strong>vector</strong>.</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="bg-amber-50/90 border-r-4 border-amber-500 p-4 rounded-xl">
+                        <span class="font-heading font-bold text-amber-950 text-sm block mb-1">💡 الشرح بالبلدي في سطر:</span>
+                        <p class="text-slate-800">المعالج بيعرف مين صاحب المقاطعة بـ 4 طرق: يا <strong>سلكة مستقلة</strong> لكل جهاز، يا يلف <strong>يسألهم بالسوفتوير</strong> واحد واحد، يا <strong>سلسلة هاردوير (Daisy Chain)</strong> واللي طلب يرمي بطاقته، يا الجهاز <strong>يكسب الباص الأول</strong> ويبعت رقم المقاطعة.</p>
+                    </div>
+                </article>
+            </div>
+
+            <!-- زر الانتقال للكويز -->
+            <div class="pt-6 flex justify-between items-center flex-wrap gap-4">
+                <button onclick="switchSection('lesson2')" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-heading font-bold px-5 py-3 rounded-xl transition">
+                    → العودة للدرس الثاني
+                </button>
+                <button onclick="switchSection('quiz')" class="bg-amber-600 hover:bg-amber-700 text-white font-heading font-bold px-7 py-4 rounded-xl shadow-md transition flex items-center gap-3">
+                    <span>🎯 ابدأ كويز الـ 25 سؤال الاختياري الآن</span>
+                    <span>←</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- القسم الرابع: كويز الأسئلة الاختيارية فقط   -->
+        <!-- ========================================== -->
+        <section id="section-quiz" class="space-y-8 hidden">
+
+            <!-- لوحة معلومات الكويز -->
+            <div class="bg-gradient-to-l from-slate-900 via-slate-800 to-teal-950 text-white rounded-2xl p-7 sm:p-9 shadow-md">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <span class="inline-block bg-amber-500/20 text-amber-300 text-xs font-heading font-bold px-3 py-1 rounded-full mb-3 border border-amber-400/40">
+                            كويز تفاعلي • الأسئلة الاختيارية فقط (25 MCQ)
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-heading font-extrabold mb-2">
+                            بنك أسئلة الـ MCQ الكامل (Chapter 7: Input/Output)
+                        </h2>
+                        <p class="text-slate-300 text-base">
+                            اختر إجابتك لكل سؤال ليظهر لك التصحيح الفوري مع التفسير المعماري التفصيلي.
+                        </p>
+                    </div>
+
+                    <!-- عداد النتيجة الحي -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 text-center min-w-[160px]">
+                        <div class="text-xs text-slate-300 font-heading mb-1">نتيجتك الحالية</div>
+                        <div class="text-3xl font-heading font-extrabold text-amber-400">
+                            <span id="quiz-score">0</span> <span class="text-lg text-slate-300">/ 25</span>
+                        </div>
+                        <div class="text-xs text-teal-300 mt-1">تمت الإجابة على <span id="quiz-answered">0</span> سؤال</div>
+                    </div>
+                </div>
+
+                <!-- أزرار التحكم بالكويز -->
+                <div class="mt-6 pt-5 border-t border-white/10 flex flex-wrap gap-3">
+                    <button onclick="resetQuiz()" class="bg-white/10 hover:bg-white/20 text-white text-sm font-heading font-bold px-4 py-2.5 rounded-xl border border-white/15 transition">
+                        🔄 إعادة تصفير الكويز والبدء من جديد
+                    </button>
+                    <button onclick="revealAllAnswers()" class="bg-teal-600 hover:bg-teal-500 text-white text-sm font-heading font-bold px-4 py-2.5 rounded-xl transition">
+                        👁️ إظهار جميع الإجابات والتفسيرات للمراجعة
+                    </button>
+                </div>
+            </div>
+
+            <!-- قائمة الأسئلة الـ 25 تحت بعضها بمسافات مريحة -->
+            <div id="quiz-questions-container" class="space-y-7"></div>
+
+        </section>
+
+    </main>
+
+    <script>
+        // بيانات الـ 25 سؤال الاختياري كاملة مع التفسيرات المعمارية
+        const mcqQuestions = [
+            {
+                id: 1,
+                question: 'Which of the following external devices is classified as "Human-Readable"?',
+                options: [
+                    "A) Magnetic tape drive",
+                    "B) Video Display Terminal (VDT / Monitor)",
+                    "C) Network Interface Card (NIC)",
+                    "D) Temperature sensor"
+                ],
+                correct: 1,
+                explanation: "أجهزة الـ Human-Readable هي الأجهزة المصممة للتواصل المباشر مع المستخدم البشري (إدخال بيانات بيده كالكيبورد، أو إخراج بيانات لعينه كالشاشة والبرنتر). أما الهارد والأشرطة والسنسورات فبتكلم ماكينات تانية (Machine-Readable)، وكارت الشبكة بيتواصل مع أجهزة بعيدة عبر خطوط نقل (Communication)."
+            },
+            {
+                id: 2,
+                question: "Sensors, actuators, and magnetic disks are categorized under which peripheral classification?",
+                options: [
+                    "A) Human-readable devices",
+                    "B) Communication devices",
+                    "C) Machine-readable devices",
+                    "D) Direct-bus devices"
+                ],
+                correct: 2,
+                explanation: "الأجهزة دي مصممة للتعامل وتبادل البيانات مع أجهزة ومعدات الكمبيوتر الأخرى بدون تدخل بشري في قراءة الإشارة الخام؛ الحساس بيقيس حرارة ويبعتها ديجيتال، والمحرك بيستقبل نبضة كهربائية للتشغيل، والهارد بيخزن كتل ثنائية."
+            },
+            {
+                id: 3,
+                question: "How many unique characters can be represented using the standard International Reference Alphabet (IRA)?",
+                options: [
+                    "A) 64",
+                    "B) 128",
+                    "C) 256",
+                    "D) 512"
+                ],
+                correct: 1,
+                explanation: "نظام الـ IRA (وهو المعيار الدولي المكافئ لـ ASCII) بيعتمد فيزيائياً على كود ثنائي طوله 7-bit، وعدد الحالات أو الرموز المختلفة التي يمكن تمثيلها بـ 7 بت هو: 2^7 = 128 Characters."
+            },
+            {
+                id: 4,
+                question: "In the International Reference Alphabet (IRA), characters like Carriage Return and Line Feed are classified as:",
+                options: [
+                    "A) Printable characters",
+                    "B) Control characters",
+                    "C) Arithmetic characters",
+                    "D) Parity characters"
+                ],
+                correct: 1,
+                explanation: "رموز الـ IRA مقسومة نوعين: حروف وأرقام بتترسم على الشاشة أو الورق وتُقرأ بالعين (Printable)، ورموز تانية ملهاش شكل مطبوع ولكن وظيفتها إعطاء أوامر تحكم للشاشة أو الطابعة لتنظيم السطور وبداياتها (Control characters)."
+            },
+            {
+                id: 5,
+                question: "Why is it practically impossible to connect peripheral devices directly to the system bus without an I/O module?",
+                options: [
+                    "A) Because peripherals operate with the exact same data formats as the CPU",
+                    "B) Due to huge speed disparities, differing electrical/mechanical signals, and varying word lengths",
+                    "C) Because the system bus only supports serial communication",
+                    "D) Because external devices do not require power supplies"
+                ],
+                correct: 1,
+                explanation: "المعالج إلكتروني فائق السرعة شغال بالجيجاهرتز وينقل 64 بت على التوازي، بينما الأجهزة الخارجية فيها أجزاء ميكانيكية بطيئة جداً، وبتستخدم إشارات مختلفة، وبتنقل تيار سيريال حرف بحرف. لو وصلناهم بالباص مباشرة المعالج هيتشل وهيتعطل."
+            },
+            {
+                id: 6,
+                question: "Which major function of an I/O module prevents a fast processor from being held idle by a slow peripheral?",
+                options: [
+                    "A) Address recognition",
+                    "B) Error detection",
+                    "C) Data buffering",
+                    "D) Bus arbitration"
+                ],
+                correct: 2,
+                explanation: "وظيفة التخزين المؤقت (Data Buffering) معناها إن موديول الـ I/O فيه مسجلات داخلية (Buffers) بتستقبل كتلة البيانات من المعالج بسرعة البرق، والمعالج يمشي يشوف شغله، والموديول يفرغ الداتا دي براحته وبالسرعة البطيئة للجهاز الخارجي، والعكس عند الإدخال."
+            },
+            {
+                id: 7,
+                question: "When an I/O module decodes commands (READ, WRITE, STATUS) sent by the CPU, it is performing:",
+                options: [
+                    "A) Device communication",
+                    "B) Processor communication",
+                    "C) Error detection",
+                    "D) Memory refreshing"
+                ],
+                correct: 1,
+                explanation: "أي تعامل طرفاه هما 'المعالج' و'موديول الـ I/O' (زي فك شفرة أمر المعالج، إبلاغ المعالج بحالة الجهاز Ready/Busy، والتعرف على العنوان المطلوب) يندرج تحت وظيفة مخاطبة المعالج (Processor Communication)."
+            },
+            {
+                id: 8,
+                question: "Detecting transmission bit errors (via parity) and mechanical faults (like a paper jam) is part of which I/O module function?",
+                options: [
+                    "A) Control and timing",
+                    "B) Data buffering",
+                    "C) Error detection",
+                    "D) Address recognition"
+                ],
+                correct: 2,
+                explanation: "موديول الـ I/O مسؤول عن مراقبة صحة وصول البيانات وخلوها من أخطاء النقل الكهربائي، بجانب استشعار أي عطل ميكانيكي هاردوير في الجهاز وإرسال تقرير خطأ فوري للمعالج."
+            },
+            {
+                id: 9,
+                question: "In Programmed I/O, how does the CPU determine whether the I/O device is ready for data transfer?",
+                options: [
+                    "A) It receives a hardware interrupt signal from the device",
+                    "B) It continually tests the status register of the I/O module in a loop (busy-waiting / polling)",
+                    "C) The DMA controller notifies the CPU via memory flags",
+                    "D) The system clock forces the CPU to wait a fixed number of cycles"
+                ],
+                correct: 1,
+                explanation: "في الـ Programmed I/O المعالج بيفضل محبوس ومقيد داخل حلقة تكرارية برمجية (Loop) مبيعملش أي حاجة في حياته غير إنه يقرا مسجل الحالة ويسأل: 'خلصت ولا لسه؟'، وده تعريف الـ Busy-Waiting / Polling اللي بيهدر وقت المعالج."
+            },
+            {
+                id: 10,
+                question: "What is the primary operational advantage of Interrupt-Driven I/O over Programmed I/O?",
+                options: [
+                    "A) It transfers data without passing through any processor registers",
+                    "B) It frees the processor from busy-waiting, allowing it to execute other programs",
+                    "C) It eliminates the need for an address bus",
+                    "D) It guarantees higher data transfer speeds than DMA"
+                ],
+                correct: 1,
+                explanation: "الميزة الحتمية اللي خلتنا نبتكر الـ Interrupt هي تحرير المعالج؛ المعالج بيصدر أمر القراءة للجهاز ويكمل تشغيل برامج تانية في الرامة، والجهاز أول ما يخلص هو اللي بيبعت إشارة سلكية (Interrupt) يرن على المعالج."
+            },
+            {
+                id: 11,
+                question: "Why is Interrupt-Driven I/O still inefficient when transferring large blocks of data (e.g., from a hard drive)?",
+                options: [
+                    "A) Because peripherals cannot issue more than one interrupt per hour",
+                    "B) Because the processor must still execute instructions to transfer each individual word between the I/O module and memory",
+                    "C) Because interrupts permanently disable the processor's ALU",
+                    "D) Because it requires analog cables"
+                ],
+                correct: 1,
+                explanation: "عيب الـ Interrupt إنه بيقاطع المعالج مع كل كلمة واحدة (Word)، والمعالج بنفسه هو اللي بينقلها من مسجل الـ I/O للرامة. فلو بننقل ملف 100 ميجابايت، المعالج هيتقاطع ملايين المرات وهيضيع كل وقته في خدمة مقاطعات روتينية."
+            },
+            {
+                id: 12,
+                question: "Which I/O technique enables the transfer of large blocks of data directly between an I/O module and main memory without continuous CPU intervention?",
+                options: [
+                    "A) Programmed I/O",
+                    "B) Interrupt-Driven I/O",
+                    "C) Direct Memory Access (DMA)",
+                    "D) Software Polling"
+                ],
+                correct: 2,
+                explanation: "الـ DMA هو الحل المعماري لنقل الكتل الكبيرة؛ بنجيب شريحة تحكم مستقلة (DMA Controller) هي اللي تمسك الباص وتنقل كتلة البيانات كاملة من الجهاز للذاكرة مباشرة دون أن يلمس المعالج أي بايت فيها."
+            },
+            {
+                id: 13,
+                question: "During a DMA operation, at what point does the DMA controller issue an interrupt to the processor?",
+                options: [
+                    "A) After every single byte transferred",
+                    "B) Continuously throughout the transfer",
+                    "C) Only once, after the entire block of data has been completely transferred",
+                    "D) It never issues any interrupts to the processor"
+                ],
+                correct: 2,
+                explanation: "المعالج بيدي أمر البداية للـ DMA وينساه تماماً. ولما الـ DMA يخلص نقل الـ 4096 بايت مثلاً للرامة، يبعت إشارة مقاطعة واحدة بس للمعالج في النهاية يقول له: 'تم نقل البلوك بنجاح'."
+            },
+            {
+                id: 14,
+                question: "In Memory-Mapped I/O, how are I/O ports addressed and accessed by the processor?",
+                options: [
+                    "A) Using dedicated I/O instructions like IN and OUT only",
+                    "B) As part of a single shared address space, using standard memory instructions like LOAD and STORE",
+                    "C) Through a separate bus completely isolated from memory",
+                    "D) Using interrupt vector tables exclusively"
+                ],
+                correct: 1,
+                explanation: "في الـ Memory-Mapped منافذ الأجهزة بتتعامل كأنها خلايا ذاكرة عادية في نفس الشارع وفضاء العناوين المشترك، وبالتالي نفس تعليمات قراءة وكتابة الذاكرة (LOAD/STORE) بتستخدم لقراءة وكتابة منافذ الأجهزة."
+            },
+            {
+                id: 15,
+                question: "What is the primary architectural penalty of choosing Memory-Mapped I/O over Isolated I/O?",
+                options: [
+                    "A) It requires complex extra control lines on the bus",
+                    "B) It consumes part of the memory address space, reducing available memory capacity",
+                    "C) It is completely incompatible with DMA",
+                    "D) It slows down CPU register operations"
+                ],
+                correct: 1,
+                explanation: "بما إن فضاء العناوين واحد مشترك؛ فلو المعالج مداه يعنون 4 جيجابايت، والعناوين من أول 0xF000 اتحجزت لمنافذ الشاشة والشبكة، العناوين دي متقدرش تركب مكانها رامات حقيقية، فبتاكل من سعة الذاكرة القصوى."
+            },
+            {
+                id: 16,
+                question: "Isolated I/O (Port-Mapped I/O) differs from Memory-Mapped I/O because it features:",
+                options: [
+                    "A) A single shared address space for ports and RAM",
+                    "B) Separate, independent address spaces for memory and I/O, requiring dedicated instructions like IN and OUT",
+                    "C) No need for an address bus",
+                    "D) Complete elimination of read/write control lines"
+                ],
+                correct: 1,
+                explanation: "الـ Isolated بيفصل فضاء منافذ الأجهزة تماماً عن فضاء الذاكرة؛ وعشان نوصل لمنافذ الأجهزة كان لازم نخترع تعليمات خاصة في المعالج هي IN لقراءة المنفذ و OUT للكتابة فيه."
+            },
+            {
+                id: 17,
+                question: "In an Isolated I/O architecture, how does the hardware distinguish whether an address on the bus is meant for RAM or an I/O device?",
+                options: [
+                    "A) By measuring the physical resistance of the wires",
+                    "B) By using distinct control lines (e.g., asserting Memory Read vs I/O Read)",
+                    "C) By checking if the data is IRA text or binary numbers",
+                    "D) By running a software polling loop"
+                ],
+                correct: 1,
+                explanation: "لأن العنوان ممكن يتطابق (مثلاً العنوان 10 موجود في الرام وموجود في المنافذ)، فالمعالج لازم ينور سلك تحكم إضافي على الباص: لو فعل إشارة Memory Read الرامة تستجيب، ولو فعل إشارة I/O Read موديول الجهاز هو اللي يرد."
+            },
+            {
+                id: 18,
+                question: "Which technique for identifying an interrupting device uses a dedicated physical wire from each peripheral to the CPU?",
+                options: [
+                    "A) Daisy chaining",
+                    "B) Software polling",
+                    "C) Multiple interrupt lines",
+                    "D) Bus arbitration"
+                ],
+                correct: 2,
+                explanation: "الطريقة دي بتخصص خط كهربائي مستقل لكل جهاز يوصل برجل مخصوصة في المعالج، فالمعالج يعرف صاحب المقاطعة فوراً من السلكة اللي ارتفع فيها الجهد."
+            },
+            {
+                id: 19,
+                question: 'What is the main drawback of the "Multiple Interrupt Lines" scheme?',
+                options: [
+                    "A) It is the slowest scheme available",
+                    "B) It is severely constrained by the limited number of physical pins on the processor chip",
+                    "C) It requires the CPU to execute a polling program",
+                    "D) It cannot work with keyboard devices"
+                ],
+                correct: 1,
+                explanation: "المعالج شريحة مدمجة صغيرة وعدد أرجله (Pins) محدود جداً؛ مستحيل عملياً نخصص 40 أو 50 رجل لمقاطعات أجهزة خارجية ونسيب باقي الوظائف الحيوية."
+            },
+            {
+                id: 20,
+                question: "In the Software Poll method for identifying an interrupt, what action does the CPU take?",
+                options: [
+                    "A) It sends an acknowledgement signal along a serial hardware chain",
+                    "B) It executes a service routine that sequentially tests each device's status register until the requester is found",
+                    "C) It commands the DMA controller to take over the identification",
+                    "D) It forces all devices to reset simultaneously"
+                ],
+                correct: 1,
+                explanation: "أول ما المقاطعة العامة توصل، المعالج بيشغل برنامج بيلف على الأجهزة واحد ورا التاني بالترتيب يقرا مسجل الحالة بتاعهم: 'أنت اللي طلبت مقاطعة؟'، لحد ما يلاقي الجهاز المطلوب. عيبها إنها بطيئة برمجياً."
+            },
+            {
+                id: 21,
+                question: "In a Daisy Chain (Hardware Poll) configuration, how is the device priority physically determined?",
+                options: [
+                    "A) Alphabetically by device name",
+                    "B) By the device's physical position along the Interrupt Acknowledge (INTA) line",
+                    "C) By the speed of the device's internal buffer",
+                    "D) Dynamically by the operating system scheduler"
+                ],
+                correct: 1,
+                explanation: "إشارة الموافقة على المقاطعة (INTA) بتمر متسلسلة من جهاز للتاني؛ الجهاز المتوصل في أول السلك (الأقرب للمعالج) بيشوف الإشارة الأول، فلو كان طالب مقاطعة بياخدها ويمنعها عن الباقيين، وبالتالي أولوية الجهاز محددة بمكانه الفيزيائي في السلسلة."
+            },
+            {
+                id: 22,
+                question: "What does an I/O module place on the data bus when it is acknowledged in a Vectored Interrupt scheme (like Daisy Chain)?",
+                options: [
+                    "A) The entire data file",
+                    "B) An Interrupt Vector (identifying code / pointer to its ISR)",
+                    "C) Its clock frequency",
+                    "D) The IRA parity table"
+                ],
+                correct: 1,
+                explanation: "في أنظمة الـ Vectored الجهاز الفائز مش بيبعت الداتا فوراً؛ بيبعت كود تعريفي اسمه Interrupt Vector، المعالج بيستخدمه كمؤشر لعنوان دالة الخدمة الخاصة بالجهاز ده في جدول المقاطعات عشان يشغل البرنامج الصح مباشرة."
+            },
+            {
+                id: 23,
+                question: "In Bus Arbitration for interrupt handling, what must a device achieve before asserting its interrupt request?",
+                options: [
+                    "A) It must switch from Programmed I/O to DMA mode",
+                    "B) It must request and win master control of the system bus from a bus arbiter",
+                    "C) It must empty all memory cache lines",
+                    "D) It must format its data according to IRA standards"
+                ],
+                correct: 1,
+                explanation: "خطوط الباص وسيلة مشتركة ونادرة؛ في نظام الـ Bus Arbitration الجهاز ملوش حق يبعت مقاطعة ولا يرمي الـ Vector بتاعه إلا لما يقدم طلب لوحدة تحكيم الباص (Bus Arbiter) وتمنحه حق السيطرة كـ Bus Master."
+            },
+            {
+                id: 24,
+                question: "Which I/O command type is used to check various status conditions (e.g., error bits, busy/ready) associated with an I/O module?",
+                options: [
+                    "A) Control command",
+                    "B) Test command",
+                    "C) Read command",
+                    "D) Write command"
+                ],
+                correct: 1,
+                explanation: "موديول الـ I/O بيستقبل 4 أوامر رئيسية من المعالج: 1. Control: لتشغيل الطرفية وتوجيهها. 2. Test: لاختبار وفحص شروط الحالة (Status conditions) والتأكد إن الجهاز متاح وخالي من الأخطاء. 3. Read: لجلب البيانات من الجهاز للبافر. 4. Write: لإرسال البيانات من الباص للجهاز."
+            },
+            {
+                id: 25,
+                question: "Which of the following summaries correctly matches each I/O technique with its primary CPU involvement?",
+                options: [
+                    "A) Programmed I/O: Zero CPU involvement | DMA: Busy-waiting CPU",
+                    "B) Programmed I/O: Busy-waiting CPU | Interrupt-Driven: CPU handles word transfers | DMA: CPU handles only block setup and completion",
+                    "C) Interrupt-Driven: Transfers blocks directly to RAM | DMA: Handles single characters",
+                    "D) Programmed I/O: Uses dedicated DMA chips | Isolated I/O: Uses shared memory spaces"
+                ],
+                correct: 1,
+                explanation: "دي خلاصة الفصل كله: Programmed: المعالج محبوس يراقب ويفحص (Busy-waiting). Interrupt-Driven: المعالج حر لكن بيتدخل لنقل كل كلمة ورا كلمة عند المقاطعة. DMA: المعالج بيسلم أمر البداية ويستقبل إشعار النهاية، ونقل البلوك كله بيتم مباشرة بين الجهاز والرامة."
+            }
+        ];
+
+        let userAnswers = {};
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
+
+            mcqQuestions.forEach((q, idx) => {
+                const answered = userAnswers[q.id] !== undefined;
+                const selectedIdx = userAnswers[q.id];
+
+                const card = document.createElement('article');
+                card.className = 'reading-block !mb-0 transition-all';
+                card.id = `q-card-${q.id}`;
+
+                let optionsHtml = '';
+                q.options.forEach((opt, optIdx) => {
+                    let btnClass = 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800';
+                    let badgeHtml = '';
+
+                    if (answered) {
+                        if (optIdx === q.correct) {
+                            btnClass = 'bg-emerald-50 border-emerald-500 text-emerald-950 font-semibold ring-2 ring-emerald-500/20';
+                            badgeHtml = '<span class="text-xs font-heading font-bold bg-emerald-600 text-white px-2.5 py-1 rounded-full shrink-0">✓ الإجابة الصحيحة</span>';
+                        } else if (optIdx === selectedIdx && selectedIdx !== q.correct) {
+                            btnClass = 'bg-rose-50 border-rose-400 text-rose-950 line-through opacity-85';
+                            badgeHtml = '<span class="text-xs font-heading font-bold bg-rose-600 text-white px-2.5 py-1 rounded-full shrink-0">✗ اختيارك</span>';
+                        } else {
+                            btnClass = 'bg-slate-50 border-slate-200 text-slate-400 opacity-70';
+                        }
+                    }
+
+                    optionsHtml += `
+                        <button 
+                            onclick="selectAnswer(${q.id}, ${optIdx})" 
+                            ${answered ? 'disabled' : ''}
+                            class="w-full en-text p-4 rounded-xl border-2 transition flex items-center justify-between gap-3 ${btnClass}"
+                        >
+                            <span>${opt}</span>
+                            ${badgeHtml}
+                        </button>
+                    `;
+                });
+
+                const explanationHtml = answered ? `
+                    <div class="mt-6 p-5 rounded-xl bg-teal-50/90 border-r-4 border-teal-600 text-slate-800 animate-fadeIn">
+                        <div class="font-heading font-bold text-teal-950 text-base mb-1">
+                            💡 التفسير المعماري للإجابة (${q.options[q.correct]}):
+                        </div>
+                        <p class="text-slate-700 leading-relaxed">${q.explanation}</p>
+                    </div>
+                ` : '';
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100">
+                        <span class="font-heading font-bold text-sm text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1 rounded-lg">
+                            السؤال ${q.id} من 25
+                        </span>
+                        <span class="text-xs font-mono text-slate-400">Question ${q.id}</span>
+                    </div>
+                    <h3 class="en-text font-bold text-lg sm:text-xl text-slate-900 mb-6">
+                        ${q.question}
+                    </h3>
+                    <div class="space-y-3">
+                        ${optionsHtml}
+                    </div>
+                    ${explanationHtml}
+                `;
+
+                container.appendChild(card);
+            });
+
+            updateQuizStats();
+        }
+
+        function selectAnswer(questionId, optionIndex) {
+            if (userAnswers[questionId] !== undefined) return;
+            userAnswers[questionId] = optionIndex;
+            renderQuiz();
+        }
+
+        function updateQuizStats() {
+            let score = 0;
+            let answeredCount = Object.keys(userAnswers).length;
+
+            mcqQuestions.forEach(q => {
+                if (userAnswers[q.id] === q.correct) {
+                    score++;
+                }
+            });
+
+            document.getElementById('quiz-score').textContent = score;
+            document.getElementById('quiz-answered').textContent = answeredCount;
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            renderQuiz();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function revealAllAnswers() {
+            mcqQuestions.forEach(q => {
+                if (userAnswers[q.id] === undefined) {
+                    userAnswers[q.id] = q.correct;
+                }
+            });
+            renderQuiz();
+        }
+
+        // التنقل بين الأقسام
+        function switchSection(sectionKey) {
+            const sections = ['lesson1', 'lesson2', 'capsule', 'quiz'];
+            sections.forEach(s => {
+                const secEl = document.getElementById(`section-${s}`);
+                const tabEl = document.getElementById(`tab-${s}`);
+                if (s === sectionKey) {
+                    secEl.classList.remove('hidden');
+                    tabEl.classList.add('active');
+                } else {
+                    secEl.classList.add('hidden');
+                    tabEl.classList.remove('active');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // التحكم بحجم الخط في وضع القراءة
+        let currentFontScale = 1.15;
+        function changeFontSize(step) {
+            if (step === 0) {
+                currentFontScale = 1.15;
+            } else {
+                currentFontScale = Math.min(1.45, Math.max(0.95, currentFontScale + step * 0.08));
+            }
+            document.body.style.fontSize = `${currentFontScale}rem`;
+        }
+
+        // تحديث شريط التقدم في القراءة
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            document.getElementById('reading-progress').style.width = `${progress}%`;
+        });
+
+        // تشغيل الكويز عند تحميل الصفحة
+        
+        // إدارة أوضاع القراءة والألوان (سيبيا / فاتح / داكن)
+        function setTheme(theme) {
+            document.body.classList.remove('theme-sepia', 'theme-light', 'theme-dark');
+            document.body.classList.add('theme-' + theme);
+
+            const buttons = {
+                sepia: document.getElementById('btn-theme-sepia'),
+                light: document.getElementById('btn-theme-light'),
+                dark: document.getElementById('btn-theme-dark')
+            };
+
+            Object.keys(buttons).forEach(k => {
+                if (!buttons[k]) return;
+                if (k === theme) {
+                    buttons[k].className = 'px-2 py-1 rounded-lg text-xs font-heading font-bold transition bg-teal-700 text-white shadow-sm';
+                } else {
+                    buttons[k].className = 'px-2 py-1 rounded-lg text-xs font-heading font-bold transition text-slate-600 hover:bg-slate-100';
+                }
+            });
+
+            try {
+                localStorage.setItem('study-arch-theme', theme);
+            } catch(e) {}
+        }
+
+        // استرجاع الثيم المفضل عند التحميل
+        (function() {
+            try {
+                const saved = localStorage.getItem('study-arch-theme') || 'sepia';
+                setTheme(saved);
+            } catch(e) {
+                setTheme('sepia');
+            }
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuiz();
+        });
+    </script>
+</body>
+</html>

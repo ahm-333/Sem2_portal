@@ -1,0 +1,2150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>موسوعة قواعد البيانات - الفصل الأول (وضع القراءة المريح)</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            tajawal: ['Tajawal', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --reader-font-size: 1.15rem;
+      --reader-line-height: 2.1;
+      --reader-letter-spacing: 0.01em;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    h1, h2, h3, h4, .heading-font {
+      font-family: 'Cairo', sans-serif;
+    }
+
+    /* Reading Themes */
+    body.theme-dark {
+      background-color: #0b1120;
+      color: #e2e8f0;
+    }
+    body.theme-sepia {
+      background-color: #f6f0e0;
+      color: #3d3122;
+    }
+    body.theme-light {
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+
+    .reader-text {
+      font-size: var(--reader-font-size);
+      line-height: var(--reader-line-height);
+      letter-spacing: var(--reader-letter-spacing);
+    }
+
+    /* Card adaptation across themes */
+    body.theme-dark .reader-card {
+      background-color: #151f32;
+      border-color: #263554;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+    body.theme-sepia .reader-card {
+      background-color: #fdf9ee;
+      border-color: #e3d5b8;
+      box-shadow: 0 8px 25px -8px rgba(92, 72, 42, 0.12);
+    }
+    body.theme-light .reader-card {
+      background-color: #ffffff;
+      border-color: #e2e8f0;
+      box-shadow: 0 8px 25px -8px rgba(15, 23, 42, 0.07);
+    }
+
+    body.theme-dark .sub-box {
+      background-color: #0f172a;
+      border-color: #1e293b;
+    }
+    body.theme-sepia .sub-box {
+      background-color: #f2e9d2;
+      border-color: #decb9e;
+    }
+    body.theme-light .sub-box {
+      background-color: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+
+    body.theme-dark .slide-quote {
+      background-color: #111c2d;
+      border-right-color: #38bdf8;
+      color: #bae6fd;
+    }
+    body.theme-sepia .slide-quote {
+      background-color: #efe5cc;
+      border-right-color: #b45309;
+      color: #451a03;
+    }
+    body.theme-light .slide-quote {
+      background-color: #f0f9ff;
+      border-right-color: #0284c7;
+      color: #0c4a6e;
+    }
+
+    body.theme-dark .balady-box {
+      background-color: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+    body.theme-sepia .balady-box {
+      background-color: rgba(21, 128, 61, 0.08);
+      border-color: rgba(21, 128, 61, 0.25);
+    }
+    body.theme-light .balady-box {
+      background-color: #ecfdf5;
+      border-color: #a7f3d0;
+    }
+
+    body.theme-dark .header-bar {
+      background-color: rgba(15, 23, 42, 0.92);
+      border-bottom-color: #1e293b;
+    }
+    body.theme-sepia .header-bar {
+      background-color: rgba(246, 240, 224, 0.94);
+      border-bottom-color: #decb9e;
+    }
+    body.theme-light .header-bar {
+      background-color: rgba(255, 255, 255, 0.94);
+      border-bottom-color: #e2e8f0;
+    }
+
+    .en-badge {
+      direction: ltr;
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 0.15rem 0.55rem;
+      border-radius: 0.375rem;
+      font-size: 0.85em;
+      font-weight: 600;
+      margin: 0 0.2rem;
+    }
+    body.theme-dark .en-badge {
+      background-color: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    body.theme-sepia .en-badge {
+      background-color: rgba(180, 83, 9, 0.12);
+      color: #92400e;
+      border: 1px solid rgba(180, 83, 9, 0.28);
+    }
+    body.theme-light .en-badge {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.5);
+      border-radius: 9999px;
+    }
+
+    .cipher-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .cipher-card:hover {
+      transform: translateY(-2px);
+    }
+  
+    .reading-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .compact-header {
+      transition: transform 0.28s ease, box-shadow 0.2s ease;
+    }
+    .compact-header.nav-hidden {
+      transform: translateY(-100%);
+    }
+
+  </style>
+</head>
+<body class="theme-dark min-h-screen pb-24 selection:bg-sky-500 selection:text-white">
+
+  <!-- Top Reading Progress Bar -->
+  <div class="fixed top-0 left-0 right-0 h-1.5 z-50 bg-slate-700/30">
+    <div id="readingProgress" class="h-full bg-gradient-to-r from-emerald-400 via-sky-500 to-indigo-500 transition-all duration-150" style="width: 0%"></div>
+  </div>
+
+  <!-- Sticky Reading Mode Control Header -->
+  <header id="mainReadingHeader" class="header-bar compact-header sticky top-0 z-40 backdrop-blur-md border-b transition-all">
+    <div class="reading-container px-3 py-1.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a href="../../subject.html?id=database-systems" title="الرجوع إلى صفحة مقرر أنظمة قواعد البيانات" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 text-white hover:bg-emerald-600 font-bold text-xs shadow-sm transition">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span class="hidden sm:inline">الرجوع للمقرر</span>
+        </a>
+        <a href="index.html" title="فهرس شروحات قواعد البيانات" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-slate-500/30 bg-slate-500/10 text-xs font-bold shadow-sm transition hover:bg-slate-500/20">
+          <span>📚 الفهرس</span>
+        </a>
+        <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-heading font-bold text-xs shadow-sm shrink-0">Ch1</span>
+        <div>
+          <h1 class="font-heading font-bold text-xs sm:text-sm leading-tight truncate">الفصل الأول: أساسيات قواعد البيانات (Chapter 1)</h1>
+        </div>
+      </div>
+
+      <!-- Reading Controls Toolbar -->
+      <div class="flex items-center flex-wrap gap-1.5 sm:gap-2">
+        <a href="chapter-2.html" title="الانتقال للفصل الثاني: معمارية ومفاهيم النظم" class="px-2.5 py-1 rounded-lg border border-emerald-500/40 bg-emerald-500/15 text-emerald-400 text-xs font-heading font-bold hover:bg-emerald-500/25 transition inline-flex items-center gap-1">
+          <span>Ch2: معمارية النظم</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        </a>
+
+        <!-- Font Size Adjuster -->
+        <div class="flex items-center rounded-lg border border-slate-500/30 bg-slate-500/10 p-0.5">
+          <button id="btnFontDec" type="button" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-emerald-500/20 transition" title="تصغير الخط">A-</button>
+          <span id="fontSizeLabel" class="px-1.5 text-[11px] font-semibold opacity-80">100%</span>
+          <button id="btnFontInc" type="button" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-emerald-500/20 transition" title="تكبير الخط">A+</button>
+        </div>
+
+        <!-- Line Spacing Adjuster -->
+        <button id="btnSpacingToggle" type="button" class="px-2 py-1 rounded-lg border border-slate-500/30 bg-slate-500/10 text-[11px] font-heading font-bold hover:bg-emerald-500/20 transition">
+          تباعد: مريح جداً
+        </button>
+
+        <!-- Themes: Sepia, White, Dark -->
+        <div class="flex items-center gap-1 rounded-lg border border-slate-500/30 bg-slate-500/10 p-1">
+          <button id="btnThemeSepia" type="button" title="ورقي دافئ لراحة العين" class="w-4 h-4 rounded-full bg-[#fdfaf5] border-2 border-amber-600 shadow-sm"></button>
+          <button id="btnThemeLight" type="button" title="أبيض نقي" class="w-4 h-4 rounded-full bg-white border border-slate-300"></button>
+          <button id="btnThemeDark" type="button" title="ليلي مريح" class="w-4 h-4 rounded-full bg-slate-900 border border-slate-600"></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Reading Container -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 pt-8 space-y-14 reader-text" id="mainContainer">
+
+    <!-- ==========================================
+         BLOCK 1: Basic Definitions (p1.txt)
+    =========================================== -->
+    <section id="block-1" class="content-block reader-card rounded-3xl border p-6 sm:p-10 space-y-10">
+      <!-- Block Header -->
+      <div class="border-b border-slate-500/20 pb-6 space-y-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-sky-500/20 text-sky-400 border border-sky-500/30 heading-font">البلوك الأول (Block 1)</span>
+          <span class="text-xs opacity-60 font-mono">Basic Definitions: Data, Mini-World & Database</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font leading-relaxed">
+          المفاهيم الأساسية: البيانات (Data)، العالم المصغر (Mini-World)، وقاعدة البيانات (Database)
+        </h2>
+      </div>
+
+      <!-- 1. الفكرة بالبلدي -->
+      <div class="balady-box rounded-2xl border p-6 space-y-3">
+        <div class="flex items-center gap-2 text-emerald-400 font-bold heading-font text-lg">
+          <span>💡</span>
+          <h3>1. الفكرة بالبلدي (سطرين بالعدد):</h3>
+        </div>
+        <p class="leading-loose">
+          أنت كمهندس مش بتسجل الكوكب كله؛ بتنقي حتة معينة من الواقع اسمها <span class="en-badge">Mini-World</span>. شوية الحقائق اللي بتسجلها عن الحتة دي اسمها <span class="en-badge">Data</span>، ولما ترتبهم برباط وعلاقة منطقية لغرض واضح بيبقوا <span class="en-badge">Database</span>.
+        </p>
+      </div>
+
+      <!-- Custom Visual Diagram 1: Mini-World to Database Flow -->
+      <div class="sub-box rounded-2xl border p-6 space-y-4">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <h4 class="font-bold heading-font text-sky-400 flex items-center gap-2">
+            <span>🎨</span>
+            <span>رسمة توضيحية مرسومة: رحلة تحول الواقع إلى قاعدة بيانات مترابطة</span>
+          </h4>
+          <span class="text-xs opacity-60">رسم تفاعلي بديل للكتابة النصية</span>
+        </div>
+        <div class="w-full overflow-x-auto py-2">
+          <svg viewBox="0 0 820 230" class="w-full h-auto min-w-[620px]" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="gradWorld" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0284c7" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#1e3a8a" stop-opacity="0.4"/>
+              </linearGradient>
+              <linearGradient id="gradData" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#d97706" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#78350f" stop-opacity="0.4"/>
+              </linearGradient>
+              <linearGradient id="gradDB" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#059669" stop-opacity="0.25"/>
+                <stop offset="100%" stop-color="#064e3b" stop-opacity="0.4"/>
+              </linearGradient>
+              <marker id="arrowSky" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#38bdf8" />
+              </marker>
+            </defs>
+
+            <!-- Box 1: Mini-World -->
+            <rect x="560" y="20" width="240" height="190" rx="18" fill="url(#gradWorld)" stroke="#38bdf8" stroke-width="2"/>
+            <circle cx="680" cy="65" r="22" fill="#0284c7" opacity="0.3" stroke="#38bdf8" stroke-width="1.5"/>
+            <text x="680" y="71" text-anchor="middle" fill="#7dd3fc" font-size="18" font-family="Cairo" font-weight="bold">🌍</text>
+            <text x="680" y="110" text-anchor="middle" fill="#38bdf8" font-size="16" font-family="Cairo" font-weight="bold">Mini-World / UoD</text>
+            <text x="680" y="136" text-anchor="middle" fill="#cbd5e1" font-size="13" font-family="Tajawal">جزء محدد من الواقع</text>
+            <text x="680" y="160" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="Tajawal">(جامعة، مستشفى، بنك)</text>
+            <text x="680" y="188" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="Tajawal">أي حدث هنا ينعكس فوراً</text>
+
+            <!-- Arrow 1 -->
+            <path d="M555,115 L495,115" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="5,4" marker-end="url(#arrowSky)"/>
+            <text x="525" y="102" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Cairo">تسجيل حقائق</text>
+
+            <!-- Box 2: Data -->
+            <rect x="290" y="20" width="200" height="190" rx="18" fill="url(#gradData)" stroke="#f59e0b" stroke-width="2"/>
+            <circle cx="390" cy="65" r="22" fill="#d97706" opacity="0.3" stroke="#f59e0b" stroke-width="1.5"/>
+            <text x="390" y="72" text-anchor="middle" fill="#fcd34d" font-size="18" font-family="Cairo" font-weight="bold">📝</text>
+            <text x="390" y="110" text-anchor="middle" fill="#fbbf24" font-size="16" font-family="Cairo" font-weight="bold">Data (البيانات)</text>
+            <text x="390" y="136" text-anchor="middle" fill="#cbd5e1" font-size="13" font-family="Tajawal">Known Facts</text>
+            <text x="390" y="160" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="Tajawal">حقائق مسجلة لها معنى ضمني</text>
+            <text x="390" y="188" text-anchor="middle" fill="#fcd34d" font-size="11" font-family="Tajawal">(اسم، عمر، درجة امتحان)</text>
+
+            <!-- Arrow 2 -->
+            <path d="M285,115 L225,115" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="5,4" marker-end="url(#arrowSky)"/>
+            <text x="255" y="102" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Cairo">ترابط منطقي</text>
+
+            <!-- Box 3: Database -->
+            <rect x="20" y="20" width="200" height="190" rx="18" fill="url(#gradDB)" stroke="#10b981" stroke-width="2"/>
+            <circle cx="120" cy="65" r="22" fill="#059669" opacity="0.3" stroke="#10b981" stroke-width="1.5"/>
+            <text x="120" y="72" text-anchor="middle" fill="#6ee7b7" font-size="18" font-family="Cairo" font-weight="bold">🗄️</text>
+            <text x="120" y="110" text-anchor="middle" fill="#34d399" font-size="16" font-family="Cairo" font-weight="bold">Database</text>
+            <text x="120" y="136" text-anchor="middle" fill="#cbd5e1" font-size="13" font-family="Tajawal">Collection of Related Data</text>
+            <text x="120" y="160" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="Tajawal">متماسكة منطقياً + لغرض محدد</text>
+            <text x="120" y="188" text-anchor="middle" fill="#6ee7b7" font-size="11" font-family="Tajawal">+ لمستخدمين وتطبيقات معروفة</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 2. نصوص السلايد الرسمية + التوضيح بالعامية -->
+      <div class="space-y-6">
+        <h3 class="text-xl font-extrabold heading-font text-sky-400 border-r-4 border-sky-500 pr-3">
+          2. نصوص السلايد الرسمية + التوضيح بالعامية:
+        </h3>
+
+        <!-- Card: Data -->
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="text-lg font-bold heading-font">أولاً: البيانات <span class="en-badge">Data</span></h4>
+          </div>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm leading-relaxed" dir="ltr">
+            <span class="block text-xs uppercase tracking-wider opacity-60 mb-1">Official Slide Text:</span>
+            <strong>Data:</strong> Known facts that can be recorded and have an implicit meaning.
+          </div>
+          <div class="pt-1 leading-loose">
+            <strong class="text-emerald-400 heading-font">• التوضيح بالعامية:</strong>
+            أي معلومة أو حقيقة نقدر نسجلها ويكون ليها معنى مفهوم ضمنياً في سياقها (زي اسمك، سنك، درجاتك).
+          </div>
+        </div>
+
+        <!-- Card: Mini-World -->
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="text-lg font-bold heading-font">ثانياً: العالم المصغر <span class="en-badge">Mini-World / Universe of Discourse - UoD</span></h4>
+          </div>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm leading-relaxed" dir="ltr">
+            <span class="block text-xs uppercase tracking-wider opacity-60 mb-1">Official Slide Text:</span>
+            <strong>Mini-World (or Universe of Discourse - UoD):</strong> Some part of the real world about which data is stored in a database (e.g., student grades and transcripts at a university). Changes to the mini-world are reflected in the database.
+          </div>
+          <div class="pt-1 leading-loose">
+            <strong class="text-emerald-400 heading-font">• التوضيح بالعامية:</strong>
+            حتة الواقع اللي عينك عليها وبتعملها السيستم (مستشفى، جامعة)، وأي تغيير بيحصل في الواقع (طالب انسحب مثلاً) لازم يسمع فوراً في الداتابيز.
+          </div>
+        </div>
+
+        <!-- Card: Database -->
+        <div class="sub-box rounded-2xl border p-6 space-y-5">
+          <div class="flex items-center justify-between">
+            <h4 class="text-lg font-bold heading-font">ثالثاً: قاعدة البيانات وخواصها الأربعة <span class="en-badge">Database</span></h4>
+          </div>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm leading-relaxed space-y-2" dir="ltr">
+            <span class="block text-xs uppercase tracking-wider opacity-60">Official Slide Text:</span>
+            <p><strong>Database:</strong> A collection of related data.</p>
+            <ul class="list-decimal pl-5 space-y-1.5 pt-1">
+              <li>Represents some aspect of the real world (Mini-world / UoD).</li>
+              <li>Logically coherent collection of data with inherent meaning (random data cannot correctly be referred to as a database).</li>
+              <li>Designed, built, and populated with data for a specific purpose.</li>
+              <li>Has an intended group of users and preconceived applications.</li>
+            </ul>
+          </div>
+          <div class="pt-1 leading-loose">
+            <strong class="text-emerald-400 heading-font">• التوضيح بالعامية:</strong>
+            مش شوية ملفات محطوطة جنب بعض وخلاص؛ دي بيانات بينها علاقة وترابط منطقي، اتصممت واتملت داتا لغرض محدد ولمستخدمين محددين.
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. فك شفرة الامتحان الموسع -->
+      <div class="space-y-4">
+        <h3 class="text-xl font-extrabold heading-font text-amber-400 border-r-4 border-amber-500 pr-3">
+          3. فك شفرة الامتحان الموسع (The Exam Cipher Matrix - البلوك 1):
+        </h3>
+        <div class="grid grid-cols-1 gap-4">
+          <div class="cipher-card sub-box rounded-2xl border p-5 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold text-sky-400 heading-font">🔍 لو لمحت في رأس السؤال (Trigger Words):</span>
+              <span class="en-badge">"Known facts" + "implicit meaning"</span>
+            </div>
+            <div class="text-base font-bold text-emerald-400 heading-font">⬅️ تجري فوراً تختار: Data</div>
+            <div class="text-sm opacity-85 border-t border-slate-500/20 pt-2">⚠️ <strong>فخ الدكتور:</strong> بيحطلك في الاختيارات (Information, File, Database)؛ التعريف الحرفي ده يخص <strong>Data</strong> فقط.</div>
+          </div>
+
+          <div class="cipher-card sub-box rounded-2xl border p-5 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold text-sky-400 heading-font">🔍 لو لمحت في رأس السؤال:</span>
+              <span class="en-badge">"Part of the real world" / "Universe of Discourse"</span>
+            </div>
+            <div class="text-base font-bold text-emerald-400 heading-font">⬅️ تجري فوراً تختار: Mini-World أو UoD</div>
+            <div class="text-sm opacity-85 border-t border-slate-500/20 pt-2">⚠️ <strong>فخ الدكتور:</strong> الـ UoD هو الاسم العلمي المكافئ للـ Mini-World، بيجيب الاختصار ده كفخ عشان يشوفك عارفه ولا لأ.</div>
+          </div>
+
+          <div class="cipher-card sub-box rounded-2xl border p-5 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold text-sky-400 heading-font">🔍 لو لمحت في رأس السؤال:</span>
+              <span class="en-badge">"Changes in ... are reflected in the database"</span>
+            </div>
+            <div class="text-base font-bold text-emerald-400 heading-font">⬅️ تجري فوراً تختار: Mini-World</div>
+            <div class="text-sm opacity-85 border-t border-slate-500/20 pt-2">⚠️ <strong>فخ الدكتور:</strong> أي أكشن في الواقع الحقيقي بينعكس على الداتابيز.</div>
+          </div>
+
+          <div class="cipher-card sub-box rounded-2xl border p-5 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold text-sky-400 heading-font">🔍 لو لمحت في رأس السؤال:</span>
+              <span class="en-badge">"Collection of related data" / "Logically coherent"</span>
+            </div>
+            <div class="text-base font-bold text-emerald-400 heading-font">⬅️ تجري فوراً تختار: Database (وليس Random data)</div>
+            <div class="text-sm opacity-85 border-t border-slate-500/20 pt-2">⚠️ <strong>فخ الدكتور:</strong> لازم كلمة <strong>Related</strong>، لو شالها أو قال Random assortment / Unrelated تبقى العبارة غلط ومش داتابيز أبداً. وكمان لازم يكون ليها مستخدمين وتطبيقات محددة مسبقاً (Preconceived applications).</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         BLOCK 2: DBMS, Functions, Environment & Meta-data (p2.txt)
+    =========================================== -->
+    <section id="block-2" class="content-block reader-card rounded-3xl border p-6 sm:p-10 space-y-10">
+      <div class="border-b border-slate-500/20 pb-6 space-y-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 heading-font">البلوك الثاني (Block 2)</span>
+          <span class="text-xs opacity-60 font-mono">DBMS Functions, Environment & Meta-data Catalog</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font leading-relaxed">
+          نظام الـ DBMS، وظائفه الأربعة، بيئته الكاملة، والـ Meta-data & Catalog
+        </h2>
+      </div>
+
+      <!-- 1. الفكرة بالبلدي -->
+      <div class="balady-box rounded-2xl border p-6 space-y-4">
+        <div class="flex items-center gap-2 text-emerald-400 font-bold heading-font text-lg">
+          <span>💡</span>
+          <h3>1. الفكرة بالبلدي (ملخص البلوك والـ Meta-data):</h3>
+        </div>
+        <p class="leading-loose">
+          الـ <span class="en-badge">DBMS</span> مش ملف عادي، ده "البرنامج الوسيط الكبير" (زي Oracle أو MySQL). عشان يدير قاعدة البيانات، بيمشي في 4 خطوات إجبارية بالترتيب: يحدد شهادة ميلاد الجداول والقيود (<span class="en-badge">Defining</span>)، يخزنها على الهارد (<span class="en-badge">Constructing</span>)، يستقبل طلبات البحث والتعديل اليومية (<span class="en-badge">Manipulating</span>)، ويسمح لكذا يوزر وبرنامج يفتحوا مع بعض في نفس الثانية بأمان تام (<span class="en-badge">Sharing</span>).
+        </p>
+        <p class="leading-loose border-t border-emerald-500/20 pt-3">
+          أما الـ <span class="en-badge">Meta-data</span> ببساطة فهي <strong>"بيانات بتوصف البيانات"</strong>. يعني لو جدول الطلاب فيه اسمك وسنك، الميتا داتا مش اسمك، الميتا داتا هي السطر اللي بيقول: <em>"الاسم ده نوعه نص وحجمه 30 حرف، والسن ده رقم ومينفعش يبقى سالب"</em>. الكشكول اللي متجمعة فيه كل الميتا داتا دي جوه الـ DBMS اسمه الـ <span class="en-badge">Catalog</span> (أو Data Dictionary).
+        </p>
+      </div>
+
+      <!-- 2. تعريف الـ DBMS والوظائف الأربعة -->
+      <div class="space-y-6">
+        <h3 class="text-xl font-extrabold heading-font text-sky-400 border-r-4 border-sky-500 pr-3">
+          2. تعريف الـ DBMS والوظائف الأربعة الأساسية بالتفصيل:
+        </h3>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <h4 class="text-lg font-bold heading-font">تعريف نظام إدارة قواعد البيانات <span class="en-badge">DBMS (Database Management System)</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm leading-relaxed" dir="ltr">
+            A collection of programs that enables users to create and maintain a database. The DBMS is a general-purpose software system that facilitates the processes of defining, constructing, manipulating, and sharing databases among various users and applications.
+          </div>
+          <p class="leading-loose">
+            <strong class="text-emerald-400 heading-font">• بالعامية:</strong> سوفت وير عام بيقعد في النص بين المستخدم والداتا اللي على الهارد، مهمته ينشئ الداتابيز ويحافظ عليها وينفذ الوظائف الأربعة دول:
+          </p>
+        </div>
+
+        <!-- 4 Functions Stacked Clearly -->
+        <div class="space-y-4">
+          <div class="sub-box rounded-2xl border p-6 space-y-3">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-sky-500/20 text-sky-400 font-bold flex items-center justify-center">1</span>
+              <h4 class="text-lg font-bold heading-font">تعريف قاعدة البيانات <span class="en-badge">Defining a Database</span></h4>
+            </div>
+            <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+              Involves specifying the data types, structures, and constraints of the data to be stored in the database.
+            </div>
+            <p class="leading-loose">
+              <strong class="text-emerald-400 heading-font">• بالعامية:</strong> كتابة شهادة ميلاد الداتا؛ بنحدد اسم كل جدول، أسماء العواميد، نوع كل بيان (نصوص، أرقام، تواريخ)، والشروط والقيود (زي: رقم الطالب ميتكررش، والمرتب أكبر من الصفر).
+            </p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-6 space-y-3">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 font-bold flex items-center justify-center">2</span>
+              <h4 class="text-lg font-bold heading-font">بناء وتخزين قاعدة البيانات <span class="en-badge">Constructing the Database</span></h4>
+            </div>
+            <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+              The process of storing the data on some storage medium that is controlled by the DBMS.
+            </div>
+            <p class="leading-loose">
+              <strong class="text-emerald-400 heading-font">• بالعامية:</strong> نقل الداتا من مجرد كلام وتصميم إلى كتابتها وحفظها فعلياً على وسيط تخزين (زي الهارد ديسك أو SSD) تحت سيطرة محرك الـ DBMS.
+            </p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-6 space-y-3">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center">3</span>
+              <h4 class="text-lg font-bold heading-font">التعامل مع البيانات ومعالجتها <span class="en-badge">Manipulating a Database</span></h4>
+            </div>
+            <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+              Functions such as querying the database to retrieve specific data, updating the database to reflect changes in the mini-world, and generating reports from the data.
+            </div>
+            <p class="leading-loose">
+              <strong class="text-emerald-400 heading-font">• بالعامية:</strong> الشغل اليومي مع البيانات: استعلام وبحث (Query)، تعديل وإضافة ومسح لمواكبة اللي بيحصل في الواقع (Update)، واستخراج وطباعة تقارير للمستخدمين (Generating Reports).
+            </p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-6 space-y-3">
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 font-bold flex items-center justify-center">4</span>
+              <h4 class="text-lg font-bold heading-font">مشاركة قاعدة البيانات <span class="en-badge">Sharing a Database</span></h4>
+            </div>
+            <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+              Allows multiple users and programs to access the database concurrently.
+            </div>
+            <p class="leading-loose">
+              <strong class="text-emerald-400 heading-font">• بالعامية:</strong> إن كذا موظف وكذا برنامج يدخلوا في نفس اللحظة بالمللي ثانية يقروا ويعدلوا من غير ما حد يمسح شغل التاني.
+            </p>
+          </div>
+        </div>
+
+        <!-- وظائف الحماية والصيانة + تفاعل التطبيقات -->
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <h4 class="text-lg font-bold heading-font text-sky-400">وظائف الحماية والصيانة الإضافية (Protection & Maintenance):</h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm space-y-1.5" dir="ltr">
+            <p>• <strong>System Protection:</strong> Protection against hardware or software malfunction (crashes).</p>
+            <p>• <strong>Security Protection:</strong> Protection against unauthorized or malicious access.</p>
+            <p>• <strong>Maintenance (System Evolution):</strong> Maintaining the database system by allowing the system to evolve as requirements change over time.</p>
+          </div>
+          <ul class="space-y-2 leading-loose pr-2">
+            <li><strong class="text-emerald-400">• حماية النظام (System Protection):</strong> حماية السيستم ضد الانهيار الفني لو النور قطع أو الهارد عطل.</li>
+            <li><strong class="text-emerald-400">• الحماية الأمنية (Security Protection):</strong> حماية أمنية بالباسوردات والصلاحيات لمنع المتطفلين والمخترقين.</li>
+            <li><strong class="text-emerald-400">• الصيانة والتطور (Maintenance):</strong> عشان السيستم يقدر يكبر ويتعدل مع مرور السنين حسب احتياج المؤسسة.</li>
+          </ul>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <h4 class="text-lg font-bold heading-font text-sky-400">تفاعل التطبيقات مع الـ DBMS (Application Activities Against a Database):</h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm space-y-1.5" dir="ltr">
+            <p>Applications interact with a database by generating:</p>
+            <p>1. <strong>Queries:</strong> Access different parts of data and formulate the result of a request.</p>
+            <p>2. <strong>Transactions:</strong> May read some data and "update" certain values of documents in the database, and generate new data and store that.</p>
+            <p>• Applications must not allow unauthorized users to access data & must keep up with changes in the database schema over time.</p>
+          </div>
+          <p class="leading-loose">
+            <strong class="text-emerald-400 heading-font">• بالعامية:</strong> البرامج بتكلم الداتابيز بطريقتين: يا إما بتبعت <span class="en-badge">Query</span> عشان تقرا وتسترجع معلومة معينة، أو بتبعت <span class="en-badge">Transaction</span> عشان تقرا وتعدل وتسجل داتا جديدة (زي سحب وإيداع فلوس).
+          </p>
+        </div>
+      </div>
+
+      <!-- Custom Visual Diagram 2: Simplified Database System Environment -->
+      <div class="sub-box rounded-2xl border p-6 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="text-lg font-extrabold heading-font text-sky-400 flex items-center gap-2">
+            <span>🏛️</span>
+            <span>رسمة معمارية مرسومة: بيئة نظام قاعدة البيانات المبسطة (Simplified Database System Environment)</span>
+          </h3>
+          <span class="text-xs opacity-60">رسم تفاعلي كامل من القمة للقاع كما في السلايد</span>
+        </div>
+
+        <div class="w-full overflow-x-auto py-2">
+          <svg viewBox="0 0 760 510" class="w-full h-auto min-w-[580px]" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrowDown" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" fill="#38bdf8"/>
+              </marker>
+            </defs>
+
+            <!-- Layer 1: Users / Programmers -->
+            <rect x="200" y="15" width="360" height="65" rx="14" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="380" y="43" text-anchor="middle" fill="#38bdf8" font-size="16" font-family="Cairo" font-weight="bold">1. Users / Programmers</text>
+            <text x="380" y="65" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">الأشخاص والمبرمجون اللي بيستخدموا السيستم</text>
+
+            <line x1="380" y1="80" x2="380" y2="110" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrowDown)"/>
+
+            <!-- Layer 2: Application Programs / Queries -->
+            <rect x="180" y="115" width="400" height="65" rx="14" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+            <text x="380" y="143" text-anchor="middle" fill="#a5b4fc" font-size="16" font-family="Cairo" font-weight="bold">2. Application Programs / Queries</text>
+            <text x="380" y="165" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">برامج التطبيقات وأوامر الاستعلامات</text>
+
+            <line x1="380" y1="180" x2="380" y2="210" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrowDown)"/>
+
+            <!-- Layer 3: DBMS Software Outer Container -->
+            <rect x="110" y="215" width="540" height="155" rx="18" fill="#0f172a" stroke="#10b981" stroke-width="2.5" stroke-dasharray="6,3"/>
+            <text x="380" y="240" text-anchor="middle" fill="#34d399" font-size="15" font-family="Cairo" font-weight="bold">3. DBMS Software (القلب الداخلي للنظام)</text>
+
+            <!-- Sub-module 3A -->
+            <rect x="145" y="252" width="470" height="46" rx="10" fill="#132a2e" stroke="#2dd4bf" stroke-width="1.5"/>
+            <text x="380" y="273" text-anchor="middle" fill="#5eead4" font-size="14" font-family="Cairo" font-weight="bold">Software to Process Queries / Programs</text>
+            <text x="380" y="291" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">مسؤول عن ترجمة ومعالجة أوامر واستعلامات المستخدم</text>
+
+            <line x1="380" y1="298" x2="380" y2="312" stroke="#2dd4bf" stroke-width="2"/>
+
+            <!-- Sub-module 3B -->
+            <rect x="145" y="312" width="470" height="46" rx="10" fill="#132a2e" stroke="#2dd4bf" stroke-width="1.5"/>
+            <text x="380" y="333" text-anchor="middle" fill="#5eead4" font-size="14" font-family="Cairo" font-weight="bold">Software to Access Stored Data</text>
+            <text x="380" y="351" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">مسؤول عن النزول الفعلي لقراءة وكتابة البيانات على الهارد</text>
+
+            <!-- Dual Arrows to Disk Cylinders -->
+            <line x1="260" y1="370" x2="220" y2="405" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#arrowDown)"/>
+            <line x1="500" y1="370" x2="540" y2="405" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrowDown)"/>
+
+            <!-- Layer 4 Left: Stored Database Definition (Meta-data) -->
+            <rect x="60" y="410" width="290" height="85" rx="16" fill="#2e1f0f" stroke="#f59e0b" stroke-width="2"/>
+            <text x="205" y="438" text-anchor="middle" fill="#fbbf24" font-size="15" font-family="Cairo" font-weight="bold">4. Stored Database Definition</text>
+            <text x="205" y="460" text-anchor="middle" fill="#fde68a" font-size="13" font-family="JetBrains Mono">(Meta-data / DBMS Catalog)</text>
+            <text x="205" y="482" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">وصف الجداول والأنواع والشروط</text>
+
+            <!-- Layer 5 Right: Stored Database -->
+            <rect x="410" y="410" width="290" height="85" rx="16" fill="#172554" stroke="#38bdf8" stroke-width="2"/>
+            <text x="555" y="438" text-anchor="middle" fill="#38bdf8" font-size="15" font-family="Cairo" font-weight="bold">5. Stored Database</text>
+            <text x="555" y="460" text-anchor="middle" fill="#bae6fd" font-size="13" font-family="JetBrains Mono">(Actual Primary Data)</text>
+            <text x="555" y="482" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">البيانات الفعلية المحفوظة على الديسك</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 3. قسم الـ Meta-data والـ Catalog بالتفصيل + رسمة جدول الكتالوج -->
+      <div class="space-y-6">
+        <h3 class="text-xl font-extrabold heading-font text-sky-400 border-r-4 border-sky-500 pr-3">
+          3. الـ Meta-data، الكتالوج (DBMS Catalog)، والطبيعة الذاتية الوصف:
+        </h3>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <h4 class="text-lg font-bold heading-font">الـ <span class="en-badge">Meta-data</span> والـ <span class="en-badge">DBMS Catalog (Data Dictionary)</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm space-y-2" dir="ltr">
+            <p><strong>Meta-data:</strong> Data that describes the structure of the primary database; data about data. It includes the description of the database structure, data types, field lengths, and constraints.</p>
+            <p><strong>The DBMS Catalog:</strong> Stores the description of a particular database (e.g. data structures, types, and constraints) to be accessed by the DBMS software or database users where needed.</p>
+            <p><strong>Self-Describing Nature:</strong> A database system contains not only the database itself, but also a complete definition of the database structure and constraints. In traditional file processing, data definition is typically part of the application programs themselves.</p>
+          </div>
+          <p class="leading-loose">
+            <strong class="text-emerald-400 heading-font">• بالعامية:</strong> زمان ملف التكست مكانش فاهم نفسه؛ البرنامج هو اللي بيشرحه. في الـ DBMS، النظام بيوصف نفسه بنفسه لأن الكتالوج شايل الميتا داتا جواه. ده بيخلي الـ DBMS برنامج عام يشتغل مع أي داتابيز في الدنيا بمجرد قراءة كتالوجها!
+          </p>
+        </div>
+
+        <!-- Visual Diagram of Catalog Tables (Slide 1-15) -->
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h4 class="font-bold heading-font text-amber-400 flex items-center gap-2">
+              <span>📊</span>
+              <span>رسمة توضيحية لمثال الكتالوج في السلايد (Slide 1-15: Simplified Database Catalog)</span>
+            </h4>
+            <span class="text-xs opacity-60">كيف يخزن الكتالوج الـ Meta-data؟</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2" dir="ltr">
+            <!-- Table 1: RELATIONS -->
+            <div class="rounded-xl border border-amber-500/30 overflow-hidden bg-slate-900/40">
+              <div class="bg-amber-500/20 px-4 py-2 font-mono font-bold text-amber-300 text-sm flex justify-between">
+                <span>RELATIONS (جدول أسماء الجداول)</span>
+                <span>Catalog Table 1</span>
+              </div>
+              <table class="w-full text-left font-mono text-xs">
+                <thead class="border-b border-slate-700 text-sky-300 bg-slate-800/60">
+                  <tr>
+                    <th class="p-2.5">Relation_name</th>
+                    <th class="p-2.5">No_of_columns</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                  <tr><td class="p-2.5">STUDENT</td><td class="p-2.5">4</td></tr>
+                  <tr><td class="p-2.5">COURSE</td><td class="p-2.5">4</td></tr>
+                  <tr><td class="p-2.5">SECTION</td><td class="p-2.5">5</td></tr>
+                  <tr><td class="p-2.5">GRADE_REPORT</td><td class="p-2.5">3</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Table 2: COLUMNS -->
+            <div class="rounded-xl border border-sky-500/30 overflow-hidden bg-slate-900/40">
+              <div class="bg-sky-500/20 px-4 py-2 font-mono font-bold text-sky-300 text-sm flex justify-between">
+                <span>COLUMNS (جدول تفاصيل الأعمدة)</span>
+                <span>Catalog Table 2</span>
+              </div>
+              <table class="w-full text-left font-mono text-xs">
+                <thead class="border-b border-slate-700 text-sky-300 bg-slate-800/60">
+                  <tr>
+                    <th class="p-2.5">Column_name</th>
+                    <th class="p-2.5">Data_type</th>
+                    <th class="p-2.5">Belongs_to</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800">
+                  <tr><td class="p-2.5">Name</td><td class="p-2.5">Character(30)</td><td class="p-2.5">STUDENT</td></tr>
+                  <tr><td class="p-2.5">Student_number</td><td class="p-2.5">Integer(4)</td><td class="p-2.5">STUDENT</td></tr>
+                  <tr><td class="p-2.5">Class</td><td class="p-2.5">Integer(1)</td><td class="p-2.5">STUDENT</td></tr>
+                  <tr><td class="p-2.5">Major</td><td class="p-2.5">Major_type</td><td class="p-2.5">STUDENT</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. فك شفرة الامتحان الموسع (بلوك 2 + الميتا داتا) -->
+      <div class="space-y-4">
+        <h3 class="text-xl font-extrabold heading-font text-amber-400 border-r-4 border-amber-500 pr-3">
+          4. فك شفرة الامتحان الموسع (البلوك 2 + الـ Meta-data):
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1.5">
+            <span class="en-badge">"Specifying data types, structures, constraints"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ وظيفة: Defining</p>
+            <p class="text-xs opacity-80">تحديد الأنواع والهيكل والشروط هي شهادة الميلاد.</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1.5">
+            <span class="en-badge">"Storing data on some storage medium"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ وظيفة: Constructing</p>
+            <p class="text-xs opacity-80">فخ: كتابة الداتا فعلياً على الهارد هي Constructing مش Defining.</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1.5">
+            <span class="en-badge">"Querying, updating, generating reports"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ وظيفة: Manipulating</p>
+            <p class="text-xs opacity-80">أي تعامل يومي أو استخراج تقارير.</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1.5">
+            <span class="en-badge">"Access the database concurrently"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ وظيفة: Sharing</p>
+            <p class="text-xs opacity-80">دخول متزامن لعدة مستخدمين وبرامج.</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1.5">
+            <span class="en-badge">"Hardware or software malfunction"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ System Protection (وليس Security)</p>
+            <p class="text-xs opacity-80">أما الاختراق والدخول غير المصرح به فهو <strong>Security Protection</strong>.</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1.5">
+            <span class="en-badge">"Data about data" / "DBMS Catalog"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Meta-data & Self-Describing Nature</p>
+            <p class="text-xs opacity-80">في الـ File processing القديم كان التعريف داخل كود الأبلكيشن نفسه.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         BLOCK 3: Types of Databases & Applications (3.txt)
+    =========================================== -->
+    <section id="block-3" class="content-block reader-card rounded-3xl border p-6 sm:p-10 space-y-10">
+      <div class="border-b border-slate-500/20 pb-6 space-y-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 heading-font">البلوك الثالث (Block 3)</span>
+          <span class="text-xs opacity-60 font-mono">Types of Databases & Traditional vs Recent Applications</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font leading-relaxed">
+          أنواع قواعد البيانات وتطبيقاتها التقليدية والحديثة + محركات البحث والـ Cloud
+        </h2>
+      </div>
+
+      <!-- 1. الفكرة بالبلدي -->
+      <div class="balady-box rounded-2xl border p-6 space-y-3">
+        <div class="flex items-center gap-2 text-emerald-400 font-bold heading-font text-lg">
+          <span>💡</span>
+          <h3>1. الفكرة بالبلدي (سطرين بالعدد):</h3>
+        </div>
+        <p class="leading-loose">
+          قواعد البيانات زمان بدأت بتخزين أرقام ونصوص عادية لجداول الموظفين والحسابات (<span class="en-badge">Traditional</span>). مع التطور، ظهرت أنواع متوحشة جديدة بتخزن صور وفيديوهات، وخرائط GPS، وشبكات الجينات البشرية، وتغريدات وبوستات السوشيال ميديا بالمليارات (<span class="en-badge">Recent Applications</span>).
+        </p>
+      </div>
+
+      <!-- Custom Visual Diagram 3: Ecosystem of Database Applications -->
+      <div class="sub-box rounded-2xl border p-6 space-y-4">
+        <h4 class="font-bold heading-font text-sky-400 flex items-center gap-2">
+          <span>🧭</span>
+          <span>خريطة بصرية مرسومة: مقارنة التطبيقات التقليدية بالتطبيقات الحديثة والتطورات السحابية</span>
+        </h4>
+        <div class="w-full overflow-x-auto py-2">
+          <svg viewBox="0 0 800 280" class="w-full h-auto min-w-[600px]" xmlns="http://www.w3.org/2000/svg">
+            <!-- Left Branch: Traditional -->
+            <rect x="520" y="25" width="250" height="230" rx="18" fill="#1e293b" stroke="#94a3b8" stroke-width="2"/>
+            <text x="645" y="60" text-anchor="middle" fill="#f8fafc" font-size="16" font-family="Cairo" font-weight="bold">التطبيقات التقليدية</text>
+            <text x="645" y="83" text-anchor="middle" fill="#38bdf8" font-size="13" font-family="JetBrains Mono">Traditional Applications</text>
+            <rect x="545" y="105" width="200" height="120" rx="12" fill="#0f172a" stroke="#475569"/>
+            <text x="645" y="140" text-anchor="middle" fill="#fbbf24" font-size="15" font-family="Cairo" font-weight="bold">🔢 Numeric & Textual</text>
+            <text x="645" y="168" text-anchor="middle" fill="#cbd5e1" font-size="13" font-family="Tajawal">أرقام ونصوص فقط</text>
+            <text x="645" y="195" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="Tajawal">(حسابات بنوك، موظفين، مرتبات)</text>
+
+            <!-- Right Branch: Modern / Recent -->
+            <rect x="25" y="25" width="465" height="230" rx="18" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+            <text x="257" y="55" text-anchor="middle" fill="#34d399" font-size="16" font-family="Cairo" font-weight="bold">التطبيقات الحديثة والتطورات (Recent Applications)</text>
+
+            <!-- Grid of 6 Modern Apps inside SVG -->
+            <rect x="45" y="75" width="135" height="72" rx="10" fill="#1e293b" stroke="#38bdf8"/>
+            <text x="112" y="102" text-anchor="middle" fill="#7dd3fc" font-size="13" font-family="Cairo" font-weight="bold">🎬 Multimedia</text>
+            <text x="112" y="125" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">صور، صوت، فيديو</text>
+
+            <rect x="190" y="75" width="135" height="72" rx="10" fill="#1e293b" stroke="#34d399"/>
+            <text x="257" y="102" text-anchor="middle" fill="#6ee7b7" font-size="13" font-family="Cairo" font-weight="bold">🗺️ GIS Systems</text>
+            <text x="257" y="125" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">خرائط، طقس، أقمار</text>
+
+            <rect x="335" y="75" width="135" height="72" rx="10" fill="#1e293b" stroke="#c084fc"/>
+            <text x="402" y="102" text-anchor="middle" fill="#d8b4fe" font-size="13" font-family="Cairo" font-weight="bold">🧬 Genome / Bio</text>
+            <text x="402" y="125" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">DNA وشفرات وراثية</text>
+
+            <rect x="45" y="162" width="135" height="72" rx="10" fill="#1e293b" stroke="#fbbf24"/>
+            <text x="112" y="189" text-anchor="middle" fill="#fcd34d" font-size="13" font-family="Cairo" font-weight="bold">🏢 Data Warehouse</text>
+            <text x="112" y="212" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">تحليل BI وقرارات OLAP</text>
+
+            <rect x="190" y="162" width="135" height="72" rx="10" fill="#1e293b" stroke="#f472b6"/>
+            <text x="257" y="189" text-anchor="middle" fill="#f9a8d4" font-size="13" font-family="Cairo" font-weight="bold">🌐 Social & Search</text>
+            <text x="257" y="212" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">بوستات وفهرسة الويب</text>
+
+            <rect x="335" y="162" width="135" height="72" rx="10" fill="#1e293b" stroke="#60a5fa"/>
+            <text x="402" y="189" text-anchor="middle" fill="#93c5fd" font-size="13" font-family="Cairo" font-weight="bold">☁️ Cloud & Big Data</text>
+            <text x="402" y="212" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">AWS, Azure, Sensors</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 2. نصوص السلايد الرسمية + التوضيح بالعامية -->
+      <div class="space-y-4">
+        <h3 class="text-xl font-extrabold heading-font text-sky-400 border-r-4 border-sky-500 pr-3">
+          2. تفاصيل كل نوع بنص السلايد والتوضيح بالعامية (واحدة تلو الأخرى):
+        </h3>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font text-amber-400">• التطبيقات التقليدية <span class="en-badge">Traditional Applications</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            <strong>Traditional Applications:</strong> Numeric and Textual Databases.
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> الشغل الكلاسيكي البسيط: أرقام ونصوص (جداول موظفين، حسابات بنوك، كشوف مرتبات).</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font">1. قواعد بيانات المالتيميديا <span class="en-badge">Multimedia Databases</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            Can store images, audio clips, and video streams digitally.
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> بتخزن صور، مقاطع صوت، وفيديوهات (زي منصات يوتيوب ونتفلكس وأنظمة المراقبة بالكاميرات).</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font">2. نظم المعلومات الجغرافية <span class="en-badge">Geographic Information Systems - GIS</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            Can store and analyze maps, weather data, and satellite images.
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> بتخزن وتدير الخرائط، إحداثيات المواقع (GPS)، بيانات الطقس، وصور الأقمار الصناعية (زي Google Maps).</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font">3. قواعد البيانات الحيوية والجينية <span class="en-badge">Biological and Genome Databases</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            Store biological data such as genetic codes, DNA sequences, and protein structures from molecular biology research.
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> بتخزن سلاسل الحمض النووي (DNA)، الشفرات الوراثية، وتركيبات البروتين المعقدة للأبحاث العلمية.</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font">4. مستودعات البيانات والبيانات الضخمة <span class="en-badge">Data Warehouses & Big Data Systems</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            Used to aggregate and extract information from multiple very large databases for decision making, Business Intelligence (BI), and online analytical processing (OLAP).
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> مخازن عملاقة بتسحب البيانات القديمة والتاريخية من كل فروع الشركة عشان المديرين يحللوها وياخدوا قرارات استراتيجية.</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font">5. شبكات التواصل الاجتماعي <span class="en-badge">Social Networks / Real-time Web</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            Capturing a lot of information about people and communications among people: posts, tweets, photos, videos (Facebook, Twitter).
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> أنظمة زي فيسبوك وإكس بتسجل مليارات البوستات والتغريدات وعلاقات الصداقة والمتابعة في اللحظة والتو.</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font">6. محركات البحث كقواعد بيانات حديثة <span class="en-badge">Search Engines & Web Search</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            <strong>Search Engines:</strong> Search engines such as Google and Yahoo! capture a lot of textual data and non-textual data from the World Wide Web and provide search capabilities that are now part of our everyday life.
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> محركات البحث (زي جوجل) بتعمل الزحف (Crawling) على الإنترنت كله وتجمع مليارات النصوص والصفحات وتفهرسها في قواعد بيانات عملاقة عشان ترجعلك النتيجة في جزء من الثانية.</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font">7. الحوسبة السحابية وتخزين البيانات الضخمة <span class="en-badge">Cloud Storage & Big Data</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm space-y-1.5" dir="ltr">
+            <p>• Databases are being moved to the <strong>Cloud</strong> by major cloud computing providers (e.g., Amazon AWS, Microsoft Azure, Google Cloud).</p>
+            <p>• <strong>Big Data Storage:</strong> Massive amounts of data generated from social networks, web search, mobile apps, and sensors that traditional relational databases could not handle efficiently.</p>
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> زمان كانت الداتابيز بتتحط على سيرفر حديد جوه أوضة في الشركة. دلوقتي الداتابيز بتترفع على السحابة (Cloud)، والبيانات الضخمة الناتجة من الموبايلات والحساسات (Sensors) عملت ثورة الـ Big Data.</p>
+        </div>
+      </div>
+
+      <!-- 3. فك شفرة الامتحان للبلوك 3 -->
+      <div class="space-y-4">
+        <h3 class="text-xl font-extrabold heading-font text-amber-400 border-r-4 border-amber-500 pr-3">
+          3. فك شفرة الامتحان الموسع (البلوك 3):
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"Numeric and Textual databases"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Traditional Applications</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"Images, audio clips, video streams"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Multimedia Databases</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"Maps, weather data, satellite images"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Geographic Information Systems (GIS)</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"DNA sequences, genetic codes, proteins"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Biological / Genome Databases</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"Decision making / BI / OLAP"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Data Warehouses / Big Data</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"Crawling WWW" / "Remote managed infra"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Search Engines / Cloud Databases</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         BLOCK 4: Main Characteristics of Database Approach (4.txt)
+    =========================================== -->
+    <section id="block-4" class="content-block reader-card rounded-3xl border p-6 sm:p-10 space-y-10">
+      <div class="border-b border-slate-500/20 pb-6 space-y-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-purple-500/20 text-purple-400 border border-purple-500/30 heading-font">البلوك الرابع (Block 4)</span>
+          <span class="text-xs opacity-60 font-mono">Main Characteristics of the Database Approach</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font leading-relaxed">
+          الخصائص الجوهرية الأربعة لمدخل قواعد البيانات مقابل نظام الملفات القديم
+        </h2>
+      </div>
+
+      <!-- 1. الفكرة بالبلدي -->
+      <div class="balady-box rounded-2xl border p-6 space-y-3">
+        <div class="flex items-center gap-2 text-emerald-400 font-bold heading-font text-lg">
+          <span>💡</span>
+          <h3>1. الفكرة بالبلدي (سطرين بالعدد):</h3>
+        </div>
+        <p class="leading-loose">
+          زمان، أنظمة الملفات العادية كانت مأساة: كود البرنامج محشور جواه شكل الملفات، وكل يوزر محبوس في ملفه، ومفيش اتنين يقدروا يعدلوا مع بعض. الـ DBMS جه قلب الترابيزة بـ 4 أسلحة سحرية: وصف نفسه بنفسه بالكتالوج، فصل كود البرامج عن شكل التخزين، عمل شاشات ورؤى مخصصة لكل يوزر، ونظم دخول آلاف المستخدمين مع بعض في نفس الثانية بدون تضارب.
+        </p>
+      </div>
+
+      <!-- Custom Visual Diagram 4: The 4 Pillars of Database Approach -->
+      <div class="sub-box rounded-2xl border p-6 space-y-4">
+        <h4 class="font-bold heading-font text-sky-400 flex items-center gap-2">
+          <span>🛡️</span>
+          <span>رسمة توضيحية مرسومة: الأركان الأربعة لمدخل قواعد البيانات مقارنة بالملفات التقليدية</span>
+        </h4>
+        <div class="w-full overflow-x-auto py-2">
+          <svg viewBox="0 0 800 250" class="w-full h-auto min-w-[620px]" xmlns="http://www.w3.org/2000/svg">
+            <!-- Roof -->
+            <polygon points="400,15 40,75 760,75" fill="#1e1b4b" stroke="#818cf8" stroke-width="2"/>
+            <text x="400" y="58" text-anchor="middle" fill="#e0e7ff" font-size="16" font-family="Cairo" font-weight="bold">The Database Approach (الأسلحة الأربعة ضد نظام الملفات القديم)</text>
+
+            <!-- Pillar 1 -->
+            <rect x="605" y="90" width="145" height="145" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+            <text x="677" y="122" text-anchor="middle" fill="#38bdf8" font-size="14" font-family="Cairo" font-weight="bold">1. Self-Describing</text>
+            <text x="677" y="148" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">الكتالوج والميتا داتا</text>
+            <text x="677" y="172" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Tajawal">بيوصف نفسه بنفسه</text>
+            <text x="677" y="198" text-anchor="middle" fill="#7dd3fc" font-size="11" font-family="JetBrains Mono">DBMS Catalog</text>
+
+            <!-- Pillar 2 -->
+            <rect x="420" y="90" width="165" height="145" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="2"/>
+            <text x="502" y="122" text-anchor="middle" fill="#34d399" font-size="14" font-family="Cairo" font-weight="bold">2. Data Abstraction</text>
+            <text x="502" y="148" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">استقلالية البرامج عن الداتا</text>
+            <text x="502" y="172" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Tajawal">تعديل الهيكل بدون كسر الكود</text>
+            <text x="502" y="198" text-anchor="middle" fill="#6ee7b7" font-size="11" font-family="JetBrains Mono">Data Independence</text>
+
+            <!-- Pillar 3 -->
+            <rect x="235" y="90" width="165" height="145" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+            <text x="317" y="122" text-anchor="middle" fill="#fbbf24" font-size="14" font-family="Cairo" font-weight="bold">3. Multiple Views</text>
+            <text x="317" y="148" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">شاشات مخصصة لكل يوزر</text>
+            <text x="317" y="172" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Tajawal">Subset + Virtual Data</text>
+            <text x="317" y="198" text-anchor="middle" fill="#fde68a" font-size="11" font-family="JetBrains Mono">Derived GPA</text>
+
+            <!-- Pillar 4 -->
+            <rect x="50" y="90" width="165" height="145" rx="12" fill="#0f172a" stroke="#ec4899" stroke-width="2"/>
+            <text x="132" y="122" text-anchor="middle" fill="#f472b6" font-size="14" font-family="Cairo" font-weight="bold">4. Multiuser & ACID</text>
+            <text x="132" y="148" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">مشاركة بدون تضارب</text>
+            <text x="132" y="172" text-anchor="middle" fill="#94a3b8" font-size="11" font-family="Tajawal">Concurrency Control</text>
+            <text x="132" y="198" text-anchor="middle" fill="#fbcfe8" font-size="11" font-family="JetBrains Mono">Atomicity & Isolation</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 2. الخصائص الأربعة بالتفصيل -->
+      <div class="space-y-6">
+        <h3 class="text-xl font-extrabold heading-font text-sky-400 border-r-4 border-sky-500 pr-3">
+          2. نصوص السلايد الرسمية + التوضيح بالعامية للخصائص الأربعة:
+        </h3>
+
+        <!-- Characteristic 1 -->
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <h4 class="text-lg font-bold heading-font">الخاصية 1: طبيعة النظام في وصف نفسه <span class="en-badge">Self-Describing Nature of a Database System</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm space-y-1.5" dir="ltr">
+            <p>• <strong>Traditional file processing:</strong> Data definition is part of the application programs themselves.</p>
+            <p>• <strong>Database approach:</strong> The DBMS catalog stores the description of the particular database (e.g., data structures, types, and constraints). This information is called <strong>meta-data</strong>.</p>
+            <p>• This allows the DBMS software to work with different database applications.</p>
+          </div>
+          <p class="leading-loose">
+            <strong class="text-emerald-400">• بالعامية:</strong> ملف التكست أو الإكسيل القديم ملف أعمى؛ كود البرنامج هو اللي شايل تفاصيل التقسيمة. في الـ DBMS، مواصفات الجداول متسجلة في كتالوج مركزي مستقل اسمه <strong>Catalog</strong> كـ <strong>Metadata</strong>. الميزة العظمى؟ محرك الـ DBMS برنامج عام يقدر يشتغل مع جامعة، بنك، أو مستشفى بمجرد ما يقرأ كتالوجها.
+          </p>
+        </div>
+
+        <!-- Characteristic 2 -->
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <h4 class="text-lg font-bold heading-font">الخاصية 2: استقلالية البيانات عن البرامج وحجب التفاصيل <span class="en-badge">Insulation between Programs and Data & Data Abstraction</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm space-y-2" dir="ltr">
+            <p>• <strong>Program-Data Independence:</strong> The structure of data files is stored in the DBMS catalog separately from the access programs. Changes to the structure of data do not require changing the programs that access it.</p>
+            <p>• <strong>Program-Operation Independence:</strong> User application programs can operate on the data by invoking operations (methods) through their interface, without knowing how the operations are implemented.</p>
+            <p>• <strong>Data Abstraction:</strong> The characteristic that allows program-data independence and program-operation independence. A <strong>conceptual representation</strong> of data does not include many of the storage details.</p>
+            <p>• <strong>Data Model:</strong> A type of data abstraction that is used to provide this conceptual representation.</p>
+          </div>
+          <ul class="space-y-3 leading-loose pr-2">
+            <li><strong class="text-emerald-400">• Program-Data Independence:</strong> شكل وحجم العواميد مفصول عن كود البرامج؛ فلو وسعنا خانة التليفون أو ضفنا عمود جديد في الجدول، البرامج اللي بتستخدم الداتابيز تفضل شغالة من غير ما نغير فيها سطر كود واحد!</li>
+            <li><strong class="text-emerald-400">• Program-Operation Independence:</strong> أنت بتنادي العملية بالاسم (زي: احسب المرتب أو اعرض الاسم) من خلال الواجهة (Interface) من غير ما يخصك الكود الداخلي متنفذ إزاي (Implementation).</li>
+            <li><strong class="text-emerald-400">• Data Abstraction:</strong> حجب تفاصيل التخزين والتعقيد عن المستخدم والمبرمج، وده بيتحقق عن طريق نموذج البيانات (<strong>Data Model</strong>).</li>
+          </ul>
+        </div>
+
+        <!-- Characteristic 3 -->
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <h4 class="text-lg font-bold heading-font">الخاصية 3: تعدد واجهات الرؤية للبيانات <span class="en-badge">Support of Multiple Views of the Data</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm space-y-1.5" dir="ltr">
+            <p>• A database typically has many types of users, each of whom may require a different perspective or view of the database.</p>
+            <p>• A <strong>View</strong> may be a <strong>subset of the database</strong>, or it may contain <strong>virtual data</strong> that is derived from the database files but is not explicitly stored.</p>
+            <p>• Example: A student's GPA or Course Transcript calculated dynamically.</p>
+          </div>
+          <p class="leading-loose">
+            <strong class="text-emerald-400">• بالعامية:</strong> كل موظف أو طالب بيدخل بيشوف شاشة مفصلة على مقاسه (موظف شؤون الطلاب يشوف الدرجات، والحسابات تشوف المصاريف). الـ View ممكن تكون عمود مش متخزن فعلياً في الهارد، لكن محسوب بالمعادلة في اللحظة دي كـ داتا افتراضية (<span class="en-badge">Virtual Data</span>) زي حساب الـ GPA أو سن الطالب من تاريخ ميلاده.
+          </p>
+        </div>
+
+        <!-- Characteristic 4 -->
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <h4 class="text-lg font-bold heading-font">الخاصية 4: مشاركة البيانات ومعالجة المعاملات لعدة مستخدمين <span class="en-badge">Sharing of Data & Multiuser Transaction Processing</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm space-y-2" dir="ltr">
+            <p>• A multiuser DBMS must allow multiple users to access the database at the same time.</p>
+            <p>• <strong>Concurrency Control Software:</strong> Ensures that several users trying to update the same data do so in a controlled manner so that the result of the updates is correct.</p>
+            <p>• <strong>Transaction:</strong> An executing program or process that includes one or more database accesses (such as reading or updating records).</p>
+            <p>• <strong>Isolation Property:</strong> Each transaction appears to execute in isolation from other transactions, even though hundreds may be executing concurrently.</p>
+            <p>• <strong>Atomicity Property:</strong> Ensures that either all the database operations in a transaction are executed or none are.</p>
+          </div>
+          <ul class="space-y-3 leading-loose pr-2">
+            <li><strong class="text-emerald-400">• Concurrency Control Software:</strong> حارس بيمنع تضارب العمليات لما آلاف الناس تحجز تذاكر طيران أو تسحب من الـ ATM في نفس اللحظة.</li>
+            <li><strong class="text-emerald-400">• Atomicity (الذرية / الكل أو لا شيء):</strong> لو بتحول فلوس من حساب لحساب، لازم السحب والإيداع يتموا مع بعض؛ لو السيرفر فصل في النص، العملية تتلغي كلها كأنها مابدأتش.</li>
+            <li><strong class="text-emerald-400">• Isolation (العزل):</strong> المعاملة تتنفذ في معزل عن باقي المعاملات، ومتحسش بحد شغال معاها على نفس السيستم.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 3. فك شفرة الامتحان للبلوك 4 -->
+      <div class="space-y-4">
+        <h3 class="text-xl font-extrabold heading-font text-amber-400 border-r-4 border-amber-500 pr-3">
+          3. فك شفرة الامتحان الموسع للخصائص الأربعة (البلوك 4):
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"Changing storage structures without altering programs"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Program-Data Independence</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"User sees interface without knowing implementation"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Program-Operation Independence</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"Allows Program-Data & Operation Independence"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Data Abstraction (بواسطة Data Model)</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"Subset of database or virtual derived data"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ View (وليست دائماً Physical table)</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"All operations executed or none are"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Atomicity Property</p>
+          </div>
+          <div class="cipher-card sub-box rounded-2xl border p-4 space-y-1">
+            <span class="en-badge">"Execute independently / concurrently without conflict"</span>
+            <p class="font-bold text-emerald-400 heading-font">⬅️ Isolation & Concurrency Control</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         BLOCK 5: Database Users (5.txt)
+    =========================================== -->
+    <section id="block-5" class="content-block reader-card rounded-3xl border p-6 sm:p-10 space-y-10">
+      <div class="border-b border-slate-500/20 pb-6 space-y-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-rose-500/20 text-rose-400 border border-rose-500/30 heading-font">البلوك الخامس (Block 5)</span>
+          <span class="text-xs opacity-60 font-mono">Database Users: Actors on the Scene vs Behind the Scene</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font leading-relaxed">
+          مستخدمو قواعد البيانات: أبطال على المسرح (On the Scene) وأبطال خلف الكواليس (Behind the Scene)
+        </h2>
+      </div>
+
+      <!-- 1. الفكرة بالبلدي -->
+      <div class="balady-box rounded-2xl border p-6 space-y-3">
+        <div class="flex items-center gap-2 text-emerald-400 font-bold heading-font text-lg">
+          <span>💡</span>
+          <h3>1. الفكرة بالبلدي (سطرين بالعدد):</h3>
+        </div>
+        <p class="leading-loose">
+          الناس اللي ليهم علاقة بالداتابيز نوعين مفيش غيرهم: <strong>أبطال على المسرح (On the Scene)</strong> دول اللي شغالين في شركتك وبيتفاعلوا مع الداتابيز بتاعتك فعلياً، و<strong>أبطال خلف الكواليس (Behind the Scene)</strong> دول مش شغالين عندك أصلاً، دول العباقرة اللي اخترعوا وصنعوا سوفت وير الـ DBMS ومحركه ذات نفسه في شركات زي أوراكل وميكروسوفت.
+        </p>
+      </div>
+
+      <!-- Custom Visual Diagram 5: Actors On vs Behind the Scene -->
+      <div class="sub-box rounded-2xl border p-6 space-y-4">
+        <h4 class="font-bold heading-font text-sky-400 flex items-center gap-2">
+          <span>🎭</span>
+          <span>رسمة تقسيمية مرسومة: مسرح مستخدمي قواعد البيانات (On the Scene vs Behind the Scene)</span>
+        </h4>
+        <div class="w-full overflow-x-auto py-2">
+          <svg viewBox="0 0 820 310" class="w-full h-auto min-w-[620px]" xmlns="http://www.w3.org/2000/svg">
+            <!-- Right Side: Actors on the Scene -->
+            <rect x="330" y="15" width="470" height="280" rx="18" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+            <text x="565" y="46" text-anchor="middle" fill="#38bdf8" font-size="16" font-family="Cairo" font-weight="bold">🎭 الفئة الأولى: أبطال على المسرح (Actors ON the Scene)</text>
+
+            <rect x="575" y="65" width="205" height="62" rx="10" fill="#1e293b" stroke="#0284c7"/>
+            <text x="677" y="90" text-anchor="middle" fill="#7dd3fc" font-size="14" font-family="Cairo" font-weight="bold">1. DBA (مدير النظام)</text>
+            <text x="677" y="112" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">الصلاحيات، الأمان، مراقبة السرعة</text>
+
+            <rect x="350" y="65" width="205" height="62" rx="10" fill="#1e293b" stroke="#0284c7"/>
+            <text x="452" y="90" text-anchor="middle" fill="#7dd3fc" font-size="14" font-family="Cairo" font-weight="bold">2. Database Designers</text>
+            <text x="452" y="112" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">تحديد البيانات والهيكل قبل التنفيذ</text>
+
+            <rect x="350" y="140" width="430" height="72" rx="10" fill="#132a2e" stroke="#10b981"/>
+            <text x="565" y="164" text-anchor="middle" fill="#34d399" font-size="14" font-family="Cairo" font-weight="bold">3. End Users (الأصناف الأربعة للمستخدم النهائي)</text>
+            <text x="565" y="192" text-anchor="middle" fill="#e2e8f0" font-size="12" font-family="Tajawal">Parametric (Canned) | Casual (مديرون) | Sophisticated (علماء) | Standalone</text>
+
+            <rect x="350" y="222" width="430" height="55" rx="10" fill="#1e293b" stroke="#818cf8"/>
+            <text x="565" y="246" text-anchor="middle" fill="#a5b4fc" font-size="13" font-family="Cairo" font-weight="bold">4. System Analysts & Application Programmers (+ Business Analysts)</text>
+            <text x="565" y="266" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">تحليل متطلبات المستخدمين وبرمجة الـ Canned Transactions</text>
+
+            <!-- Left Side: Actors behind the Scene -->
+            <rect x="20" y="15" width="290" height="280" rx="18" fill="#1c1917" stroke="#f59e0b" stroke-width="2"/>
+            <text x="165" y="46" text-anchor="middle" fill="#fbbf24" font-size="15" font-family="Cairo" font-weight="bold">⚙️ خلف الكواليس (BEHIND the Scene)</text>
+
+            <rect x="40" y="68" width="250" height="62" rx="10" fill="#292524" stroke="#d97706"/>
+            <text x="165" y="93" text-anchor="middle" fill="#fcd34d" font-size="13" font-family="Cairo" font-weight="bold">1. DBMS System Designers</text>
+            <text x="165" y="114" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">صناع محرك الـ DBMS نفسه (Oracle)</text>
+
+            <rect x="40" y="143" width="250" height="62" rx="10" fill="#292524" stroke="#d97706"/>
+            <text x="165" y="168" text-anchor="middle" fill="#fcd34d" font-size="13" font-family="Cairo" font-weight="bold">2. Tool Developers</text>
+            <text x="165" y="189" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">مطورو برامج النمذجة ومراقبة الأداء</text>
+
+            <rect x="40" y="218" width="250" height="62" rx="10" fill="#292524" stroke="#d97706"/>
+            <text x="165" y="243" text-anchor="middle" fill="#fcd34d" font-size="13" font-family="Cairo" font-weight="bold">3. Operators & Maintenance</text>
+            <text x="165" y="264" text-anchor="middle" fill="#cbd5e1" font-size="11" font-family="Tajawal">تشغيل وصيانة الهاردوير والداتا سنتر</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 2. التفصيل الكامل للمستخدمين -->
+      <div class="space-y-6">
+        <h3 class="text-xl font-extrabold heading-font text-sky-400 border-r-4 border-sky-500 pr-3">
+          2. الفئة الأولى: أبطال على المسرح (Actors on the Scene):
+        </h3>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font">1. مدير قاعدة البيانات <span class="en-badge">Database Administrator - DBA</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm space-y-1" dir="ltr">
+            <p>• Responsible for authorizing access to the database.</p>
+            <p>• Coordinating and monitoring its use.</p>
+            <p>• Acquiring software and hardware resources as needed.</p>
+            <p>• Accountable for problems such as security breaches and poor system response time.</p>
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> الكل في الكل ورئيس جمهورية الداتابيز: بيعمل الحسابات والباسوردات ويدي الصلاحيات، بيراقب سرعة السيستم ولو السيرفر بطيء بيتحاسب، ومسؤول عن النسخ الاحتياطية (Backups) وحماية الداتابيز من الاختراق.</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font">2. مصممو قاعدة البيانات <span class="en-badge">Database Designers</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm space-y-1" dir="ltr">
+            <p>• Responsible for identifying the data to be stored in the database and choosing appropriate structures to represent and store this data.</p>
+            <p>• Communicating with all prospective database users in order to understand their requirements.</p>
+            <p>• Typically perform their tasks BEFORE the database is actually implemented and populated.</p>
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> المهندسين المعماريين بتوع الداتابيز؛ بيقعدوا مع العملاء والموظفين قبل ما نكتب أي كود، يفهموا طلباتهم، ويصمموا الجداول والـ ER Diagrams، وشغلهم بينتهي أول ما الداتابيز تتنفذ وتتملى بيانات.</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-4">
+          <h4 class="text-lg font-bold heading-font">3. المستخدمون النهائيون بأصنافهم الأربعة <span class="en-badge">End Users (4 Types)</span></h4>
+          <p class="text-sm opacity-80">هم الأشخاص اللي طبيعة شغلهم بتتطلب الدخول للداتابيز للاستعلام والتحديث والتقارير، وينقسمون إلى:</p>
+          
+          <div class="space-y-4 pr-2">
+            <div class="p-4 rounded-xl border border-slate-500/20 space-y-2">
+              <h5 class="font-bold text-sky-400 heading-font">أ. المستخدم السطحي / النمطي <span class="en-badge">Parametric / Naive End Users</span></h5>
+              <p class="text-xs font-mono opacity-80" dir="ltr">Make up a sizable portion of database end users. Constantly querying and updating using standard pre-programmed queries called <strong>canned transactions</strong> (e.g., Bank tellers, Reservation clerks).</p>
+              <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> موظف الشباك في البنك أو حجز الطيران اللي بيتعامل مع أزرار جاهزة وشاشات ثابتة (<span class="en-badge">Canned Transactions</span>) مبيدخلش يكتب SQL.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-500/20 space-y-2">
+              <h5 class="font-bold text-sky-400 heading-font">ب. المستخدم العارض <span class="en-badge">Casual End Users</span></h5>
+              <p class="text-xs font-mono opacity-80" dir="ltr">Occasionally access the database, but they may need different information each time (e.g., Middle- or high-level managers).</p>
+              <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> مدير بيفتح السيستم مرة كل أسبوع أو شهر عشان يطلب إحصائية جديدة ومختلفة عن المرة اللي فاتت.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-500/20 space-y-2">
+              <h5 class="font-bold text-sky-400 heading-font">ج. المستخدم المتطور <span class="en-badge">Sophisticated End Users</span></h5>
+              <p class="text-xs font-mono opacity-80" dir="ltr">Include engineers, scientists, business analysts who thoroughly familiarize themselves with the facilities of the DBMS to implement complex applications.</p>
+              <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> باحثين ومهندسين ومحللي بيانات فاهمين الـ DBMS كويس جداً، بيكتبوا كويريهات معقدة وتحليلات عميقة بنفسهم.</p>
+            </div>
+
+            <div class="p-4 rounded-xl border border-slate-500/20 space-y-2">
+              <h5 class="font-bold text-sky-400 heading-font">د. المستخدم المستقل <span class="en-badge">Standalone End Users</span></h5>
+              <p class="text-xs font-mono opacity-80" dir="ltr">Maintain personal databases by using ready-made program packages that provide easy-to-use menu-driven interfaces (e.g., tax program user).</p>
+              <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> شخص شغال مع برنامج ضرائب شخصي جاهز على جهازه لوحده معندوش شبكة ولا مشاركة مع حد.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font">4. محللو النظم ومطورو البرامج <span class="en-badge">System Analysts & Application Programmers (Software Engineers)</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-4 font-mono text-sm space-y-1" dir="ltr">
+            <p>• <strong>System Analysts:</strong> Determine the requirements of end users, especially naive and parametric users, and develop specifications for standard canned transactions.</p>
+            <p>• <strong>Application Programmers:</strong> Implement these specifications as programs; then they test, debug, document, and maintain these canned transactions.</p>
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> محلل النظم بيفهم احتياج موظف الشباك ويحدد المواصفات، والمبرمج يكتب الكود ويبرمج الـ Canned Transactions ويجربها ويصلح أخطائها.</p>
+        </div>
+
+        <h3 class="text-xl font-extrabold heading-font text-amber-400 border-r-4 border-amber-500 pr-3 pt-4">
+          3. الفئة الثانية: أبطال خلف الكواليس (Actors behind the Scene):
+        </h3>
+
+        <div class="grid grid-cols-1 gap-4">
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-amber-400">1. مصممو ومبرمجو نظام الـ DBMS نفسه <span class="en-badge">DBMS System Designers and Implementers</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">Design and implement the DBMS modules and interfaces as a software package (compilers, query execution engines, buffers).</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> المهندسين اللي كتبوا كود محرك قواعد البيانات الداخلي نفسه في شركات زي Oracle و Microsoft و MySQL.</p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-amber-400">2. مطورو الأدوات المساعدة <span class="en-badge">Tool Developers</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">Design and implement tools—software packages that facilitate database modeling, design, performance monitoring, and GUI.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> الشركات أو المطورين اللي بيعملوا برامج ملحقة مساعدة بتساعد مصمم الداتابيز (زي برامج رسم الـ ER أو فحص سرعة السيرفرات).</p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-amber-400">3. مشغلو النظام وعمال الصيانة <span class="en-badge">Operators and Maintenance Personnel</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">Responsible for the actual running and maintenance of the hardware and software environment for the database system.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> مهندسو وفنيو السيرفرات والشبكات والداتا سنتر اللي بيضمنوا إن الكهربا والتبريد والهاردوير شغالين بدون توقف.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         BLOCK 6: Advantages & When NOT to use DBMS (6.txt)
+    =========================================== -->
+    <section id="block-6" class="content-block reader-card rounded-3xl border p-6 sm:p-10 space-y-10">
+      <div class="border-b border-slate-500/20 pb-6 space-y-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-teal-500/20 text-teal-400 border border-teal-500/30 heading-font">البلوك السادس (Block 6)</span>
+          <span class="text-xs opacity-60 font-mono">Advantages of DBMS, Implications & When NOT to Use</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font leading-relaxed">
+          مميزات الـ DBMS التسعة، الفوائد الإدارية، ومتى نتجنب استخدامه؟
+        </h2>
+      </div>
+
+      <!-- 1. الفكرة بالبلدي -->
+      <div class="balady-box rounded-2xl border p-6 space-y-3">
+        <div class="flex items-center gap-2 text-emerald-400 font-bold heading-font text-lg">
+          <span>💡</span>
+          <h3>1. الفكرة بالبلدي (سطرين بالعدد):</h3>
+        </div>
+        <p class="leading-loose">
+          الـ DBMS مش مجرد برنامج تخزين، ده بيوفر حزمة مميزات ضخمة للمؤسسات: بيقضي على تكرار البيانات، وبيضمن الأمان والنسخ الاحتياطي، وبيطبق القواعد أوتوماتيكياً. لكن في المقابل، ليه تكلفة واستهلاك موارد (<span class="en-badge">Overhead</span>)؛ فلو برنامجك بسيط جداً أو محتاج سرعة فائقة بالنانو ثانية، الـ DBMS هيبقى عبء وخسارة ونظام الملفات العادي يكسب!
+        </p>
+      </div>
+
+      <!-- 2. المميزات التسعة بالتفصيل -->
+      <div class="space-y-4">
+        <h3 class="text-xl font-extrabold heading-font text-sky-400 border-r-4 border-sky-500 pr-3">
+          2. مميزات استخدام الـ DBMS التسعة (Advantages of Using the Database Approach):
+        </h3>
+
+        <div class="space-y-4">
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-sky-400">1. التحكم في تكرار البيانات <span class="en-badge">Controlling Redundancy</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">In traditional file processing, duplication leads to wasted storage and <strong>data inconsistency</strong>. DBMS enforces <strong>controlled redundancy</strong> when needed for performance.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> يمنع تكرار البيانات وتناقضها (Inconsistency)، ولو اضطرينا نكرر لسرعة الأداء، الـ DBMS بنفسه بيحافظ على تناسق التكرار أوتوماتيكياً.</p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-sky-400">2. منع الوصول غير المصرح به <span class="en-badge">Restricting Unauthorized Access</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">Security and authorization subsystem creates accounts and specifies privileges on who can read/modify data.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> نظام أمان متكامل بالباسوردات والصلاحيات لكل مستخدم.</p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-sky-400">3. توفير مساحات تخزين دائمة لكائنات البرمجة <span class="en-badge">Persistent Storage for Program Objects</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">Object-Oriented DBMSs directly store C++/Java objects permanently without impedance mismatch.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> بيخزن كائنات لغات البرمجة (Objects) زي ما هي على الهارد بشكل دائم.</p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-sky-400">4. توفير فهارس وهياكل لتسريع الاستعلامات <span class="en-badge">Storage Structures for Efficient Query Processing</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">DBMS provides auxiliary files called <strong>indexes</strong> and buffering techniques to speed up disk searches.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> بيعمل فهارس (<span class="en-badge">Indexes</span>) ومسارات سريعة في الذاكرة (Buffering) عشان تلاقي السجل في جزء من الثانية.</p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-sky-400">5. النسخ الاحتياطي واستعادة البيانات بعد الانهيار <span class="en-badge">Backup and Recovery</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">Responsible for recovery if the system crashes in the middle of a complex update transaction.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> لو النور قطع في نص عملية تحويل فلوس، السيستم بيرجع أوتوماتيك لآخر نقطة سليمة.</p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-sky-400">6. توفير واجهات مستخدم متعددة <span class="en-badge">Providing Multiple User Interfaces</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">Query languages for casual users, programming APIs for developers, forms/menus for naive users.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> كل يوزر ليه الواجهة اللي تناسبه سواء شاشات وأزرار أو كتابة كود.</p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-sky-400">7. تمثيل العلاقات المعقدة بين البيانات <span class="en-badge">Representing Complex Relationships</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">Easily defining and maintaining complex links between related entities and records.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> ربط الجداول ببعضها مهما كانت معقدة.</p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-sky-400">8. فرض قيود السلامة وصحة البيانات <span class="en-badge">Enforcing Integrity Constraints</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">Constraints must hold for data (data type, unique keys, referential integrity). DBMS automatically checks updates.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> شروط بيكتبها المصمم والـ DBMS بيجبر السيستم يطبقها أوتوماتيكياً (زي عدم تكرار الـ ID).</p>
+          </div>
+
+          <div class="sub-box rounded-2xl border p-5 space-y-2">
+            <h4 class="font-bold heading-font text-sky-400">9. السماح بالاستنتاج والعمليات التلقائية <span class="en-badge">Permitting Inferencing & Actions Using Rules (Triggers)</span></h4>
+            <p class="text-xs font-mono opacity-80" dir="ltr">Deductive databases deduce new facts; Active databases use <strong>Triggers</strong> to execute actions automatically.</p>
+            <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> لو رصيد العميل نزل عن الصفر، السيستم أوتوماتيكياً يبعتله رسالة عن طريق الـ <span class="en-badge">Triggers</span>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- الفوائد الإدارية الـ 5 + متى لا نستخدم الـ DBMS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="sub-box rounded-2xl border p-6 space-y-3">
+          <h4 class="text-lg font-bold heading-font text-emerald-400">ثانياً: الفوائد الإدارية والاقتصادية الـ 5:</h4>
+          <ul class="space-y-2.5 leading-loose text-sm">
+            <li><strong>1. Enforcing Standards:</strong> توحيد المعايير في تسمية العواميد وشكل البيانات في كل الشركة.</li>
+            <li><strong>2. Reduced Application Development Time:</strong> تقليل وقت برمجة التطبيقات الجديدة.</li>
+            <li><strong>3. Flexibility:</strong> مرونة تعديل هيكل الجداول مع تغير احتياجات الشغل.</li>
+            <li><strong>4. Availability of Up-to-Date Info:</strong> أي تعديل بيظهر فوراً لكل المستخدمين في نفس اللحظة.</li>
+            <li><strong>5. Economies of Scale:</strong> توفير الفلوس والأجهزة بدمج احتياجات المؤسسة كلها في نظام موحد.</li>
+          </ul>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-3 border-rose-500/30">
+          <h4 class="text-lg font-bold heading-font text-rose-400">ثالثاً: متى لا نستخدم الـ DBMS؟ (When NOT to Use):</h4>
+          <p class="text-xs opacity-75">بسبب التكلفة العالية (High initial investment) وعبء المعالجة (Overhead)، نفضل نظام الملفات العادي في 4 حالات:</p>
+          <ul class="space-y-2.5 leading-loose text-sm">
+            <li><strong>1. Simple, well-defined applications:</strong> تطبيقات بسيطة ومحددة ومش هتتغير.</li>
+            <li><strong>2. Stringent real-time requirements:</strong> أنظمة حرجة بالنانو ثانية (توجيه صواريخ / أجهزة طبية) متستحملش بطء الـ DBMS.</li>
+            <li><strong>3. Embedded systems with limited storage:</strong> أجهزة مدمجة بمساحة ورامات صغيرة جداً.</li>
+            <li><strong>4. No multiple-user access needed:</strong> برنامج لشخص واحد فقط لا يحتاج مشاركة.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         ADDITIONAL NOTES & UNIVERSITY DIAGRAM (add.txt)
+    =========================================== -->
+    <section id="block-add" class="content-block reader-card rounded-3xl border p-6 sm:p-10 space-y-10">
+      <div class="border-b border-slate-500/20 pb-6 space-y-3">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30 heading-font">إضافات السلايدات الهامة (Extra Highlights)</span>
+          <span class="text-xs opacity-60 font-mono">Normalization, Business Analysts, Query Optimizer & University Schema</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold heading-font leading-relaxed">
+          النقاط الخمس الذهبية الإضافية + رسمة قاعدة بيانات الجامعة (UNIVERSITY Database)
+        </h2>
+      </div>
+
+      <div class="space-y-4">
+        <div class="sub-box rounded-2xl border p-6 space-y-2">
+          <h4 class="text-lg font-bold heading-font text-sky-400">1. مصطلح التطبيع ومنع التكرار <span class="en-badge">Data Normalization (Slide 25)</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            Each logical data item (such as a student’s name or birth date) is stored in only one place in the database. This is known as <strong>data normalization</strong>, and it ensures consistency and saves storage space.
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية وفخ الامتحان:</strong> تخزين كل معلومة منطقية في مكان واحد فقط لمنع التناقض وتوفير المساحة اسمه <strong>Data Normalization</strong>.</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-2">
+          <h4 class="text-lg font-bold heading-font text-sky-400">2. محللو الأعمال <span class="en-badge">Business Analysts (Slide 23)</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            <strong>Business Analysts:</strong> Analyze vast amounts of business data and real-time data (“Big Data”) for better decision making related to planning, advertising, and marketing.
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية وفخ الامتحان:</strong> ينتمون إلى <strong>Actors ON the Scene</strong> (وليس Behind the scene)، ووظيفتهم تحليل الـ Big Data لقرارات التسويق والتخطيط.</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-2">
+          <h4 class="text-lg font-bold heading-font text-sky-400">3. موديول تحسين الاستعلامات <span class="en-badge">Query Processing & Optimization Module (Slide 26)</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            The <strong>query processing and optimization module</strong> of the DBMS is responsible for choosing an efficient <strong>query execution plan</strong> for each query based on the existing storage structures (e.g., indexes).
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> العقل الذكي جوه الـ DBMS اللي بيختار أسرع خطة تنفيذ (<span class="en-badge">Execution Plan</span>) بالاعتماد على الفهارس.</p>
+        </div>
+
+        <div class="sub-box rounded-2xl border p-6 space-y-2">
+          <h4 class="text-lg font-bold heading-font text-sky-400">4. تقليل وقت بناء التطبيقات الإضافية <span class="en-badge">Incremental Development Time (Slide 28)</span></h4>
+          <div class="slide-quote rounded-xl border-r-4 p-3.5 font-mono text-sm" dir="ltr">
+            <strong>Reduced application development time:</strong> Once a database is up and running, the <strong>incremental time</strong> to add each new application is significantly reduced.
+          </div>
+          <p class="leading-loose"><strong class="text-emerald-400">• بالعامية:</strong> طالما الداتابيز اتبنت، إضافة أي برنامج جديد للشركة بياخد وقت قليل جداً.</p>
+        </div>
+      </div>
+
+      <!-- Custom Visual Diagram 6: UNIVERSITY Database Entities & Relationships -->
+      <div class="sub-box rounded-2xl border p-6 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h4 class="font-bold heading-font text-amber-400 flex items-center gap-2">
+            <span>🎓</span>
+            <span>5. رسمة مرسومة بالكامل: كائنات وعلاقات قاعدة بيانات الجامعة (UNIVERSITY Database Schema)</span>
+          </h4>
+          <span class="text-xs opacity-60">بديل بصري كامل لشرح الكائنات والعلاقات في السلايدات 11-13</span>
+        </div>
+
+        <div class="w-full overflow-x-auto py-2">
+          <svg viewBox="0 0 820 320" class="w-full h-auto min-w-[640px]" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="relArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L7,3 z" fill="#38bdf8" />
+              </marker>
+            </defs>
+
+            <!-- Entity: STUDENT -->
+            <rect x="620" y="30" width="160" height="65" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <text x="700" y="58" text-anchor="middle" fill="#38bdf8" font-size="16" font-family="JetBrains Mono" font-weight="bold">STUDENT</text>
+            <text x="700" y="80" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">الطالب</text>
+
+            <!-- Entity: DEPARTMENT -->
+            <rect x="620" y="215" width="160" height="65" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+            <text x="700" y="243" text-anchor="middle" fill="#fbbf24" font-size="16" font-family="JetBrains Mono" font-weight="bold">DEPARTMENT</text>
+            <text x="700" y="265" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">القسم العلمي</text>
+
+            <!-- Entity: SECTION -->
+            <rect x="330" y="30" width="160" height="65" rx="12" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+            <text x="410" y="58" text-anchor="middle" fill="#34d399" font-size="16" font-family="JetBrains Mono" font-weight="bold">SECTION</text>
+            <text x="410" y="80" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">السكشن / الشعبة</text>
+
+            <!-- Entity: COURSE -->
+            <rect x="330" y="215" width="160" height="65" rx="12" fill="#1e293b" stroke="#c084fc" stroke-width="2"/>
+            <text x="410" y="243" text-anchor="middle" fill="#d8b4fe" font-size="16" font-family="JetBrains Mono" font-weight="bold">COURSE</text>
+            <text x="410" y="265" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">المقرر الدراسي</text>
+
+            <!-- Entity: INSTRUCTOR -->
+            <rect x="40" y="30" width="160" height="65" rx="12" fill="#1e293b" stroke="#f472b6" stroke-width="2"/>
+            <text x="120" y="58" text-anchor="middle" fill="#f9a8d4" font-size="16" font-family="JetBrains Mono" font-weight="bold">INSTRUCTOR</text>
+            <text x="120" y="80" text-anchor="middle" fill="#cbd5e1" font-size="12" font-family="Tajawal">المحاضر / الدكتور</text>
+
+            <!-- Relationships Lines & Labels -->
+            <!-- STUDENT takes SECTION -->
+            <line x1="620" y1="62" x2="498" y2="62" stroke="#38bdf8" stroke-width="2" marker-end="url(#relArrow)"/>
+            <text x="558" y="52" text-anchor="middle" fill="#7dd3fc" font-size="12" font-family="Cairo" font-weight="bold">takes (يسجل في)</text>
+
+            <!-- STUDENT majors in DEPARTMENT -->
+            <line x1="700" y1="95" x2="700" y2="208" stroke="#fbbf24" stroke-width="2" marker-end="url(#relArrow)"/>
+            <text x="748" y="156" text-anchor="middle" fill="#fcd34d" font-size="12" font-family="Cairo" font-weight="bold">majors in (يتخصص)</text>
+
+            <!-- INSTRUCTOR teaches SECTION -->
+            <line x1="200" y1="62" x2="322" y2="62" stroke="#f472b6" stroke-width="2" marker-end="url(#relArrow)"/>
+            <text x="262" y="52" text-anchor="middle" fill="#f9a8d4" font-size="12" font-family="Cairo" font-weight="bold">teaches (يدرّس)</text>
+
+            <!-- SECTION is of COURSE -->
+            <line x1="410" y1="95" x2="410" y2="208" stroke="#10b981" stroke-width="2" marker-end="url(#relArrow)"/>
+            <text x="455" y="156" text-anchor="middle" fill="#6ee7b7" font-size="12" font-family="Cairo" font-weight="bold">of specific (تابع لـ)</text>
+
+            <!-- DEPARTMENT offers COURSE -->
+            <line x1="620" y1="248" x2="498" y2="248" stroke="#c084fc" stroke-width="2" marker-end="url(#relArrow)"/>
+            <text x="558" y="238" text-anchor="middle" fill="#d8b4fe" font-size="12" font-family="Cairo" font-weight="bold">offers (يطرح كورس)</text>
+
+            <!-- COURSE has prerequisite COURSE (Self-loop) -->
+            <path d="M330,248 C240,210 240,295 325,265" fill="none" stroke="#c084fc" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#relArrow)"/>
+            <text x="215" y="255" text-anchor="middle" fill="#d8b4fe" font-size="12" font-family="Cairo" font-weight="bold">Prerequisite (متطلب سابق)</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         INTERACTIVE MCQ QUIZ SECTION (ONLY MCQs as requested!)
+    =========================================== -->
+    <section id="quiz-section" class="content-block reader-card rounded-3xl border p-6 sm:p-10 space-y-8">
+      <div class="border-b border-slate-500/20 pb-6 flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-500/20 text-amber-400 border border-amber-500/30 heading-font">كويز تفاعلي شامل (MCQs Only)</span>
+            <span class="text-xs opacity-60 font-mono">30 Multiple Choice Questions</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold heading-font">
+            بنك أسئلة الاختيار من متعدد التفاعلي (البلوكات 1 إلى 6)
+          </h2>
+          <p class="text-sm opacity-80">جميع أسئلة الاختيار من متعدد (MCQs فقط كما طلبت بدون أسئلة صح/خطأ) مع التصحيح الفوري وتفسير الإجابة.</p>
+        </div>
+
+        <!-- Score Box -->
+        <div class="sub-box rounded-2xl border px-5 py-4 flex items-center gap-5">
+          <div>
+            <div class="text-xs opacity-70 heading-font">النتيجة الحالية</div>
+            <div class="text-2xl font-extrabold text-emerald-400 font-mono" id="quizScoreDisplay">0 / 30</div>
+          </div>
+          <button id="btnResetQuiz" class="px-3.5 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-xs font-bold heading-font transition">
+            إعادة تصفير الكويز
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Quiz by Block -->
+      <div class="flex items-center flex-wrap gap-2" id="quizFilterBar">
+        <button data-qfilter="all" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font bg-amber-500 text-slate-950 transition">كل الأسئلة (30)</button>
+        <button data-qfilter="b1" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font bg-slate-500/10 border border-slate-500/20 hover:bg-amber-500/20 transition">بلوك 1 (4)</button>
+        <button data-qfilter="b2" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font bg-slate-500/10 border border-slate-500/20 hover:bg-amber-500/20 transition">بلوك 2 + الميتا داتا (10)</button>
+        <button data-qfilter="b3" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font bg-slate-500/10 border border-slate-500/20 hover:bg-amber-500/20 transition">بلوك 3 (5)</button>
+        <button data-qfilter="b4" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font bg-slate-500/10 border border-slate-500/20 hover:bg-amber-500/20 transition">بلوك 4 (5)</button>
+        <button data-qfilter="b5" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font bg-slate-500/10 border border-slate-500/20 hover:bg-amber-500/20 transition">بلوك 5 (5)</button>
+        <button data-qfilter="b6" class="qfilter-btn px-3 py-1.5 rounded-xl text-xs font-bold heading-font bg-slate-500/10 border border-slate-500/20 hover:bg-amber-500/20 transition">بلوك 6 (5)</button>
+      </div>
+
+      <!-- Questions List Container -->
+      <div id="quizContainer" class="space-y-6"></div>
+    </section>
+
+  </main>
+
+  <script>
+    // ==========================================
+    // ALL 30 MCQ QUESTIONS FROM THE UPLOADED FILES (Strictly MCQs only)
+    // ==========================================
+    const mcqQuestions = [
+      // Block 1 (p1.txt)
+      {
+        id: 1,
+        block: 'b1',
+        blockTitle: 'البلوك 1: المفاهيم الأساسية',
+        q: 'A collection of known facts that can be recorded and have an implicit meaning is formally defined as:',
+        options: ['Database', 'Program', 'Data', 'Schema'],
+        correct: 2,
+        explanation: 'التعريف الحرفي في السلايد: Known facts that can be recorded and have an implicit meaning هو تعريف الـ Data.'
+      },
+      {
+        id: 2,
+        block: 'b1',
+        blockTitle: 'البلوك 1: المفاهيم الأساسية',
+        q: 'The specific part of the real world that a database represents and stores data about is known as:',
+        options: ['Operating System', 'Data Dictionary', 'Universe of Discourse (UoD)', 'Database State'],
+        correct: 2,
+        explanation: 'جزء الواقع الذي تمثله قاعدة البيانات يسمى Mini-World أو الاسم العلمي المكافئ له Universe of Discourse (UoD).'
+      },
+      {
+        id: 3,
+        block: 'b1',
+        blockTitle: 'البلوك 1: المفاهيم الأساسية',
+        q: 'Which of the following is NOT a required property of a database according to the textbook definition?',
+        options: [
+          'It is a logically coherent collection of data with inherent meaning.',
+          'It represents some aspect of the real world.',
+          'It must store only numeric and textual data.',
+          'It is designed, built, and populated for a specific purpose.'
+        ],
+        correct: 2,
+        explanation: 'قواعد البيانات لا تقتصر على الأرقام والنصوص فقط، بل تشمل أيضاً الصور والفيديو والخرائط والجينات في التطبيقات الحديثة.'
+      },
+      {
+        id: 4,
+        block: 'b1',
+        blockTitle: 'البلوك 1: المفاهيم الأساسية',
+        q: 'When an event occurs in the mini-world (e.g., a student registers for a course), what must happen to maintain data integrity?',
+        options: [
+          'The database schema must be recreated.',
+          'The change must be reflected in the database.',
+          'A new DBMS must be installed.',
+          'All application programs must be recompiled.'
+        ],
+        correct: 1,
+        explanation: 'أي تغيير يحدث في العالم المصغر (Mini-world) يجب أن ينعكس فوراً في قاعدة البيانات (Reflected in the database).'
+      },
+
+      // Block 2 + Meta-data (p2.txt)
+      {
+        id: 5,
+        block: 'b2',
+        blockTitle: 'البلوك 2: وظائف وبيئة الـ DBMS',
+        q: 'A general-purpose software system that facilitates the processes of defining, constructing, manipulating, and sharing databases is called:',
+        options: ['Operating System', 'DBMS', 'Application Program', 'Database Schema'],
+        correct: 1,
+        explanation: 'نظام إدارة قواعد البيانات (DBMS) هو النظام البرمجي العام المسؤول عن الوظائف الأربعة: Defining, Constructing, Manipulating, Sharing.'
+      },
+      {
+        id: 6,
+        block: 'b2',
+        blockTitle: 'البلوك 2: وظائف وبيئة الـ DBMS',
+        q: 'Specifying the structures, data types, and constraints for the data to be stored is the definition of which DBMS functionality?',
+        options: ['Constructing', 'Sharing', 'Defining', 'Manipulating'],
+        correct: 2,
+        explanation: 'تحديد الهياكل وأنواع البيانات والقيود (Constraints) هو تعريف وظيفة الـ Defining.'
+      },
+      {
+        id: 7,
+        block: 'b2',
+        blockTitle: 'البلوك 2: وظائف وبيئة الـ DBMS',
+        q: 'Storing the data on a physical storage medium controlled by the DBMS is referred to as:',
+        options: ['Defining', 'Constructing', 'Manipulating', 'Querying'],
+        correct: 1,
+        explanation: 'عملية تخزين البيانات فعلياً على وسيط تخزين (الهارد ديسك) تحت سيطرة الـ DBMS تسمى Constructing.'
+      },
+      {
+        id: 8,
+        block: 'b2',
+        blockTitle: 'البلوك 2: وظائف وبيئة الـ DBMS',
+        q: 'An application that retrieves specific records and formats them into a printable document is executing which DBMS function?',
+        options: ['Defining', 'Constructing', 'Manipulating', 'Sharing'],
+        correct: 2,
+        explanation: 'الاستعلام (Querying) والتحديث واستخراج التقارير المطبوعة كلها تندرج تحت وظيفة Manipulating.'
+      },
+      {
+        id: 9,
+        block: 'b2',
+        blockTitle: 'البلوك 2: وظائف وبيئة الـ DBMS',
+        q: 'Protection of the database against power failures or disk crashes is specifically classified as:',
+        options: ['Security Protection', 'Concurrency Protection', 'System Protection', 'Logical Protection'],
+        correct: 2,
+        explanation: 'الحماية ضد أعطال الهاردوير أو انقطاع الكهرباء تسمى System Protection، بينما الحماية ضد الاختراق تسمى Security Protection.'
+      },
+      {
+        id: 10,
+        block: 'b2',
+        blockTitle: 'البلوك 2: وظائف وبيئة الـ DBMS',
+        q: 'Which of the following is considered one of the internal software modules of a DBMS in a simplified database system environment?',
+        options: ['Application Programs', 'Database Users', 'Software to process queries/programs', 'Operating system compiler'],
+        correct: 2,
+        explanation: 'داخل صندوق الـ DBMS Software يوجد جزآن داخليان: Software to process queries/programs و Software to access stored data.'
+      },
+      {
+        id: 11,
+        block: 'b2',
+        blockTitle: 'البلوك 2: الـ Meta-data والكتالوج',
+        q: 'Data that describes the structure, types, and constraints of the primary database is formally known as:',
+        options: ['Transaction data', 'Meta-data', 'View data', 'Application data'],
+        correct: 1,
+        explanation: 'البيانات التي تصف هيكل وأنواع وشروط قاعدة البيانات (Data about data) تسمى Meta-data.'
+      },
+      {
+        id: 12,
+        block: 'b2',
+        blockTitle: 'البلوك 2: الـ Meta-data والكتالوج',
+        q: 'In a DBMS, where is the meta-data stored and maintained?',
+        options: [
+          'Hardcoded inside each application program',
+          'In the operating system registry',
+          'In the DBMS catalog (data dictionary)',
+          'In user session cookies'
+        ],
+        correct: 2,
+        explanation: 'يتم حفظ الـ Meta-data في كتالوج مركزي مستقل داخل الـ DBMS يسمى DBMS Catalog أو Data Dictionary.'
+      },
+      {
+        id: 13,
+        block: 'b2',
+        blockTitle: 'البلوك 2: الـ Meta-data والكتالوج',
+        q: 'The capability of a database system to contain both the data and the complete definition of its structure is referred to as:',
+        options: ['Program-Data Independence', 'Concurrency Control', 'Self-describing nature of a database', 'Data Redundancy'],
+        correct: 2,
+        explanation: 'احتواء النظام على البيانات مع وصفها الكامل في الكتالوج يعرف بخاصية الوصف الذاتي (Self-describing nature).'
+      },
+      {
+        id: 14,
+        block: 'b2',
+        blockTitle: 'البلوك 2: الـ Meta-data والكتالوج',
+        q: 'In a simplified database catalog, the description of column names, data types, and their belonging tables represents:',
+        options: ['Application code', 'Meta-data', 'End-user queries', 'Backup log files'],
+        correct: 1,
+        explanation: 'تفاصيل أسماء الأعمدة وأنواعها والجداول التابعة لها داخل الكتالوج هي أمثلة مباشرة على الـ Meta-data.'
+      },
+
+      // Block 3 (3.txt)
+      {
+        id: 15,
+        block: 'b3',
+        blockTitle: 'البلوك 3: أنواع وتطبيقات قواعد البيانات',
+        q: 'Databases that specifically store and analyze maps, satellite images, and weather patterns are known as:',
+        options: ['Multimedia Databases', 'Geographic Information Systems (GIS)', 'Genome Databases', 'Traditional Textual Databases'],
+        correct: 1,
+        explanation: 'تخزين وتحليل الخرائط وصور الأقمار الصناعية وبيانات الطقس هو تخصص نظم المعلومات الجغرافية (GIS).'
+      },
+      {
+        id: 16,
+        block: 'b3',
+        blockTitle: 'البلوك 3: أنواع وتطبيقات قواعد البيانات',
+        q: 'Storing DNA sequences and molecular structures is an example of which modern database application?',
+        options: ['Biological and Genome Databases', 'Data Warehousing', 'Traditional Databases', 'Real-time ERP Systems'],
+        correct: 0,
+        explanation: 'سلاسل الـ DNA والشفرات الجينية يتم تخزينها في قواعد البيانات الحيوية والجينية (Biological and Genome Databases).'
+      },
+      {
+        id: 17,
+        block: 'b3',
+        blockTitle: 'البلوك 3: أنواع وتطبيقات قواعد البيانات',
+        q: 'Which of the following is considered a Traditional database application?',
+        options: [
+          'Social network graph analysis',
+          'Geographic Information System (GIS)',
+          'Numeric and textual accounting database',
+          'Multimedia video streaming database'
+        ],
+        correct: 2,
+        explanation: 'التطبيقات التقليدية (Traditional Applications) هي قواعد البيانات الرقمية والنصية (Numeric and textual).'
+      },
+      {
+        id: 18,
+        block: 'b3',
+        blockTitle: 'البلوك 3: أنواع وتطبيقات قواعد البيانات',
+        q: 'Systems used to aggregate data from multiple massive sources to assist executives in decision making and Business Intelligence (BI) are called:',
+        options: ['Real-time operating systems', 'Data Warehouses', 'Transaction logs', 'Traditional file directories'],
+        correct: 1,
+        explanation: 'مستودعات البيانات (Data Warehouses) تجمع البيانات الضخمة لدعم اتخاذ القرارات والـ Business Intelligence (BI).'
+      },
+      {
+        id: 19,
+        block: 'b3',
+        blockTitle: 'البلوك 3: أنواع وتطبيقات قواعد البيانات',
+        q: 'Search engines that index massive amounts of textual and multimedia data from the World Wide Web are classified under:',
+        options: [
+          'Traditional Numeric Applications',
+          'Recent Developments in Database Applications',
+          'File Processing Systems',
+          'Standalone Local Utilities'
+        ],
+        correct: 1,
+        explanation: 'محركات البحث (Search Engines) والحوسبة السحابية تندرج تحت التطورات الحديثة (Recent Developments in Database Applications).'
+      },
+
+      // Block 4 (4.txt)
+      {
+        id: 20,
+        block: 'b4',
+        blockTitle: 'البلوك 4: الخصائص الأربعة لمدخل الداتابيز',
+        q: 'The characteristic that allows modifying the data storage structures without having to modify the application programs is known as:',
+        options: ['Data Abstraction', 'Program-Data Independence', 'Concurrency Control', 'Atomicity'],
+        correct: 1,
+        explanation: 'القدرة على تعديل هيكل تخزين البيانات دون الحاجة لتعديل كود البرامج هي استقلالية البرامج عن البيانات (Program-Data Independence).'
+      },
+      {
+        id: 21,
+        block: 'b4',
+        blockTitle: 'البلوك 4: الخصائص الأربعة لمدخل الداتابيز',
+        q: 'A DBMS feature that presents a subset of the database or dynamically computed virtual data to a specific group of users is called a:',
+        options: ['Catalog', 'View', 'Transaction', 'Schema construct'],
+        correct: 1,
+        explanation: 'الـ View تعرض جزءاً مخصصاً من الداتابيز أو بيانات افتراضية محسوبة (Virtual derived data) مثل الـ GPA.'
+      },
+      {
+        id: 22,
+        block: 'b4',
+        blockTitle: 'البلوك 4: الخصائص الأربعة لمدخل الداتابيز',
+        q: 'Which software module within the DBMS ensures that simultaneous data modifications by multiple users do not result in corrupted or inconsistent data?',
+        options: ['Concurrency Control Software', 'Operating System Scheduler', 'Data Dictionary', 'Application Compiler'],
+        correct: 0,
+        explanation: 'برمجيات التحكم في التزامن (Concurrency Control Software) تضمن عدم تضارب تعديلات المستخدمين المتزامنة.'
+      },
+      {
+        id: 23,
+        block: 'b4',
+        blockTitle: 'البلوك 4: الخصائص الأربعة لمدخل الداتابيز',
+        q: 'The transaction property which guarantees that either ALL operations of a transaction are executed successfully or NONE are applied is called:',
+        options: ['Isolation', 'Consistency', 'Durability', 'Atomicity'],
+        correct: 3,
+        explanation: 'خاصية الذرية (Atomicity - الكل أو لا شيء) تضمن تنفيذ كل خطوات المعاملة بالكامل أو إلغائها بالكامل.'
+      },
+      {
+        id: 24,
+        block: 'b4',
+        blockTitle: 'البلوك 4: الخصائص الأربعة لمدخل الداتابيز',
+        q: 'The conceptual representation of data that hides storage details and supports program-data independence is achieved through:',
+        options: ['Data Redundancy', 'Data Abstraction', 'Operating system directories', 'Hardcoded file routines'],
+        correct: 1,
+        explanation: 'تجريد البيانات (Data Abstraction) هو الذي يخفي تفاصيل التخزين المعقدة ويحقق استقلالية البرامج عن البيانات.'
+      },
+
+      // Block 5 (5.txt)
+      {
+        id: 25,
+        block: 'b5',
+        blockTitle: 'البلوك 5: مستخدمو قواعد البيانات',
+        q: 'A bank teller who continuously processes customer deposits and withdrawals using pre-programmed standard interfaces is classified as a:',
+        options: ['Casual End User', 'Parametric / Naive End User', 'Sophisticated End User', 'Database Administrator'],
+        correct: 1,
+        explanation: 'موظف البنك أو الحجز الذي يستخدم شاشات جاهزة ومعاملات مسبقة البرمجة (Canned transactions) يصنف كـ Parametric / Naive End User.'
+      },
+      {
+        id: 26,
+        block: 'b5',
+        blockTitle: 'البلوك 5: مستخدمو قواعد البيانات',
+        q: 'Who among the following is primarily responsible for authorizing access, acquiring software/hardware resources, and monitoring system performance?',
+        options: ['Database Designer', 'Application Programmer', 'Database Administrator (DBA)', 'Tool Developer'],
+        correct: 2,
+        explanation: 'مدير قاعدة البيانات (DBA) هو المسؤول عن منح الصلاحيات، توفير الموارد، ومراقبة الأداء والأمان.'
+      },
+      {
+        id: 27,
+        block: 'b5',
+        blockTitle: 'البلوك 5: مستخدمو قواعد البيانات',
+        q: 'Which user group interacts with the database only occasionally and requires different, customized information each time (such as middle and high-level managers)?',
+        options: ['Casual End Users', 'Parametric Users', 'Standalone Users', 'DBMS Implementers'],
+        correct: 0,
+        explanation: 'المستخدم العارض (Casual End User) كالمديرين يدخل على فترات متباعدة ويطلب معلومات مختلفة في كل مرة.'
+      },
+      {
+        id: 28,
+        block: 'b5',
+        blockTitle: 'البلوك 5: مستخدمو قواعد البيانات',
+        q: 'Which of the following database users is classified as an "Actor BEHIND the Scene"?',
+        options: ['Database Administrator (DBA)', 'Database Designer', 'DBMS Tool Developer', 'System Analyst'],
+        correct: 2,
+        explanation: 'مطورو الأدوات (DBMS Tool Developers) ومصممو محرك الـ DBMS ومشغلو الأجهزة هم أبطال خلف الكواليس (Behind the Scene).'
+      },
+      {
+        id: 29,
+        block: 'b5',
+        blockTitle: 'البلوك 5: مستخدمو قواعد البيانات',
+        q: 'Pre-written and thoroughly tested standard queries and updates used by parametric users are officially called:',
+        options: ['Dynamic scripts', 'Canned transactions', 'Physical indexes', 'Metadata logs'],
+        correct: 1,
+        explanation: 'الاستعلامات والتحديثات الجاهزة والمبرمجة مسبقاً للمستخدم النمطي تسمى رسمياً Canned transactions.'
+      },
+
+      // Block 6 (6.txt)
+      {
+        id: 30,
+        block: 'b6',
+        blockTitle: 'البلوك 6: مميزات الـ DBMS ومتى نتجنبه',
+        q: 'In traditional file systems, data duplication across multiple departments often leads to:',
+        options: ['Data Independence', 'Data Inconsistency', 'Better security', 'Faster indexing'],
+        correct: 1,
+        explanation: 'تكرار البيانات غير المتحكم فيه في أنظمة الملفات القديمة يؤدي إلى تناقض البيانات (Data Inconsistency) وإهدار المساحة.'
+      },
+      {
+        id: 31,
+        block: 'b6',
+        blockTitle: 'البلوك 6: مميزات الـ DBMS ومتى نتجنبه',
+        q: 'Auxiliary storage structures such as indexes are provided by a DBMS primarily to:',
+        options: [
+          'Enforce security permissions',
+          'Speed up query retrieval performance',
+          'Translate high-level DDL into machine code',
+          'Duplicate data for backup purposes'
+        ],
+        correct: 1,
+        explanation: 'الفهارس (Indexes) هي هياكل تخزين مساعدة وظيفتها الأساسية تسريع البحث واسترجاع الاستعلامات.'
+      },
+      {
+        id: 32,
+        block: 'b6',
+        blockTitle: 'البلوك 6: مميزات الـ DBMS ومتى نتجنبه',
+        q: 'Rules specified in active databases that trigger automated actions when certain events take place are called:',
+        options: ['Canned transactions', 'Triggers', 'Indexes', 'Views'],
+        correct: 1,
+        explanation: 'القواعد التي تطلق إجراءات تلقائية عند وقوع حدث معين في قواعد البيانات النشطة تسمى Triggers.'
+      },
+      {
+        id: 33,
+        block: 'b6',
+        blockTitle: 'البلوك 6: مميزات الـ DBMS ومتى نتجنبه',
+        q: 'In which of the following scenarios is using a full-scale DBMS NOT recommended?',
+        options: [
+          'A multi-branch commercial banking system',
+          'A university registration portal with thousands of concurrent students',
+          'A simple embedded controller with stringent real-time response requirements',
+          'An e-commerce platform with dynamic inventory updates'
+        ],
+        correct: 2,
+        explanation: 'الأنظمة المدمجة البسيطة التي تتطلب استجابة لحظية حرجة (Stringent real-time requirements) لا ينصح فيها باستخدام DBMS بسبب الـ Overhead.'
+      },
+      {
+        id: 34,
+        block: 'b6',
+        blockTitle: 'البلوك 6: مميزات الـ DBMS ومتى نتجنبه',
+        q: 'The financial and operational advantage of consolidating the data processing requirements of an entire enterprise into a single DBMS is referred to as:',
+        options: ['Program-data independence', 'Economies of scale', 'Data abstraction', 'Controlled isolation'],
+        correct: 1,
+        explanation: 'دمج متطلبات المؤسسة كلها في نظام واحد لتوفير التكلفة والموارد يعرف اقتصادياً بـ Economies of scale.'
+      }
+    ];
+
+    // State
+    let userAnswers = {};
+    let currentQuizFilter = 'all';
+    let fontScale = 100;
+    let wideSpacing = true;
+
+    const totalQuestions = mcqQuestions.length;
+
+    function updateScoreDisplay() {
+      let correctCount = 0;
+      let answeredCount = Object.keys(userAnswers).length;
+      for (const qId in userAnswers) {
+        const qObj = mcqQuestions.find(q => q.id === Number(qId));
+        if (qObj && userAnswers[qId] === qObj.correct) {
+          correctCount++;
+        }
+      }
+      document.getElementById('quizScoreDisplay').textContent = `${correctCount} / ${totalQuestions} (${answeredCount} مُجاب)`;
+    }
+
+    function renderQuiz() {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = '';
+
+      const filtered = currentQuizFilter === 'all'
+        ? mcqQuestions
+        : mcqQuestions.filter(item => item.block === currentQuizFilter);
+
+      filtered.forEach((item, idx) => {
+        const selected = userAnswers[item.id];
+        const isAnswered = selected !== undefined;
+
+        const card = document.createElement('div');
+        card.className = 'sub-box rounded-2xl border p-6 space-y-4 transition-all';
+
+        const letters = ['A', 'B', 'C', 'D'];
+        let optionsHtml = '';
+
+        item.options.forEach((optText, optIndex) => {
+          let btnClasses = 'w-full text-left p-3.5 rounded-xl border font-mono text-sm transition flex items-center justify-between gap-3 ';
+          let badgeIcon = '';
+
+          if (!isAnswered) {
+            btnClasses += 'border-slate-500/30 hover:border-sky-400 hover:bg-sky-500/10 cursor-pointer';
+          } else {
+            if (optIndex === item.correct) {
+              btnClasses += 'border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold';
+              badgeIcon = '<span class="text-emerald-400 font-bold">✓ الإجابة الصحيحة</span>';
+            } else if (optIndex === selected && selected !== item.correct) {
+              btnClasses += 'border-rose-500 bg-rose-500/20 text-rose-300 line-through';
+              badgeIcon = '<span class="text-rose-400 font-bold">✗ اختيارك</span>';
+            } else {
+              btnClasses += 'border-slate-500/20 opacity-50';
+            }
+          }
+
+          optionsHtml += `
+            <button data-qid="${item.id}" data-opt="${optIndex}" class="quiz-opt-btn ${btnClasses}" dir="ltr" ${isAnswered ? 'disabled' : ''}>
+              <span><strong class="text-sky-400 mr-2">(${letters[optIndex]})</strong> ${optText}</span>
+              ${badgeIcon}
+            </button>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-500/20 pb-3">
+            <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-sky-500/15 text-sky-400 heading-font">${item.blockTitle}</span>
+            <span class="text-xs font-mono opacity-60">Question #${idx + 1}</span>
+          </div>
+          <p class="font-mono text-base font-semibold leading-relaxed" dir="ltr">${item.q}</p>
+          <div class="space-y-2.5 pt-1">
+            ${optionsHtml}
+          </div>
+          ${isAnswered ? `
+            <div class="mt-3 p-4 rounded-xl border ${selected === item.correct ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' : 'bg-amber-500/10 border-amber-500/30 text-amber-300'} text-sm leading-relaxed">
+              <strong class="heading-font block mb-1">${selected === item.correct ? '🎯 إجابة ممتازة!' : '💡 التوضيح وفكرة السؤال:'}</strong>
+              <span>${item.explanation}</span>
+            </div>
+          ` : ''}
+        `;
+
+        container.appendChild(card);
+      });
+
+      // Attach listeners
+      document.querySelectorAll('.quiz-opt-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const qId = Number(e.currentTarget.getAttribute('data-qid'));
+          const optIdx = Number(e.currentTarget.getAttribute('data-opt'));
+          if (userAnswers[qId] === undefined) {
+            userAnswers[qId] = optIdx;
+            updateScoreDisplay();
+            renderQuiz();
+          }
+        });
+      });
+    }
+
+    // Initialize controls
+    window.addEventListener('DOMContentLoaded', () => {
+      updateScoreDisplay();
+      renderQuiz();
+
+      // Theme switching
+      const body = document.body;
+      const btnDark = document.getElementById('btnThemeDark');
+      const btnSepia = document.getElementById('btnThemeSepia');
+      const btnLight = document.getElementById('btnThemeLight');
+
+      function setActiveThemeBtn(activeBtn) {
+        [btnDark, btnSepia, btnLight].forEach(b => {
+          b.classList.remove('bg-sky-600', 'text-white');
+          b.classList.add('opacity-75');
+        });
+        activeBtn.classList.add('bg-sky-600', 'text-white');
+        activeBtn.classList.remove('opacity-75');
+      }
+
+      btnDark.addEventListener('click', () => {
+        body.className = 'theme-dark min-h-screen pb-24 selection:bg-sky-500 selection:text-white';
+        setActiveThemeBtn(btnDark);
+      });
+      btnSepia.addEventListener('click', () => {
+        body.className = 'theme-sepia min-h-screen pb-24 selection:bg-amber-700 selection:text-white';
+        setActiveThemeBtn(btnSepia);
+      });
+      btnLight.addEventListener('click', () => {
+        body.className = 'theme-light min-h-screen pb-24 selection:bg-sky-600 selection:text-white';
+        setActiveThemeBtn(btnLight);
+      });
+
+      // Font size controls
+      const fontSizeLabel = document.getElementById('fontSizeLabel');
+      function applyTypography() {
+        const remSize = (1.15 * (fontScale / 100)).toFixed(2);
+        document.documentElement.style.setProperty('--reader-font-size', `${remSize}rem`);
+        fontSizeLabel.textContent = `${fontScale}%`;
+      }
+
+      document.getElementById('btnFontInc').addEventListener('click', () => {
+        if (fontScale < 140) {
+          fontScale += 10;
+          applyTypography();
+        }
+      });
+      document.getElementById('btnFontDec').addEventListener('click', () => {
+        if (fontScale > 80) {
+          fontScale -= 10;
+          applyTypography();
+        }
+      });
+
+      // Line spacing toggle
+      const btnSpacingToggle = document.getElementById('btnSpacingToggle');
+      const spacingLabel = document.getElementById('spacingLabel');
+      btnSpacingToggle.addEventListener('click', () => {
+        wideSpacing = !wideSpacing;
+        if (wideSpacing) {
+          document.documentElement.style.setProperty('--reader-line-height', '2.25');
+          document.documentElement.style.setProperty('--reader-letter-spacing', '0.015em');
+          btnSpacingToggle.textContent = 'تباعد: واسع جداً';
+        } else {
+          document.documentElement.style.setProperty('--reader-line-height', '1.85');
+          document.documentElement.style.setProperty('--reader-letter-spacing', '0em');
+          btnSpacingToggle.textContent = 'تباعد: مريح جداً';
+        }
+      });
+
+      // Section Filtering / Navigation
+      document.querySelectorAll('.nav-pill').forEach(pill => {
+        pill.addEventListener('click', (e) => {
+          const target = e.currentTarget.getAttribute('data-target');
+          document.querySelectorAll('.nav-pill').forEach(p => {
+            p.classList.remove('bg-sky-500', 'text-white');
+            if (!p.getAttribute('data-target').includes('quiz')) {
+              p.classList.add('bg-slate-500/10');
+            }
+          });
+          e.currentTarget.classList.add('bg-sky-500', 'text-white');
+
+          const sections = document.querySelectorAll('.content-block');
+          if (target === 'all') {
+            sections.forEach(s => s.classList.remove('hidden'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            sections.forEach(s => {
+              if (s.id === target) {
+                s.classList.remove('hidden');
+              } else {
+                s.classList.add('hidden');
+              }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+      });
+
+      // Quiz Block Filter
+      document.querySelectorAll('.qfilter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          currentQuizFilter = e.currentTarget.getAttribute('data-qfilter');
+          document.querySelectorAll('.qfilter-btn').forEach(b => {
+            b.classList.remove('bg-amber-500', 'text-slate-950');
+            b.classList.add('bg-slate-500/10');
+          });
+          e.currentTarget.classList.add('bg-amber-500', 'text-slate-950');
+          e.currentTarget.classList.remove('bg-slate-500/10');
+          renderQuiz();
+        });
+      });
+
+      // Reset Quiz
+      document.getElementById('btnResetQuiz').addEventListener('click', () => {
+        userAnswers = {};
+        updateScoreDisplay();
+        renderQuiz();
+      });
+
+      // Scroll Progress Bar
+      
+      // Auto-hide header on scroll down, restore on scroll up
+      let lastScrollY = window.scrollY;
+      window.addEventListener('scroll', () => {
+        const currentY = window.scrollY;
+        const headerEl = document.getElementById('mainReadingHeader');
+        if (headerEl) {
+          if (currentY > 120 && currentY > lastScrollY + 6) {
+            headerEl.classList.add('nav-hidden');
+          } else if (currentY < lastScrollY - 6 || currentY <= 80) {
+            headerEl.classList.remove('nav-hidden');
+          }
+        }
+        lastScrollY = currentY;
+      });
+
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+        document.getElementById('readingProgress').style.width = `${pct}%`;
+      });
+    });
+  </script>
+</body>
+</html>

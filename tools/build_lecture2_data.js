@@ -765,7 +765,7 @@ const slidesData = [
     ],
     keywords: [
       { en: "Conceptual view", ar: "رؤية مفاهيمية" },
-      { en: "Data Model constructs", ar: "تراكيب نموذج البيانات" },
+      { en: "Data Model constructs", ar: "هياكل نموذج البيانات" },
       { en: "Multiple views of data", ar: "وجهات نظر متعددة للبيانات" }
     ],
     tricks: "الـ View في قواعد البيانات ليست مجرد تصميم شاشة، بل هي جدول افتراضي (Virtual Table) يفلتر البيانات ويخصصها؛ طالب الفرقة الثانية يرى درجاته فقط بينما الكنترول يرى درجات الكلية كلها.",

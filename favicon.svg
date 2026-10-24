@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Top Pins -->
+  <g fill="#011023">
+    <rect x="142" y="16" width="16" height="52" rx="8" />
+    <rect x="217" y="16" width="16" height="52" rx="8" />
+    <rect x="279" y="16" width="16" height="52" rx="8" />
+    <rect x="354" y="16" width="16" height="52" rx="8" />
+
+    <!-- Bottom Pins -->
+    <rect x="142" y="444" width="16" height="52" rx="8" />
+    <rect x="217" y="444" width="16" height="52" rx="8" />
+    <rect x="279" y="444" width="16" height="52" rx="8" />
+    <rect x="354" y="444" width="16" height="52" rx="8" />
+
+    <!-- Left Pins -->
+    <rect x="16" y="142" width="52" height="16" rx="8" />
+    <rect x="16" y="217" width="52" height="16" rx="8" />
+    <rect x="16" y="279" width="52" height="16" rx="8" />
+    <rect x="16" y="354" width="52" height="16" rx="8" />
+
+    <!-- Right Pins -->
+    <rect x="444" y="142" width="52" height="16" rx="8" />
+    <rect x="444" y="217" width="52" height="16" rx="8" />
+    <rect x="444" y="279" width="52" height="16" rx="8" />
+    <rect x="444" y="354" width="52" height="16" rx="8" />
+
+    <!-- Main Outer Chip Body with Chamfered Corners -->
+    <polygon points="
+      112,56 400,56 456,112 456,400 400,456 112,456 56,400 56,112
+    " />
+  </g>
+
+  <!-- Cyan Inner Border with Chamfered Corners -->
+  <polygon points="
+    160,126 352,126 386,160 386,352 352,386 160,386 126,352 126,160
+  " fill="#00d0fa" />
+
+  <!-- Inner Die Core (Dark Navy) -->
+  <polygon points="
+    184,158 328,158 354,184 354,328 328,354 184,354 158,328 158,184
+  " fill="#011023" />
+</svg>

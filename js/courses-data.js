@@ -1,6 +1,6 @@
 /**
  * ==============================================================================
- * ملَف البيانات المركزي لمنصة مواد الذكاء الاصطناعي - الترم الثاني
+ * ملَف البيانات المركزي لمنصة مواد الذكاء الاصطناعي - سنة ثانية — الترم الأول
  * ==============================================================================
  * يتضمن روابط Google Drive المباشرة لجميع المحاضرات بدون الحاجة لتحميلها محلياً،
  * بالإضافة لقوائم تشغيل وشروحات الفيديو والمواقع التفاعلية وسكاشن ومعامل المواد.
@@ -10,7 +10,7 @@ const PORTAL_CONFIG = {
   "creator": "Eng. Ahmed Amir",
   "creatorArabic": "أحمد أمير",
   "driveMasterFolder": "https://drive.google.com/drive/folders/11q-xu1rb5IoIE-lL1pMjHXqfut9Tq2hU",
-  "semester": "الترم الثاني 2026",
+  "semester": "سنة ثانية — الترم الأول 2026",
   "faculty": "كلية الحاسبات والمعلومات - جامعة الزقازيق",
   "department": "قسم الذكاء الاصطناعي (AI)",
   "driveSectionsMasterFolder": "https://drive.google.com/drive/folders/1QLwePQh_D3P7XXZ9J7Dbzo0WvsVcY3nB"
@@ -1161,6 +1161,7 @@ const COURSES_DATA = [
       {
         "id": 2,
         "chapter": "Chapter 1",
+        "studyManualUrl": "study/db/chapter-1.html",
         "title": "Lecture 2: Databases and Database Users",
         "arabicTitle": "مقدمة قواعد البيانات، أنواع النظم، وتصنيفات المستخدمين",
         "doctor": "د. محمد ماهر",
@@ -1189,6 +1190,7 @@ const COURSES_DATA = [
       {
         "id": 3,
         "chapter": "Chapter 2",
+        "studyManualUrl": "study/db/chapter-2.html",
         "title": "Database System Concepts and Architecture",
         "arabicTitle": "معمارية نظم قواعد البيانات، نماذج البيانات، ومستويات Schema الثلاثة (د. محمد ماهر)",
         "doctor": "د. محمد ماهر (Dr. Mohamed Maher)",
@@ -1645,7 +1647,7 @@ const COURSES_DATA = [
     "id": "data-structure",
     "code": "CS213",
     "name": "data structure",
-    "arabicName": "تراكيب البيانات والخوارزميات",
+    "arabicName": "هياكل البيانات والخوارزميات",
     "shortDesc": "هياكل البيانات الأساسية: Arrays, Linked Lists, Stacks, Queues, Trees, Graphs وتحليل الكفاءة (Big O).",
     "category": "أساسيات حاسب وذكاء اصطناعي (Core CS)",
     "accentColor": "from-amber-500 to-orange-600",
@@ -1671,20 +1673,20 @@ const COURSES_DATA = [
     ],
     "explanationSite": {
       "url": "https://drive.google.com/drive/folders/1gQrSrTFNGcauZk5Fdf8y3xsDQ466oK84",
-      "title": "مستودع محاضرات وسلايدات تراكيب البيانات",
+      "title": "مستودع محاضرات وسلايدات هياكل البيانات",
       "description": "سلايدات المحاضرات الرسمية المعتمدة لجميع دفعات الذكاء الاصطناعي والحاسبات مع شروحات وقوائم تشغيل ممتازة بلغة C++.",
       "status": "متصل بـ Google Drive",
       "features": [
         "سلايدات رسمية ومحدثة من Lecture 0 إلى Stacks",
         "شروحات باللغة العربية مع د. محمد الدسوقي وقنوات متخصصة",
-        "دورات عالمية باللغة الإنجليزية لتراكيب البيانات والخوارزميات"
+        "دورات عالمية باللغة الإنجليزية لهياكل البيانات والخوارزميات"
       ]
     },
     "videoExplanations": [
       {
         "id": 1,
-        "title": "شرح تراكيب البيانات بالعربي - Arrays & Data Structures",
-        "subtitle": "Data Structures 1 - In Arabic - شرح تراكيب البيانات 1 - Data Structures | Arrays",
+        "title": "شرح هياكل البيانات بالعربي - Arrays & Data Structures",
+        "subtitle": "Data Structures 1 - In Arabic - شرح هياكل البيانات 1 - Data Structures | Arrays",
         "url": "https://youtu.be/9fRN5QtvfTg?si=1nfAR3PUhatnd4n7",
         "type": "video",
         "typeArabic": "فيديو وتطبيق",
@@ -1694,8 +1696,8 @@ const COURSES_DATA = [
       },
       {
         "id": 2,
-        "title": "بلاي ليست د. محمد الدسوقي - تراكيب البيانات بلغة C++",
-        "subtitle": "01 - | C++ Data Structures | - | why Data Structures ? | - | تراكيب البيانات |",
+        "title": "بلاي ليست د. محمد الدسوقي - هياكل البيانات بلغة C++",
+        "subtitle": "01 - | C++ Data Structures | - | why Data Structures ? | - | هياكل البيانات |",
         "url": "https://youtu.be/jGP19W5IObA?si=PAIVo7RVKTXTnBeZ",
         "type": "playlist",
         "typeArabic": "قائمة تشغيل كاملة",
@@ -1705,7 +1707,7 @@ const COURSES_DATA = [
       },
       {
         "id": 3,
-        "title": "دورة تراكيب البيانات والخوارزميات باللغة الإنجليزية (عبد الباري / متقدم)",
+        "title": "دورة هياكل البيانات والخوارزميات باللغة الإنجليزية (عبد الباري / متقدم)",
         "subtitle": "Master Data Structures and Algorithms with high visual clarity and problem-solving",
         "url": "https://youtu.be/xX5iOYCJmBI?si=Hyse_Vdh3Cj9jZS3",
         "type": "video",
@@ -1716,7 +1718,7 @@ const COURSES_DATA = [
       },
       {
         "id": 4,
-        "title": "دورة تراكيب البيانات الكاملة للمبتدئين والمتقدمين (freeCodeCamp)",
+        "title": "دورة هياكل البيانات الكاملة للمبتدئين والمتقدمين (freeCodeCamp)",
         "subtitle": "Complete Data Structures and Algorithms Course with animated trace and code",
         "url": "https://youtu.be/_T42E9RkWVQ?si=KwX4qnoeYyJc6bm0",
         "type": "video",
@@ -1727,8 +1729,8 @@ const COURSES_DATA = [
       },
       {
         "id": 6,
-        "title": "Introduction to Data Structure - كورس تأسيس تراكيب البيانات",
-        "subtitle": "شرح شامل وتأسيسي لمفاهيم تراكيب البيانات والخوارزميات",
+        "title": "Introduction to Data Structure - كورس تأسيس هياكل البيانات",
+        "subtitle": "شرح شامل وتأسيسي لمفاهيم هياكل البيانات والخوارزميات",
         "url": "https://youtu.be/8IZVz4nwI5E?si=Cqq5DONz6d60Hr_m",
         "type": "video",
         "typeArabic": "فيديو تأسيسي",
@@ -1766,8 +1768,9 @@ const COURSES_DATA = [
       {
         "id": 1,
         "chapter": "Lecture 1",
-        "title": "Introduction to Data Structures, Arrays & Templates",
-        "arabicTitle": "المحاضرة 1: مقدمة هياكل البيانات، المصفوفات والـ Templates",
+        "title": "Lecture 1: Data Structures, Arrays & Templates",
+        "arabicTitle": "المحاضرة الأولى — هياكل البيانات والمصفوفات والقوالب",
+        "studyManualUrl": "study/ds/lecture-1.html",
         "doctor": "سلايدات موحدة للدفعة",
         "doctorNote": "B1 • B2 • B3",
         "week": 2,
@@ -1787,13 +1790,14 @@ const COURSES_DATA = [
           "One-Dimensional & Multidimensional Arrays",
           "C++ Function & Class Templates (Box & Pair Examples)"
         ],
-        "notes": "سلايدات المحاضرة 1 الرسمية المعتمدة على Google Drive"
+        "notes": "متوفر لها موقع شرح تفاعلي شامل: تأسيس هياكل البيانات، الـ ADTs، المصفوفات والقوالب مع تتبع الذاكرة وكويز تفاعلي 16 سؤالاً"
       },
       {
         "id": 2,
         "chapter": "Lecture 2",
-        "title": "Linked Lists (SLL, DLL, Circular)",
-        "arabicTitle": "المحاضرة 2: القوائم المترابطة (Singly, Doubly, Circular)",
+        "title": "Lecture 2: Linked Lists (Complete 6 Parts)",
+        "arabicTitle": "المحاضرة الثانية الشاملة — القوائم المتصلة (Linked Lists): الأجزاء الستة كاملة",
+        "studyManualUrl": "study/ds/lecture-2.html",
         "doctor": "سلايدات موحدة للدفعة",
         "doctorNote": "B1 • B2 • B3",
         "week": 3,
@@ -1813,13 +1817,14 @@ const COURSES_DATA = [
           "Deletion (First, Last, by Value)",
           "Doubly Linked List (DLL) & Circular Linked List (CLL)"
         ],
-        "notes": "سلايدات المحاضرة 2 الرسمية المعتمدة على Google Drive"
+        "notes": "متوفر لها موقع شرح تفاعلي شامل من الصفر للاحتراف: تشريح العقد (Nodes)، عمليات الإضافة والحذف، والقوائم المزدوجة والدائرية"
       },
       {
         "id": 3,
         "chapter": "Lecture 3",
-        "title": "Recursion & Backtracking Algorithms",
-        "arabicTitle": "المحاضرة 3: الاستدعاء الذاتي (Recursion) وخوارزمية التراجع",
+        "title": "Lecture 3: Recursion & Memory Tracing",
+        "arabicTitle": "المحاضرة الثالثة — الاستدعاء الذاتي (Recursion) وتتبع الذاكرة",
+        "studyManualUrl": "study/ds/lecture-3.html",
         "doctor": "سلايدات موحدة للدفعة",
         "doctorNote": "B1 • B2 • B3",
         "week": 4,
@@ -1839,7 +1844,7 @@ const COURSES_DATA = [
           "Recursion with Data Structures (Reverse Print, Search)",
           "Backtracking Principles & The 8-Queens Puzzle"
         ],
-        "notes": "سلايدات المحاضرة 3 الرسمية المعتمدة على Google Drive"
+        "notes": "متوفر لها موقع شرح تفاعلي شامل: منطق الـ Recursion، دالة المضروب، متتالية فيبوناتشي، وتشريح الـ Call Stack مع كويز تدريبي"
       },
       {
         "id": 4,
@@ -1891,7 +1896,7 @@ const COURSES_DATA = [
           "Linked List Implementation of Queues",
           "Priority Queue ADT & C++ STL std::queue / std::priority_queue"
         ],
-        "notes": "سلايدات المحاضرة الخامسة الرسمية المعتمدة لمادة تراكيب البيانات على Google Drive"
+        "notes": "سلايدات المحاضرة الخامسة الرسمية المعتمدة لمادة هياكل البيانات على Google Drive"
       }
     ],
     "sections": [
@@ -1926,7 +1931,7 @@ const COURSES_DATA = [
         "tag": "Rev",
         "subTag": "C++",
         "title": "C++ Foundations & Revision - Beginners Teaching",
-        "arabicTitle": "مراجعة وتأسيس لغة C++ لسكاشن تراكيب البيانات",
+        "arabicTitle": "مراجعة وتأسيس لغة C++ لسكاشن هياكل البيانات",
         "ta": "م.م. أحمد حسام",
         "week": 1,
         "date": "مراجعة تمهيدية",
@@ -1945,7 +1950,7 @@ const COURSES_DATA = [
           "Functions & Parameter Passing (Pass-by-value vs Reference)",
           "Pointers & Direct Memory Addressing Fundamentals"
         ],
-        "notes": "سلايدات مراجعة تأسيسية متكاملة للغة C++ من إعداد م.م. أحمد حسام لتثبيت الأساس البرمجي قبل تراكيب البيانات."
+        "notes": "سلايدات مراجعة تأسيسية متكاملة للغة C++ من إعداد م.م. أحمد حسام لتثبيت الأساس البرمجي قبل هياكل البيانات."
       },
       {
         "id": 2,
@@ -2126,7 +2131,7 @@ const COURSES_DATA = [
         "year": "م.م. أحمد حسام",
         "ta": "م.م. أحمد حسام",
         "size": "86 KB",
-        "notes": "سلايدات تمهيدية ومراجعة مكثفة لقواعد لغة C++ الأساسية لسكاشن تراكيب البيانات",
+        "notes": "سلايدات تمهيدية ومراجعة مكثفة لقواعد لغة C++ الأساسية لسكاشن هياكل البيانات",
         "fileUrl": "https://drive.google.com/file/d/1C-7-6sPIecltpupe99XMNw88JQEzIlQp/view",
         "folderUrl": "https://drive.google.com/drive/folders/1p1zE6XWM2uYRn7_MnnkN51IL_HWirf-m",
         "badge": "مراجعة مهمة"

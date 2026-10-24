@@ -1,12 +1,18 @@
 /* A1 shell, measured fixed navbar, and fail-open processor intro lifecycle. */
 (function () {
-  const key = 'sem2-studio-rift-intro-v3';
   const desktop = window.matchMedia('(min-width:1024px) and (min-height:620px) and (hover:hover) and (pointer:fine)');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const home = document.body.dataset.page === 'home';
-  const force = ['rift','processor'].includes(new URLSearchParams(window.location.search).get('intro'));
+  const force = ['processor', 'rift', 'intro'].includes(new URLSearchParams(window.location.search).get('intro'));
   let handle = null, timer = 0, generation = 0, pending = false;
-  function seen() { try { return window.sessionStorage.getItem(key) === 'seen'; } catch { return true; } }
+  function seen() {
+    try {
+      return window.sessionStorage.getItem('sem2-a1-processor-intro-v1') === 'seen' ||
+             window.sessionStorage.getItem('sem2-studio-rift-intro-v3') === 'seen';
+    } catch {
+      return true;
+    }
+  }
   function measure() {
     const nav = document.querySelector('body > header');
     const height = nav ? Math.ceil(nav.getBoundingClientRect().height) : 0;
@@ -24,9 +30,14 @@
     if (!pending && !handle) return;
     generation++; window.clearTimeout(timer);
     handle?.destroy(); handle = null; pending = false;
+    document.querySelector('.processor-intro')?.remove();
+    document.querySelector('.processor-move-tools')?.remove();
     document.querySelector('.rift-intro')?.remove();
     shell(false); measure();
-    try { window.sessionStorage.setItem(key, 'seen'); } catch { /* entry remains usable */ }
+    try {
+      window.sessionStorage.setItem('sem2-a1-processor-intro-v1', 'seen');
+      window.sessionStorage.setItem('sem2-studio-rift-intro-v3', 'seen');
+    } catch { /* entry remains usable */ }
     window.scrollTo({top: 0, behavior: 'instant'});
     window.dispatchEvent(new CustomEvent('portal:intro-end', {detail: {reason}}));
     if (focus && !document.querySelector('[aria-modal="true"]')) document.querySelector('main')?.focus({preventScroll: true});
@@ -44,24 +55,36 @@
   async function start() {
     const token = ++generation;
     pending = true; shell(true);
-    timer = window.setTimeout(() => finish('timeout'), 12000);
+    timer = window.setTimeout(() => finish('timeout'), 8000);
     try {
-      for (const file of ['js/vendor/gsap/gsap.min.js', 'js/vendor/gsap/ScrollTrigger.min.js', 'js/rift-intro.js']) {
+      for (const file of [
+        'js/vendor/gsap/gsap.min.js',
+        'js/vendor/gsap/ScrollTrigger.min.js',
+        'js/vendor/gsap/Draggable.min.js',
+        'js/vendor/gsap/InertiaPlugin.min.js',
+        'js/processor-intro.js'
+      ]) {
         if (file.endsWith('/gsap.min.js') && window.gsap) continue;
         await load(file, token);
         if (token !== generation) return;
       }
-      window.gsap.registerPlugin(window.ScrollTrigger);
-      const mounted = await window.mountRiftIntro({host: document.querySelector('main'), cancelled: () => token !== generation, onSeen: () => {
-        window.clearTimeout(timer); timer = window.setTimeout(() => finish('complete'), 550);
-      }, onSkip: () => finish('skip')});
+      window.gsap.registerPlugin(window.ScrollTrigger, window.Draggable, window.InertiaPlugin);
+      const mounted = window.mountProcessorIntro({
+        host: document.querySelector('main'),
+        onSeen: () => {
+          window.clearTimeout(timer);
+          timer = window.setTimeout(() => finish('complete'), 550);
+        },
+        onSkip: () => finish('skip')
+      });
       if (token !== generation) { mounted?.destroy(); return; }
       handle = mounted;
       window.clearTimeout(timer);
-      // Studio adds its navigation during DOM ready while the intro assets load.
       shell(true);
       if (!handle) finish('unavailable');
-    } catch { if (token === generation) finish('unavailable'); }
+    } catch {
+      if (token === generation) finish('unavailable');
+    }
   }
   document.addEventListener('DOMContentLoaded', () => {
     measure();

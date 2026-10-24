@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="شرح الفصل الأول كامل: كل نقطة + ترجمتها + شرحها بالعامية + الزتونة + الخلاصة — Computer Architecture Chapter 1">
+  <title>الفصل الأول كامل | Computer Architecture Study Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800;900&family=Cairo:wght@400;600;700;800;900&family=Fira+Code:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+/* ==========================================================================
+   COMPUTER ARCHITECTURE STUDY HUB - ULTRA PREMIUM DESIGN V6.0
+   5-PART CONCEPT SYSTEM + TABLES + VERTICAL STAGES + MERMAID MIND MAP
+   Designed for CS Year 2 - By Ahmed Amir
+   ========================================================================== */
+
+:root {
+  --bg-dark: #030712;
+  --bg-card: rgba(15, 23, 42, 0.88);
+  --bg-card-hover: rgba(26, 38, 66, 0.96);
+  --bg-glass: rgba(11, 18, 33, 0.82);
+  --border-glass: rgba(255, 255, 255, 0.12);
+  --border-focus: rgba(0, 242, 254, 0.6);
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+
+  --cyan-primary: #00f2fe;
+  --cyan-glow: rgba(0, 242, 254, 0.4);
+  --purple-accent: #8b5cf6;
+  --purple-glow: rgba(139, 92, 246, 0.4);
+  --pink-accent: #ec4899;
+  --emerald-accent: #10b981;
+  --amber-accent: #f59e0b;
+  
+  /* 5-Part Concept System Colors */
+  --tier1-bg: rgba(14, 165, 233, 0.09);
+  --tier1-border: rgba(14, 165, 233, 0.35);
+  
+  --tier2-bg: rgba(168, 85, 247, 0.09);
+  --tier2-border: rgba(168, 85, 247, 0.35);
+  
+  --tier3-bg: rgba(245, 158, 11, 0.09);
+  --tier3-border: rgba(245, 158, 11, 0.4);
+
+  --tier4-bg: rgba(16, 185, 129, 0.1);
+  --tier4-border: rgba(16, 185, 129, 0.45);
+
+  --tier5-bg: rgba(0, 242, 254, 0.06);
+  --tier5-border: rgba(0, 242, 254, 0.25);
+
+  --font-arabic: 'Alexandria', 'Cairo', system-ui, -apple-system, sans-serif;
+  --font-code: 'Fira Code', 'JetBrains Mono', monospace;
+  --transition-fast: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-theme="light"] {
+  --bg-dark: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --bg-card-hover: rgba(255, 255, 255, 0.98);
+  --bg-glass: rgba(255, 255, 255, 0.88);
+  --border-glass: rgba(0, 0, 0, 0.1);
+  --text-main: #0f172a;
+  --text-muted: #334155;
+  --text-dim: #64748b;
+  --tier1-bg: rgba(14, 165, 233, 0.12);
+  --tier2-bg: rgba(168, 85, 247, 0.12);
+  --tier3-bg: rgba(245, 158, 11, 0.12);
+  --tier4-bg: rgba(16, 185, 129, 0.14);
+  --tier5-bg: rgba(0, 242, 254, 0.12);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-arabic);
+  direction: rtl;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+  line-height: 1.8;
+}
+
+#canvas3d {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Header Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 76px;
+  z-index: 1000;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4%;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--cyan-primary), var(--purple-accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.15rem;
+  box-shadow: 0 0 20px var(--cyan-glow);
+}
+
+.brand-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.brand-subtitle {
+  font-size: 0.78rem;
+  color: var(--cyan-primary);
+  font-weight: 600;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 99px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.dot-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.btn-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: var(--transition-fast);
+}
+
+.btn-icon:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* HERO SECTION (Matches Screenshot Exactly) */
+.hero-section {
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 20px 40px 20px;
+  position: relative;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 24px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, rgba(0, 242, 254, 0.12), rgba(139, 92, 246, 0.18));
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  color: var(--cyan-primary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.hero-title {
+  font-size: clamp(3rem, 7.5vw, 6.2rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -1.5px;
+  margin-bottom: 22px;
+}
+
+.hero-title .title-white {
+  color: #ffffff;
+  display: inline-block;
+}
+
+.hero-title .title-gradient {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 40%, #a855f7 70%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  padding-left: 8px;
+}
+
+.hero-subhead {
+  font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  color: var(--text-muted);
+  max-width: 780px;
+  margin: 0 auto 36px auto;
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+.hero-ctas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 45px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--cyan-primary), #0099ff);
+  color: #030712;
+  font-weight: 800;
+  font-size: 1.1rem;
+  text-decoration: none;
+  box-shadow: 0 0 35px var(--cyan-glow);
+  transition: var(--transition-smooth);
+}
+
+.btn-primary:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 45px rgba(0, 242, 254, 0.55);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  transition: var(--transition-smooth);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(0, 242, 254, 0.4);
+  transform: translateY(-4px);
+}
+
+.hero-tags {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tag-pill {
+  padding: 8px 18px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+  transition: var(--transition-fast);
+}
+
+.tag-pill:hover {
+  border-color: var(--cyan-primary);
+  color: var(--cyan-primary);
+  background: rgba(0, 242, 254, 0.08);
+}
+
+/* Container & Layout */
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.section {
+  padding: 70px 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-badge {
+  display: inline-block;
+  padding: 6px 18px;
+  border-radius: 99px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  color: #a78bfa;
+  font-size: 0.88rem;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.section-desc {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.part-divider {
+  background: linear-gradient(90deg, rgba(0, 242, 254, 0.15), rgba(139, 92, 246, 0.15));
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  border-radius: 16px;
+  padding: 18px 24px;
+  margin: 50px 0 30px 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.part-divider h2 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--cyan-primary);
+}
+
+/* VERTICAL STEP-BY-STEP STAGES */
+.vertical-steps-wrapper {
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.step-card-row {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border-glass);
+  border-right: 4px solid var(--cyan-primary);
+  border-radius: 14px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  backdrop-filter: blur(12px);
+  transition: var(--transition-fast);
+}
+
+.step-card-row:hover {
+  background: rgba(26, 38, 66, 0.85);
+  border-color: rgba(0, 242, 254, 0.4);
+  transform: translateX(-6px);
+}
+
+.step-card-badge {
+  min-width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--cyan-primary), var(--purple-accent));
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+.step-card-body {
+  flex: 1;
+}
+
+.step-card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+/* ATOMIC CARD WITH 5 PARTS */
+.atomic-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 32px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+  transition: var(--transition-smooth);
+}
+
+.atomic-card:hover {
+  border-color: rgba(0, 242, 254, 0.4);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+}
+
+.atomic-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  border-bottom: 1px solid var(--border-glass);
+  padding-bottom: 16px;
+}
+
+.atomic-num {
+  min-width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--cyan-primary), var(--purple-accent));
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 14px var(--cyan-glow);
+}
+
+.atomic-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+/* 5-PART TIER BOXES STYLING */
+.tier-box {
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 16px;
+  position: relative;
+  transition: var(--transition-fast);
+}
+
+.tier-box:last-child {
+  margin-bottom: 0;
+}
+
+/* 1. English Explanation */
+.tier-1 {
+  background: var(--tier1-bg);
+  border: 1px solid var(--tier1-border);
+  direction: ltr;
+  text-align: left;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.tier-badge-en {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 6px;
+  background: rgba(14, 165, 233, 0.22);
+  color: #38bdf8;
+  font-size: 0.82rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.tier-1-content {
+  color: #e2e8f0;
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+/* 2. الترجمة العربية */
+.tier-2 {
+  background: var(--tier2-bg);
+  border: 1px solid var(--tier2-border);
+  direction: rtl;
+}
+
+.tier-badge-ar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 6px;
+  background: rgba(168, 85, 247, 0.22);
+  color: #c084fc;
+  font-size: 0.82rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.tier-2-content {
+  color: #f1f5f9;
+  font-size: 1.05rem;
+  line-height: 1.85;
+  font-weight: 600;
+}
+
+/* 3. الشرح بالعامية المصرية */
+.tier-3 {
+  background: var(--tier3-bg);
+  border: 1px solid var(--tier3-border);
+  border-right: 4px solid var(--amber-accent);
+  direction: rtl;
+}
+
+.tier-badge-egypt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 16px;
+  border-radius: 99px;
+  background: rgba(245, 158, 11, 0.25);
+  color: #fbbf24;
+  font-size: 0.84rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.tier-3-content {
+  color: #fef3c7;
+  font-size: 1.08rem;
+  line-height: 1.9;
+}
+
+/* 4. الزيتونة من الآخر */
+.tier-4 {
+  background: var(--tier4-bg);
+  border: 1px solid var(--tier4-border);
+  border-right: 4px solid var(--emerald-accent);
+  direction: rtl;
+}
+
+.tier-badge-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 16px;
+  border-radius: 99px;
+  background: rgba(16, 185, 129, 0.25);
+  color: #34d399;
+  font-size: 0.84rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.tier-4-content {
+  color: #ecfdf5;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  font-weight: 700;
+}
+
+/* 5. الكلمات المفتاحية (Key Terms) */
+.tier-5 {
+  background: var(--tier5-bg);
+  border: 1px solid var(--tier5-border);
+  direction: rtl;
+}
+
+.tier-badge-terms {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: 99px;
+  background: rgba(0, 242, 254, 0.2);
+  color: var(--cyan-primary);
+  font-size: 0.82rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.tier-5-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.keyword-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: rgba(0, 242, 254, 0.12);
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  color: var(--cyan-primary);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+/* Comparison Tables */
+.comparison-container {
+  margin: 35px 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 26px;
+  backdrop-filter: blur(16px);
+  overflow-x: auto;
+}
+
+.comparison-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--cyan-primary);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: right;
+  font-size: 0.96rem;
+}
+
+.comparison-table th, .comparison-table td {
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.comparison-table th {
+  background: rgba(0, 242, 254, 0.09);
+  color: var(--cyan-primary);
+  font-weight: 800;
+  font-size: 1.02rem;
+}
+
+.comparison-table tr:hover td {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Quiz Section */
+.quiz-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 28px;
+  margin-bottom: 22px;
+  backdrop-filter: blur(16px);
+}
+
+.quiz-question {
+  font-size: 1.18rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.quiz-options {
+  display: grid;
+  gap: 12px;
+}
+
+.quiz-option {
+  padding: 15px 22px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-glass);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.quiz-option:hover {
+  background: rgba(0, 242, 254, 0.1);
+  border-color: var(--cyan-primary);
+}
+
+.quiz-option.correct {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10b981 !important;
+  color: #34d399 !important;
+}
+
+.quiz-option.incorrect {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: #ef4444 !important;
+  color: #f87171 !important;
+}
+
+.quiz-explanation {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 12px;
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  display: none;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.footer {
+  border-top: 1px solid var(--border-glass);
+  padding: 50px 0;
+  text-align: center;
+  color: var(--text-muted);
+  background: var(--bg-glass);
+  margin-top: 80px;
+}
+
+/* ============ FIXES & ADDITIONS V6.1 — BiDi, TOC, Chapter, Tables, Mobile ============ */
+.en-ltr { direction: ltr; text-align: left; unicode-bidi: embed; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
+bdi, .bdi { unicode-bidi: isolate; }
+code.code-en, .code-inline { direction: ltr; unicode-bidi: embed; font-family: var(--font-code); background: rgba(0,242,254,.1); border: 1px solid rgba(0,242,254,.3); padding: 1px 8px; border-radius: 6px; font-size: .88em; white-space: nowrap; }
+
+.chapter-header { background: linear-gradient(135deg, rgba(0,242,254,.12), rgba(139,92,246,.14)); border: 1px solid rgba(0,242,254,.3); border-radius: 24px; padding: 36px 30px; margin-bottom: 34px; backdrop-filter: blur(14px); }
+.chapter-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: .88rem; color: var(--text-muted); margin-bottom: 14px; flex-wrap: wrap; }
+.chapter-breadcrumb a { color: var(--cyan-primary); text-decoration: none; font-weight: 700; }
+.chapter-breadcrumb a:hover { text-decoration: underline; }
+
+.toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin: 24px 0 10px 0; }
+.toc-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--bg-card); border: 1px solid var(--border-glass); text-decoration: none; color: var(--text-main); transition: var(--transition-fast); }
+.toc-card:hover { border-color: var(--cyan-primary); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,242,254,.15); }
+.toc-num { min-width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; background: linear-gradient(135deg, var(--cyan-primary), var(--purple-accent)); color: #fff; font-size: .95rem; }
+.toc-card span:last-child { font-weight: 700; font-size: .95rem; line-height: 1.5; }
+
+.figure-note { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 12px; background: rgba(14,165,233,.08); border: 1px dashed rgba(14,165,233,.4); color: #38bdf8; font-size: .92rem; font-weight: 700; margin-bottom: 14px; }
+.figure-note i { font-size: 1.1rem; }
+
+.master-overview { background: rgba(0,242,254,.05); border: 1px solid var(--cyan-primary); border-radius: 20px; padding: 24px; margin-bottom: 30px; }
+.master-overview h3 { color: var(--cyan-primary); font-size: 1.25rem; font-weight: 800; margin-bottom: 12px; }
+.master-overview p { color: var(--text-main); font-size: 1.05rem; line-height: 1.9; }
+
+.review-card { background: var(--bg-card); border: 1px solid rgba(139,92,246,.35); border-radius: 18px; padding: 24px; margin-bottom: 20px; }
+.review-q-title { font-size: 1.1rem; font-weight: 800; color: #c084fc; margin-bottom: 12px; }
+.review-answer { margin-top: 10px; line-height: 1.9; }
+.review-answer .ans-en { direction: ltr; text-align: left; display: block; background: rgba(14,165,233,.07); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
+.review-answer .ans-ar { display: block; background: rgba(16,185,129,.07); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
+.review-answer .ans-eg { display: block; background: rgba(245,158,11,.07); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
+.review-takeaway { display: block; background: rgba(0,242,254,.08); border: 1px solid rgba(0,242,254,.3); border-radius: 10px; padding: 10px 16px; font-weight: 800; color: var(--cyan-primary); }
+
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 22px; }
+.feature-card { background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 20px; padding: 28px; backdrop-filter: blur(14px); transition: var(--transition-smooth); }
+.feature-card:hover { transform: translateY(-5px); border-color: rgba(0,242,254,.4); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
+.card-icon-box { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+.card-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 8px; }
+.card-text { color: var(--text-muted); line-height: 1.8; font-size: .98rem; }
+
+.progress-bar-top { position: fixed; top: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--cyan-primary), var(--purple-accent)); z-index: 2000; width: 0%; transition: width .1s linear; }
+.toc-sticky { position: sticky; top: 88px; z-index: 50; background: var(--bg-glass); backdrop-filter: blur(16px); border: 1px solid var(--border-glass); border-radius: 14px; padding: 12px 18px; margin-bottom: 26px; display: flex; gap: 10px; overflow-x: auto; white-space: nowrap; }
+.toc-sticky a { color: var(--text-muted); text-decoration: none; font-size: .85rem; font-weight: 700; padding: 6px 14px; border-radius: 99px; border: 1px solid transparent; }
+.toc-sticky a:hover, .toc-sticky a.active { color: var(--cyan-primary); border-color: rgba(0,242,254,.4); background: rgba(0,242,254,.08); }
+
+.mermaid { direction: ltr; }
+[data-theme="light"] .mermaid { filter: invert(.9) hue-rotate(180deg); }
+[data-theme="light"] .hero-title .title-white { color: #0f172a; }
+[data-theme="light"] .step-card-row, [data-theme="light"] .step-card-title { color: #0f172a; }
+[data-theme="light"] .step-card-title { color: #0f172a !important; }
+[data-theme="light"] .tier-1-content { color: #0c4a6e; }
+[data-theme="light"] .tier-2-content { color: #3b0764; }
+[data-theme="light"] .tier-3-content { color: #78350f; }
+[data-theme="light"] .tier-4-content { color: #065f46; }
+
+button.quiz-option, .quiz-option[role="button"] { width: 100%; text-align: right; font-family: inherit; font-size: inherit; color: inherit; }
+.quiz-option:focus-visible { outline: 2px solid var(--cyan-primary); outline-offset: 2px; }
+.quiz-score-bar { display: flex; align-items: center; gap: 12px; background: var(--bg-card); border: 1px solid rgba(0,242,254,.3); border-radius: 14px; padding: 14px 20px; margin-bottom: 24px; font-weight: 800; }
+
+/* ============ V6.2 — CONCEPT TABS (wow + fast understanding) ============ */
+.study-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: var(--bg-card); border: 1px solid rgba(0,242,254,.3); border-radius: 16px; padding: 14px 18px; margin-bottom: 26px; }
+.study-toolbar .toolbar-label { font-weight: 800; font-size: .92rem; color: var(--cyan-primary); }
+.toolbar-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 18px; border-radius: 99px; border: 1px solid var(--border-glass); background: rgba(255,255,255,.04); color: var(--text-main); font-weight: 700; font-size: .88rem; cursor: pointer; font-family: inherit; transition: var(--transition-fast); }
+.toolbar-btn:hover { border-color: var(--cyan-primary); color: var(--cyan-primary); }
+.toolbar-btn.active { background: linear-gradient(135deg, var(--cyan-primary), #0099ff); color: #030712; border-color: transparent; }
+.concept-tabs-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.tab-btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 99px; border: 1px solid var(--border-glass); background: rgba(255,255,255,.03); color: var(--text-muted); font-weight: 700; font-size: .85rem; cursor: pointer; font-family: inherit; transition: var(--transition-fast); }
+.tab-btn:hover { transform: translateY(-2px); color: var(--text-main); }
+.tab-btn:focus-visible { outline: 2px solid var(--cyan-primary); outline-offset: 2px; }
+.tab-btn.active[data-tab="tier-1"] { background: rgba(14,165,233,.2); border-color: #38bdf8; color: #38bdf8; }
+.tab-btn.active[data-tab="tier-2"] { background: rgba(168,85,247,.2); border-color: #c084fc; color: #c084fc; }
+.tab-btn.active[data-tab="tier-3"] { background: rgba(245,158,11,.2); border-color: #fbbf24; color: #fbbf24; }
+.tab-btn.active[data-tab="tier-4"] { background: rgba(16,185,129,.22); border-color: #34d399; color: #34d399; }
+.tab-btn.active[data-tab="tier-5"] { background: rgba(0,242,254,.18); border-color: var(--cyan-primary); color: var(--cyan-primary); }
+.atomic-card.tabs-enabled .tier-box { display: none; margin-bottom: 0; animation: tabFade .3s ease; }
+.atomic-card.tabs-enabled .tier-box.tab-active { display: block; }
+@keyframes tabFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.zitona-plus { display: block; margin-top: 12px; padding: 12px 16px; border-radius: 10px; background: rgba(16,185,129,.12); border: 1px dashed rgba(52,211,153,.5); font-size: .98rem; line-height: 1.9; }
+.term-def { margin-top: 10px; padding: 12px 16px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px solid var(--border-glass); line-height: 1.9; }
+.term-def strong { display: block; direction: ltr; text-align: left; color: var(--cyan-primary); font-size: .95rem; }
+.term-def span { display: block; color: var(--text-main); font-size: .95rem; }
+.tier-5-content { flex-direction: column; align-items: stretch; }
+.tier-5-content .keyword-pill { margin: 2px; }
+/* Zitona-only cram mode */
+body.zitona-only .atomic-card .tier-box.tier-1,
+body.zitona-only .atomic-card .tier-box.tier-2,
+body.zitona-only .atomic-card .tier-box.tier-3,
+body.zitona-only .atomic-card .tier-box.tier-5,
+body.zitona-only .concept-tabs-nav,
+body.zitona-only .figure-note,
+body.zitona-only .master-overview { display: none !important; }
+body.zitona-only .atomic-card .tier-box.tier-4 { display: block !important; }
+body.zitona-only .vertical-steps-wrapper,
+body.zitona-only .comparison-container { opacity: .35; }
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.8rem;
+  }
+  .atomic-card {
+    padding: 20px;
+  }
+  .step-card-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .navbar {
+    padding: 0 16px;
+  }
+  .status-badge {
+    display: none;
+  }
+  .comparison-container { padding: 14px; border-radius: 14px; }
+  .comparison-table { font-size: .82rem; min-width: 560px; }
+  .comparison-table th, .comparison-table td { padding: 10px 12px; }
+  .toc-grid { grid-template-columns: 1fr; }
+  .chapter-header { padding: 24px 18px; }
+  .tier-box { padding: 14px; }
+  .quiz-card { padding: 18px; }
+  .toc-sticky { top: 78px; font-size: .8rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  html { scroll-behavior: auto; }
+}
+</style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark' });</script>
+</head>
+<body>
+  <div class="progress-bar-top" id="progressBar"></div>
+  <canvas id="canvas3d"></canvas>
+
+  <header class="navbar">
+    <a href="index.html" class="nav-brand">
+      <div class="brand-icon">CA</div>
+      <div class="brand-info">
+        <span class="brand-title">Computer Architecture</span>
+        <span class="brand-subtitle">منصة الشرح التفاعلي — الفرقة الثانية</span>
+      </div>
+    </a>
+    <div class="nav-actions">
+      <a href="../../subject.html?id=computer-architecture" class="btn-secondary" style="padding: 8px 14px; font-size: 0.85rem;"><i class="fa-solid fa-arrow-right"></i> صفحة المقرر</a>
+      <a href="index.html" class="btn-secondary" style="padding: 8px 14px; font-size: 0.85rem;"><i class="fa-solid fa-book-open"></i> فهرس الفصول</a>
+      <a href="chapter-7.html" class="btn-secondary" style="padding: 8px 14px; font-size: 0.85rem; border-color: rgba(16, 185, 129, 0.4); color: #10b981;"><i class="fa-solid fa-microchip"></i> شابتر 7 (I/O)</a>
+      <button class="btn-icon" id="themeToggle" title="تغيير المظهر"><i class="fa-solid fa-moon"></i></button>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: 110px; padding-bottom: 80px;">
+
+    <div class="chapter-header">
+      <div class="chapter-breadcrumb">
+        <a href="../index.html">الرئيسية</a> <i class="fa-solid fa-chevron-left" style="font-size: 0.7rem;"></i>
+        <a href="../chapters.html">الفصول</a> <i class="fa-solid fa-chevron-left" style="font-size: 0.7rem;"></i>
+        <span>الفصل الأول — المرجع الكامل</span>
+      </div>
+      <h1 style="font-size: clamp(1.8rem, 4.5vw, 3rem); font-weight: 900; margin-bottom: 12px; color: #fff;">الفصل الأول: Introduction — كل نقطة + ترجمتها + شرحها بالعامية</h1>
+      <p class="en-ltr" style="font-size: 1.1rem; color: var(--cyan-primary); font-weight: 700; text-align: right;">Chapter 1: Architecture, Function, CPU, ISA, Advanced Units, Embedded, IoT, Cloud</p>
+      <p style="color: var(--text-muted); margin-top: 10px;">English بالنص الحرفي للسلايدز + الترجمة + الشرح بالعامية + الزتونة 🫒 + الخلاصة ✅ — النصوص الإنجليزية <bdi>LTR</bdi> والعربية <bdi>RTL</bdi> بضبط BiDi كامل.</p>
+    </div>
+
+    <nav class="toc-sticky" aria-label="تنقل سريع">
+      <a href="#sec1">1. معمارية vs تنظيم</a>
+      <a href="#sec2">2. وظيفة vs بنية</a>
+      <a href="#sec3">3. مكونات CPU</a>
+      <a href="#sec4">4. ISA</a>
+      <a href="#sec5">5. وحدات متقدمة</a>
+      <a href="#sec6">6. المدمجة</a>
+      <a href="#sec7">7. IoT</a>
+      <a href="#sec8">8. السحابة</a>
+      <a href="#kholasa">الخلاصة ⚡</a>
+      <a href="#mcqs">MCQs</a>
+    </nav>
+
+    <div class="section-header" style="margin-bottom: 20px;">
+      <span class="section-badge"><i class="fa-solid fa-list"></i> فهرس المحتويات السريع</span>
+    </div>
+    <div class="toc-grid">
+      <a class="toc-card" href="#sec1"><span class="toc-num">1</span><span>المعمارية مقابل التنظيم Architecture vs Organization</span></a>
+      <a class="toc-card" href="#sec2"><span class="toc-num">2</span><span>الوظيفة مقابل البنية Function vs Structure</span></a>
+      <a class="toc-card" href="#sec3"><span class="toc-num">3</span><span>المكونات البنيوية الكبرى للـ CPU</span></a>
+      <a class="toc-card" href="#sec4"><span class="toc-num">4</span><span>معمارية طقم التعليمات ISA</span></a>
+      <a class="toc-card" href="#sec5"><span class="toc-num">5</span><span>وحدات CPU الإضافية المتقدمة</span></a>
+      <a class="toc-card" href="#sec6"><span class="toc-num">6</span><span>النظام المدمج Embedded System</span></a>
+      <a class="toc-card" href="#sec7"><span class="toc-num">7</span><span>إنترنت الأشياء IoT</span></a>
+      <a class="toc-card" href="#sec8"><span class="toc-num">8</span><span>الحوسبة السحابية Cloud Computing</span></a>
+    </div>
+
+    <!-- ================= 1 ================= -->
+    <div class="part-divider" id="sec1"><i class="fa-solid fa-cubes" style="font-size: 1.5rem; color: var(--cyan-primary);"></i><h2>1. المعمارية مقابل التنظيم (Architecture vs Organization)</h2></div>
+
+    <article class="atomic-card"><div class="atomic-header"><div class="atomic-num">1</div><h3 class="atomic-title">Computer Architecture vs Computer Organization</h3></div>
+      <div class="tier-box tier-1"><span class="tier-badge-en"><i class="fa-solid fa-graduation-cap"></i> 1. English (نص السلايدز)</span><div class="tier-1-content">
+        <p>• Computer Architecture: refers to those attributes of a system visible to a programmer, or those attributes that have a direct impact on the logical execution of a program.</p>
+        <p>• Computer Organization: refers to the operational units and their interconnections that realize the architectural specifications.</p>
+        <p>• Organizational attributes include those hardware details transparent to the programmer, such as control signals, interfaces between the computer and peripherals, and the memory technology used.</p>
+      </div></div>
+      <div class="tier-box tier-2"><span class="tier-badge-ar"><i class="fa-solid fa-language"></i> 2. الترجمة</span><div class="tier-2-content">
+        <p><strong>الترجمة:</strong> العمارة بتشير للخصائص اللي المبرمج بيشوفها في النظام، أو اللي ليها تأثير مباشر على تنفيذ البرنامج منطقيًا.</p>
+        <p><strong>الترجمة:</strong> التنظيم بيشير لوحدات التشغيل ووصلاتها اللي بتحقق المواصفات المعمارية.</p>
+        <p><strong>الترجمة:</strong> الخصائص التنظيمية بتشمل تفاصيل الهاردوير اللي مش ظاهرة للمبرمج، زي إشارات التحكم، الواجهات بين الكمبيوتر والملحقات، وتكنولوجيا الذاكرة.</p>
+      </div></div>
+      <div class="tier-box tier-3"><span class="tier-badge-egypt"><i class="fa-solid fa-lightbulb"></i> 3. الشرح بالعامية</span><div class="tier-3-content">
+        <p><strong>بالعامية:</strong> يعني أي حاجة أنت كمبرمج "بتحس بيها" أو "بتأثر عليك" وأنت بتكتب برنامجك — زي هل فيه تعليمة ضرب ولا لأ، عدد البتات المستخدمة، إلخ.</p>
+        <p><strong>بالعامية:</strong> ده الجزء اللي بيحصل "من تحت الطاولة"، إزاي الحاجة دي بالظبط بتتنفذ جوه الهاردوير من غير ما المبرمج يشوفها أو يهتم بيها.</p>
+        <p><strong>بالعامية:</strong> يعني نوع الذاكرة (<bdi>RAM</bdi>) اللي بتستخدمها الشركة، أو إزاي الكارت بيتوصل بالكمبيوتر، ده كله تفاصيل مش شغلانتك كمبرمج، وده اللي يفرقها عن الـ <bdi>Architecture</bdi>.</p>
+      </div></div>
+      <div class="tier-box tier-4"><span class="tier-badge-summary"><i class="fa-solid fa-key"></i> 4. الزتونة 🫒</span><div class="tier-4-content">Architecture = "إيه اللي شايفه المبرمج"، Organization = "إزاي اتعمل من جوه في الهاردوير".</div></div>
+      <div class="tier-box tier-5"><span class="tier-badge-terms"><i class="fa-solid fa-tags"></i> 5. الخلاصة ✅</span><div class="tier-5-content"><div class="term-def"><strong>Exam rule</strong><span>أي سؤال عن "حاجة بتأثر على تنفيذ البرنامج / يشوفها المبرمج" ← Architecture. أي سؤال عن "تفاصيل هاردوير مخفية" (إشارات، واجهات، ذاكرة) ← Organization.</span></div></div></div>
+    </article>
+
+    <!-- ================= 2 ================= -->
+    <div class="part-divider" id="sec2"><i class="fa-solid fa-sitemap" style="font-size: 1.5rem; color: var(--cyan-primary);"></i><h2>2. الوظيفة مقابل البنية (Function vs Structure)</h2></div>
+
+    <article class="atomic-card"><div class="atomic-header"><div class="atomic-num">2</div><h3 class="atomic-title">Function vs Structure + الوظائف والمكونات الأربع</h3></div>
+      <div class="tier-box tier-1"><span class="tier-badge-en"><i class="fa-solid fa-graduation-cap"></i> 1. English (نص السلايدز)</span><div class="tier-1-content">
+        <p>• Function: The operation of each individual component as part of the architecture.</p>
+        <p>• Structure: The way in which the components are interrelated.</p>
+        <p>• There are 4 basic functions: Data processing.</p>
+        <p>• Data storage.</p>
+        <p>• Data movement.</p>
+        <p>• Control.</p>
+        <p>• Central Processing Unit (CPU): Controls the operation of the computer and performs its data processing function. It's the portion of a computer that fetches and executes instructions. Often simply referred to as a processor.</p>
+        <p>• Main memory: stores data.</p>
+        <p>• I/O: moves data between the computer and its external environment.</p>
+        <p>• System interconnections: Some mechanism that provides for communication among CPU, main memory, and I/O.</p>
+      </div></div>
+      <div class="tier-box tier-2"><span class="tier-badge-ar"><i class="fa-solid fa-language"></i> 2. الترجمة</span><div class="tier-2-content">
+        <p><strong>الترجمة:</strong> الوظيفة هي تشغيل كل مكون فردي كجزء من العمارة.</p>
+        <p><strong>الترجمة:</strong> البنية هي الطريقة اللي بيها المكونات مرتبطة ببعض.</p>
+        <p><strong>الترجمة:</strong> معالجة البيانات.</p>
+        <p><strong>الترجمة:</strong> تخزين البيانات.</p>
+        <p><strong>الترجمة:</strong> نقل البيانات.</p>
+        <p><strong>الترجمة:</strong> التحكم.</p>
+        <p><strong>الترجمة:</strong> وحدة المعالجة المركزية بتتحكم في تشغيل الكمبيوتر وبتقوم بوظيفة معالجة البيانات. هي الجزء اللي بيجيب وينفذ التعليمات، وبتتسمى غالبًا "المعالج".</p>
+        <p><strong>الترجمة:</strong> الذاكرة الرئيسية بتخزن البيانات.</p>
+        <p><strong>الترجمة:</strong> الإدخال/الإخراج بينقل البيانات بين الكمبيوتر وبيئته الخارجية.</p>
+        <p><strong>الترجمة:</strong> وصلات النظام هي آلية بتوفر التواصل بين الـ <bdi>CPU</bdi> والذاكرة والـ <bdi>I/O</bdi>.</p>
+      </div></div>
+      <div class="tier-box tier-3"><span class="tier-badge-egypt"><i class="fa-solid fa-lightbulb"></i> 3. الشرح بالعامية</span><div class="tier-3-content">
+        <p><strong>بالعامية:</strong> يعني "إيه اللي المكون ده بيعمله فعليًا" — زي الشيف بيطبخ.</p>
+        <p><strong>بالعامية:</strong> يعني "مين متوصل بمين" جوه الجهاز، زي خريطة توصيل المطبخ بالمخزن والجرسون.</p>
+        <p><strong>بالعامية:</strong> أي عملية حسابية أو منطقية بتتعمل على البيانات، زي الجمع أو المقارنة.</p>
+        <p><strong>بالعامية:</strong> حفظ البيانات في مكان (زي الرام أو الهارد) عشان تستخدمها لاحقًا.</p>
+        <p><strong>بالعامية:</strong> تحريك البيانات من جهاز لجهاز، زي من الكيبورد للـ <bdi>CPU</bdi>.</p>
+        <p><strong>بالعامية:</strong> توجيه العمليات التانية وتنظيم توقيتها وترتيبها.</p>
+        <p><strong>بالعامية:</strong> هي "المخ" اللي بيدير كل حاجة في الجهاز وبيقرر يعمل إيه بالظبط في كل خطوة.</p>
+        <p><strong>بالعامية:</strong> زي التلاجة اللي حافظة فيها كل البيانات اللي الجهاز محتاجها وهو شغال.</p>
+        <p><strong>بالعامية:</strong> أي حاجة بتوصل الجهاز بالعالم برا، زي الشاشة والكيبورد والطابعة.</p>
+        <p><strong>بالعامية:</strong> الأسلاك أو الباصات اللي بتربط المخ بالتلاجة والباب الخارجي ببعض، من غيرها مفيش حاجة هتتواصل.</p>
+      </div></div>
+      <div class="tier-box tier-4"><span class="tier-badge-summary"><i class="fa-solid fa-key"></i> 4. الزتونة 🫒</span><div class="tier-4-content">ماتلخبطش بين "Storage" (حفظ) و"Movement" (نقل) — التخزين جوه الجهاز، النقل بين الجهاز والخارج أو بين مكونات مختلفة.</div></div>
+      <div class="tier-box tier-5"><span class="tier-badge-terms"><i class="fa-solid fa-tags"></i> 5. الخلاصة ✅</span><div class="tier-5-content"><div class="term-def"><strong>Exam rule</strong><span>الحاسب بيعمل 4 وظائف (Processing, Storage, Movement, Control) عن طريق 4 مكونات (CPU, Main memory, I/O, System interconnections).</span></div></div></div>
+    </article>
+
+    <!-- ================= 3 ================= -->
+    <div class="part-divider" id="sec3"><i class="fa-solid fa-microchip" style="font-size: 1.5rem; color: var(--cyan-primary);"></i><h2>3. المكونات البنيوية الكبرى للـ CPU</h2></div>
+
+    <article class="atomic-card"><div class="atomic-header"><div class="atomic-num">3</div><h3 class="atomic-title">CPU's Major Structural Components</h3></div>
+      <div class="tier-box tier-1"><span class="tier-badge-en"><i class="fa-solid fa-graduation-cap"></i> 1. English (نص السلايدز)</span><div class="tier-1-content">
+        <p>• CPU: the portion of a computer that fetches and executes instructions. It's often simply referred to as a processor.</p>
+        <p>• Control unit → controls the operation of the CPU and hence the computer.</p>
+        <p>• Arithmetic and Logic Unit (ALU) → performs the computer's data processing functions.</p>
+        <p>• Registers → Provides storage internal to the CPU.</p>
+        <p>• CPU interconnections → Some mechanism that provides for communication among the control unit, ALU, and registers.</p>
+      </div></div>
+      <div class="tier-box tier-2"><span class="tier-badge-ar"><i class="fa-solid fa-language"></i> 2. الترجمة</span><div class="tier-2-content">
+        <p><strong>الترجمة:</strong> الـ <bdi>CPU</bdi> هو الجزء من الكمبيوتر اللي بيجيب وينفذ التعليمات، وبيتسمى غالبًا "المعالج".</p>
+        <p><strong>الترجمة:</strong> وحدة التحكم بتدير تشغيل الـ <bdi>CPU</bdi> وبالتالي الكمبيوتر كله.</p>
+        <p><strong>الترجمة:</strong> وحدة الحساب والمنطق بتنفذ وظائف معالجة البيانات في الكمبيوتر.</p>
+        <p><strong>الترجمة:</strong> السجلات بتوفر تخزين داخلي جوه الـ <bdi>CPU</bdi>.</p>
+        <p><strong>الترجمة:</strong> وصلات الـ <bdi>CPU</bdi> آلية بتوفر التواصل بين وحدة التحكم، الـ <bdi>ALU</bdi>، والسجلات.</p>
+      </div></div>
+      <div class="tier-box tier-3"><span class="tier-badge-egypt"><i class="fa-solid fa-lightbulb"></i> 3. الشرح بالعامية</span><div class="tier-3-content">
+        <p><strong>بالعامية:</strong> هو اللي بياخد الأوامر وينفذها فعليًا، زي المدير التنفيذي في الشركة.</p>
+        <p><strong>بالعامية:</strong> هي اللي بتقول لكل جزء "دلوقتي اعمل كذا" وبتنظم توقيت كل خطوة.</p>
+        <p><strong>بالعامية:</strong> هي اللي بتعمل العمليات الحسابية والمنطقية فعليًا (جمع، طرح، مقارنة) — الشغل الفعلي.</p>
+        <p><strong>بالعامية:</strong> رفوف صغيرة وسريعة جدًا جوه الـ <bdi>CPU</bdi> نفسه، بيحط عليها البيانات اللي محتاجها فورًا، أسرع بكتير من الرام.</p>
+        <p><strong>بالعامية:</strong> الأسلاك الداخلية اللي بتربط التلات مكونات دول ببعض جوه الـ <bdi>CPU</bdi> نفسه.</p>
+      </div></div>
+      <div class="tier-box tier-4"><span class="tier-badge-summary"><i class="fa-solid fa-key"></i> 4. الزتونة 🫒</span><div class="tier-4-content">سؤال شائع: "Data processing inside the CPU is performed by...؟" الإجابة: <span class="en-ltr">ALU</span> مش Control unit.</div></div>
+      <div class="tier-box tier-5"><span class="tier-badge-terms"><i class="fa-solid fa-tags"></i> 5. الخلاصة ✅</span><div class="tier-5-content"><div class="term-def"><strong>Exam rule</strong><span>CPU = وحدة تحكم Control unit (يوجّه) + وحدة حساب ومنطق ALU (ينفذ) + سجلات Registers (تخزين سريع) + وصلات CPU interconnections (الربط بينهم).</span></div></div></div>
+    </article>
+
+    <!-- ================= 4 ================= -->
+    <div class="part-divider" id="sec4"><i class="fa-solid fa-code" style="font-size: 1.5rem; color: var(--cyan-primary);"></i><h2>4. معمارية طقم التعليمات (ISA)</h2></div>
+
+    <article class="atomic-card"><div class="atomic-header"><div class="atomic-num">4</div><h3 class="atomic-title">Instruction Set Architecture (ISA)</h3></div>
+      <div class="tier-box tier-1"><span class="tier-badge-en"><i class="fa-solid fa-graduation-cap"></i> 1. English (نص السلايدز)</span><div class="tier-1-content">
+        <p>• It defines instruction formats, instruction opcodes, registers, instruction and data memory.</p>
+        <p>• It defines the effect of executed instructions on the registers and memory.</p>
+        <p>• It defines an algorithm for controlling instruction execution.</p>
+        <p>• When data are moved over longer distances, or to/from a remote device, the process is known as data communication.</p>
+      </div></div>
+      <div class="tier-box tier-2"><span class="tier-badge-ar"><i class="fa-solid fa-language"></i> 2. الترجمة</span><div class="tier-2-content">
+        <p><strong>الترجمة:</strong> بيحدد صيغ التعليمات، أكواد العمليات، السجلات، وذاكرة التعليمات والبيانات.</p>
+        <p><strong>الترجمة:</strong> بيحدد تأثير التعليمات المنفذة على السجلات والذاكرة.</p>
+        <p><strong>الترجمة:</strong> بيحدد خوارزمية للتحكم في تنفيذ التعليمات.</p>
+        <p><strong>الترجمة:</strong> لما البيانات بتتحرك لمسافات طويلة، أو من/لجهاز بعيد، العملية دي بتتسمى اتصال بيانات.</p>
+      </div></div>
+      <div class="tier-box tier-3"><span class="tier-badge-egypt"><i class="fa-solid fa-lightbulb"></i> 3. الشرح بالعامية</span><div class="tier-3-content">
+        <p><strong>بالعامية:</strong> هو اللي بيحدد "شكل" كل أمر بيتكتب إزاي عشان الـ <bdi>CPU</bdi> يفهمه.</p>
+        <p><strong>بالعامية:</strong> يعني لما ينفذ أمر معين، الـ <bdi>ISA</bdi> بيحدد إيه اللي هيتغير بالظبط في السجلات أو الذاكرة.</p>
+        <p><strong>بالعامية:</strong> بيحدد الترتيب والخطوات اللي بيها كل تعليمة بتتنفذ.</p>
+        <p><strong>بالعامية:</strong> زي لما بتبعت ملف لصاحبك في بلد تانية — دي "<bdi>Data communication</bdi>" مش مجرد "<bdi>Data movement</bdi>" عادي جوه الجهاز.</p>
+      </div></div>
+      <div class="tier-box tier-4"><span class="tier-badge-summary"><i class="fa-solid fa-key"></i> 4. الزتونة 🫒</span><div class="tier-4-content">الـ ISA هي "الواجهة" بين الهاردوير والسوفتوير — هي اللي فاصلة بين اللي المبرمج شايفه واللي الهاردوير بينفذه.</div></div>
+      <div class="tier-box tier-5"><span class="tier-badge-terms"><i class="fa-solid fa-tags"></i> 5. الخلاصة ✅</span><div class="tier-5-content"><div class="term-def"><strong>Exam rule</strong><span>ISA = القواعد اللي بتحدد شكل التعليمات وتأثيرها، وهي جزء أساسي من تعريف الـ Architecture.</span></div></div></div>
+    </article>
+
+    <!-- ================= 5 ================= -->
+    <div class="part-divider" id="sec5"><i class="fa-solid fa-gears" style="font-size: 1.5rem; color: var(--cyan-primary);"></i><h2>5. وحدات CPU الإضافية (التفاصيل المتقدمة)</h2></div>
+
+    <article class="atomic-card"><div class="atomic-header"><div class="atomic-num">5</div><h3 class="atomic-title">CPU Additional Units (Advanced Structural Details)</h3></div>
+      <div class="tier-box tier-1"><span class="tier-badge-en"><i class="fa-solid fa-graduation-cap"></i> 1. English (نص السلايدز)</span><div class="tier-1-content">
+        <p>• Instruction logic: This includes the tasks involved in fetching instructions, and decoding each instruction to determine the instruction operation and the memory locations of any operands.</p>
+        <p>• Load/store logic: Manages the transfer of data to and from main memory via cache.</p>
+        <p>• FXU (Fixed-point unit): It executes fixed-point arithmetic operations.</p>
+        <p>• BFU (Binary floating-point unit): Handles all binary and hexadecimal floating-point operations, as well as fixed-point multiplication operations.</p>
+        <p>• DFU (Decimal floating-point unit): Handles both fixed-point and floating-point operations on numbers stored as decimal digits.</p>
+        <p>• RU (Recovery unit): Keeps a copy of the complete state of the system that includes all registers, collects hardware fault signals, and manages the hardware recovery actions.</p>
+        <p>• COP (Dedicated co-processor): The COP is responsible for data and encryption functions for each core.</p>
+      </div></div>
+      <div class="tier-box tier-2"><span class="tier-badge-ar"><i class="fa-solid fa-language"></i> 2. الترجمة</span><div class="tier-2-content">
+        <p><strong>الترجمة:</strong> منطق التعليمات بيشمل مهام جلب التعليمات وفك تشفيرها لتحديد نوع العملية وأماكن أي بيانات في الذاكرة.</p>
+        <p><strong>الترجمة:</strong> منطق التحميل/التخزين بيدير نقل البيانات من وإلى الذاكرة الرئيسية عن طريق الكاش.</p>
+        <p><strong>الترجمة:</strong> وحدة النقطة الثابتة بتنفذ عمليات حسابية بالأرقام الصحيحة.</p>
+        <p><strong>الترجمة:</strong> وحدة الفاصلة العائمة الثنائية بتتعامل مع عمليات الفاصلة العائمة الثنائية والست عشرية، وكمان ضرب الأرقام الصحيحة.</p>
+        <p><strong>الترجمة:</strong> وحدة الفاصلة العائمة العشرية بتتعامل مع العمليات الصحيحة والعائمة على أرقام مخزنة كأرقام عشرية.</p>
+        <p><strong>الترجمة:</strong> وحدة الاسترجاع بتحتفظ بنسخة من حالة النظام بالكامل، وبتجمع إشارات الأعطال، وبتدير عمليات استرجاع الهاردوير.</p>
+        <p><strong>الترجمة:</strong> المعالج المساعد المخصص مسؤول عن وظائف البيانات والتشفير لكل نواة.</p>
+      </div></div>
+      <div class="tier-box tier-3"><span class="tier-badge-egypt"><i class="fa-solid fa-lightbulb"></i> 3. الشرح بالعامية</span><div class="tier-3-content">
+        <p><strong>بالعامية:</strong> القسم اللي بيجيب الأمر ويفهمه ويحدد هيتعامل مع أنهي بيانات بالظبط.</p>
+        <p><strong>بالعامية:</strong> القسم المسؤول عن جيب وحفظ البيانات من التلاجة الكبيرة مرورًا بالكاش السريع.</p>
+        <p><strong>بالعامية:</strong> المتخصصة في الأرقام الصحيحة العادية (زي 5، 10، 100).</p>
+        <p><strong>بالعامية:</strong> المتخصصة في الأرقام اللي فيها فاصلة عشرية بالنظام الثنائي، وكمان بتعمل عمليات الضرب.</p>
+        <p><strong>بالعامية:</strong> زي <bdi>BFU</bdi> بس متخصصة في الأرقام المخزنة بصيغة عشرية مش ثنائية.</p>
+        <p><strong>بالعامية:</strong> زي "الـ <bdi>Save point</bdi>" في اللعبة — لو حصل عطل مفاجئ، هي اللي بترجّع الجهاز لآخر حالة سليمة.</p>
+        <p><strong>بالعامية:</strong> قسم الأمان بتاع كل نواة، مسؤول عن التشفير وحماية البيانات.</p>
+      </div></div>
+      <div class="tier-box tier-4"><span class="tier-badge-summary"><i class="fa-solid fa-key"></i> 4. الزتونة 🫒</span><div class="tier-4-content">الفرق الأساسي بين FXU و BFU و DFU هو "نوع الأرقام" اللي كل وحدة بتتعامل معاها (صحيحة / ثنائية عائمة / عشرية).</div></div>
+      <div class="tier-box tier-5"><span class="tier-badge-terms"><i class="fa-solid fa-tags"></i> 5. الخلاصة ✅</span><div class="tier-5-content"><div class="term-def"><strong>Exam rule</strong><span>دي وحدات متخصصة جوه المعالجات الحديثة، كل واحدة ليها شغلانة محددة تخلي الأداء والموثوقية أعلى (Instruction logic, Load/store logic, FXU, BFU, DFU, RU, COP).</span></div></div></div>
+    </article>
+
+    <!-- ================= 6 ================= -->
+    <div class="part-divider" id="sec6"><i class="fa-solid fa-car" style="font-size: 1.5rem; color: var(--cyan-primary);"></i><h2>6. النظام المدمج (Embedded System)</h2></div>
+
+    <article class="atomic-card"><div class="atomic-header"><div class="atomic-num">6</div><h3 class="atomic-title">Embedded System</h3></div>
+      <div class="tier-box tier-1"><span class="tier-badge-en"><i class="fa-solid fa-graduation-cap"></i> 1. English (نص السلايدز)</span><div class="tier-1-content">
+        <p>• It refers to the use of electronics and software within a product, as opposed to a general-purpose computer, such as a laptop or desktop system.</p>
+      </div></div>
+      <div class="tier-box tier-2"><span class="tier-badge-ar"><i class="fa-solid fa-language"></i> 2. الترجمة</span><div class="tier-2-content">
+        <p><strong>الترجمة:</strong> بيشير لاستخدام الإلكترونيات والسوفتوير جوه منتج معين، عكس الكمبيوتر العام الاستخدام زي اللابتوب أو الديسكتوب.</p>
+      </div></div>
+      <div class="tier-box tier-3"><span class="tier-badge-egypt"><i class="fa-solid fa-lightbulb"></i> 3. الشرح بالعامية</span><div class="tier-3-content">
+        <p><strong>بالعامية:</strong> أي جهاز بيقوم بمهمة واحدة أو محدودة زي الغسالة أو الميكروويف — هو "كمبيوتر" لكن مخصص لحاجة واحدة بس مش عام زي اللابتوب.</p>
+      </div></div>
+      <div class="tier-box tier-4"><span class="tier-badge-summary"><i class="fa-solid fa-key"></i> 4. الزتونة 🫒</span><div class="tier-4-content">الكلمة المفتاحية: "as opposed to a general-purpose computer" — يعني أي جهاز مش عام الاستخدام هو Embedded system.</div></div>
+      <div class="tier-box tier-5"><span class="tier-badge-terms"><i class="fa-solid fa-tags"></i> 5. الخلاصة ✅</span><div class="tier-5-content"><div class="term-def"><strong>Exam rule</strong><span>إلكترونيات + سوفتوير مدمجين جوه منتج لأداء وظيفة محددة.</span></div></div></div>
+    </article>
+
+    <!-- ================= 7 ================= -->
+    <div class="part-divider" id="sec7"><i class="fa-solid fa-wifi" style="font-size: 1.5rem; color: var(--cyan-primary);"></i><h2>7. إنترنت الأشياء (IoT)</h2></div>
+
+    <article class="atomic-card"><div class="atomic-header"><div class="atomic-num">7</div><h3 class="atomic-title">The Internet of Things (IoT)</h3></div>
+      <div class="tier-box tier-1"><span class="tier-badge-en"><i class="fa-solid fa-graduation-cap"></i> 1. English (نص السلايدز)</span><div class="tier-1-content">
+        <p>• Is a term that refers to the expanding interconnection of smart devices, ranging from appliances to tiny sensors.</p>
+        <p>• The internet has gone through roughly four generations of deployment culminating in the IoT: 1. Information technology (IT), 2. Operation technology (OT), 3. Personal technology, 4. Sensor/actuator technology.</p>
+      </div></div>
+      <div class="tier-box tier-2"><span class="tier-badge-ar"><i class="fa-solid fa-language"></i> 2. الترجمة</span><div class="tier-2-content">
+        <p><strong>الترجمة:</strong> مصطلح بيشير للتوسع في ترابط الأجهزة الذكية، من الأجهزة المنزلية لحد أصغر المستشعرات.</p>
+        <p><strong>الترجمة:</strong> الإنترنت مر بأربع أجيال تقريبًا وصلت لـ <bdi>IoT</bdi>: تكنولوجيا المعلومات، تكنولوجيا التشغيل، التكنولوجيا الشخصية، تكنولوجيا المستشعرات/المشغلات.</p>
+      </div></div>
+      <div class="tier-box tier-3"><span class="tier-badge-egypt"><i class="fa-solid fa-lightbulb"></i> 3. الشرح بالعامية</span><div class="tier-3-content">
+        <p><strong>بالعامية:</strong> يعني أي حاجة حواليك ممكن "توصّل بالنت" وتتكلم مع بعض — من الثلاجة لحد حساس صغير جدًا في مصنع.</p>
+        <p><strong>بالعامية:</strong> يعني الإنترنت بدأ بأجهزة كبيرة في الشركات (<bdi>IT</bdi>)، بعدين مصانع (<bdi>OT</bdi>)، بعدين موبايلات وأجهزة شخصية، ودلوقتي وصل لحساسات صغيرة جدًا في كل حاجة.</p>
+      </div></div>
+      <div class="tier-box tier-4"><span class="tier-badge-summary"><i class="fa-solid fa-key"></i> 4. الزتونة 🫒</span><div class="tier-4-content">IoT = ترابط أجهزة ذكية متنوعة (مش بس كمبيوترات وموبايلات).</div></div>
+      <div class="tier-box tier-5"><span class="tier-badge-terms"><i class="fa-solid fa-tags"></i> 5. الخلاصة ✅</span><div class="tier-5-content"><div class="term-def"><strong>Exam rule</strong><span>IoT هو آخر مرحلة من تطور الإنترنت، فيها أي جهاز حتى الصغير جدًا بقى يقدر يتصل بالشبكة.</span></div></div></div>
+    </article>
+
+    <!-- ================= 8 ================= -->
+    <div class="part-divider" id="sec8"><i class="fa-solid fa-cloud" style="font-size: 1.5rem; color: var(--cyan-primary);"></i><h2>8. الحوسبة السحابية (Cloud Computing)</h2></div>
+
+    <article class="atomic-card"><div class="atomic-header"><div class="atomic-num">8</div><h3 class="atomic-title">Cloud Computing</h3></div>
+      <div class="tier-box tier-1"><span class="tier-badge-en"><i class="fa-solid fa-graduation-cap"></i> 1. English (نص السلايدز)</span><div class="tier-1-content">
+        <p>• A model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction.</p>
+        <p>• Cloud services: A cloud service provider (CSP) maintains computing and data storage resources that are available over the internet or private networks.</p>
+        <p>• The essential purpose of cloud computing is to provide for the convenient rental of computing resources.</p>
+      </div></div>
+      <div class="tier-box tier-2"><span class="tier-badge-ar"><i class="fa-solid fa-language"></i> 2. الترجمة</span><div class="tier-2-content">
+        <p><strong>الترجمة:</strong> نموذج بيتيح وصول سهل ومتاح في أي وقت لمجموعة مشتركة من موارد الحوسبة القابلة للتهيئة (شبكات، سيرفرات، تخزين، تطبيقات، خدمات)، وممكن تتوفر وتتلغي بسرعة وبأقل مجهود إداري.</p>
+        <p><strong>الترجمة:</strong> مزود خدمة الكلاود بيحتفظ بموارد حوسبة وتخزين بيانات متاحة عبر الإنترنت أو شبكات خاصة.</p>
+        <p><strong>الترجمة:</strong> الهدف الأساسي من الكلاود هو توفير إيجار مريح لموارد الحوسبة.</p>
+      </div></div>
+      <div class="tier-box tier-3"><span class="tier-badge-egypt"><i class="fa-solid fa-lightbulb"></i> 3. الشرح بالعامية</span><div class="tier-3-content">
+        <p><strong>بالعامية:</strong> بدل ما تشتري سيرفر وتركبه بنفسك، بتاخد "موارد جاهزة" من شركة عن طريق النت، وتقدر تزود أو تقلل منها في أي وقت بضغطة زرار.</p>
+        <p><strong>بالعامية:</strong> الشركة اللي بتأجرك الموارد دي (زي <bdi>Amazon</bdi> أو <bdi>Google</bdi>) هي اللي شايلة همّ الصيانة والتشغيل عنك بالكامل.</p>
+        <p><strong>بالعامية:</strong> يعني في الآخر الكلاود هو "تأجير" مش "تمليك" لموارد الحاسب.</p>
+      </div></div>
+      <div class="tier-box tier-4"><span class="tier-badge-summary"><i class="fa-solid fa-key"></i> 4. الزتونة 🫒</span><div class="tier-4-content">الكلمة المفتاحية اللي بتتكرر في الامتحانات: "convenient rental of computing resources".</div></div>
+      <div class="tier-box tier-5"><span class="tier-badge-terms"><i class="fa-solid fa-tags"></i> 5. الخلاصة ✅</span><div class="tier-5-content"><div class="term-def"><strong>Exam rule</strong><span>استئجار موارد حوسبة عبر الإنترنت من مزود خدمة، بمرونة عالية وأقل مجهود إداري.</span></div></div></div>
+    </article>
+
+    <!-- ================= KHOLASA ================= -->
+    <div class="part-divider" id="kholasa"><i class="fa-solid fa-bolt" style="font-size: 1.5rem; color: var(--cyan-primary);"></i><h2>الخلاصة السريعة — Chapter 1 في 8 سطور</h2></div>
+
+    <div class="vertical-steps-wrapper">
+      <div class="step-card-row"><div class="step-card-badge">1</div><div class="step-card-body"><div class="step-card-title">Architecture vs Organization</div><p style="color: var(--text-muted);">أي سؤال عن "حاجة بتأثر على تنفيذ البرنامج / يشوفها المبرمج" ← <span class="en-ltr">Architecture</span>. أي سؤال عن "تفاصيل هاردوير مخفية" (إشارات، واجهات، ذاكرة) ← <span class="en-ltr">Organization</span>.</p></div></div>
+      <div class="step-card-row"><div class="step-card-badge">2</div><div class="step-card-body"><div class="step-card-title">Function vs Structure</div><p style="color: var(--text-muted);">الحاسب بيعمل 4 وظائف (<span class="en-ltr">Processing, Storage, Movement, Control</span>) عن طريق 4 مكونات (<span class="en-ltr">CPU, Main memory, I/O, System interconnections</span>).</p></div></div>
+      <div class="step-card-row"><div class="step-card-badge">3</div><div class="step-card-body"><div class="step-card-title">مكونات CPU</div><p style="color: var(--text-muted);"><span class="en-ltr">CPU</span> = <span class="en-ltr">Control unit</span> (يوجّه) + <span class="en-ltr">ALU</span> (ينفذ) + <span class="en-ltr">Registers</span> (تخزين سريع) + <span class="en-ltr">CPU interconnections</span> (الربط بينهم).</p></div></div>
+      <div class="step-card-row"><div class="step-card-badge">4</div><div class="step-card-body"><div class="step-card-title">ISA</div><p style="color: var(--text-muted);"><span class="en-ltr">ISA</span> = القواعد اللي بتحدد شكل التعليمات وتأثيرها، وهي جزء أساسي من تعريف الـ <span class="en-ltr">Architecture</span>.</p></div></div>
+      <div class="step-card-row"><div class="step-card-badge">5</div><div class="step-card-body"><div class="step-card-title">الوحدات المتقدمة</div><p style="color: var(--text-muted);">وحدات متخصصة جوه المعالجات الحديثة (<span class="en-ltr">Instruction logic, Load/store logic, FXU, BFU, DFU, RU, COP</span>).</p></div></div>
+      <div class="step-card-row"><div class="step-card-badge">6</div><div class="step-card-body"><div class="step-card-title">المدمجة</div><p style="color: var(--text-muted);"><span class="en-ltr">Embedded system</span> = إلكترونيات + سوفتوير مدمجين جوه منتج لأداء وظيفة محددة، مش جهاز حاسب عام.</p></div></div>
+      <div class="step-card-row"><div class="step-card-badge">7</div><div class="step-card-body"><div class="step-card-title">IoT</div><p style="color: var(--text-muted);"><span class="en-ltr">IoT</span> هو آخر مرحلة من تطور الإنترنت، فيها أي جهاز حتى الصغير جدًا بقى يقدر يتصل بالشبكة.</p></div></div>
+      <div class="step-card-row"><div class="step-card-badge">8</div><div class="step-card-body"><div class="step-card-title">السحابة</div><p style="color: var(--text-muted);"><span class="en-ltr">Cloud computing</span> = استئجار موارد حوسبة عبر الإنترنت من مزود خدمة، بمرونة عالية وأقل مجهود إداري.</p></div></div>
+    </div>
+
+    <!-- ================= MCQs ================= -->
+    <div class="part-divider" id="mcqs"><i class="fa-solid fa-circle-check" style="font-size: 1.5rem; color: var(--cyan-primary);"></i><h2>أسئلة MCQ تفاعلية — شابتر 1</h2></div>
+
+    <div class="quiz-score-bar" id="quizScore"><i class="fa-solid fa-trophy" style="color: var(--amber-accent);"></i><span>نتيجتك: <b id="scoreVal">0 / 8</b> — دوس على أي اختيار وهيصحح فوراً</span></div>
+
+    <div class="quiz-card"><div class="quiz-question en-ltr" style="direction: ltr; text-align: left;">1. ........ attributes include hardware details transparent to the programmer.</div>
+      <div class="quiz-options"><button class="quiz-option" data-correct="true"><i class="fa-regular fa-circle"></i> (A) Organizational — التنظيمية</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (B) Environmental</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (C) Architectural — المعمارية</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (D) Software</button></div>
+      <div class="quiz-explanation"><strong>الإجابة (A) ✔</strong> التنظيم Organization هو التفاصيل العتادية المستخبية Transparent عن المبرمج.</div></div>
+
+    <div class="quiz-card"><div class="quiz-question en-ltr" style="direction: ltr; text-align: left;">2. Attributes visible to the programmer are called computer ........</div>
+      <div class="quiz-options"><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (A) efficiency</button><button class="quiz-option" data-correct="true"><i class="fa-regular fa-circle"></i> (B) architecture — المعمارية</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (C) components</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (D) organization</button></div>
+      <div class="quiz-explanation"><strong>الإجابة (B) ✔</strong> المعمارية Architecture هي السمات المرئية Visible اللي المبرمج بيكتب كود بناءً عليها.</div></div>
+
+    <div class="quiz-card"><div class="quiz-question en-ltr" style="direction: ltr; text-align: left;">3. The ......... interprets and executes instructions.</div>
+      <div class="quiz-options"><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (A) I/O</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (B) system bus</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (C) main memory</button><button class="quiz-option" data-correct="true"><i class="fa-regular fa-circle"></i> (D) processor (CPU) — المعالج</button></div>
+      <div class="quiz-explanation"><strong>الإجابة (D) ✔</strong> المعالج CPU هو المسؤول عن جلب وتفسير وتنفيذ التعليمات.</div></div>
+
+    <div class="quiz-card"><div class="quiz-question en-ltr" style="direction: ltr; text-align: left;">4. Interconnections among components are known as the ....</div>
+      <div class="quiz-options"><button class="quiz-option" data-correct="true"><i class="fa-regular fa-circle"></i> (A) system bus — ناقل النظام</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (B) cache memory</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (C) processor</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (D) peripheral</button></div>
+      <div class="quiz-explanation"><strong>الإجابة (A) ✔</strong> ناقل النظام System Bus هو شبكة الطرق الكهربائية بين المعالج والذاكرة والطرفيات.</div></div>
+
+    <div class="quiz-card"><div class="quiz-question en-ltr" style="direction: ltr; text-align: left;">5. The ........ moves data between computer and external environment.</div>
+      <div class="quiz-options"><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (A) main memory</button><button class="quiz-option" data-correct="true"><i class="fa-regular fa-circle"></i> (B) I/O — الإدخال والإخراج</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (C) cache memory</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (D) registers</button></div>
+      <div class="quiz-explanation"><strong>الإجابة (B) ✔</strong> وحدات I/O هي البوابة بين الكمبيوتر والعالم الخارجي.</div></div>
+
+    <div class="quiz-card"><div class="quiz-question en-ltr" style="direction: ltr; text-align: left;">6. Data processing inside the CPU is performed by the ........</div>
+      <div class="quiz-options"><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (A) PC</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (B) MAR</button><button class="quiz-option" data-correct="true"><i class="fa-regular fa-circle"></i> (C) ALU — وحدة الحساب والمنطق</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (D) MBR</button></div>
+      <div class="quiz-explanation"><strong>الإجابة (C) ✔</strong> الـ ALU مسؤولة عن العمليات الحسابية والمنطقية جوه الـ CPU (مش Control unit).</div></div>
+
+    <div class="quiz-card"><div class="quiz-question en-ltr" style="direction: ltr; text-align: left;">7. The term ........ refers to electronics &amp; software within a product (not general-purpose).</div>
+      <div class="quiz-options"><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (A) multicore processor</button><button class="quiz-option" data-correct="true"><i class="fa-regular fa-circle"></i> (B) embedded system — النظام المدمج</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (C) cloud computing</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (D) IoT</button></div>
+      <div class="quiz-explanation"><strong>الإجابة (B) ✔</strong> النظام المدمج كمبيوتر مخصص جوه منتج لوظيفة محددة — عكس اللابتوب والديسكتوب.</div></div>
+
+    <div class="quiz-card"><div class="quiz-question en-ltr" style="direction: ltr; text-align: left;">8. The ........ refers to expanding interconnection of smart devices (appliances to sensors).</div>
+      <div class="quiz-options"><button class="quiz-option" data-correct="true"><i class="fa-regular fa-circle"></i> (A) IoT — إنترنت الأشياء</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (B) multiprocessor</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (C) cloud computing</button><button class="quiz-option" data-correct="false"><i class="fa-regular fa-circle"></i> (D) embedded</button></div>
+      <div class="quiz-explanation"><strong>الإجابة (A) ✔</strong> إنترنت الأشياء IoT هو شبكة ربط الأجهزة الذكية والحساسات مع السحابة.</div></div>
+
+    <section class="section" style="margin-top: 30px; padding-bottom: 0;">
+      <div class="section-header"><span class="section-badge"><i class="fa-solid fa-diagram-project"></i> الخريطة الذهنية الشاملة</span><h2 class="section-title">Master Mind Map — Chapter 1</h2><p class="section-desc">مراجعة كامل موضوعات الفصل في نظرة واحدة قبل الامتحان.</p></div>
+      <div style="background: var(--bg-card); border: 1px solid var(--cyan-primary); border-radius: 24px; padding: 30px; text-align: center; overflow-x: auto;">
+        <div class="mermaid">graph TD
+          Root["Chapter 1: Introduction"] --> Sec1["1. Architecture vs Organization"]
+          Root --> Sec2["2. Function vs Structure"]
+          Root --> Sec3["3. CPU Components"]
+          Root --> Sec4["4. ISA"]
+          Root --> Sec5["5. Advanced Units"]
+          Root --> Sec6["6. Embedded"]
+          Root --> Sec7["7. IoT"]
+          Root --> Sec8["8. Cloud"]
+          Sec1 --> S1_1["Visible vs Transparent HW"]
+          Sec2 --> S2_1["4 Functions + 4 Components"]
+          Sec3 --> S3_1["CU + ALU + Registers"]
+          Sec4 --> S4_1["Formats, Opcodes, Effects"]
+          Sec5 --> S5_1["FXU / BFU / DFU / RU / COP"]
+          Sec6 --> S6_1["Not general-purpose"]
+          Sec7 --> S7_1["4 generations to IoT"]
+          Sec8 --> S8_1["Rental of resources (CSP)"]
+          style Root fill:#00f2fe,stroke:#00f2fe,color:#030712,font-weight:bold
+          style Sec1 fill:#7928ca,stroke:#7928ca,color:#fff
+          style Sec2 fill:#7928ca,stroke:#7928ca,color:#fff
+          style Sec3 fill:#7928ca,stroke:#7928ca,color:#fff
+          style Sec4 fill:#7928ca,stroke:#7928ca,color:#fff
+          style Sec5 fill:#7928ca,stroke:#7928ca,color:#fff
+          style Sec6 fill:#7928ca,stroke:#7928ca,color:#fff
+          style Sec7 fill:#7928ca,stroke:#7928ca,color:#fff
+          style Sec8 fill:#7928ca,stroke:#7928ca,color:#fff
+        </div>
+      </div>
+    </section>
+
+    <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 36px;">
+      <a href="../chapters.html" class="btn-secondary"><i class="fa-solid fa-layer-group"></i> كل الفصول</a>
+      <a href="../index.html" class="btn-primary"><i class="fa-solid fa-house"></i> رجوع للرئيسية</a>
+    </div>
+
+  </main>
+
+  <footer class="footer"><div class="container"><p>Computer Architecture Study Hub — Developed for CS Year 2 Students</p><p style="margin-top: 8px; font-size: 0.9rem;">إعداد وتنفيذ: <strong style="color: var(--cyan-primary);">Ahmed Amir</strong> © 2026</p></div></footer>
+  <script>
+/* ==========================================================================
+   COMPUTER ARCHITECTURE STUDY HUB - 3D CANVAS & INTERACTIVE LOGIC V6.1
+   ========================================================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+  init3DBackground();
+  initThemeToggle();
+  initQuizzes();
+  initProgressBar();
+  initStickyToc();
+  initConceptTabs();
+  initStudyToolbar();
+});
+
+/* 1. 3D PARTICLE WAVE + WIREFRAME (perf-aware) */
+function init3DBackground() {
+  const canvas = document.getElementById('canvas3d');
+  if (!canvas) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const ctx = canvas.getContext('2d');
+  let width, height, dpr;
+  let mouseX = 0, mouseY = 0, targetMouseX = 0, targetMouseY = 0;
+  let running = true;
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  window.addEventListener('mousemove', (e) => {
+    targetMouseX = (e.clientX - width / 2) * 0.05;
+    targetMouseY = (e.clientY - height / 2) * 0.05;
+  }, { passive: true });
+
+  document.addEventListener('visibilitychange', () => {
+    running = !document.hidden;
+    if (running) requestAnimationFrame(render);
+  });
+
+  const isMobile = width < 768;
+  const cols = isMobile ? 26 : 45;
+  const rows = isMobile ? 20 : 35;
+  const spacing = isMobile ? 42 : 38;
+  let time = 0;
+
+  const cubeVertices = [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
+  const cubeEdges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+
+  function render() {
+    if (!running) return;
+    time += 0.015;
+    mouseX += (targetMouseX - mouseX) * 0.05;
+    mouseY += (targetMouseY - mouseY) * 0.05;
+    ctx.clearRect(0, 0, width, height);
+    const focalLength = 350;
+    const centerX = width / 2;
+    const centerY = height / 2 + 100;
+
+    for (let i = 0; i < cols; i++) {
+      for (let j = 0; j < rows; j++) {
+        const x3d = (i - cols / 2) * spacing;
+        const z3d = (j + 5) * spacing;
+        const distance = Math.sqrt(x3d * x3d + (z3d - 500) * (z3d - 500));
+        const y3d = Math.sin(distance * 0.008 - time * 2) * 32 + Math.cos((i * 0.2) + time) * 15;
+        const camX = x3d + mouseX * (z3d * 0.001);
+        const camY = y3d + mouseY * (z3d * 0.001);
+        const scale = focalLength / z3d;
+        const screenX = centerX + camX * scale;
+        const screenY = centerY + camY * scale;
+        if (screenX >= -50 && screenX <= width + 50 && screenY >= -50 && screenY <= height + 50) {
+          const particleSize = Math.max(0.6, (1.8 * scale));
+          const opacity = Math.min(1, Math.max(0.05, 1 - (z3d / (rows * spacing))));
+          const cyanRatio = (Math.sin(time + i * 0.1) + 1) / 2;
+          ctx.fillStyle = 'rgba(' + Math.floor(121 * (1 - cyanRatio)) + ',' + Math.floor(242 * cyanRatio + 40 * (1 - cyanRatio)) + ',' + Math.floor(254 * cyanRatio + 202 * (1 - cyanRatio)) + ',' + (opacity * 0.6) + ')';
+          ctx.beginPath();
+          ctx.arc(screenX, screenY, particleSize, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+    if (!isMobile) {
+      renderWireframeShape(ctx, time, centerX + width * 0.28, height * 0.35, 90, cubeVertices, cubeEdges);
+      renderWireframeShape(ctx, -time * 0.8, centerX - width * 0.28, height * 0.45, 75, cubeVertices, cubeEdges);
+    }
+    requestAnimationFrame(render);
+  }
+
+  function renderWireframeShape(ctx, angle, cx, cy, size, vertices, edges) {
+    const projected = [];
+    const radX = angle * 0.7, radY = angle * 0.9;
+    const cosX = Math.cos(radX), sinX = Math.sin(radX);
+    const cosY = Math.cos(radY), sinY = Math.sin(radY);
+    vertices.forEach(v => {
+      const x = v[0] * cosY - v[2] * sinY;
+      const z = v[0] * sinY + v[2] * cosY;
+      const y2 = v[1] * cosX - z * sinX;
+      projected.push({ x: cx + x * size, y: cy + y2 * size });
+    });
+    ctx.strokeStyle = 'rgba(0, 242, 254, 0.25)';
+    ctx.lineWidth = 1.5;
+    edges.forEach(edge => {
+      ctx.beginPath();
+      ctx.moveTo(projected[edge[0]].x, projected[edge[0]].y);
+      ctx.lineTo(projected[edge[1]].x, projected[edge[1]].y);
+      ctx.stroke();
+    });
+    projected.forEach(p => {
+      ctx.fillStyle = 'rgba(0, 242, 254, 0.7)';
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+  render();
+}
+
+/* 2. THEME TOGGLER + MERMAID SYNC */
+function initThemeToggle() {
+  const toggleBtn = document.getElementById('themeToggle');
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  if (toggleBtn) updateThemeIcon(toggleBtn, saved);
+  syncMermaid(saved);
+  if (!toggleBtn) return;
+  toggleBtn.addEventListener('click', () => {
+    const active = document.documentElement.getAttribute('data-theme');
+    const next = active === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    updateThemeIcon(toggleBtn, next);
+    syncMermaid(next);
+  });
+}
+function updateThemeIcon(btn, theme) {
+  const icon = btn.querySelector('i');
+  if (!icon) return;
+  icon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+}
+function syncMermaid(theme) {
+  try {
+    if (window.mermaid) mermaid.initialize({ startOnLoad: true, theme: theme === 'dark' ? 'dark' : 'neutral' });
+  } catch (e) { /* ignore */ }
+}
+
+/* 3. QUIZ SYSTEM + LIVE SCORE (keyboard accessible via <button>) */
+function initQuizzes() {
+  const quizCards = document.querySelectorAll('.quiz-card');
+  const scoreVal = document.getElementById('scoreVal');
+  let score = 0;
+  const answered = new Set();
+  const total = quizCards.length;
+
+  quizCards.forEach((card, idx) => {
+    const options = card.querySelectorAll('.quiz-option');
+    const explanation = card.querySelector('.quiz-explanation');
+    options.forEach(opt => {
+      opt.setAttribute('role', 'button');
+      if (!opt.hasAttribute('tabindex') && opt.tagName !== 'BUTTON') opt.setAttribute('tabindex', '0');
+      const activate = () => {
+        if (answered.has(idx)) return;
+        answered.add(idx);
+        const isCorrect = opt.dataset.correct === 'true';
+        options.forEach(o => {
+          o.classList.remove('correct', 'incorrect');
+          o.setAttribute('aria-disabled', 'true');
+          const ic = o.querySelector('i');
+          if (ic && o.dataset.correct === 'true') ic.className = 'fa-solid fa-circle-check';
+        });
+        if (isCorrect) {
+          opt.classList.add('correct');
+          score++;
+        } else {
+          opt.classList.add('incorrect');
+          options.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+        }
+        if (explanation) explanation.style.display = 'block';
+        if (scoreVal) scoreVal.textContent = score + ' / ' + total;
+      };
+      opt.addEventListener('click', activate);
+      opt.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+      });
+    });
+  });
+}
+
+/* 4. READING PROGRESS BAR */
+function initProgressBar() {
+  const bar = document.getElementById('progressBar');
+  if (!bar) return;
+  const onScroll = () => {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+}
+
+/* 5. STICKY TOC ACTIVE STATE */
+function initStickyToc() {
+  const links = document.querySelectorAll('.toc-sticky a');
+  if (!links.length) return;
+  const map = {};
+  links.forEach(a => { map[a.getAttribute('href')] = a; });
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        links.forEach(a => a.classList.remove('active'));
+        const a = map['#' + en.target.id];
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  Object.keys(map).forEach(id => {
+    const s = document.querySelector(id);
+    if (s) obs.observe(s);
+  });
+}
+
+/* 6. CONCEPT TABS — turn 5 stacked tiers into switchable tabs */
+function initConceptTabs() {
+  const cards = document.querySelectorAll('.atomic-card');
+  if (!cards.length) return;
+  const labels = {
+    'tier-1': '<i class="fa-solid fa-graduation-cap"></i> English',
+    'tier-2': '<i class="fa-solid fa-language"></i> عربي',
+    'tier-3': '<i class="fa-solid fa-lightbulb"></i> عامية',
+    'tier-4': '<i class="fa-solid fa-key"></i> زيتونة',
+    'tier-5': '<i class="fa-solid fa-tags"></i> خلاصة'
+  };
+  cards.forEach(card => {
+    const tiers = card.querySelectorAll('.tier-box.tier-1, .tier-box.tier-2, .tier-box.tier-3, .tier-box.tier-4, .tier-box.tier-5');
+    if (tiers.length < 2) return;
+    card.classList.add('tabs-enabled');
+    const nav = document.createElement('div');
+    nav.className = 'concept-tabs-nav';
+    nav.setAttribute('role', 'tablist');
+    const order = ['tier-1', 'tier-2', 'tier-3', 'tier-4', 'tier-5'];
+    order.forEach((cls, i) => {
+      const tier = card.querySelector('.tier-box.' + cls);
+      if (!tier) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tab-btn' + (i === 2 ? ' active' : '');
+      btn.dataset.tab = cls;
+      btn.setAttribute('role', 'tab');
+      btn.innerHTML = labels[cls] || cls;
+      btn.addEventListener('click', () => {
+        nav.querySelectorAll('.tab-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        tiers.forEach(t => t.classList.remove('tab-active'));
+        tier.classList.add('tab-active');
+      });
+      nav.appendChild(btn);
+    });
+    const header = card.querySelector('.atomic-header');
+    if (header) header.after(nav);
+    // default: show Egyptian explanation (fastest understanding), Zitona one click away
+    tiers.forEach(t => t.classList.remove('tab-active'));
+    const def = card.querySelector('.tier-box.tier-3') || tiers[0];
+    if (def) def.classList.add('tab-active');
+  });
+}
+
+/* 7. STUDY TOOLBAR — Zitona-only cram mode + expand/collapse */
+function initStudyToolbar() {
+  const main = document.querySelector('main.container');
+  const toc = document.querySelector('.toc-sticky');
+  if (!main || !toc) return;
+  if (document.getElementById('studyToolbar')) return;
+  const bar = document.createElement('div');
+  bar.className = 'study-toolbar';
+  bar.id = 'studyToolbar';
+  bar.innerHTML = '<span class="toolbar-label"><i class="fa-solid fa-wand-magic-sparkles"></i> وضع المذاكرة:</span>'
+    + '<button class="toolbar-btn" id="btnZitona" type="button"><i class="fa-solid fa-key"></i> الزيتونة فقط ⚡</button>'
+    + '<button class="toolbar-btn" id="btnEnglish" type="button"><i class="fa-solid fa-graduation-cap"></i> English فقط</button>';
+  toc.after(bar);
+  const btnZ = bar.querySelector('#btnZitona');
+  const btnE = bar.querySelector('#btnEnglish');
+  btnZ.addEventListener('click', () => {
+    const on = document.body.classList.toggle('zitona-only');
+    document.body.classList.remove('english-only');
+    btnZ.classList.toggle('active', on);
+    btnE.classList.remove('active');
+    btnZ.innerHTML = on ? '<i class="fa-solid fa-eye"></i> عرض الكل' : '<i class="fa-solid fa-key"></i> الزيتونة فقط ⚡';
+  });
+  btnE.addEventListener('click', () => {
+    const cards = document.querySelectorAll('.atomic-card.tabs-enabled');
+    const activating = !btnE.classList.contains('active');
+    btnE.classList.toggle('active', activating);
+    document.body.classList.remove('zitona-only');
+    btnZ.classList.remove('active');
+    btnZ.innerHTML = '<i class="fa-solid fa-key"></i> الزيتونة فقط ⚡';
+    cards.forEach(card => {
+      const btn = card.querySelector('.tab-btn[data-tab="tier-1"]');
+      if (activating && btn) btn.click();
+    });
+  });
+}
+
+</script>
+</body>
+</html>
