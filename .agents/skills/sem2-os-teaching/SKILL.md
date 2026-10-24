@@ -1,0 +1,25 @@
+---
+name: sem2-os-teaching
+description: Author and review source-grounded Operating Systems lessons for Sem2_portal, mapping concepts, diagrams and MCQ or true-false items to the accepted current source slice.
+---
+
+# Sem2 OS teaching
+
+Guide version: 1.2.0. The user accepted OS-01 v1.1.0 and on 23 October explicitly extended this same-chat task to the remaining current OS theory slides/lectures. Read `docs/education/OS-COURSE-EXTENSION.md` for the approved unit/visual contract. This guide itself never grants permission for unrelated subjects or external actions.
+
+Read [the source and review reference](references/os-01.md) when authoring/reviewing OS-01. The accepted dispatch/design in `docs/education/` govern execution scope when present; do not expose local planning paths as student source links.
+
+For the approved three-lecture extension, read [the portable current-corpus reference](references/current-course.md) and the unit/visual contract in `docs/education/OS-COURSE-EXTENSION.md`. The reviewed content record is a source/version guard, not a substitute for a fresh review after substantive changes.
+
+- Current course evidence defines eligibility. An old question, textbook chapter, or outline cannot expand the accepted syllabus. Keep source IDs, raw fingerprints and exact slide anchors; preserve originals. Explain a necessary clarification separately from new course content.
+- Define only immediate prerequisite vocabulary. Teach a concrete situation before abstract names. Keep new details within the unit's exact current-source range; a later unit may teach its own scheduling/syscall/process concepts when those are actually in its source.
+- Distinguish the program doing the student's task, the OS coordinating resources and the hardware supplying them. A kernel is the core, not every bundled program. Qualify the slide's always-running wording as availability during system operation, not uninterrupted CPU execution or a claim that other programs never run.
+- Meaningful diagrams/graphs are a priority explicitly requested by the user. Each new unit must use the representation that explains its mechanism: role/layer views, ordered event traces, CPU timelines, process-state graphs, memory/queue views or IPC paths. Define actors, arrows, direction, initial conditions and abstraction limits. Use stepping/motion where it improves understanding, never as decoration or the only explanation. Preserve legible static text, keyboard/touch control, pause and reduced motion. Do not invent numerical measurements for a graph; label illustrative assumptions.
+- Keep English concepts/terms visible and explain them in concise, natural Egyptian Arabic. Do not replace the technical vocabulary with dense Arabic translations. Use Hardware in the explanation and clarify it as physical computer parts; do not force the term العتاد. Prefer concrete actions ("في Word بتكتب جملة وتكبّر الخط") over abstract literal phrasing ("هدف المستخدم اتحوّل لمهمة تطبيق" or "التطبيق يحدد الشغل"). These are the user's explicit 23 October 2026 preview-feedback requirements. Put short English idea statements beside/before the Egyptian explanation; Arabic supports the English rather than becoming a separate long translated lecture.
+- Add a final, readable glossary for the terms actually used: English term, concise English definition, Arabic meaning and a natural Egyptian explanation. Ground definitions in the current source or label their bounded prerequisite role in authoring evidence; do not add a later topic just to fill the glossary. Distinguish formal original historical wording from authored translations/explanations.
+- Introduce a plausible confusion as a hypothetical learner interpretation, not a measured student error. Explain why that interpretation fails under the stated assumptions.
+- Interactive items use stable MCQ/true-false identities and explicit option IDs. Each item needs an objective, prerequisites, current evidence, provenance, one best answer and explanatory feedback for every option. True/false tests one proposition and supplies its correction. Application can be assessed through selection; no typed answer or AI grading is needed.
+- Label historical originals, independent answers and adaptations separately. Preserve original wording/options and identify changes. A sheet title/marked answer is not an official key or proof of an exam date. Withhold unresolved items. Essays are supplied question/answer study references.
+- Use a fresh reviewer context with original sources, learner content and a rubric. Ask it to solve independently before comparing keys; check distractors and diagram semantics. Preserve findings and recheck substantive content fixes. Neither schema tests nor screenshots establish scientific correctness; AI review is not human certification or measured learning effectiveness.
+
+At delivery record guide/content versions, source coverage, review method and limits. Preview practice is session-only; honor existing portal identity/storage contracts in any separately authorized integration.

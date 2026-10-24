@@ -252,7 +252,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "lecture", lec.id) : JSON.stringify([String(course.id), "lecture", String(lec.id)]);
         
         const allExp = window.STUDY_CATALOG;
-        const smartStudyData = allExp && allExp[course.id] && allExp[course.id][lec.id];
+        const osUnit = course.id === "operating-system" ? {1: "os-01", 2: "os-09", 3: "os-13"}[lec.id] : null;
+        const smartStudyData = !osUnit && allExp && allExp[course.id] && allExp[course.id][lec.id];
 
         const fileTypeLabel = (lec.fileType || 'pdf').toUpperCase();
         const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
@@ -324,6 +325,14 @@ document.addEventListener("DOMContentLoaded", function () {
             <!-- أزرار المعاينة والتحميل وموقع الشرح -->
             <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
               <div class="flex flex-wrap items-center gap-2">
+                ${osUnit ? `
+                  <a href="education-preview/os/?unit=${osUnit}" data-os-course-link="${lec.id}"
+                    class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm btn-smooth"
+                    aria-label="فتح شرح Chapter ${lec.id}: الرسومات والأسئلة والمصطلحات">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    <span>فتح الشرح والرسومات والأسئلة</span>
+                  </a>
+                ` : ""}
                 ${smartStudyData ? `
                   <!-- زر المذاكرة التفاعلية -->
                   <button 

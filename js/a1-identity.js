@@ -17,7 +17,8 @@
   };
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.a1-brand-mark').forEach(el => {
-      el.innerHTML = '<svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true">' + inner + '</svg>';
+      el.replaceChildren();
+      el.setAttribute('aria-hidden', 'true');
     });
   });
 })();

@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "phase": "remote_release_in_progress",
+  "acceptedAt": "2026-10-23T17:50:38.655930+00:00",
+  "approval": "Direct user acceptance of OS-01 v1.1.0 and request to implement remaining current OS slides/lectures, meaningful diagrams/graphs, original logo replacement and same-chat execution.",
+  "spec": "docs/education/OS-COURSE-EXTENSION.md",
+  "plan": "docs/superpowers/plans/2026-10-23-os-course-expansion.md",
+  "sourceMap": "docs/research/2026-10-22-os-source-map.md",
+  "sources": [
+    {
+      "chapter": "1",
+      "file": "test-results\\content-research\\os\\os-chapter1.pptx",
+      "sha256": "c81ae8d50d261ffbd4c78ebf75b42f3f980c50298bba19b32f5779b3d1745e7b"
+    },
+    {
+      "chapter": "2",
+      "file": "test-results\\content-research\\os\\os-chapter2.ppt",
+      "sha256": "7077be5a51357a7fd485d21111e7a296478f7dcfaf98985ccebcc998a349494e"
+    },
+    {
+      "chapter": "3",
+      "file": "test-results\\content-research\\os\\os-chapter3.ppt",
+      "sha256": "7501cd4c2e06b1c09fedc2e7788d47df86786c263f68e0e268dc887c1b73444b"
+    }
+  ],
+  "units": {
+    "os-01": "content_review_accepted",
+    "os-02": "content_review_accepted",
+    "os-03": "content_review_accepted",
+    "os-04": "content_review_accepted",
+    "os-05": "content_review_accepted",
+    "os-06": "content_review_accepted",
+    "os-07": "content_review_accepted",
+    "os-08": "content_review_accepted",
+    "os-09": "content_review_accepted",
+    "os-10": "content_review_accepted",
+    "os-11": "content_review_accepted",
+    "os-12": "content_review_accepted",
+    "os-13": "content_review_accepted",
+    "os-14": "content_review_accepted",
+    "os-15": "content_review_accepted",
+    "os-16": "content_review_accepted",
+    "os-17": "content_review_accepted",
+    "os-18": "content_review_accepted",
+    "os-19": "content_review_accepted"
+  },
+  "logo": "Implemented and locally verified; public original portal update awaits GitHub write access",
+  "nextAction": "Create/attach scoped PR, pass remote CI, merge using existing authorization and verify actual original Pages entry/course/logo.",
+  "unresolved": [
+    "Remote PR/CI/merge and original deployed verification"
+  ],
+  "failedChecks": [],
+  "runtime": {
+    "catalog": "education-preview/os/course-catalog.js",
+    "loader": "education-preview/os/lesson-loader.js",
+    "visuals": "education-preview/os/visuals.js",
+    "status": "full 19-unit browser pass; SVG LTR and namespacing regressions passed"
+  },
+  "updatedAt": "2026-10-23T23:55:23.080Z",
+  "continuation": {
+    "id": "os",
+    "status": "PAUSED",
+    "note": "Observed paused app record; scope prompt updated without changing activation or cadence."
+  },
+  "checks": {
+    "logo": "PASS home/subject across 360/390/1440 and light/dark/reading",
+    "productionUnit": "64/64 passed",
+    "productionBrowser": "23/23 passed",
+    "productionStudy": "14/14 passed",
+    "productionA1": "completed successfully",
+    "lint": "passed",
+    "syntax": "passed",
+    "finalVerify": {
+      "command": "PORTAL_BROWSER_CHANNEL=msedge npm run verify",
+      "exitCode": 0,
+      "evidence": "test-results/education/os-course/portal-entry-verify.log"
+    },
+    "independentTechnical": "PASS; zero remaining findings within review scope",
+    "preservation": "PASS 274 protected tracked and 326 pre-existing local files preserved; eight scoped original changes; three raw source hashes and 14 accepted plan hashes match",
+    "portalEntry": "PASS independent 360/1440px and focused 390/1440px; root/Pages paths; three chapter links; source actions and other-subject reader"
+  },
+  "reviews": {
+    "ch1": "test-results/education/os-course/ch1-review/review-final.json",
+    "ch2": "test-results/education/os-course/ch2-review/revision-review.md",
+    "ch3": "test-results/education/os-course/ch3-review/bounded-recheck.json",
+    "technical": "test-results/education/os-course/technical-review/review.md"
+  },
+  "reviewRecord": "education-preview/os/review-record.json",
+  "counts": {
+    "units": 19,
+    "slides": 74,
+    "questions": 107,
+    "visuals": 32,
+    "glossaryEntries": 254
+  },
+  "blocker": null,
+  "reviewReport": "docs/education/os-course-review.md",
+  "publication": {
+    "provider": "ChatGPT Sites",
+    "projectId": "appgprj_6ad99418c1d88191852da594e2ed1532",
+    "versionId": "appgprj_6ad99418c1d88191852da594e2ed1532~appgver_48265280a0948191bd9887023c520fbd",
+    "versionNumber": 3,
+    "deploymentId": "appgdep_6adbea92f7b481919e9082a4a49c5a68",
+    "sourceCommit": "3cae8c6c8a7da57f35deaea444c0cd30d7a0cb52",
+    "status": "succeeded",
+    "url": "https://sem2-os-lesson-preview.wintrymoose17.chatgpt.site",
+    "lessonUrl": "https://sem2-os-lesson-preview.wintrymoose17.chatgpt.site/education-preview/os/",
+    "audience": "public",
+    "evidence": "test-results/education/os-course/sites-publication.json",
+    "courseUnitsVerified": 19,
+    "courseBrowserEvidence": "test-results/education/os-course/hosted-course-browser-results.json",
+    "anonymousAccessVerified": true,
+    "assetCountVerified": 106,
+    "allRuntimeAssetHashesMatch": true,
+    "verifiedAt": "2026-10-23T23:16:56.726Z",
+    "assetEvidence": "test-results/education/os-course/hosted-sharing-results.json"
+  },
+  "complete": false,
+  "release": {
+    "branch": "codex/os-education-pilot",
+    "baseCommit": "199ce9baf0e129abbd59d89f517600229f98b9d3",
+    "remoteFeatureCommit": "a771f096e20b45c8c126868a2bc4e1b58c0ae047",
+    "pullRequest": null,
+    "merged": false,
+    "pagesVerified": false,
+    "localImplementationCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f",
+    "localCommitted": true,
+    "portalIntegrationOnCurrentBranch": true,
+    "transport": "Ordinary Git and GitHub CLI using existing Git Credential Manager login in child memory; no persisted auth change",
+    "permissionDiagnosisCorrection": "gh auth status does not establish Git authentication state. The previous requirement for owner installation/access changes was unproven and is withdrawn."
+  },
+  "portalIntegration": {
+    "status": "locally_accepted",
+    "authorization": "Direct user instruction to run the course in the original site on 24 October 2026",
+    "routes": {
+      "1": "education-preview/os/?unit=os-01",
+      "2": "education-preview/os/?unit=os-09",
+      "3": "education-preview/os/?unit=os-13"
+    },
+    "sourceActionsPreserved": true,
+    "otherSubjectsReaderPreserved": true,
+    "independentReview": "test-results/education/os-course/portal-entry-review/review.md",
+    "checks": "test-results/education/os-course/portal-entry/results.json",
+    "originalFiles": [
+      "js/subject.js",
+      "js/a1-journey.js"
+    ],
+    "publiclyDeployed": false
+  },
+  "blockerHistory": [
+    {
+      "kind": "github_write_access",
+      "observedAt": "2026-10-23T23:17:36.514Z",
+      "operation": "GitHub integration create_blob for legitimate reviewed course catalog",
+      "result": "403 Resource not accessible by integration",
+      "remoteMutationCreated": false,
+      "cliAuthentication": "gh auth status: not logged into any GitHub hosts",
+      "requiredAction": "Restore authorized GitHub repository write access, then continue the existing scoped PR/CI/merge/Pages verification authorization.",
+      "recheckedAt": "2026-10-23T23:29:41.705Z",
+      "authenticatedLogin": "Eyad-Ahmed-Kamal",
+      "repositoryOwner": "ahm-333",
+      "visibleInstallationAccounts": [
+        "Eyad-Ahmed-Kamal"
+      ],
+      "inference": "The repository owner integration access likely needs attention; exact provider-side configuration not visible",
+      "evidence": "test-results/education/os-course/github-write-recheck.json",
+      "resolvedAt": "2026-10-23T23:55:23.080Z",
+      "resolution": "Connector-specific 403 remains, but ordinary Git push succeeded using existing Git Credential Manager authentication. Same authenticated user Eyad-Ahmed-Kamal confirmed. No user/repository permission change required."
+    }
+  ]
+}
