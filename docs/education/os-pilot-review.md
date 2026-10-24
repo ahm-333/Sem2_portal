@@ -1,6 +1,6 @@
 # Current status — 24 October 2026
 
-The pilot-only narrative below is historical. OS-01 was accepted and the full current theory extension is implemented, independently reviewed and published on the existing Sites preview. Original portal entry/logo changes passed local checks. The connector returned 403, but ordinary Git push subsequently succeeded with the existing Eyad-Ahmed-Kamal Git Credential Manager login; no owner permission change is required. The feature branch is remote and scoped PR/CI/merge/Pages verification is in progress. See os-course-review.md and os-course-state.json for current evidence. The continuation remains at its observed PAUSED state until final completion.
+The pilot-only narrative below is historical. The accepted OS-01 and authorized 19-unit current course extension, original chapter entry links and bookmark logo are merged through PR #19 (https://github.com/ahm-333/Sem2_portal/pull/19). Actual Linux PR CI passed. GitHub Pages built merge commit aeb7ed67d099aeff56059142c94793d442fa4f24; anonymous original-site verification passed all 19 units, six chapter entry paths, motion and 111 exact asset hashes. The task is complete; see os-course-review.md and os-course-state.json for final evidence. No user/repository permission change was required: the earlier 403 was connector-specific.
 
 # OS-01 pilot review and delivery
 

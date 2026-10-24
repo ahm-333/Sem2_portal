@@ -58,3 +58,13 @@ Final entry integration acceptance: independent review PASS with zero actionable
 ## Authentication diagnosis corrected — 24 October 2026
 
 The earlier GitHub write-access blocker was specific to the connector, not the user. Ordinary non-interactive `git push --dry-run` and then actual push succeeded through the already configured Git Credential Manager. The same existing login was verified as `Eyad-Ahmed-Kamal`; no permission change, account switch, new login or stored credential/configuration edit was needed. GitHub CLI can use that existing credential solely in a child process environment, without printing or persisting it. The previous inference that the repository owner must change an integration installation was not established and is withdrawn. `gh auth status` had shown only the CLI configuration, not the separate working Git login. The prepared feature branch is now remote; final PR/CI/merge/Pages evidence follows in the checkpoint.
+
+## Final original-site delivery — 2026-10-24T00:02:50.369Z
+
+[PR #19](https://github.com/ahm-333/Sem2_portal/pull/19) merged by Eyad-Ahmed-Kamal at 2026-10-24T00:00:05Z, commit `aeb7ed67d099aeff56059142c94793d442fa4f24`. The actual Linux PR quality run [40042336627](https://github.com/ahm-333/Sem2_portal/actions/runs/40042336627) passed the complete verification pipeline and generated-asset diff for exact reviewed head `59e229a8ef446e7b74f81df1a9516e75beacae40`. GitHub Pages built that actual merge commit, with no build error.
+
+Verified anonymous [original OS page](https://ahm-333.github.io/Sem2_portal/subject.html?id=operating-system) and [course](https://ahm-333.github.io/Sem2_portal/education-preview/os/): all 19 unit checks passed, six actual chapter entry/home-return paths passed at 390/1440px, normal finite motion/pause/replay and dynamic reduced motion passed, no browser errors, and 111 application/source/font/original-portal assets matched exact merged Git blob bytes. The original bookmark logo and preserved source actions are present. Source/course fingerprints and all 326 pre-existing local files remain preserved. No further subject, lab or watcher was started. Exact evidence is retained under ignored os-course pages/merge/remote-pr-ci records and this checkpoint.
+
+The earlier connector-only 403 diagnosis is resolved through the existing same-user Git login. No user or repository permission change was required. Final post-deployment audit metadata is retained on this task branch; implementation and integration are already merged on main.
+
+After completion, the supported app automation tool deleted continuation `os` and returned `deleteStatus: deleted` at 2026-10-24T00:03:22.022Z. It will not start later units, subjects or watchers.

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "phase": "remote_release_in_progress",
+  "phase": "complete",
   "acceptedAt": "2026-10-23T17:50:38.655930+00:00",
   "approval": "Direct user acceptance of OS-01 v1.1.0 and request to implement remaining current OS slides/lectures, meaningful diagrams/graphs, original logo replacement and same-chat execution.",
   "spec": "docs/education/OS-COURSE-EXTENSION.md",
@@ -44,11 +44,9 @@
     "os-18": "content_review_accepted",
     "os-19": "content_review_accepted"
   },
-  "logo": "Implemented and locally verified; public original portal update awaits GitHub write access",
-  "nextAction": "Create/attach scoped PR, pass remote CI, merge using existing authorization and verify actual original Pages entry/course/logo.",
-  "unresolved": [
-    "Remote PR/CI/merge and original deployed verification"
-  ],
+  "logo": "Published in original portal; original assets match merged Git blobs and anonymous mobile/desktop entry checks passed",
+  "nextAction": null,
+  "unresolved": [],
   "failedChecks": [],
   "runtime": {
     "catalog": "education-preview/os/course-catalog.js",
@@ -56,11 +54,13 @@
     "visuals": "education-preview/os/visuals.js",
     "status": "full 19-unit browser pass; SVG LTR and namespacing regressions passed"
   },
-  "updatedAt": "2026-10-23T23:55:23.080Z",
+  "updatedAt": "2026-10-24T00:03:22.022Z",
   "continuation": {
     "id": "os",
-    "status": "PAUSED",
-    "note": "Observed paused app record; scope prompt updated without changing activation or cadence."
+    "status": "DELETED",
+    "note": "Observed paused app record; scope prompt updated without changing activation or cadence.",
+    "stoppedAt": "2026-10-24T00:03:22.022Z",
+    "stopEvidence": "test-results/education/os-course/automation-stop.json"
   },
   "checks": {
     "logo": "PASS home/subject across 360/390/1440 and light/dark/reading",
@@ -77,7 +77,9 @@
     },
     "independentTechnical": "PASS; zero remaining findings within review scope",
     "preservation": "PASS 274 protected tracked and 326 pre-existing local files preserved; eight scoped original changes; three raw source hashes and 14 accepted plan hashes match",
-    "portalEntry": "PASS independent 360/1440px and focused 390/1440px; root/Pages paths; three chapter links; source actions and other-subject reader"
+    "portalEntry": "PASS independent 360/1440px and focused 390/1440px; root/Pages paths; three chapter links; source actions and other-subject reader",
+    "remoteLinuxCI": "PASS actual pull-request quality job, complete verify and generated-asset diff",
+    "originalPages": "PASS anonymous actual original portal, all 19 units, six chapter entry paths and 111 exact merged asset hashes"
   },
   "reviews": {
     "ch1": "test-results/education/os-course/ch1-review/review-final.json",
@@ -115,22 +117,49 @@
     "verifiedAt": "2026-10-23T23:16:56.726Z",
     "assetEvidence": "test-results/education/os-course/hosted-sharing-results.json"
   },
-  "complete": false,
+  "complete": true,
   "release": {
     "branch": "codex/os-education-pilot",
     "baseCommit": "199ce9baf0e129abbd59d89f517600229f98b9d3",
-    "remoteFeatureCommit": "a771f096e20b45c8c126868a2bc4e1b58c0ae047",
-    "pullRequest": null,
-    "merged": false,
-    "pagesVerified": false,
+    "remoteFeatureCommit": "59e229a8ef446e7b74f81df1a9516e75beacae40",
+    "pullRequest": "https://github.com/ahm-333/Sem2_portal/pull/19",
+    "merged": true,
+    "pagesVerified": true,
     "localImplementationCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f",
     "localCommitted": true,
     "portalIntegrationOnCurrentBranch": true,
     "transport": "Ordinary Git and GitHub CLI using existing Git Credential Manager login in child memory; no persisted auth change",
-    "permissionDiagnosisCorrection": "gh auth status does not establish Git authentication state. The previous requirement for owner installation/access changes was unproven and is withdrawn."
+    "permissionDiagnosisCorrection": "gh auth status does not establish Git authentication state. The previous requirement for owner installation/access changes was unproven and is withdrawn.",
+    "prNumber": 19,
+    "mergedAt": "2026-10-24T00:00:05Z",
+    "mergedBy": "Eyad-Ahmed-Kamal",
+    "mergeCommit": "aeb7ed67d099aeff56059142c94793d442fa4f24",
+    "pagesUrl": "https://ahm-333.github.io/Sem2_portal/",
+    "lessonUrl": "https://ahm-333.github.io/Sem2_portal/education-preview/os/",
+    "remoteCI": {
+      "runId": 40042336627,
+      "url": "https://github.com/ahm-333/Sem2_portal/actions/runs/40042336627",
+      "headSha": "59e229a8ef446e7b74f81df1a9516e75beacae40",
+      "conclusion": "success"
+    },
+    "pagesBuild": {
+      "commit": "aeb7ed67d099aeff56059142c94793d442fa4f24",
+      "status": "built",
+      "updatedAt": "2026-10-24T00:00:46Z"
+    },
+    "verification": {
+      "verifiedAt": "2026-10-24T00:01:58.636Z",
+      "courseUnits": 19,
+      "chapterEntryChecks": 6,
+      "assetHashesMatched": 111,
+      "normalMotion": "passed",
+      "evidence": "test-results/education/os-course/pages-verification.json",
+      "courseEvidence": "test-results/education/os-course/pages-course-browser-results.json",
+      "motionEvidence": "test-results/education/os-course/pages-motion-check.log"
+    }
   },
   "portalIntegration": {
-    "status": "locally_accepted",
+    "status": "deployed_verified",
     "authorization": "Direct user instruction to run the course in the original site on 24 October 2026",
     "routes": {
       "1": "education-preview/os/?unit=os-01",
@@ -145,7 +174,7 @@
       "js/subject.js",
       "js/a1-journey.js"
     ],
-    "publiclyDeployed": false
+    "publiclyDeployed": true
   },
   "blockerHistory": [
     {
@@ -167,5 +196,6 @@
       "resolvedAt": "2026-10-23T23:55:23.080Z",
       "resolution": "Connector-specific 403 remains, but ordinary Git push succeeded using existing Git Credential Manager authentication. Same authenticated user Eyad-Ahmed-Kamal confirmed. No user/repository permission change required."
     }
-  ]
+  ],
+  "completedAt": "2026-10-24T00:02:50.369Z"
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sliceId": "os-01-review-preview",
-  "phase": "remote_release_in_progress",
+  "phase": "complete",
   "workspace": "C:\\Users\\Eyad\\Documents\\Codex\\2026-10-20\\new-chat\\work\\Sem2_portal",
   "startHead": "199ce9baf0e129abbd59d89f517600229f98b9d3",
   "branch": "codex/os-education-pilot",
@@ -40,7 +40,7 @@
     "threadId": "01a160fd-41b9-76d3-ab79-a7f770f17264",
     "hostId": "local",
     "automationId": "os",
-    "automationStatus": "PAUSED",
+    "automationStatus": "DELETED",
     "cadence": "hourly",
     "configTargetVerified": true,
     "implementationStartVerified": true,
@@ -70,9 +70,7 @@
   ],
   "partial": [],
   "failedChecks": [],
-  "unresolved": [
-    "Remote PR/CI/merge and original deployed verification"
-  ],
+  "unresolved": [],
   "ledger": [
     "Task 1/2/3 interfaces: shared lesson payload uses stable option IDs, per-option feedback and slide references; no conflict.",
     "Task 4/5/6 interfaces: technical/content acceptance and then human preview acceptance precede merge; no conflict.",
@@ -90,9 +88,9 @@
     "Final review boundary: PR/merge/publication and exact automatic quota-reset recovery are not established by local preview QA. Cost: later authorized delivery checks and user feedback must be completed.",
     "Task 5: local preview delivered for user feedback; Task 6 not started. No deferred required findings."
   ],
-  "nextAction": "Create/attach scoped PR, pass remote CI, merge using existing authorization and verify actual original Pages entry/course/logo.",
-  "stopReason": null,
-  "updatedAt": "2026-10-23T23:55:23.080Z",
+  "nextAction": null,
+  "stopReason": "Accepted pilot and authorized current course extension merged and original deployed result verified",
+  "updatedAt": "2026-10-24T00:03:22.022Z",
   "currentTrackedDiff": "Six scoped original files plus the approved new OS course/guide/review/checkpoint files",
   "changedFiles": [
     ".agents/skills/sem2-os-teaching/SKILL.md",
@@ -114,7 +112,7 @@
     "education-preview/os/verify-layout.cjs",
     "education-preview/os/verify.cjs"
   ],
-  "featureCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f",
+  "featureCommit": "59e229a8ef446e7b74f81df1a9516e75beacae40",
   "previewUrl": "http://127.0.0.1:8765/education-preview/os/",
   "review": {
     "content": {
@@ -187,11 +185,13 @@
   "continuation": {
     "automationId": "os",
     "targetThreadId": "01a160fd-41b9-76d3-ab79-a7f770f17264",
-    "configured": true,
+    "configured": false,
     "behaviorAtGate": "Stay quiet while awaiting preview feedback. User explicitly authorized restoring the preview server and continuation after device recovery.",
     "quotaResetRecoveryObserved": false,
     "resumptionEvidence": "Prior reviewer allowance failure followed by direct-user continuation and live ordinaryUsageAllowed=true. Exact automatic reset-triggered recovery not observed.",
-    "status": "PAUSED"
+    "status": "DELETED",
+    "stoppedAt": "2026-10-24T00:03:22.022Z",
+    "stopEvidence": "test-results/education/os-course/automation-stop.json"
   },
   "resumePhase": "remote_release_in_progress",
   "localServerRunning": true,
@@ -290,5 +290,47 @@
   ],
   "courseState": "docs/education/os-course-state.json",
   "blocker": null,
-  "currentImplementationCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f"
+  "currentImplementationCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f",
+  "complete": true,
+  "completedAt": "2026-10-24T00:02:50.369Z",
+  "release": {
+    "branch": "codex/os-education-pilot",
+    "baseCommit": "199ce9baf0e129abbd59d89f517600229f98b9d3",
+    "remoteFeatureCommit": "59e229a8ef446e7b74f81df1a9516e75beacae40",
+    "pullRequest": "https://github.com/ahm-333/Sem2_portal/pull/19",
+    "merged": true,
+    "pagesVerified": true,
+    "localImplementationCommit": "073ed896d1c4027e666c6fa967b3b6d069c9e65f",
+    "localCommitted": true,
+    "portalIntegrationOnCurrentBranch": true,
+    "transport": "Ordinary Git and GitHub CLI using existing Git Credential Manager login in child memory; no persisted auth change",
+    "permissionDiagnosisCorrection": "gh auth status does not establish Git authentication state. The previous requirement for owner installation/access changes was unproven and is withdrawn.",
+    "prNumber": 19,
+    "mergedAt": "2026-10-24T00:00:05Z",
+    "mergedBy": "Eyad-Ahmed-Kamal",
+    "mergeCommit": "aeb7ed67d099aeff56059142c94793d442fa4f24",
+    "pagesUrl": "https://ahm-333.github.io/Sem2_portal/",
+    "lessonUrl": "https://ahm-333.github.io/Sem2_portal/education-preview/os/",
+    "remoteCI": {
+      "runId": 40042336627,
+      "url": "https://github.com/ahm-333/Sem2_portal/actions/runs/40042336627",
+      "headSha": "59e229a8ef446e7b74f81df1a9516e75beacae40",
+      "conclusion": "success"
+    },
+    "pagesBuild": {
+      "commit": "aeb7ed67d099aeff56059142c94793d442fa4f24",
+      "status": "built",
+      "updatedAt": "2026-10-24T00:00:46Z"
+    },
+    "verification": {
+      "verifiedAt": "2026-10-24T00:01:58.636Z",
+      "courseUnits": 19,
+      "chapterEntryChecks": 6,
+      "assetHashesMatched": 111,
+      "normalMotion": "passed",
+      "evidence": "test-results/education/os-course/pages-verification.json",
+      "courseEvidence": "test-results/education/os-course/pages-course-browser-results.json",
+      "motionEvidence": "test-results/education/os-course/pages-motion-check.log"
+    }
+  }
 }
