@@ -24,7 +24,7 @@ async function scenario(name, fn, options = {}) {
   await context.addInitScript(() => {
     if (location.hostname === '127.0.0.1') {
       localStorage.setItem('sem2_first_visit_configured', 'true');
-      window.sessionStorage.setItem('sem2-a1-processor-intro-v1', 'seen');
+      window.sessionStorage.setItem('sem2-studio-rift-intro-v3', 'seen');
     }
   });
 

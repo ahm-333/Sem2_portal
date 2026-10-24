@@ -19,30 +19,27 @@
   <link rel="stylesheet" href="css/processor.css">
   <link rel="stylesheet" href="css/a1.css">
   <link rel="stylesheet" href="css/a1-journey.css">
+  <link rel="stylesheet" href="css/studio.css">
+  <link rel="stylesheet" href="css/studio-motion.css">
+  <link rel="stylesheet" href="css/studio-atlas.css">
 </head>
-<body class="a1 min-h-screen flex flex-col" data-page="subject">
+<body class="a1 studio min-h-screen flex flex-col" data-page="subject">
   <a class="a1-skip" href="#main-content">تخطّي إلى المحتوى</a>
 
   <!-- ========================================== -->
   <!-- 1. شريط التنقل العلوي (Navbar) -->
   <!-- ========================================== -->
-  <header class="a1-navbar glass-header" aria-label="التنقل الرئيسي">
-    <div class="a1-header-inner">
-      <a href="index.html" class="a1-brand" aria-label="الرئيسية · Study Hub"><span class="a1-brand-mark"></span><span><strong lang="en"><bdi>Study Hub</bdi></strong><small>موادك ومصادرك، في مكان واحد.</small></span></a>
-      
-      <div class="a1-subject-label"><span id="nav-subject-name"></span><small id="nav-subject-code"></small></div>
-      <div class="a1-header-actions">
-        <button data-open-profile-modal class="a1-profile" title="تغيير مجموعتك أو سكشنك"><span class="student-profile-badge"><i data-lucide="user" aria-hidden="true"></i><span>مجموعتي</span></span><i data-lucide="chevron-down" aria-hidden="true"></i></button>
-        <button id="share-btn" title="مشاركة رابط المادة" aria-label="مشاركة رابط المادة"><i data-lucide="share-2" aria-hidden="true"></i></button>
-        <div class="a1-theme-options" role="group" aria-label="وضع العرض">
-          <button data-theme-btn="dark" title="الوضع الليلي" aria-label="الوضع الليلي"><i data-lucide="moon" aria-hidden="true"></i></button>
-          <button data-theme-btn="light" title="الوضع النهاري" aria-label="الوضع النهاري"><i data-lucide="sun" aria-hidden="true"></i></button>
-          <button data-theme-btn="reading" title="وضع القراءة" aria-label="وضع القراءة"><i data-lucide="book-open" aria-hidden="true"></i></button>
-        </div>
-        <button id="cycle-theme-btn" class="a1-theme-cycle" title="تبديل وضع العرض: ليلي، نهاري، قراءة" aria-label="تبديل وضع العرض: ليلي، نهاري، قراءة"><i data-lucide="sun" aria-hidden="true"></i></button>
-      </div>
-    </div>
-  </header>
+  <header class="a1-navbar studio-topbar" aria-label="التنقل الرئيسي">
+  <a href="index.html" class="a1-brand"><span class="a1-brand-mark" aria-hidden="true"></span><span><strong lang="en">Study Hub</strong><small>مساحتك للمذاكرة</small></span></a>
+  <div class="studio-topbar-title"><i data-lucide="graduation-cap" aria-hidden="true"></i><span>الترم الثاني <span class="studio-dot">/</span> الذكاء الاصطناعي</span></div>
+  <div class="a1-header-actions">
+    <button id="share-btn" aria-label="نسخ رابط المادة" title="نسخ رابط المادة"><i data-lucide="share-2" aria-hidden="true"></i></button>
+    <a href="index.html#library" class="studio-search-shortcut" aria-label="البحث في مكتبة المصادر"><i data-lucide="search" aria-hidden="true"></i><span>ابحث في المصادر</span><kbd>/</kbd></a>
+    <button data-open-profile-modal class="a1-profile" title="تغيير مجموعتك أو سكشنك"><span class="student-profile-badge"><i data-lucide="user" aria-hidden="true"></i><span>مجموعتي</span></span><i data-lucide="chevron-down" aria-hidden="true"></i></button>
+    <div class="a1-theme-options" role="group" aria-label="وضع العرض"><button data-theme-btn="light" aria-label="الوضع النهاري" title="الوضع النهاري"><i data-lucide="sun" aria-hidden="true"></i></button><button data-theme-btn="dark" aria-label="الوضع الليلي" title="الوضع الليلي"><i data-lucide="moon" aria-hidden="true"></i></button><button data-theme-btn="reading" aria-label="وضع القراءة" title="وضع القراءة"><i data-lucide="book-open" aria-hidden="true"></i></button></div>
+    <button id="cycle-theme-btn" class="a1-theme-cycle" aria-label="تبديل وضع العرض"><i data-lucide="sun" aria-hidden="true"></i></button>
+  </div>
+</header>
 
   <!-- ========================================== -->
   <!-- 2. محتوى صفحة المادة -->
@@ -556,7 +553,7 @@
       </div>
 
       <!-- شريط التبديل بين الشرح والكويز الشامل (Tabs Bar) -->
-      <div class="px-3 sm:px-5 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] flex items-center justify-between gap-3 flex-shrink-0">
+      <div class="a1-reader-toolbar px-3 sm:px-5 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] flex items-center justify-between gap-3 flex-shrink-0">
         <div class="flex items-center gap-2">
           <button id="study-tab-btn-slides" type="button" class="study-nav-tab active px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold flex items-center gap-2 transition-all cursor-pointer">
             <i data-lucide="book-open" class="w-4 h-4"></i>
@@ -599,109 +596,7 @@
     <!-- ========================================== -->
   <!-- تذييل الصفحة (Footer) -->
   <!-- ========================================== -->
-  <footer class="border-t py-12 glass-header mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-      
-      <!-- بطاقة توقيع صناع ومطورو المنصة -->
-      <div class="creators-showcase-card">
-        <!-- الشريط العلوي للبطاقة -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 mb-3.5 border-b border-[var(--border-subtle)]">
-          <div class="flex items-center gap-2.5">
-            <span class="p-1.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex-shrink-0">
-              <i data-lucide="code-2" class="w-4 h-4 text-cyan-400"></i>
-            </span>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs sm:text-sm font-bold text-[var(--text-main)]">صُنّاع وتطوير المنصة</span>
-                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold">Creators &amp; Developers</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3 flex-wrap">
-            <span class="px-3 py-1 rounded-xl text-xs font-semibold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 flex items-center gap-1.5 shadow-sm">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
-              <span>دفعة AI 2026</span>
-            </span>
-            <a href="index.html" class="px-3.5 py-1.5 rounded-xl glass-panel border border-indigo-500/30 text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth">
-              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-              <span>جميع المواد</span>
-            </a>
-          </div>
-        </div>
-
-                <!-- شبكة بطاقتي المهندسين -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 my-3.5">
-          <!-- المهندس أحمد أمير -->
-          <div class="developer-profile-card group">
-            <div class="developer-avatar bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-500 shadow-md shadow-indigo-500/25">
-              AA
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center justify-between gap-1 mb-0.5">
-                <span class="text-sm sm:text-base font-extrabold text-[var(--text-main)] group-hover:text-indigo-400 transition-colors font-mono tracking-tight" dir="ltr">
-                  Eng. Ahmed Amir
-                </span>
-                <span class="text-[10px] font-mono text-indigo-400 px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 font-bold">
-                  Developer
-                </span>
-              </div>
-              <div class="text-xs text-[var(--text-muted)] font-medium flex items-center gap-1.5">
-                <i data-lucide="code" class="w-3.5 h-3.5 text-indigo-400"></i>
-                <span>Creator &amp; Lead Developer</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- المهندس إياد أحمد -->
-          <div class="developer-profile-card group">
-            <div class="developer-avatar bg-gradient-to-tr from-cyan-600 via-indigo-600 to-purple-600 shadow-md shadow-purple-500/25">
-              EA
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center justify-between gap-1 mb-0.5">
-                <span class="text-sm sm:text-base font-extrabold text-[var(--text-main)] group-hover:text-cyan-400 transition-colors font-mono tracking-tight" dir="ltr">
-                  Eng. Eyad Ahmed
-                </span>
-                <span class="text-[10px] font-mono text-cyan-400 px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 font-bold">
-                  Developer
-                </span>
-              </div>
-              <div class="text-xs text-[var(--text-muted)] font-medium flex items-center gap-1.5">
-                <i data-lucide="terminal" class="w-3.5 h-3.5 text-cyan-400"></i>
-                <span>Creator &amp; Lead Developer</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- رسالة الإهداء والكلية -->
-        <div class="pt-3 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-muted)]">
-          <p class="flex items-center gap-2 text-center sm:text-right">
-            <i data-lucide="graduation-cap" class="w-4 h-4 text-indigo-400 flex-shrink-0"></i>
-            <span>تم إعداد وتطوير المنصة لخدمة طلاب كلية الحاسبات والمعلومات وقسم الذكاء الاصطناعي</span>
-          </p>
-          <span class="text-[11px] font-mono text-[var(--text-dim)] px-2.5 py-0.5 rounded-lg bg-[var(--bg-main)] border border-[var(--border-subtle)]">
-            Zagazig University • AI 2026
-          </span>
-        </div>
-      </div>
-
-            <!-- الشريط السفلي للفوتر -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-muted)] pt-3 border-t border-[var(--border-subtle)]">
-        <div class="flex items-center gap-2">
-          <i data-lucide="terminal" class="w-4 h-4 text-indigo-400"></i>
-          <span><bdi lang="en">Study Hub</bdi> • بوابة الذكاء الاصطناعي - جامعة الزقازيق 2026</span>
-        </div>
-        <div class="flex items-center gap-1.5 text-[var(--text-dim)]">
-          <span>صُنعت بكل</span>
-          <span class="text-rose-500 text-sm leading-none">♥</span>
-          <span>بواسطة <strong class="text-[var(--text-main)] font-mono" dir="ltr">Eng. Ahmed Amir</strong> &amp; <strong class="text-[var(--text-main)] font-mono" dir="ltr">Eng. Eyad Ahmed</strong></span>
-        </div>
-      </div>
-
-    </div>
-  </footer>
+  <footer class="studio-footer"><a href="index.html" lang="en">Study Hub</a><span>من طلاب، لطلاب. <span lang="en">Zagazig University</span></span><span>تطوير <bdi>Ahmed Amir</bdi> و<bdi>Eyad Ahmed</bdi></span></footer>
 
   <!-- ملفات الجافاسكربت -->
   <script src="js/shared/dialog.js"></script>
@@ -710,8 +605,7 @@
   <script src="js/courses-data.js?v=1792424832344"></script>
   <script src="js/schedule-data.js?v=1792424832344"></script>
   <script src="js/a1-identity.js"></script>
-  <script src="js/a1-ui.js"></script>
-  <script src="js/a1-cursor.js"></script>
+<script src="js/a1-cursor.js"></script>
   <script src="js/profile-modal.js?v=1792424832344"></script>
   <script src="js/study-catalog.js"></script>
   <script src="js/shared/content-catalog.js"></script>
@@ -725,5 +619,10 @@
   <script src="js/subject-content.js"></script>
   <script src="js/subject.js?v=1792424832344"></script>
   <script src="js/a1-journey.js"></script>
+  <script src="js/studio.js"></script>
+  <script src="js/studio-course.js"></script>
+  <script src="js/vendor/gsap/gsap.min.js"></script>
+  <script src="js/studio-motion.js"></script>
+  <script src="js/studio-energy.js"></script>
 </body>
 </html>

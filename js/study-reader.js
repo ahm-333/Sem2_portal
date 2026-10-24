@@ -27,6 +27,15 @@
   let quizRendered = false;
   let currentSlideIndex = 0;
   let readerMode = "explanation";
+  let activeContentKey = null, restoringPosition = true;
+  function saveReaderPosition() {
+    if (restoringPosition || !activeContentKey || !currentLecture) return;
+    const existing = window.PortalStudyState.getItem(activeContentKey);
+    window.PortalStudyState.updateItem(activeContentKey, {
+      startedAt: existing?.startedAt || new Date().toISOString(),
+      reader: {slideId: currentLecture.slides[currentSlideIndex].num, tab: readerMode === 'slide' ? 'original' : 'explanation', updatedAt: new Date().toISOString()}
+    });
+  }
   studyModal.classList.add("a1-reader-workspace");
   const layout = document.createElement("div"); layout.className = "a1-reader-layout";
   const outline = document.createElement("aside"); outline.className = "a1-reader-outline";
@@ -63,12 +72,14 @@
     studyProgressBar.style.width = `${(currentSlideIndex + 1) / currentLecture.slides.length * 100}%`;
     studySlidesFeed.scrollTop = 0;
     if (focus) { const card = document.getElementById('slide-card-' + slide.num); card.tabIndex = -1; card.focus({preventScroll: true}); }
+    saveReaderPosition();
   }
   function setReaderMode(mode) {
     readerMode = mode;
     studySlidesFeed.querySelectorAll('[data-reader-part]').forEach(part => { part.hidden = part.dataset.readerPart !== readerMode; });
     modes.querySelectorAll('[data-reader-mode]').forEach(button => { button.setAttribute('aria-pressed', String(button.dataset.readerMode === mode)); button.classList.toggle('active', button.dataset.readerMode === mode); });
     studySlidesFeed.scrollTop = 0;
+    saveReaderPosition();
   }
   modes.addEventListener('click', event => { const button = event.target.closest('[data-reader-mode]'); if (button) { switchStudyTab("slides"); setReaderMode(button.dataset.readerMode); } });
   pagination.addEventListener('click', event => { const button = event.target.closest('[data-reader-step]'); if (button) selectSlide(currentSlideIndex + (button.dataset.readerStep === 'next' ? 1 : -1), true); });
@@ -143,6 +154,8 @@
   const renderFullQuiz = data => fullQuiz.render(data);
 
   async function openSmartStudyModal(courseId, lectureId) {
+    restoringPosition = true;
+    activeContentKey = window.PortalCatalog.key(courseId, 'lecture', lectureId);
     if (!studyModal || !studySlidesFeed) return;
     const sequence = ++requestSequence;
     currentLecture = undefined;
@@ -571,8 +584,15 @@
       if (image) image.parentElement.dataset.readerPart = 'slide';
       card.lastElementChild.dataset.readerPart = 'explanation';
     });
-    setReaderMode('explanation');
-    selectSlide(0);
+    const savedPosition = window.PortalStudyState.getItem(activeContentKey)?.reader;
+    const deepLink = window.PortalContentLinks.parse(window.location);
+    const requestedSlide = deepLink.item === activeContentKey && deepLink.slide ? deepLink.slide : savedPosition?.slideId;
+    const requestedTab = deepLink.item === activeContentKey && deepLink.tab ? deepLink.tab : savedPosition?.tab;
+    setReaderMode(requestedTab === 'original' ? 'slide' : 'explanation');
+    selectSlide(Math.max(0, data.slides.findIndex(slide => Number(slide.num) === Number(requestedSlide))));
+    restoringPosition = false;
+    saveReaderPosition();
+    window.PortalStudyState.setLastUsed({key: activeContentKey, actionId: 'internal-study'});
     window.PortalUI.icons(studyModal);
   }
 

@@ -32,7 +32,7 @@ async function scenario(name, fn, options = {}) {
 async function settled(page) {
   await page.addInitScript(() => {
     localStorage.setItem('sem2_first_visit_configured', 'true');
-    window.sessionStorage.setItem('sem2-a1-processor-intro-v1', 'seen');
+    window.sessionStorage.setItem('sem2-studio-rift-intro-v3', 'seen');
   });
 }
 async function main() {
@@ -49,7 +49,12 @@ async function main() {
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   base = `http://127.0.0.1:${server.address().port}/Sem2_portal/`;
-  browser = await chromium.launch({headless: true, ...(fs.existsSync('C:/Program Files/Google/Chrome/Application/chrome.exe') ? {executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe'} : {})});
+  browser = await chromium.launch({headless: true,
+    // Hosted CI has no physical GPU; keep the WebGL path reproducible in isolation.
+    args: process.env.CI ? ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] : [],
+    ...(fs.existsSync('C:/Program Files/Google/Chrome/Application/chrome.exe') ? {executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe'} : {})});
+  await require('./studio-scroll-intro.cjs').register({scenario});
+  await require('./studio-features.cjs').register({scenario});
   await scenario('a1-shell-and-real-course-actions', async ({page, go}) => {
     await settled(page); await go('index.html');
     assert.equal(await page.locator('body > header').evaluate(el => getComputedStyle(el).position), 'fixed');
@@ -63,32 +68,8 @@ async function main() {
     assert.equal(await page.locator('#courses-grid article').count(), 6);
     assert.equal(await page.locator('.preview-bar,.resume,[data-cursor-choice]').count(), 0);
   });
-  await scenario('a1-intro-hides-navbar-and-defers-profile', async ({page, go}) => {
-    await go('index.html?intro=processor');
-    await page.locator('.processor-intro').waitFor();
-    assert.equal(await page.locator('body > header').isVisible(), false);
-    assert.equal(await page.locator('body > header').evaluate(el => el.inert), true);
-    assert.equal(await page.locator('.processor-scene').evaluate(el => Math.round(el.getBoundingClientRect().top)), 0);
-    await page.waitForTimeout(700);
-    assert.equal(await page.locator('#student-profile-modal').isVisible(), false);
-    await page.locator('[data-processor-skip]').click();
-    await page.locator('.processor-intro').waitFor({state: 'detached'});
-    assert(await page.locator('body > header').isVisible());
-    assert.equal(await page.locator('body > header').evaluate(el => el.inert), false);
-    await page.locator('#student-profile-modal').waitFor({state: 'visible'});
-    await page.keyboard.press('Escape');
-    assert.equal(await page.locator('body > header').evaluate(el => getComputedStyle(el).position), 'fixed');
-  });
-  await scenario('a1-flex-default-and-native-editing', async ({page, go}) => {
-    await settled(page); await go('index.html');
-    await page.mouse.move(700, 220);
-    await page.locator('.cursor-study[data-shape="flex"]').waitFor();
-    assert.equal(await page.locator('body').getAttribute('data-cursor-preview'), 'flex');
-    await page.locator('#search-input').hover();
-    assert.equal(await page.locator('#search-input').evaluate(el => getComputedStyle(el).cursor), 'text');
-    await page.keyboard.press('Tab');
-    assert.equal(await page.locator('.cursor-study').isVisible(), false);
-  });
+
+
   await scenario('a1-action-content-has-visible-contrast', async ({page, go}) => {
     await settled(page); await go('index.html#schedule-section'); await page.evaluate(() => window.PortalTheme.setTheme('light'));
     await page.waitForTimeout(350);
@@ -112,11 +93,11 @@ async function main() {
     assert.equal(await page.locator('#courses-grid .a1-course-link').count(), 6);
     assert.equal(await page.locator('#courses-grid .a1-course-staff').count(), 0, 'staff belongs in course context, not every home tile');
     assert.equal(await page.locator('#schedule-section').isVisible(), false);
-    await page.locator('.a1-desktop-nav a[href="#schedule-section"]').click();
+    await page.locator('.studio-rail nav a[href="#schedule-section"]').click();
     await page.locator('#schedule-section').waitFor({state: 'visible'});
     assert(await page.locator('#schedule-section').isVisible());
     assert.equal(await page.locator('#courses-section').isVisible(), false);
-    await page.locator('.a1-desktop-nav a[href="#courses-section"]').click();
+    await page.locator('.studio-rail nav a[href="#courses-section"]').click();
     await page.locator('#courses-section').waitFor({state: 'visible'});
     assert(await page.locator('#courses-section').isVisible());
     await page.locator('#courses-grid .a1-course-link').first().click();
@@ -182,7 +163,7 @@ async function main() {
       await route.continue();
     });
     await go('subject.html?id=database-systems');
-    assert.equal(await page.locator('body').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(242, 246, 252)', 'saved light theme must be applied before the content paints');
+    assert.equal(await page.locator('body').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(245, 246, 251)', 'saved light theme must be applied before the content paints');
     await page.locator('[data-open-study-lecture="2"]').first().click(); await page.locator('#study-tab-btn-quiz').click();
     await page.locator('#full-quiz-reset-btn').click();
     assert(await page.locator('#full-q-1').evaluate(el => el === document.activeElement || el.contains(document.activeElement)), 'reset returns keyboard focus to question one');
@@ -215,7 +196,7 @@ async function main() {
     });
     await settled(page); await go('subject.html?id=database-systems');
     await page.evaluate(() => document.fonts.ready);
-    const action = await page.locator('[data-open-study-lecture="2"]').boundingBox();
+    const action = await page.locator('[data-atlas-start]').boundingBox();
     assert(action && action.y + action.height <= 900, 'the first real lecture action is visible without scrolling through repeated section introductions');
   }, {viewport: {width: 360, height: 900}});
   for (const width of [360, 1440]) for (const theme of ['light', 'dark', 'reading']) await scenario(`a1-all-action-states-${width}-${theme}`, async ({page, go}) => {
@@ -324,107 +305,16 @@ async function main() {
       await page.screenshot({path: path.join(output, `fixed-${example.name}-1440.png`)});
     }
   });
-  await scenario('a1-intro-natural-completion-and-return', async ({page, go}) => {
-    await page.addInitScript(() => localStorage.setItem('sem2_first_visit_configured', 'true'));
-    await go('index.html');
-    await page.locator('.processor-intro').waitFor();
-    await page.screenshot({path: path.join(output, 'intro-1440.png')});
-    await page.evaluate(() => {
-      const trigger = window.ScrollTrigger.getById('sem2-processor-intro');
-      window.scrollTo(0, trigger.end); window.ScrollTrigger.update();
-    });
-    await page.locator('.processor-intro').waitFor({state: 'detached'});
-    assert(await page.locator('body > header').isVisible());
-    assert.equal(await page.evaluate(() => window.ScrollTrigger.getAll().length), 0);
-    assert.equal(await page.evaluate(() => window.scrollY), 0);
-    await go('subject.html?id=database-systems'); await page.goBack();
-    assert.equal(await page.locator('.processor-intro').count(), 0);
-    assert(await page.locator('body > header').isVisible());
-  });
-  await scenario('a1-processor-real-drag-inertia-keyboard-and-charge', async ({page, go}) => {
-    await page.addInitScript(() => localStorage.setItem('sem2_first_visit_configured', 'true'));
-    await go('index.html?intro=processor'); await page.locator('.processor-node').first().waitFor();
-    const node = page.locator('.processor-node').first();
-    const box = await node.boundingBox();
-    const original = await page.evaluate(() => window.processorDiagnostics().positions[0]);
-    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2); await page.mouse.down();
-    for (let i = 1; i <= 7; i++) {
-      await page.mouse.move(box.x + box.width / 2 + i * 17, box.y + box.height / 2 - i * 3);
-      await page.waitForTimeout(15);
-    }
-    await page.mouse.up();
-    assert(await node.evaluate(el => !!window.Draggable.get(el).tween?.isActive()), 'real inertia tween is active after release');
-    await page.waitForTimeout(1200);
-    const moved = await page.evaluate(() => window.processorDiagnostics().positions[0]);
-    assert(moved.x > original.x + 50);
-    for (const point of await page.evaluate(() => window.processorDiagnostics().positions)) assert(point.x >= 0 && point.x <= 990 && point.y >= 0 && point.y <= 486);
-    await node.focus(); await page.keyboard.press('ArrowLeft');
-    assert((await page.evaluate(() => window.processorDiagnostics().positions[0])).x < moved.x);
-    await page.evaluate(() => { const t = window.ScrollTrigger.getById('sem2-processor-intro'); window.scrollTo(0, t.start + (t.end - t.start) * .95); window.ScrollTrigger.update(); });
-    await page.waitForTimeout(700);
-    assert.equal(await page.locator('.chip-trace-live').count(), 48);
-    assert(await page.locator('.chip-trace-live').evaluateAll(xs => xs.every(x => Math.abs(Number(x.style.strokeDashoffset)) < 1)));
-    assert.equal(await page.locator('.die-cell').count(), 49);
-    assert(await page.locator('.die-cell').evaluateAll(xs => xs.every(x => Number(x.style.opacity) > .98)));
-    await page.screenshot({path: path.join(output, 'intro-charged-1440.png')});
-  });
-  await scenario('a1-reference-has-clean-intro-and-flex-selection', async ({page, go}) => {
-    await go('design-exploration/2026-10-20/round-2/concept.html?style=1&intro=processor');
-    await page.locator('.processor-intro').waitFor();
-    assert.equal(await page.locator('.topbar').isVisible(), false);
-    assert.equal(await page.locator('.preview-bar').isVisible(), false);
-    assert.equal(await page.locator('.processor-scene').evaluate(el => Math.round(el.getBoundingClientRect().top)), 0);
-    await page.locator('[data-processor-skip]').click();
-    assert(await page.locator('.topbar').isVisible());
-    assert(await page.locator('.preview-bar').isVisible());
-    await page.mouse.move(700, 220);
-    assert.equal(await page.evaluate(() => window.cursorDiagnostics().mode), 'flex');
-    assert.equal(await page.locator('.course-name-en').first().evaluate(el => getComputedStyle(el).fontSize), '20px');
-  });
-  await scenario('a1-intro-resize-and-reduced-motion-cleanup', async ({page, go}) => {
-    await page.addInitScript(() => localStorage.setItem('sem2_first_visit_configured', 'true'));
-    await go('index.html?intro=processor'); await page.locator('.processor-intro').waitFor();
-    await page.setViewportSize({width: 768, height: 900});
-    await page.locator('.processor-intro').waitFor({state: 'detached'});
-    assert(await page.locator('body > header').isVisible());
-    await page.setViewportSize({width: 1440, height: 900});
-    await go('index.html?intro=processor'); await page.locator('.processor-intro').waitFor();
-    await page.emulateMedia({reducedMotion: 'reduce'});
-    await page.locator('.processor-intro').waitFor({state: 'detached'});
-    assert.equal(await page.locator('main').evaluate(el => el.inert), false);
-  });
-  await scenario('a1-intro-library-failure-is-open', async ({page, go}) => {
-    await page.route('**/InertiaPlugin.min.js', route => route.abort());
-    await go('index.html?intro=processor');
-    await page.waitForFunction(() => !window.PortalIntro.isActive());
-    assert(await page.locator('body > header').isVisible());
-    assert.equal(await page.locator('main').evaluate(el => el.inert), false);
-    await page.locator('#student-profile-modal').waitFor({state: 'visible'});
-    await page.keyboard.press('Escape');
-    assert.equal(await page.locator('#courses-grid article').count(), 6);
-  });
-  for (const failAt of [1, 49]) await scenario('a1-intro-partial-mount-rollback-' + failAt, async ({page, go}) => {
-    await page.addInitScript(at => {
-      localStorage.setItem('sem2_first_visit_configured', 'true');
-      const original = window.SVGPathElement.prototype.getTotalLength;
-      let calls = 0;
-      window.SVGPathElement.prototype.getTotalLength = function () {
-        if (++calls === at) throw new Error('Injected SVG initialization failure');
-        return original.call(this);
-      };
-    }, failAt);
-    await go('index.html?intro=processor');
-    await page.waitForFunction(() => !window.PortalIntro.isActive());
-    assert.equal(await page.locator('.processor-intro').count(), 0, 'partially created scene is rolled back');
-    assert(await page.locator('body > header').isVisible());
-    assert.equal(await page.locator('main').evaluate(el => el.inert), false);
-    assert.equal(await page.evaluate(() => window.ScrollTrigger?.getAll().length || 0), 0);
-    assert.equal(await page.evaluate(() => window.Draggable?.get(document.querySelector('.processor-node')) || null), null);
-  });
+
+
+
+
+
+
   await scenario('a1-no-intro-for-reduced-motion', async ({page, go}) => {
     await settled(page); await go('index.html?intro=processor');
     assert.equal(await page.locator('.processor-intro').count(), 0);
-    assert.equal(await page.evaluate(() => performance.getEntriesByType('resource').filter(x => /gsap|processor-intro\.js/.test(x.name)).length), 0);
+    assert.equal(await page.evaluate(() => performance.getEntriesByType('resource').filter(x => /ScrollTrigger|InertiaPlugin|processor-intro\.js/.test(x.name)).length), 0);
   }, {reducedMotion: 'reduce'});
   await scenario('a1-no-intro-with-unavailable-session-storage', async ({page, go}) => {
     await page.addInitScript(() => { Storage.prototype.getItem = () => { throw new Error('blocked'); }; Storage.prototype.setItem = () => { throw new Error('blocked'); }; });
@@ -449,7 +339,7 @@ async function main() {
       const allTheory = page.locator('.btn-toggle-all-theory');
       if (await allTheory.count()) await allTheory.click();
       for (const item of course.resources || []) assert(await page.locator('#theory-resources-list a').evaluateAll((xs, url) => xs.some(x => x.getAttribute('href') === url), item.fileUrl));
-      await page.locator('[data-track="section"]').click();
+      await resource(page, 'sections');
       if (await page.locator('[data-ta-filter="all"]').count()) await page.locator('[data-ta-filter="all"]').click();
       assert.deepEqual(await page.locator('#sections-list [data-preview-file]').evaluateAll(xs => xs.map(x => x.dataset.previewFile)), course.sections.map(x => x.drivePreviewUrl || x.sheetUrl || '#'));
       await resource(page, 'resources');
@@ -464,16 +354,17 @@ async function main() {
         assert((await page.locator('#assignments-list').innerText()).includes(assignment.title));
         assert((await page.locator('#assignments-list').innerText()).includes(assignment.deadline));
       }
+      if (!await page.locator('.a1-course-context').evaluate(el => el.open)) await page.locator('.a1-course-context>summary').click();
       for (let section = 1; section <= 12; section++) {
         const expectedDoctor = await page.evaluate(s => {
           window.StudentProfile.set('B' + Math.ceil(s / 4), s);
           const courseId = new URLSearchParams(window.location.search).get('id');
           return window.StudentProfile.getCourseStaff(courseId).doctor;
         }, section);
-        await page.locator('[data-track="lecture"]').click();
+        await resource(page, 'lectures');
         assert(await page.locator('#track-panel-lecture').isVisible());
         assert((await page.locator('#subject-doctor').innerText()).includes(expectedDoctor));
-        await page.locator('[data-track="section"]').click();
+        await resource(page, 'sections');
         assert(await page.locator('#track-panel-section').isVisible());
       }
     }
@@ -528,7 +419,7 @@ async function main() {
       await page.screenshot({path: path.join(output, `home-${width}-${theme}.png`), fullPage: true});
       if (theme === 'light') await page.screenshot({path: path.join(output, `home-${width}-viewport.png`)});
     }
-    if (width < 1024) assert.equal(await page.evaluate(() => performance.getEntriesByType('resource').filter(x => /gsap|processor-intro\.js/.test(x.name)).length), 0);
+    if (width < 1024) assert.equal(await page.evaluate(() => performance.getEntriesByType('resource').filter(x => /ScrollTrigger|InertiaPlugin|processor-intro\.js/.test(x.name)).length), 0);
     await go('subject.html?id=database-systems');
     await page.evaluate(() => window.PortalTheme.setTheme('light'));
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));

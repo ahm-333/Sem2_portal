@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" data-theme="dark" class="dark">
+<html lang="ar" dir="rtl" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,110 +16,48 @@
 
   <!-- التنسيقات المخصصة والأوضاع الثلاثة -->
   <link rel="stylesheet" href="css/style.css?v=1792424832344">
-  <link rel="stylesheet" href="css/processor.css">
+  <link rel="stylesheet" href="css/rift-intro.css">
   <link rel="stylesheet" href="css/a1.css">
   <link rel="stylesheet" href="css/a1-journey.css">
+  <link rel="stylesheet" href="css/studio.css">
+  <link rel="stylesheet" href="css/studio-motion.css">
+  <link rel="stylesheet" href="css/studio-atlas.css">
 </head>
-<body class="a1 min-h-screen flex flex-col" data-page="home">
+<body class="a1 studio min-h-screen flex flex-col" data-page="home">
   <a class="a1-skip" href="#main-content">تخطّي إلى المحتوى</a>
-
-  <!-- ========================================== -->
-  <!-- 1. شريط التنقل العلوي (Navbar) -->
-  <!-- ========================================== -->
-  <header class="a1-navbar glass-header" aria-label="التنقل الرئيسي">
-    <div class="a1-header-inner">
-      <a href="index.html" class="a1-brand" aria-label="الرئيسية · Study Hub"><span class="a1-brand-mark"></span><span><strong lang="en"><bdi>Study Hub</bdi></strong><small>موادك ومصادرك، في مكان واحد.</small></span></a>
-      <nav class="a1-desktop-nav" aria-label="أقسام الرئيسية"><a href="#courses-section">المواد</a><a href="#schedule-section">جدول الجامعة</a></nav>
-      
-      <div class="a1-header-actions">
-        <button data-open-profile-modal class="a1-profile" title="تغيير مجموعتك أو سكشنك"><span class="student-profile-badge"><i data-lucide="user" aria-hidden="true"></i><span>مجموعتي</span></span><i data-lucide="chevron-down" aria-hidden="true"></i></button>
-
-        <div class="a1-theme-options" role="group" aria-label="وضع العرض">
-          <button data-theme-btn="dark" title="الوضع الليلي" aria-label="الوضع الليلي"><i data-lucide="moon" aria-hidden="true"></i></button>
-          <button data-theme-btn="light" title="الوضع النهاري" aria-label="الوضع النهاري"><i data-lucide="sun" aria-hidden="true"></i></button>
-          <button data-theme-btn="reading" title="وضع القراءة" aria-label="وضع القراءة"><i data-lucide="book-open" aria-hidden="true"></i></button>
-        </div>
-        <button id="cycle-theme-btn" class="a1-theme-cycle" title="تبديل وضع العرض: ليلي، نهاري، قراءة" aria-label="تبديل وضع العرض: ليلي، نهاري، قراءة"><i data-lucide="sun" aria-hidden="true"></i></button>
-      </div>
-    </div>
-  </header>
-
-  <!-- ========================================== -->
-  <!-- 2. القسم الترحيبي (Hero Section) -->
-  <!-- ========================================== -->
-  <main class="flex-grow" id="main-content" tabindex="-1">
+  <header class="a1-navbar studio-topbar" aria-label="التنقل الرئيسي">
+  <a href="index.html" class="a1-brand"><span class="a1-brand-mark" aria-hidden="true"></span><span><strong lang="en">Study Hub</strong><small>مساحتك للمذاكرة</small></span></a>
+  <div class="studio-topbar-title"><i data-lucide="graduation-cap" aria-hidden="true"></i><span>الترم الثاني <span class="studio-dot">/</span> الذكاء الاصطناعي</span></div>
+  <div class="a1-header-actions">
+    <a href="index.html#library" class="studio-search-shortcut" aria-label="البحث في مكتبة المصادر"><i data-lucide="search" aria-hidden="true"></i><span>ابحث في المصادر</span><kbd>/</kbd></a>
+    <button data-open-profile-modal class="a1-profile" title="تغيير مجموعتك أو سكشنك"><span class="student-profile-badge"><i data-lucide="user" aria-hidden="true"></i><span>مجموعتي</span></span><i data-lucide="chevron-down" aria-hidden="true"></i></button>
+    <div class="a1-theme-options" role="group" aria-label="وضع العرض"><button data-theme-btn="light" aria-label="الوضع النهاري" title="الوضع النهاري"><i data-lucide="sun" aria-hidden="true"></i></button><button data-theme-btn="dark" aria-label="الوضع الليلي" title="الوضع الليلي"><i data-lucide="moon" aria-hidden="true"></i></button><button data-theme-btn="reading" aria-label="وضع القراءة" title="وضع القراءة"><i data-lucide="book-open" aria-hidden="true"></i></button></div>
+    <button id="cycle-theme-btn" class="a1-theme-cycle" aria-label="تبديل وضع العرض"><i data-lucide="sun" aria-hidden="true"></i></button>
+  </div>
+</header>
+  <main id="main-content" tabindex="-1">
     <div id="study-save-status" class="study-save-status" role="status" aria-live="polite" hidden></div>
-    <section class="a1-welcome">
-      <h1>اختار مادتك وابدأ.</h1><p>المحاضرات والمصادر المناسبة لمجموعتك، من غير لف كتير.</p>
-      <div class="a1-summary"><span><b id="stat-courses">6</b> مواد</span><span><b id="stat-paths">2</b> مسار لكل مادة</span><span><b id="stat-groups" dir="ltr">B1–B3</b> · 12 سكشن</span></div>
-        <!-- صندوق البحث الفوري والتصفية -->
-        <div class="a1-search-area">
-          <div class="relative glass-panel rounded-2xl p-1.5 border flex items-center shadow-lg">
-            <div class="pr-3 pl-2 text-[var(--text-muted)]">
-              <i data-lucide="search" class="w-5 h-5"></i>
-            </div>
-            <input 
-              type="text" 
-              id="search-input" 
-              placeholder="ابحث عن مادة، كود، أو عنوان محاضرة…" aria-label="البحث في المواد والمحاضرات"
-              class="w-full bg-transparent px-2 py-2.5 text-sm sm:text-base text-[var(--text-main)] placeholder-[var(--text-dim)] focus:outline-none"
-            >
-            <button id="clear-search" aria-label="مسح البحث" class="hidden px-2.5 text-[var(--text-muted)] hover:text-[var(--text-main)]">
-              <i data-lucide="x" class="w-4 h-4"></i>
-            </button>
-          </div>
-          <div class="flex items-center justify-center gap-2 mt-3 text-xs text-[var(--text-muted)]">
-            <span>تصفية سريعة:</span>
-            <button class="filter-chip active-chip px-2.5 py-1 rounded-lg border text-xs" data-filter="all">الكل (6)</button>
-            <button class="filter-chip px-2.5 py-1 rounded-lg border text-xs" data-filter="CS">علوم حاسب</button>
-            <button class="filter-chip px-2.5 py-1 rounded-lg border text-xs" data-filter="IS">نظم معلومات</button>
-            <button class="filter-chip px-2.5 py-1 rounded-lg border text-xs" data-filter="General">مهارات عامة</button>
-          </div>
-        </div>
-
+    <section class="a1-welcome studio-welcome">
+      <div class="studio-greeting"><h1>يلا نعمل خطوة لقدّام.</h1><p>مكانك جاهز. اختار مادة، افهم فكرة، وجرّب نفسك.</p></div>
+      <div class="studio-hero">
+        <div class="studio-hero-copy"><h2>كل فكرة صعبة،<br>ليها بداية بسيطة.</h2><p>محاضراتك، شروحاتك، وتدريباتك.<br>رتّب مذاكرتك وابدأ من اللي محتاجه دلوقتي.</p><div class="studio-hero-actions"><a href="#courses-section" class="studio-button studio-button-white">اختار مادتك <i data-lucide="arrow-down" aria-hidden="true"></i></a><a href="#library" class="studio-hero-secondary">استكشف المصادر <i data-lucide="arrow-up-left" aria-hidden="true"></i></a></div></div>
+        <div class="studio-book-stack" aria-label="وصول سريع للمواد"><a class="studio-book book-one" href="subject.html?id=database-systems"><i data-lucide="database" aria-hidden="true"></i><span lang="en">Database<br>Systems</span><small>افهم العلاقات بين البيانات</small><i data-lucide="arrow-up-left" aria-hidden="true"></i></a><a class="studio-book book-two" href="subject.html?id=operating-system"><i data-lucide="panels-top-left" aria-hidden="true"></i><span lang="en">Operating Systems</span><small>اكتشف اللي بيحصل في الخلفية</small></a><a class="studio-book book-three" href="subject.html?id=data-structure"><i data-lucide="network" aria-hidden="true"></i><span lang="en">Data Structures</span><small>فكّر بطريقة أذكى</small></a></div>
+      </div>
+      <div id="studio-resume" hidden></div>
     </section>
-
-    <!-- ========================================== -->
-    <!-- 3. شبكة بطاقات المواد (Course Cards) -->
-    <!-- ========================================== -->
-    <section id="courses-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h2 class="text-xl sm:text-2xl font-bold text-[var(--text-main)]">المواد الدراسية</h2>
-          <p class="text-xs sm:text-sm text-[var(--text-muted)]">اختر المادة لتصفح موقع الشرح الخاص بها وكافة ملفات المحاضرات والسكاشن</p>
-        </div>
-        <span class="text-xs px-3 py-1 rounded-full border glass-panel text-[var(--text-muted)] font-mono" id="results-count">
-          6 مواد متاحة
-        </span>
-      </div>
-
-      <!-- الحاوية التي سيتم حقن البطاقات بداخلها عبر JS -->
-      <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- يتم التوليد التلقائي هنا من courses-data.js -->
-      </div>
-
-      <!-- حالة عدم وجود نتائج عند البحث -->
-      <div id="no-results" class="hidden text-center py-16">
-        <div class="w-16 h-16 mx-auto rounded-full glass-panel flex items-center justify-center text-[var(--text-dim)] mb-4">
-          <i data-lucide="search-x" class="w-8 h-8"></i>
-        </div>
-        <h3 class="text-lg font-bold text-[var(--text-main)] mb-1">لم يتم العثور على أي نتائج</h3>
-        <p class="text-sm text-[var(--text-muted)]">تأكد من كتابة اسم المادة أو كود المادة بشكل صحيح.</p>
-      </div>
+    <section id="courses-section" class="studio-courses">
+      <div class="studio-section-heading"><div><h2>هتذاكر إيه النهارده؟</h2><p>ست مواد، وكل اللي تحتاجه عشان تبدأ.</p></div><span id="results-count" aria-live="polite">6 مواد متاحة</span></div>
+      <div class="studio-course-tools"><div class="studio-input"><i data-lucide="search" aria-hidden="true"></i><input id="search-input" type="search" placeholder="دور على مادتك…" aria-label="البحث في المواد والمحاضرات"><button id="clear-search" class="hidden" aria-label="مسح البحث"><i data-lucide="x" aria-hidden="true"></i></button></div><div class="studio-course-filters"><button class="filter-chip active-chip" data-filter="all">كل المواد</button><button class="filter-chip" data-filter="CS">علوم حاسب</button><button class="filter-chip" data-filter="IS">نظم معلومات</button><button class="filter-chip" data-filter="General">مهارات عامة</button></div></div>
+      <div id="courses-grid"></div>
+      <div id="no-results" class="hidden studio-empty"><i data-lucide="search-x" aria-hidden="true"></i><h3>مفيش مادة بالاسم ده</h3><p>جرّب اسم المادة بالعربي أو بالإنجليزي، أو كودها.</p><button id="studio-reset-courses" class="studio-button">عرض كل المواد</button></div>
     </section>
-
-    <!-- ========================================== -->
-    <!-- 4. قسم جدول المواعيد الأسبوعي المخصص للطالب -->
-    <!-- ========================================== -->
-    <section id="schedule-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <section id="studio-library" class="studio-library" hidden aria-labelledby="library-title"><div class="studio-page-heading"><h1 id="library-title">مكتبة المصادر</h1><p>دور على المحاضرة نفسها، ووصل لها على طول.</p></div><div class="studio-library-tools"><div class="studio-input"><i data-lucide="search" aria-hidden="true"></i><input id="library-query" type="search" aria-label="البحث في مكتبة المصادر" placeholder="عنوان محاضرة، موضوع، أو اسم مادة…"><button id="library-clear" aria-label="مسح بحث المصادر" hidden><i data-lucide="x" aria-hidden="true"></i></button></div><label>المادة<select id="library-course"><option value="all">كل المواد</option></select></label><label>نوع المصدر<select id="library-kind"><option value="all">كل المصادر</option><option value="lectures">المحاضرات</option><option value="sections">السكاشن</option><option value="videos">الفيديو</option><option value="assignments">التكليفات</option><option value="resources">مصادر ومراجع</option><option value="interactive">شرح تفاعلي</option></select></label></div><p class="studio-library-scope">البحث في عناوين ووصف المصادر المتاحة، ومحتوى السكاشن حسب اختيارك. تقدر توسّع البحث لكل المعيدين.</p><label class="studio-all-tas"><input id="library-all-tas" type="checkbox">عرض مصادر كل المعيدين</label><div id="library-result-count" class="studio-result-count" role="status"></div><div id="library-results"></div></section>
+    <section id="studio-continue" hidden aria-labelledby="continue-title"><div class="studio-page-heading"><h1 id="continue-title">كمّل رحلتك</h1><p>الشرح اللي بدأت فيه، في انتظارك.</p></div><div id="continue-results"></div></section>
+        <section id="schedule-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
       <div class="glass-panel a1-schedule-shell border relative overflow-hidden">
         
         <div class="a1-schedule-header">
           <div>
-            <div class="a1-schedule-badge">
-              <i data-lucide="calendar" class="w-3.5 h-3.5" aria-hidden="true"></i>
-              <span>جدول الحضور الأسبوعي المعتمد</span>
-            </div>
             <h2 class="a1-schedule-title">
               جدول مواعيد <span id="schedule-target-label" class="text-gradient">مجموعة B1 • سكشن 1</span>
             </h2>
@@ -140,127 +78,25 @@
       </div>
     </section>
   </main>
-
-    <!-- ========================================== -->
-  <!-- 5. التذييل (Footer) -->
-  <!-- ========================================== -->
-  <footer class="border-t py-10 glass-header mt-auto">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-      
-      <!-- بطاقة توقيع صناع ومطورو المنصة -->
-      <div class="creators-showcase-card">
-        <!-- الشريط العلوي للبطاقة -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 mb-3.5 border-b border-[var(--border-subtle)]">
-          <div class="flex items-center gap-2.5">
-            <span class="p-1.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex-shrink-0">
-              <i data-lucide="code-2" class="w-4 h-4 text-cyan-400"></i>
-            </span>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="text-xs sm:text-sm font-bold text-[var(--text-main)]">صُنّاع وتطوير المنصة</span>
-                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold">Creators &amp; Developers</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2 flex-wrap">
-            <span class="px-3 py-1 rounded-xl text-xs font-semibold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 flex items-center gap-1.5 shadow-sm">
-              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
-              <span>دفعة الذكاء الاصطناعي 2026</span>
-            </span>
-          </div>
-        </div>
-
-                <!-- شبكة بطاقتي المهندسين -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 my-3.5">
-          <!-- المهندس أحمد أمير -->
-          <div class="developer-profile-card group">
-            <div class="developer-avatar bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-500 shadow-md shadow-indigo-500/25">
-              AA
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center justify-between gap-1 mb-0.5">
-                <span class="text-sm sm:text-base font-extrabold text-[var(--text-main)] group-hover:text-indigo-400 transition-colors font-mono tracking-tight" dir="ltr">
-                  Eng. Ahmed Amir
-                </span>
-                <span class="text-[10px] font-mono text-indigo-400 px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 font-bold">
-                  Developer
-                </span>
-              </div>
-              <div class="text-xs text-[var(--text-muted)] font-medium flex items-center gap-1.5">
-                <i data-lucide="code" class="w-3.5 h-3.5 text-indigo-400"></i>
-                <span>Creator &amp; Lead Developer</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- المهندس إياد أحمد -->
-          <div class="developer-profile-card group">
-            <div class="developer-avatar bg-gradient-to-tr from-cyan-600 via-indigo-600 to-purple-600 shadow-md shadow-purple-500/25">
-              EA
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center justify-between gap-1 mb-0.5">
-                <span class="text-sm sm:text-base font-extrabold text-[var(--text-main)] group-hover:text-cyan-400 transition-colors font-mono tracking-tight" dir="ltr">
-                  Eng. Eyad Ahmed
-                </span>
-                <span class="text-[10px] font-mono text-cyan-400 px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 font-bold">
-                  Developer
-                </span>
-              </div>
-              <div class="text-xs text-[var(--text-muted)] font-medium flex items-center gap-1.5">
-                <i data-lucide="terminal" class="w-3.5 h-3.5 text-cyan-400"></i>
-                <span>Creator &amp; Lead Developer</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- رسالة الإهداء والكلية -->
-        <div class="pt-3 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-muted)]">
-          <p class="flex items-center gap-2 text-center sm:text-right">
-            <i data-lucide="graduation-cap" class="w-4 h-4 text-indigo-400 flex-shrink-0"></i>
-            <span>تم إعداد وتطوير المنصة لخدمة طلاب كلية الحاسبات والمعلومات وقسم الذكاء الاصطناعي</span>
-          </p>
-          <span class="text-[11px] font-mono text-[var(--text-dim)] px-2.5 py-0.5 rounded-lg bg-[var(--bg-main)] border border-[var(--border-subtle)]">
-            Zagazig University • AI 2026
-          </span>
-        </div>
-      </div>
-
-            <!-- الشريط السفلي للفوتر -->
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-muted)] pt-3 border-t border-[var(--border-subtle)]">
-        <div class="flex items-center gap-2">
-          <i data-lucide="terminal" class="w-4 h-4 text-indigo-400"></i>
-          <span><bdi lang="en">Study Hub</bdi> • بوابة الذكاء الاصطناعي - جامعة الزقازيق 2026</span>
-        </div>
-        <div class="flex items-center gap-1.5 text-[var(--text-dim)]">
-          <span>صُنعت بكل</span>
-          <span class="text-rose-500 text-sm leading-none">♥</span>
-          <span>بواسطة <strong class="text-[var(--text-main)] font-mono" dir="ltr">Eng. Ahmed Amir</strong> &amp; <strong class="text-[var(--text-main)] font-mono" dir="ltr">Eng. Eyad Ahmed</strong></span>
-        </div>
-      </div>
-
-    </div>
-  </footer>
-
-  <nav class="a1-mobile-nav" aria-label="أقسام الرئيسية"><a href="#courses-section"><i data-lucide="grid-2x2" aria-hidden="true"></i>المواد</a><a href="#schedule-section"><i data-lucide="calendar-days" aria-hidden="true"></i>جدول الجامعة</a></nav>
-  <!-- ملفات الجافاسكربت -->
-  <script src="js/shared/dialog.js"></script>
+  <footer class="studio-footer"><a href="index.html" lang="en">Study Hub</a><span>من طلاب، لطلاب. <span lang="en">Zagazig University</span></span><span>تطوير <bdi>Ahmed Amir</bdi> و<bdi>Eyad Ahmed</bdi></span></footer>
+    <script src="js/shared/dialog.js"></script>
   <script src="js/shared/media.js"></script>
   <script src="js/shared/ui.js"></script>
   <script src="js/courses-data.js?v=1792424832344"></script>
   <script src="js/schedule-data.js?v=1792424832344"></script>
   <script src="js/a1-identity.js"></script>
+  <script src="js/a1-ui.js"></script>
   <script src="js/study-catalog.js"></script>
   <script src="js/shared/content-catalog.js"></script>
   <script src="js/shared/content-links.js"></script>
   <script src="js/shared/study-state.js"></script>
   <script src="js/study-save-status.js"></script>
-  <script src="js/a1-ui.js"></script>
-  <script src="js/a1-cursor.js"></script>
   <script src="js/profile-modal.js?v=1792424832344"></script>
   <script src="js/app.js?v=1792424832344"></script>
   <script src="js/a1-journey.js"></script>
-</body>
-</html>
+
+  <script src="js/studio.js"></script>
+  <script src="js/vendor/gsap/gsap.min.js"></script>
+  <script src="js/studio-motion.js"></script>
+  <script src="js/studio-energy.js"></script>
+</body></html>

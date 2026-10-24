@@ -16,7 +16,7 @@ async function scenario(name,fn,options={}) {
   const context=await browser.newContext({viewport:{width:1440,height:900},...options});
   await context.route('https://**', route => route.abort());
   // Functional regressions start after onboarding; dedicated A1 cases cover the intro itself.
-  await context.addInitScript(()=>{if(location.hostname==='127.0.0.1'){localStorage.setItem('sem2_first_visit_configured','true');window.sessionStorage.setItem('sem2-a1-processor-intro-v1','seen');}});
+  await context.addInitScript(()=>{if(location.hostname==='127.0.0.1'){localStorage.setItem('sem2_first_visit_configured','true');window.sessionStorage.setItem('sem2-studio-rift-intro-v3','seen');}});
   const page=await context.newPage();page.setDefaultTimeout(6000);
   await page.coverage.startJSCoverage({resetOnNavigation:false});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -101,13 +101,13 @@ async function main(){
     await go('index.html');const ids=await page.evaluate(()=>COURSES_DATA.map(c=>c.id));let cases=0;
     for(const id of ids){await go('subject.html?id='+id);for(let section=1;section<=12;section++){
       const result=await page.evaluate(({id,section})=>{StudentProfile.set('B'+Math.ceil(section/4),section);const c=COURSES_DATA.find(x=>x.id===id),staff=StudentProfile.getCourseStaff(id);return {count:document.querySelectorAll('#sections-list .btn-preview-pdf').length,expected:(c.sections||[]).filter(x=>StudentProfile.isTaMatch(x.ta,staff.ta)).length,staff:document.querySelector('#subject-ta').textContent.startsWith(staff.ta)};},{id,section});assert.equal(result.count,result.expected);assert(result.staff);cases++;
-    }await page.locator('[data-track="section"]').click();assert(await page.locator('#track-panel-section').isVisible());}
+    }await resource(page, 'sections');assert(await page.locator('#track-panel-section').isVisible());}
     assert.equal(cases,72);assert.deepEqual(errors,[]);
   });
   await scenario('pdf-video-and-dialog-cleanup',async({page,go})=>{
     await go('subject.html?id=computer-architecture');await page.locator('#lectures-list .btn-preview-pdf').first().click();await page.locator('#pdf-modal').waitFor({state:'visible'});assert((await page.locator('#pdf-modal-frame').getAttribute('src')).endsWith('/preview'));await page.keyboard.press('Escape');assert.equal(await page.locator('#pdf-modal-frame').getAttribute('src'),null);
     await resource(page,'videos');await page.locator('.btn-play-video').first().click();await page.locator('#video-modal').waitFor({state:'visible'});assert((await page.locator('#video-modal-frame').getAttribute('src')).includes('youtube.com/embed/'));await page.locator('#video-modal-close').click();assert.equal(await page.locator('#video-modal-frame').getAttribute('src'),null);
-    await page.locator('[data-track="section"]').click();await page.locator('#sections-list .btn-preview-pdf').first().click();await page.locator('#pdf-modal').waitFor({state:'visible'});await page.locator('#pdf-modal-close').click();
+    await resource(page, 'sections');await page.locator('#sections-list .btn-preview-pdf').first().click();await page.locator('#pdf-modal').waitFor({state:'visible'});await page.locator('#pdf-modal-close').click();
     await go('subject.html?id=data-structure&track=section');await resource(page,'assignments');await page.locator('#assignments-list .btn-preview-pdf').first().click();assert((await page.locator('#pdf-modal-frame').getAttribute('src')).includes('materials/ds/'));await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>document.body.style.overflow),'');
   });
   await scenario('quiz-scoring-completion-and-reset',async({page,go})=>{
@@ -125,7 +125,7 @@ async function main(){
   });
   await scenario('home-search-filters-and-pending-notice',async({page,go})=>{
     await go('index.html');for(const [category,count]of [['all',6],['CS',4],['IS',1],['General',1]]){await page.locator(`[data-filter="${category}"]`).click();assert.equal(await page.locator('#courses-grid article').count(),count);}await page.locator('[data-filter="all"]').click();for(const term of ['CS221','قواعد البيانات','cache']){await page.locator('#search-input').fill(term);assert.equal(await page.locator('#courses-grid article').count(),1);}await page.locator('#search-input').fill('no-such-course');assert(await page.locator('#no-results').isVisible());await page.locator('#clear-search').click();assert.equal(await page.locator('#courses-grid article').count(),6);
-    await page.locator('.a1-desktop-nav a[href="#schedule-section"]').click();await page.locator('#schedule-section').waitFor({state:'visible'});await page.evaluate(()=>StudentProfile.set('B2',6));assert(await page.locator('#schedule-data-notice').isVisible());await page.evaluate(()=>StudentProfile.set('B1',1));assert(!await page.locator('#schedule-data-notice').isVisible());
+    await page.locator('.studio-rail nav a[href="#schedule-section"]').click();await page.locator('#schedule-section').waitFor({state:'visible'});await page.evaluate(()=>StudentProfile.set('B2',6));assert(await page.locator('#schedule-data-notice').isVisible());await page.evaluate(()=>StudentProfile.set('B1',1));assert(!await page.locator('#schedule-data-notice').isVisible());
   });
   await scenario('corrupt-profile-does-not-break-home',async({page,go,errors})=>{
     await page.addInitScript(()=>{if(location.hostname==='127.0.0.1')localStorage.setItem('sem2_student_profile','null');});await go('index.html');assert.equal(await page.locator('#courses-grid article').count(),6);assert.equal(await page.evaluate(()=>StudentProfile.get().group),'B1');assert.deepEqual(errors,[]);

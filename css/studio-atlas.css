@@ -1,0 +1,113 @@
+/* Atlas revision: permanent energy, a branching source map and an open learning lane. */
+.studio-energy{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;border-radius:inherit;opacity:.8}
+body.studio.a1-intro-active{padding:0!important}
+body.studio.a1-intro-active>.studio-rail,body.studio.a1-intro-active>.studio-mobile-nav{display:none!important}
+body.studio .processor-intro{width:100%;flex-shrink:0}
+.studio-hero-copy,.studio-book-stack{position:relative;z-index:2}
+.studio-hero-orbit{display:none}
+body.studio .studio-hero{isolation:isolate}
+body.studio .studio-book{animation:book-hover 5s ease-in-out infinite;animation-play-state:paused}
+body.studio .studio-book.book-two{animation-delay:-1.8s}.studio-book.book-three{animation-delay:-3.4s}
+.energy-awake .studio-book{animation-play-state:running!important}
+body.studio .studio-book.is-dragging{animation-play-state:paused!important}
+@keyframes book-hover{0%,100%{translate:0 0}50%{translate:0 -9px}}
+body.studio .course-atlas{display:grid;grid-template-columns:minmax(265px,1fr) minmax(390px,1.3fr);gap:20px;position:relative;isolation:isolate;overflow:hidden;padding:26px 28px;margin:0 0 30px;background:#2737a5;border:0;border-radius:20px;color:#fff;min-height:295px}
+body.studio .course-atlas .studio-energy{opacity:.48}
+.atlas-copy{position:relative;z-index:2;min-width:0;align-self:center}
+.atlas-info{display:flex;align-items:start;flex-wrap:wrap;gap:7px 18px;margin-top:9px}
+.atlas-info:has(details[open]){display:block}
+body.studio .course-atlas .atlas-info>details{border:0;margin:0;padding:0}
+body.studio .course-atlas .atlas-info>details[open]{padding:12px}
+.atlas-course-controls{display:flex;align-items:center;gap:9px;margin-top:16px}
+body.studio .course-atlas .atlas-course-controls .studio-course-switch{margin:0;min-width:0;flex:1}
+body.studio .atlas-course-controls button{background:#e1edff;color:#213a8c;border:0;border-radius:8px;font-size:11px;padding:9px 13px;min-height:42px;white-space:nowrap}
+body.studio .atlas-course-controls button:hover{background:#fff}
+body.studio .course-atlas .a1-course-title-row{display:block}
+body.studio .course-atlas .a1-course-title-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+body.studio .course-atlas .a1-course-title-line h1{font:600 29px/1.55 Alexandria,Tahoma,sans-serif;color:#fff;text-align:right;max-width:19ch;letter-spacing:-.025em}
+body.studio .course-atlas #subject-title-ar{font-size:12px;color:#e7ebff;font-weight:400;margin-top:8px}
+body.studio .course-atlas #subject-badge-code{background:#ffffff18;border:1px solid #ffffff45;color:#fff;font:500 11px/1.6 Alexandria,sans-serif;padding:3px 9px}
+body.studio .course-atlas .studio-course-switch{color:#fff;background:#213089;border:1px solid #ffffff4d;font-size:11px;max-width:300px;margin:16px 0 8px;padding:9px 12px;min-height:42px}
+body.studio .course-atlas .studio-course-switch option{color:#252642;background:#fff}
+body.studio .course-atlas .a1-course-overview{font-size:11px;color:#e7ebff;margin:8px 0;max-width:60ch}
+body.studio .course-atlas .a1-course-overview summary{min-height:28px}
+body.studio .course-atlas #subject-desc,body.studio .course-atlas #subject-category{color:#e7ebff;font-size:11px;line-height:1.9}
+body.studio .course-atlas .a1-course-context{position:relative;inset:auto;max-width:390px;border:0;border-top:1px solid #ffffff38;border-radius:0;background:transparent;color:#eef1ff;padding:9px 0 0;margin-top:9px;font-size:11px}
+body.studio .course-atlas .a1-course-context>summary{min-height:30px;color:#fff;font-weight:400}
+body.studio .course-atlas .a1-course-context[open]{background:var(--paper);color:var(--ink);padding:15px;border-radius:10px;border:0;margin-top:14px}
+body.studio .course-atlas .a1-course-context[open]>summary{color:var(--ink)}
+body.studio .course-atlas .a1-course-context[open] *{color:var(--ink)}
+.atlas-map{height:255px;position:relative;min-width:0;z-index:2;align-self:center}
+.atlas-connections{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.atlas-connections path{fill:none;stroke:#b4c4ff70;stroke-width:1.4;stroke-dasharray:5 8;animation:atlas-current 2.2s linear infinite;animation-play-state:paused}
+.energy-awake .atlas-connections path{animation-play-state:running}
+.atlas-connections path.is-active{stroke:#d9f6e5;stroke-width:2.5;stroke-dasharray:9 5}
+@keyframes atlas-current{to{stroke-dashoffset:-65}}
+.atlas-core{position:absolute;left:50%;top:50%;translate:-50% -50%;width:79px;height:79px;display:flex;align-items:center;justify-content:center;isolation:isolate}
+body.studio .course-atlas #subject-icon-box{width:66px;height:66px;border-radius:17px;background:var(--course-wash);border:0;color:var(--course-tone);box-shadow:0 8px 20px #0002;z-index:2}
+body.studio .course-atlas #subject-icon-box svg{width:35px;height:35px;stroke-width:1.7}
+.atlas-core-ring{position:absolute;inset:-7px;border:1px solid #d8e2ff66;border-radius:26px;rotate:45deg;animation:atlas-spin 21s linear infinite;animation-play-state:paused;pointer-events:none}
+.atlas-core-ring:nth-child(2){inset:-20px;border-style:dashed;border-color:#d8e2ff40;animation-direction:reverse;animation-duration:34s}
+.energy-awake .atlas-core-ring{animation-play-state:running}
+@keyframes atlas-spin{to{rotate:405deg}}
+.atlas-core-caption{position:absolute;top:calc(100% + 18px);font:500 10px/1.6 Alexandria,sans-serif;color:#f4f5ff;background:#2737a5;padding:0 5px;white-space:nowrap}
+body.studio .atlas-branches{position:absolute;inset:0;display:block;padding:0;margin:0;border:0;border-radius:0;background:transparent;overflow:visible;max-width:none;z-index:3}
+body.studio .atlas-branches button{position:absolute;display:grid;grid-template-columns:25px minmax(0,1fr);column-gap:8px;align-items:center;text-align:right;background:#3042ae;border:1px solid #aabfff88;border-radius:12px;padding:10px 12px;color:#fff;min-height:65px;width:143px;box-shadow:0 6px 15px #00000013;font-weight:500;transition:background .2s,border-color .2s,translate .3s cubic-bezier(.2,1.5,.4,1)}
+body.studio .atlas-branches button svg{display:block;width:23px;height:23px;grid-column:1;grid-row:1/3;margin:0;color:#fff}
+body.studio .atlas-branches button span{grid-column:2;font-size:12px;white-space:nowrap}
+body.studio .atlas-branches button small{grid-column:2;color:#e4eaff;font-size:10px;font-weight:400;line-height:1.7}
+body.studio .atlas-branches button[aria-pressed="true"]{background:#e3edff;color:#213a8c;border-color:#e3edff;box-shadow:0 8px 22px #0002}
+body.studio .atlas-branches button[aria-pressed="true"] :is(svg,small){color:#213a8c}
+body.studio .atlas-branches button:hover{translate:0 -5px;border-color:#fff;background:#3b50bd}
+body.studio .atlas-branches button[aria-pressed="true"]:hover{background:#fff;color:#213a8c}
+body.studio .atlas-branches button:focus-visible{outline:3px solid #ffd79d;outline-offset:4px}
+.atlas-branches [data-resource-kind="lectures"]{right:0;top:15px}
+.atlas-branches [data-resource-kind="sections"]{right:0;bottom:15px}
+.atlas-branches [data-resource-kind="videos"]{left:0;top:0}
+.atlas-branches [data-resource-kind="assignments"]{left:0;top:95px}
+.atlas-branches [data-resource-kind="resources"]{left:0;bottom:0}
+body.studio .atlas-workspace{display:block}
+body.studio .atlas-workspace .a1-materials{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:25px 30px}
+.atlas-collection-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 0 22px;margin-bottom:0}
+body.studio .atlas-collection-heading h2{font-size:22px;font-weight:600;line-height:1.6;margin:0 0 4px}
+.atlas-collection-heading p{font-size:12px;color:var(--muted);line-height:1.9}
+.atlas-live-indicator{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);white-space:nowrap}
+.atlas-live-indicator>span{width:7px;height:7px;border-radius:50%;background:var(--positive);box-shadow:0 0 0 5px var(--soft)}
+body.studio .atlas-workspace .a1-family-heading{border:0!important;margin-bottom:0!important;padding:0 0 18px!important}
+body.studio .atlas-workspace .a1-family-heading h3{font-size:13px;font-weight:500;color:var(--muted)}
+body.studio .atlas-workspace .a1-family-caption>[id^="badge-"]{font-size:11px}
+body.studio .atlas-workspace :is(#lectures-list,#sections-list,#assignments-list,#video-explanations-list,#theory-resources-list,#practical-resources-list){display:block;position:relative}
+body.studio .atlas-workspace .a1-source-row{display:grid;grid-template-columns:50px minmax(0,1fr);gap:11px 20px;padding:24px 0;margin:0!important;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;position:relative;isolation:isolate}
+body.studio .atlas-workspace .a1-source-row:last-child{border-bottom:0}
+.atlas-source-marker{grid-column:1;grid-row:1/4;display:grid;place-items:center;width:48px;height:48px;font:500 16px/1.5 Alexandria,sans-serif;color:var(--accent);background:var(--soft);border-radius:14px;position:relative;transition:transform .4s cubic-bezier(.2,1.4,.4,1)}
+.atlas-has-explanation .atlas-source-marker{background:var(--course-wash);color:var(--course-tone)}
+.atlas-source-marker:after{content:"";position:absolute;top:calc(100% + 10px);left:50%;height:65px;border-left:1px dashed var(--line)}
+.a1-source-row:last-child .atlas-source-marker:after{display:none}
+body.studio .atlas-workspace .a1-source-copy{grid-column:2;grid-row:1}
+body.studio .atlas-workspace .a1-source-copy h4{font:500 18px/1.7 Alexandria,Tahoma,sans-serif;text-wrap:balance;color:var(--ink)}
+body.studio .atlas-workspace .a1-source-copy>p{font-size:12px;line-height:1.9}
+body.studio .atlas-workspace .a1-source-copy>.a1-source-meta{font-size:11px;margin-top:5px}
+body.studio .atlas-workspace .a1-source-actions{grid-column:2;grid-row:2;gap:7px}
+body.studio .atlas-workspace .a1-source-actions>:is(a,button){border-radius:8px;font-size:11px;min-height:42px;padding:9px 13px}
+body.studio .atlas-workspace .a1-source-actions>.a1-action-primary{padding-inline:18px}
+body.studio .atlas-workspace .a1-source-details{grid-column:2;grid-row:3;border:0;padding:0}
+body.studio .atlas-workspace .a1-source-details summary{font-size:11px;min-height:28px;color:var(--muted);padding:2px 0}
+body.studio[data-motion="on"] .atlas-workspace .a1-source-row:hover .atlas-source-marker{transform:translateY(-6px) rotate(-8deg) scale(1.08)}
+body.studio .course-atlas #subject-icon-box{color:var(--course-tone)!important}
+[data-theme="dark"] body.studio .atlas-has-explanation .atlas-source-marker{color:var(--ink)}
+[data-theme="dark"] body.studio .course-atlas #subject-icon-box{color:var(--ink)!important}
+body.studio[data-motion="on"] .atlas-workspace .a1-source-actions>.a1-action-primary{transition:transform .3s cubic-bezier(.2,1.4,.4,1),background .2s}
+body.studio[data-motion="on"] .atlas-workspace .a1-source-actions>.a1-action-primary:hover{transform:translateY(-3px) scale(1.04)}
+[data-theme="reading"] body.studio .course-atlas{background:#285b4d}
+[data-theme="reading"] body.studio .atlas-core-caption{background:#285b4d}
+[data-theme="reading"] body.studio .atlas-branches button{background:#2d6958}
+[data-theme="reading"] body.studio .atlas-branches button[aria-pressed="true"]{background:#e5f2e5;color:#23523f}
+[data-theme="reading"] body.studio .atlas-branches button[aria-pressed="true"] :is(svg,small){color:#23523f}
+@media(max-width:1300px){body.studio .course-atlas{grid-template-columns:minmax(235px,.9fr) minmax(355px,1.2fr);gap:20px;padding:24px}.atlas-map{height:245px}body.studio .atlas-branches button{width:128px;padding:10px;column-gap:7px}body.studio .course-atlas .a1-course-title-line h1{font-size:26px}}
+@media(max-width:1100px){body.studio .course-atlas{grid-template-columns:1fr;gap:15px}.atlas-map{width:100%;max-width:600px;justify-self:center;height:230px}body.studio .atlas-branches button{width:150px}.atlas-branches [data-resource-kind="assignments"]{top:82px}body.studio .course-atlas .a1-course-title-line h1{max-width:none}.atlas-copy{width:100%}body.studio .course-atlas .studio-course-switch{max-width:none}body.studio .course-atlas .a1-course-context{max-width:none}}
+@media(max-width:800px){body.studio .course-atlas{padding:20px;gap:12px;border-radius:16px;margin-bottom:20px}.atlas-map{max-width:550px;height:220px}.atlas-branches [data-resource-kind="assignments"]{top:78px}body.studio .atlas-workspace .a1-materials{padding:21px}.atlas-live-indicator{display:none}body.studio .atlas-collection-heading h2{font-size:20px}.atlas-collection-heading p{font-size:11px}body.studio .atlas-workspace .a1-source-row{column-gap:13px}.atlas-branches [data-resource-kind="sections"]{bottom:10px}}
+@media(max-width:540px){body.studio[data-page="subject"] main{padding-top:16px}body.studio .a1-course-breadcrumb{margin-bottom:13px!important;padding-bottom:8px!important}body.studio .course-atlas{padding:16px 13px 17px;gap:14px;margin-bottom:17px}body.studio .course-atlas .a1-course-title-line h1{font-size:21px;line-height:1.5}body.studio .course-atlas #subject-title-ar{font-size:11px;margin-top:5px}body.studio .course-atlas .a1-course-title-line{gap:7px}body.studio .course-atlas .studio-course-switch{font-size:11px;margin:9px 0 0;padding:7px 10px;min-height:38px}body.studio .course-atlas .a1-course-overview{display:inline-block;margin:5px 0 0}body.studio .course-atlas .a1-course-overview summary{min-height:24px;font-size:11px}body.studio .course-atlas .a1-course-context{margin-top:0;padding-top:0;border:0;font-size:11px}body.studio .course-atlas .a1-course-context>summary{min-height:27px}body.studio .course-atlas .a1-course-context[open]{margin-top:10px}.atlas-map{height:198px}.atlas-core{width:55px;height:55px}body.studio .course-atlas #subject-icon-box{width:47px;height:47px;border-radius:12px}body.studio .course-atlas #subject-icon-box svg{width:26px;height:26px}.atlas-core-ring{inset:-5px;border-radius:19px}.atlas-core-ring:nth-child(2){inset:-13px;border-radius:21px}.atlas-core-caption{top:calc(100% + 11px);font-size:9px}body.studio .atlas-branches button{width:105px;min-height:53px;grid-template-columns:19px minmax(0,1fr);column-gap:5px;padding:7px 8px;border-radius:9px}body.studio .atlas-branches button svg{width:18px;height:18px}body.studio .atlas-branches button span{font-size:11px}body.studio .atlas-branches button small{font-size:10px}.atlas-branches [data-resource-kind="lectures"]{top:13px}.atlas-branches [data-resource-kind="sections"]{bottom:13px}.atlas-branches [data-resource-kind="assignments"]{top:72px}body.studio .atlas-workspace .a1-materials{padding:17px 13px;border-radius:12px}.atlas-collection-heading{padding-bottom:15px;gap:8px}body.studio .atlas-workspace .a1-source-row{grid-template-columns:34px minmax(0,1fr);gap:8px 10px;padding:20px 0}.atlas-source-marker{width:33px;height:36px;border-radius:9px;font-size:12px}.atlas-source-marker:after{height:95px}body.studio .atlas-workspace .a1-source-copy h4{font-size:16px;line-height:1.7}body.studio .atlas-workspace .a1-source-copy>p{font-size:11px}body.studio .atlas-workspace .a1-source-actions>:is(a,button){font-size:11px;padding:8px 10px}body.studio .atlas-workspace .a1-family-heading{gap:10px!important;padding-bottom:5px!important}body.studio .atlas-workspace .a1-family-heading h3{font-size:11px}body.studio .atlas-workspace .a1-source-actions>.a1-action-primary{padding-inline:12px}}
+@media(max-width:359px){body.studio .atlas-branches button{width:93px;padding-inline:6px;grid-template-columns:16px minmax(0,1fr);column-gap:4px}body.studio .atlas-branches button span{font-size:10px}.atlas-core{left:51%;width:47px;height:47px}body.studio .course-atlas #subject-icon-box{width:40px;height:40px}body.studio .course-atlas .a1-course-title-line h1{font-size:19px}body.studio .atlas-workspace .a1-source-row{grid-template-columns:1fr}.atlas-source-marker{display:none}body.studio .atlas-workspace :is(.a1-source-copy,.a1-source-actions,.a1-source-details){grid-column:1}}
+@media(prefers-reduced-motion:reduce){body.studio .studio-book,.atlas-connections path,.atlas-core-ring{animation:none!important}body.studio .atlas-branches button{transition:background .15s,border-color .15s}.studio-energy{opacity:.5}}
+@media(max-width:760px){body.studio .course-atlas .atlas-info{display:flex;flex-wrap:wrap;align-items:center;gap:4px 13px}body.studio .course-atlas .atlas-info>details:not([open]){flex:0 0 auto;width:max-content;max-width:none}.a1-course-breadcrumb>div:first-child>span:nth-of-type(2),.a1-course-breadcrumb>div:first-child>span:nth-of-type(3){display:none}}
+@media(max-width:540px){.atlas-course-controls{margin-top:10px}.atlas-map{height:180px}.atlas-branches [data-resource-kind="assignments"]{top:63px}body.studio .course-atlas .atlas-info{margin-top:7px}.atlas-collection-heading{padding-bottom:10px}body.studio .atlas-collection-heading h2{font-size:19px;line-height:1.5}.atlas-collection-heading p{line-height:1.7}body.studio .atlas-workspace .a1-source-row{padding-block:17px}}

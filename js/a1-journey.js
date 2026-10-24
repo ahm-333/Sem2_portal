@@ -18,7 +18,7 @@
     show();
     window.addEventListener('hashchange', () => { show(); window.scrollTo({top: 0, behavior: 'instant'}); document.querySelector('main').focus({preventScroll: true}); });
     const subtitle = courses.querySelector('p');
-    if (subtitle) subtitle.textContent = 'اختار المادة، وبعدها نوع المصدر اللي محتاجه.';
+    if (subtitle) subtitle.textContent = 'محاضرات وسكاشن ومصادر. ابدأ من اللي محتاجه.';
   }
   function subject() {
     const main = document.getElementById('main-content');

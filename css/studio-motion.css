@@ -1,0 +1,81 @@
+/* The user asked for exuberant motion. Controls and readable defaults stay intact. */
+body.studio .a1-course::before,body.studio .a1-course::after{display:none}
+body.studio .a1-welcome{background:none}
+body.studio .studio-greeting h1{font-size:28px;font-weight:650}
+body.studio .studio-book-stack{isolation:isolate;overflow:visible}
+body.studio .studio-book{touch-action:pan-y;user-select:none;cursor:grab}
+body.studio .studio-book.is-dragging{cursor:grabbing;z-index:8;transition:none}
+body.studio .studio-book small{font-size:11px;line-height:1.7}
+body.studio .studio-hero{position:relative;isolation:isolate}
+.studio-hero-copy,.studio-book-stack{z-index:2}
+body.studio .a1-course{position:relative;transform-origin:50% 65%;overflow:visible;isolation:isolate}
+body.studio .a1-course-heading{border-radius:12px 12px 0 0}
+body.studio .a1-course-link{border-radius:12px 12px 0 0}
+body.studio .a1-course-title p{font-size:11px}
+body.studio .a1-course-counts{font-size:11px}
+body.studio .a1-course-icon{transform:none}
+body.studio .a1-course-enter{font-size:11px}
+body.studio .a1-course:hover{z-index:5}
+body.studio .a1-course-link:focus-visible{outline-offset:3px!important}
+body.studio .studio-book:focus-visible{outline-offset:6px}
+body.studio .studio-button,body.studio .filter-chip{position:relative;overflow:visible}
+body.studio .studio-quick-actions{border-radius:0 0 12px 12px;overflow:hidden;margin-top:auto}
+.studio-motion-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:40px;min-height:40px}
+.studio-motion-toggle svg{width:17px;height:17px}.studio-motion-toggle[aria-pressed="false"]{opacity:.7}
+.studio-motion-label{font-size:11px}
+.studio-play-button{position:absolute;left:16px;top:12px;display:flex;align-items:center;gap:7px;color:#fff;font-size:11px;min-height:36px;border-radius:8px;padding:6px 10px;background:#ffffff15;z-index:5;border:1px solid #ffffff40}
+.studio-play-button svg{width:15px;height:15px}.studio-play-button:hover{background:#ffffff2b}.studio-play-button:focus-visible{outline-color:#fff!important}
+.studio-hero-orbit{position:absolute;width:310px;height:310px;left:3%;top:20%;border:1px solid #ffffff24;border-radius:50%;z-index:0;pointer-events:none}
+.studio-hero-orbit:before,.studio-hero-orbit:after{content:"";position:absolute;border:1px solid #ffffff18;border-radius:50%;inset:-30px}
+.studio-hero-orbit:after{inset:30px}
+.studio-particle{position:fixed;width:8px;height:8px;pointer-events:none;z-index:150;border-radius:2px;contain:strict}
+.studio-pointer-note{position:absolute;inset:14px 0 auto;text-align:center;font-size:11px;color:#f0f0ff;pointer-events:none}
+.studio-hero-copy{position:relative}
+body.studio .a1-course-breadcrumb #share-btn{width:42px;min-height:42px;display:flex;align-items:center;justify-content:center;color:var(--accent);border:1px solid var(--line);background:var(--paper);border-radius:9px;flex-shrink:0}
+#share-btn svg{width:18px;height:18px}
+body.studio .a1-course-breadcrumb>div:first-child{min-width:0;flex-wrap:wrap}
+body.studio .a1-course-heading-panel{position:relative}
+body.studio .studio-page-heading h1{font-weight:600}
+body.studio .a1-source-row:focus-within{border-color:var(--accent)}
+body.studio[data-motion="on"] .studio-rail nav a{transition:background .2s,color .2s}
+body.studio[data-motion="on"] .studio-mobile-nav a{transition:background .2s,color .2s}
+body.studio .a1-course-title h3{font-weight:600}
+body.studio .studio-book.book-one{background:#d6eddf}
+body.studio .studio-book.book-two{background:#fbe0e9}
+body.studio .a1-track-tabs{display:none}
+body.studio .studio-course-switch{display:block;max-width:300px;margin-top:15px;border:1px solid var(--line);border-radius:8px;background:var(--bg);padding:9px 12px;font-size:12px;color:var(--ink)}
+body.studio #courses-grid .a1-course-title h3{font-family:Alexandria,Tahoma,sans-serif;font-size:20px}
+body.studio .a1-course-title-line h1,body.studio .studio-library-row h3,body.studio .a1-source-copy h4{font-family:Alexandria,Tahoma,sans-serif}
+body.studio .studio-book span{font-family:Alexandria,Tahoma,sans-serif;font-size:15px}
+body.studio .a1-schedule-shell{padding:0;background:transparent;border:0}
+body.studio .a1-schedule-card{border:0;border-radius:0;background:transparent;border-bottom:1px solid var(--line);padding:12px 0}
+body.studio .a1-schedule-card:last-child{border-bottom:0}
+body.studio .studio-topbar .a1-header-actions{min-height:0;flex:0 1 auto;flex-wrap:nowrap;justify-content:flex-start;padding-block:0}
+@media(min-width:801px){body.studio .studio-hero{padding-top:40px;padding-bottom:36px}.studio-motion-label{display:none}}
+@media(max-width:800px){.studio-motion-label{display:none}body.studio .studio-topbar .a1-header-actions{margin-inline-start:auto}.studio-motion-toggle{width:35px;min-width:35px!important;padding:5px!important}body.studio .studio-topbar .a1-header-actions>.a1-profile{min-width:0}}
+@media(max-width:540px){body.studio .studio-greeting h1{font-size:22px}.studio-play-button{top:9px;left:10px;padding:5px 7px;font-size:11px;min-height:30px}body.studio .studio-hero{padding-top:40px;max-height:none}.studio-book-stack{height:230px!important;transform:scale(.74)!important;margin-top:18px!important}.studio-topbar .a1-brand small{display:none}.studio-topbar .a1-brand{gap:8px}body.studio .studio-topbar{gap:8px;padding-inline:14px}.studio-topbar .a1-brand strong{font-size:17px}.studio-topbar .student-profile-badge{font-size:11px}body.studio .a1-brand-mark{width:21px;height:27px}body.studio .studio-topbar .a1-header-actions{gap:3px}body.studio .a1-theme-cycle{min-width:34px;width:34px;min-height:38px;padding:7px}.studio-topbar .a1-profile{padding:6px!important}.studio-topbar .student-profile-badge>svg{display:none}body.studio .a1-course-counts{font-size:11px;line-height:1.75}body.studio .a1-course-title p{font-size:11px;min-height:40px}.studio-quick-actions a{font-size:11px;gap:5px}.studio-quick-actions svg{display:none}body.studio .a1-course-title{padding-inline:11px}body.studio .a1-course-code{font-size:11px}.studio-hero-orbit{width:230px;height:230px;left:10%;top:47%}body.studio .studio-section-heading{gap:8px}body.studio .studio-section-heading>span{padding:0;border:0;background:transparent}body.studio #courses-grid h3{font-size:17px}.studio-greeting p{font-size:12px}body.studio .studio-course-filters{gap:2px}body.studio .filter-chip{font-size:11px;padding-inline:8px}.studio-library-row p{font-size:11px}.studio-library-tools label{font-size:11px}}
+@media(max-width:359px){body.studio .studio-topbar .a1-profile{max-width:142px}.studio-topbar .student-profile-badge{font-size:10px!important}.studio-topbar .a1-brand strong{font-size:15px}body.studio #courses-grid{grid-template-columns:1fr}.studio-motion-toggle{width:30px;min-width:30px!important}}
+@media(max-width:800px){body.studio[data-page="subject"] .a1-brand strong{display:block}body.studio .a1-course-breadcrumb{flex-direction:row!important;align-items:center!important}body.studio .a1-resource-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:10px;scrollbar-width:thin}body.studio .a1-resource-tabs button{flex-shrink:0}body.studio .a1-course-context{padding:10px 15px}body.studio .a1-course-context>summary{min-height:32px}body.studio .a1-course-heading-panel{margin-bottom:17px;padding:15px}body.studio .a1-course-heading-panel #quick-course-select{margin-top:11px;min-height:42px}body.studio .a1-course-layout{gap:17px}}
+@media(max-width:540px){body.studio #courses-grid .a1-course-title h3{font-size:17px}body.studio .a1-resource-tabs button{font-size:11px;padding-inline:11px}.studio-hero-copy h2{font-size:28px!important}body.studio .a1-course-title-line h1{font-size:21px}body.studio #subject-icon-box{width:42px;height:42px}body.studio .a1-course-heading-panel>.a1-course-title-row{gap:9px}body.studio .studio-course-switch{max-width:none}}
+[data-theme="dark"] body.studio .a1-course-icon,[data-theme="dark"] body.studio .studio-library-row>span:first-child,[data-theme="dark"] body.studio #subject-icon-box{color:var(--ink)!important}
+[data-theme="reading"]{--warning:#74500a}
+/* Keep the previously accepted shared portal/OS mark as an identity asset. */
+body.studio .a1-brand-mark{width:20px;height:26px;border-radius:3px 3px 9px 3px;background:#2357ae;box-shadow:-5px 5px 0 #e8f0ff}
+body.studio .a1-brand-mark:after{display:none}
+@media(max-width:760px){
+  body.studio .a1-reader-header{display:flex;flex-wrap:wrap;align-items:center;padding:10px 12px!important;gap:7px!important;min-height:0}
+  body.studio .a1-reader-header>div:first-child{width:100%;flex:1 1 100%!important;min-height:0}
+  body.studio .a1-reader-header>div:first-child>.icon-box-modern,body.studio .a1-reader-header>div:first-child .truncate>div{display:none}
+  body.studio .a1-reader-header>div:last-child{display:flex;width:100%;justify-content:flex-end;align-items:center;gap:6px;min-height:44px}
+  body.studio #study-modal-title{font:500 13px/1.7 Alexandria,Tahoma,sans-serif;margin:0}
+  body.studio .a1-reader-toolbar{padding:8px 10px;min-height:0}
+  body.studio .a1-reader-modes{gap:4px}
+  body.studio .a1-reader-modes>button{font-size:11px;padding:7px;min-height:44px;border-radius:8px}
+  body.studio #study-tab-btn-quiz{gap:4px;flex-wrap:wrap}
+  body.studio #study-tab-btn-quiz svg{display:none}
+  body.studio #study-tab-btn-quiz>span:first-of-type{font-size:11px}
+  body.studio #study-full-quiz-badge{font-size:10px;padding:1px 6px}
+  body.studio .a1-reader-zoom{padding:0 4px;gap:0}
+  body.studio .a1-reader-zoom button{min-height:38px;min-width:38px}
+}
+@media(prefers-reduced-motion:reduce){body.studio *,body.studio *::before,body.studio *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.studio-particle{display:none}.studio-book:hover{transform:none}}

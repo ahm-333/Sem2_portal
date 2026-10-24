@@ -4,6 +4,9 @@
 node_modules/
 test-results/
 coverage/
+
+# Generated design captures and local diagnostics (keep the design-system source).
+.impeccable/review*/
 push_err.txt
 push_out.txt
 

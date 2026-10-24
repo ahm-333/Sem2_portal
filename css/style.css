@@ -26,9 +26,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   header > div > div:last-child { min-width: 0; flex: 1 1 280px; justify-content: space-between; }
   .student-profile-badge { font-size: 11px; }
   #study-modal-container { width: 100%; height: 100dvh; }
-  #study-modal-container > div:first-child { gap: .4rem; padding: .65rem; }
-  #study-modal-container > div:first-child > div:first-child { min-width: 0; flex: 1; }
-  #study-modal-container > div:nth-child(2) > div { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); width: 100%; }
+  .a1-reader-header { gap: .4rem; padding: .65rem; }
+  .a1-reader-header > div:first-child { min-width: 0; flex: 1; }
+  .a1-reader-toolbar > div { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); width: 100%; }
   .study-nav-tab { min-width: 0; flex-wrap: wrap; justify-content: center; padding: .5rem; font-size: 11px; gap: .25rem; }
   .study-nav-tab span { min-width: 0; }
 }

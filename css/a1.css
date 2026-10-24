@@ -152,7 +152,7 @@ body.a1 :is(#lectures-list,#sections-list,#theory-resources-list,#practical-reso
 body.a1 :is(#pdf-modal,#video-modal,#lecture-study-modal,#student-profile-modal,#copy-link-fallback) {z-index:100}
 body.a1 :is(#pdf-modal,#video-modal,#lecture-study-modal,#student-profile-modal)>.glass-panel {box-shadow:0 20px 70px #07152a40;border-radius:17px}
 body.a1 #study-modal-container {background:var(--paper)}
-body.a1 #study-modal-container>div:first-child {background:var(--paper)}
+body.a1 .a1-reader-header {background:var(--paper)}
 body.a1 #study-slides-feed {background:var(--bg);line-height:2}
 body.a1 .slide-study-card {border-radius:16px;box-shadow:none}
 body.a1 .slide-study-card h3 {font-size:23px;line-height:1.6}
@@ -242,9 +242,9 @@ body.a1 .processor-intro * {transition:none}
   body.a1 .track-btn {padding:13px;gap:12px}
   body.a1 .track-btn>div:first-child {width:36px;height:36px}
   body.a1 :is(#pdf-modal,#video-modal,#lecture-study-modal,#student-profile-modal)>.glass-panel {border-radius:0}
-  body.a1 #study-modal-container>div:first-child {flex-wrap:wrap;align-items:center;gap:8px}
-  body.a1 #study-modal-container>div:first-child>div:first-child {flex:1 1 140px}
-  body.a1 #study-modal-container>div:first-child>div:last-child {gap:4px}
+  body.a1 .a1-reader-header {flex-wrap:wrap;align-items:center;gap:8px}
+  body.a1 .a1-reader-header>div:first-child {flex:1 1 140px}
+  body.a1 .a1-reader-header>div:last-child {gap:4px}
   body.a1 .a1-reader-header>div:first-child {flex-basis:100%!important}
   body.a1 .a1-reader-header>div:last-child {width:100%;justify-content:flex-end}
   body.a1 .a1-reader-zoom {display:flex;margin-inline-end:auto;padding-block:0}
