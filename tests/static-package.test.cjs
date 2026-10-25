@@ -11,10 +11,26 @@ test('standalone teaching bodies remain unchanged across platform line endings',
   const baseline=require('../docs/review/performance/content-baseline.json');
   for(const [file,hash] of Object.entries(baseline.files)){
     const html=fs.readFileSync(path.join(root,file),'utf8');
-    const body=html.slice(html.indexOf('<body')).replace('../../js/vendor/mermaid/mermaid.min.js','https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js').replace('../../css/vendor/fontawesome/css/all.min.css','https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
+    let body=html.slice(html.indexOf('<body')).replace('../../js/vendor/mermaid/mermaid.min.js','https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js').replace('../../css/vendor/fontawesome/css/all.min.css','https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
+    for(const change of baseline.navigationFixes?.[file] || [])body=body.replaceAll(change.after,change.before);
     assert.equal(crypto.createHash('sha256').update(body.replace(/\r\n/g,'\n')).digest('hex'),hash,file);
     assert(!html.includes('cdn.tailwindcss.com'),file);
   }
+});
+test('every local link in the standalone study pages resolves',()=>{
+  const root=path.resolve(__dirname,'..'),missing=[];
+  for(const folder of ['arch','db','ds'])for(const name of fs.readdirSync(path.join(root,'study',folder)).filter(file=>file.endsWith('.html'))){
+    const file=`study/${folder}/${name}`,html=fs.readFileSync(path.join(root,file),'utf8'),base=new URL('https://portal.local/'+file);
+    for(const match of html.matchAll(/<a\b[^>]*\bhref=["']([^"']+)["']/gi)){
+      const href=match[1];if(href.startsWith('#')||href.includes('${'))continue;
+      const url=new URL(href,base);if(url.origin!==base.origin)continue;
+      let target=path.join(root,decodeURIComponent(url.pathname));
+      if(fs.existsSync(target)&&fs.statSync(target).isDirectory())target=path.join(target,'index.html');
+      const relative=path.relative(root,target).split(path.sep).join('/');
+      if(!fs.existsSync(target)||!(['index.html','subject.html'].includes(relative)||runtime(relative)))missing.push({file,href});
+    }
+  }
+  assert.deepEqual(missing,[],'standalone navigation must not lead to missing pages');
 });
 test('mirrored study fonts have their content hash and WOFF2 signature',()=>{
   const dir=path.resolve(__dirname,'../css/fonts/study');

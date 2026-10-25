@@ -12,5 +12,25 @@
     "study/ds/lecture-2.html": "c5ee0c9285efe58f354f8a2e16c3f765d8705588e52306dbaddaf0bcc4a4f9df",
     "study/ds/lecture-3.html": "70e163b3b45e7a88f4a4d4528ad0144d1d16f9b26ec6c938e72190c030835bd2"
   },
-  "normalization": "CRLF is normalized to LF; teaching bodies were first verified against the original byte hashes before this platform normalization."
+  "normalization": "CRLF is normalized to LF; teaching bodies were first verified against the original byte hashes before this platform normalization.",
+  "navigationFixes": {
+    "study/arch/chapter-1.html": [
+      {
+        "before": "<a href=\"../index.html\">",
+        "after": "<a href=\"../../index.html\">"
+      },
+      {
+        "before": "<a href=\"../chapters.html\">",
+        "after": "<a href=\"index.html\">"
+      },
+      {
+        "before": "<a href=\"../chapters.html\" class=\"btn-secondary\">",
+        "after": "<a href=\"index.html\" class=\"btn-secondary\">"
+      },
+      {
+        "before": "<a href=\"../index.html\" class=\"btn-primary\">",
+        "after": "<a href=\"../../index.html\" class=\"btn-primary\">"
+      }
+    ]
+  }
 }

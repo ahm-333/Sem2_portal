@@ -14,6 +14,7 @@ Audited source: `547b084330cb744bf9bd6dfc363243c49deafc8e` from `ahm-333/Sem2_po
 8. **Standalone fonts, icons and diagrams required third-party CDNs.** Existing Google Fonts responses and licenses are mirrored locally with the same families, weights and subsets. Font Awesome 6.5.1 and Mermaid 10.9.8 match the previous CDN versions and are vendored from pinned dependencies. The upstream Mermaid license omitted from its npm package is included from release commit `49c1a1c7d1faa995b07cc7224543bd0d9a7a9e70`. Builds do not fetch fonts or executable code from CDNs.
 9. **Opening assets formed an unnecessary network waterfall.** Independent GSAP plugins now load concurrently after the core, before the unchanged processor composition is mounted. Cancellation checks remain between stages.
 10. **New study/release changes did not all trigger CI.** The quality workflow includes `study/**` and deployment configuration. `npm run verify` now tests the actual packaged artifact as well as source behavior.
+11. **Four navigation links in Architecture chapter 1 returned 404.** Home links now point to the real portal root and chapter-index links point to the existing Architecture index. A static link regression checks every standalone page. The content baseline records exactly these four permitted opening-tag changes; all teaching bodies still match the original after normalizing those navigation targets and line endings.
 
 ## Evidence and limits
 
