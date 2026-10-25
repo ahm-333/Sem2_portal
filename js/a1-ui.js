@@ -57,17 +57,16 @@
     pending = true; shell(true);
     timer = window.setTimeout(() => finish('timeout'), 8000);
     try {
-      for (const file of [
-        'js/vendor/gsap/gsap.min.js',
+      if (!window.gsap) await load('js/vendor/gsap/gsap.min.js', token);
+      if (token !== generation) return;
+      await Promise.all([
         'js/vendor/gsap/ScrollTrigger.min.js',
         'js/vendor/gsap/Draggable.min.js',
-        'js/vendor/gsap/InertiaPlugin.min.js',
-        'js/processor-intro.js'
-      ]) {
-        if (file.endsWith('/gsap.min.js') && window.gsap) continue;
-        await load(file, token);
-        if (token !== generation) return;
-      }
+        'js/vendor/gsap/InertiaPlugin.min.js'
+      ].map(file => load(file, token)));
+      if (token !== generation) return;
+      await load('js/processor-intro.js', token);
+      if (token !== generation) return;
       window.gsap.registerPlugin(window.ScrollTrigger, window.Draggable, window.InertiaPlugin);
       const mounted = window.mountProcessorIntro({
         host: document.querySelector('main'),

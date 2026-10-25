@@ -2,6 +2,14 @@
 <html lang="ar" dir="rtl" data-theme="dark" class="dark">
 <head>
   <meta charset="UTF-8">
+  <!-- Publish the completed shell in one paint. With JavaScript disabled the static fallback stays visible. -->
+  <style>html.portal-booting body>main,html.portal-booting body>footer{visibility:hidden}</style>
+  <script>
+    document.documentElement.classList.add('portal-booting');
+    document.addEventListener('DOMContentLoaded', function () {
+      requestAnimationFrame(function () { document.documentElement.classList.remove('portal-booting'); });
+    }, {once:true});
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تفاصيل المادة | Kernal</title>
   <!-- Favicon & App Icons -->
@@ -15,11 +23,13 @@
   <script src="js/theme.js?v=1792424832344"></script>
   
   <!-- Local A1 font; no required font CDN. -->
+  <link rel="preload" href="css/fonts/alexandria-0.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="css/fonts/alexandria-3.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/fonts/fonts.css">
   
   <!-- Prebuilt assets keep layout and icons available without a CDN. -->
   <link rel="stylesheet" href="css/tailwind.css">
-  <script src="js/vendor/lucide.min.js"></script>
+  <script defer src="js/vendor/lucide.min.js"></script>
 
   <!-- التنسيقات المخصصة والأوضاع الثلاثة والمسارين -->
   <link rel="stylesheet" href="css/style.css?v=1792424832344">
@@ -647,30 +657,30 @@
   </footer>
 
   <!-- ملفات الجافاسكربت -->
-  <script src="js/shared/dialog.js"></script>
-  <script src="js/shared/ui.js"></script>
-  <script src="js/shared/media.js"></script>
-  <script src="js/courses-data.js?v=1792424832344"></script>
-  <script src="js/schedule-data.js?v=1792424832344"></script>
-  <script src="js/a1-identity.js"></script>
+  <script defer src="js/shared/dialog.js"></script>
+  <script defer src="js/shared/ui.js"></script>
+  <script defer src="js/shared/media.js"></script>
+  <script defer src="js/courses-data.js?v=1792424832344"></script>
+  <script defer src="js/schedule-data.js?v=1792424832344"></script>
+  <script defer src="js/a1-identity.js"></script>
 
-  <script src="js/profile-modal.js?v=1792424832344"></script>
-  <script src="js/study-catalog.js"></script>
-  <script src="js/shared/content-catalog.js"></script>
-  <script src="js/shared/content-links.js"></script>
-  <script src="js/content-navigation.js"></script>
-  <script src="js/shared/study-state.js"></script>
-  <script src="js/study-save-status.js"></script>
-  <script src="js/study-loader.js"></script>
-  <script src="js/study-quiz.js"></script>
-  <script src="js/study-reader.js"></script>
-  <script src="js/subject-content.js"></script>
-  <script src="js/subject.js?v=1792424832344"></script>
-  <script src="js/a1-journey.js"></script>
-  <script src="js/studio.js"></script>
-  <script src="js/studio-course.js"></script>
-  <script src="js/vendor/gsap/gsap.min.js"></script>
-  <script src="js/studio-motion.js"></script>
-  <script src="js/studio-energy.js"></script>
+  <script defer src="js/profile-modal.js?v=1792424832344"></script>
+  <script defer src="js/study-catalog.js"></script>
+  <script defer src="js/shared/content-catalog.js"></script>
+  <script defer src="js/shared/content-links.js"></script>
+  <script defer src="js/content-navigation.js"></script>
+  <script defer src="js/shared/study-state.js"></script>
+  <script defer src="js/study-save-status.js"></script>
+  <script defer src="js/study-loader.js"></script>
+  <script defer src="js/study-quiz.js"></script>
+  <script defer src="js/study-reader.js"></script>
+  <script defer src="js/subject-content.js"></script>
+  <script defer src="js/subject.js?v=1792424832344"></script>
+  <script defer src="js/a1-journey.js"></script>
+  <script defer src="js/studio.js"></script>
+  <script defer src="js/studio-course.js"></script>
+  <script defer src="js/vendor/gsap/gsap.min.js"></script>
+  <script defer src="js/studio-motion.js"></script>
+  <script defer src="js/studio-energy.js"></script>
 </body>
 </html>

@@ -1,0 +1,81 @@
+{
+  "sourceCommit": "547b084330cb744bf9bd6dfc363243c49deafc8e",
+  "measuredAt": "2026-10-25T00:33:25.405Z",
+  "method": "Local Chrome, 1440x900, configured profile and intro dismissed. Original source includes a deliberate 900ms delay of studio-course.js to reproduce legacy painting; packaged artifact is a normal visit. Byte/request counts are comparable; these timings are not a field-performance comparison.",
+  "routes": [
+    {
+      "route": "index.html",
+      "initialRequestsBefore": 36,
+      "initialRequestsAfter": 10,
+      "decodedBytesBefore": 1060223,
+      "decodedBytesAfter": 546941,
+      "legacyFramesBefore": 0,
+      "legacyFramesAfter": 0
+    },
+    {
+      "route": "subject.html?id=database-systems",
+      "initialRequestsBefore": 41,
+      "initialRequestsAfter": 10,
+      "decodedBytesBefore": 1187576,
+      "decodedBytesAfter": 644899,
+      "legacyFramesBefore": 196,
+      "legacyFramesAfter": 0
+    }
+  ],
+  "styleComparison": [
+    {
+      "file": "study/arch/chapter-1.html",
+      "elements": 668,
+      "differences": 0
+    },
+    {
+      "file": "study/arch/chapter-7.html",
+      "elements": 1101,
+      "differences": 0
+    },
+    {
+      "file": "study/arch/index.html",
+      "elements": 125,
+      "differences": 0
+    },
+    {
+      "file": "study/db/chapter-1.html",
+      "elements": 1096,
+      "differences": 0
+    },
+    {
+      "file": "study/db/chapter-2.html",
+      "elements": 598,
+      "differences": 0
+    },
+    {
+      "file": "study/db/index.html",
+      "elements": 77,
+      "differences": 0
+    },
+    {
+      "file": "study/ds/index.html",
+      "elements": 96,
+      "differences": 0
+    },
+    {
+      "file": "study/ds/lecture-1.html",
+      "elements": 1159,
+      "differences": 0
+    },
+    {
+      "file": "study/ds/lecture-2.html",
+      "elements": 3181,
+      "differences": 0
+    },
+    {
+      "file": "study/ds/lecture-3.html",
+      "elements": 715,
+      "differences": 0
+    }
+  ],
+  "iconBytes": {
+    "before": 454638,
+    "after": 41160
+  }
+}

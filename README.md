@@ -1,7 +1,7 @@
 # 🎓 Kernal — The core of every study
 
 > 🌐 **رابط الموقع المباشر (GitHub Pages):** [https://ahm-333.github.io/Sem2_portal/](https://ahm-333.github.io/Sem2_portal/)  
-> ⚡ **رابط المنصة على Vercel:** [https://sem2portal.vercel.app/](https://sem2portal.vercel.app/)  
+> ⚡ **رابط المنصة على Vercel:** [https://kernal-study-portal.vercel.app/](https://kernal-study-portal.vercel.app/)
 > 💻 **مستودع الكود على GitHub:** [https://github.com/ahm-333/Sem2_portal](https://github.com/ahm-333/Sem2_portal)
 
 التجربة الحالية هي **Study Studio**: تصميم وتجربة استخدام جديدان بالكامل، بمكتبة مصادر قابلة للبحث، استكمال الشرح، وتنقّل متكيف مع الموبايل والكمبيوتر. التشغيل والمراجعة: [دليل النسخة الجديدة](docs/STUDIO-REVIEW.md). سجلات A1 أدناه توثّق النسخة السابقة.
@@ -107,6 +107,12 @@ explanationSite: {
 - مخصصة لخدمة طلاب كلية الحاسبات والمعلومات - قسم الذكاء الاصطناعي (AI 2026).
 
 ---
+
+## مراجعة الأداء والنشر
+
+إصلاح وميض صفحة المادة، وتحميل المكتبة عند فتحها، وإيقاف الرسم خلف القارئ، وتجهيز تنسيق الشرح والخطوط محليًا مع الحفاظ على المحتوى والتصميم. [تقرير المراجعة والأدلة](docs/review/performance/REVIEW.md).
+
+النشر الحالي على مشروع `kernal-study-portal` في Vercel برفع مباشر. `npm run verify` يختبر المصدر ونسخة النشر الفعلية. لإنتاج ملفات النشر فقط: `npm run build` ثم `npm run package`؛ الناتج في `dist/`. الربط التلقائي مع GitHub غير مفعّل.
 
 ## التطوير والتحقق محليًا
 
