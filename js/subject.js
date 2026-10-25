@@ -238,185 +238,193 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const study = window.PortalStudyReader.create();
 
-  const lecturesList = document.getElementById("lectures-list");
-  if (lecturesList) {
+  function renderLectures() {
+    const lecturesList = document.getElementById("lectures-list");
+    if (!lecturesList) return;
     if (lecturesCount === 0) {
       lecturesList.innerHTML = createEmptyNotice(
         "سجل المحاضرات النظري",
         "المحتوى قيد التجهيز - سيتم إضافة سلايدات المحاضرات وروابط Google Drive فور توفرها."
       );
-    } else {
-      lecturesList.innerHTML = course.lectures.map((lec) => {
-        const previewUrl = lec.drivePreviewUrl || lec.pdfUrl || lec.slidesUrl || "#";
-        const viewUrl = lec.driveViewUrl || lec.pdfUrl || lec.slidesUrl || "#";
-        const downloadUrl = lec.driveDownloadUrl || lec.pdfUrl || "#";
-        const filename = `${course.name}_Lecture_${lec.id}.${lec.fileType || 'pdf'}`;
-        const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "lecture", lec.id) : JSON.stringify([String(course.id), "lecture", String(lec.id)]);
-        
-        const allExp = window.STUDY_CATALOG;
-        const osUnit = course.id === "operating-system" ? {1: "os-01", 2: "os-09", 3: "os-13"}[lec.id] : null;
-        const smartStudyData = !osUnit && allExp && allExp[course.id] && allExp[course.id][lec.id];
+      return;
+    }
 
-        const fileTypeLabel = (lec.fileType || 'pdf').toUpperCase();
-        const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
-          ? 'bg-red-500/10 text-red-400 border-red-500/20' 
-          : 'bg-orange-500/10 text-orange-400 border-orange-500/20';
+    const staff = window.StudentProfile ? window.StudentProfile.getCourseStaff(course.id) : null;
 
-        const topicsHtml = lec.topics && lec.topics.length > 0 ? `
-          <div class="mt-3 pt-3 border-t border-[var(--border-subtle)]">
-            <span class="text-[11px] font-bold text-[var(--text-dim)] block mb-1.5 flex items-center gap-1.5">
-              <i data-lucide="list-checks" class="w-3.5 h-3.5 text-indigo-400"></i>
-              أبرز المحاور والمفاهيم في هذه المحاضرة:
-            </span>
-            <div class="flex flex-wrap gap-1.5">
-              ${lec.topics.map(t => `<span class="text-[11px] px-2.5 py-0.5 rounded-lg bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-subtle)]">${t}</span>`).join("")}
-            </div>
+    lecturesList.innerHTML = course.lectures.map((lec) => {
+      const previewUrl = lec.drivePreviewUrl || lec.pdfUrl || lec.slidesUrl || "#";
+      const viewUrl = lec.driveViewUrl || lec.pdfUrl || lec.slidesUrl || "#";
+      const downloadUrl = lec.driveDownloadUrl || lec.pdfUrl || "#";
+      const filename = `${course.name}_Lecture_${lec.id}.${lec.fileType || 'pdf'}`;
+      const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "lecture", lec.id) : JSON.stringify([String(course.id), "lecture", String(lec.id)]);
+      
+      const allExp = window.STUDY_CATALOG;
+      const osUnit = course.id === "operating-system" ? {1: "os-01", 2: "os-09", 3: "os-13"}[lec.id] : null;
+      const smartStudyData = !osUnit && allExp && allExp[course.id] && allExp[course.id][lec.id];
+
+      const fileTypeLabel = (lec.fileType || 'pdf').toUpperCase();
+      const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
+        ? 'bg-red-500/10 text-red-400 border-red-500/20' 
+        : 'bg-orange-500/10 text-orange-400 border-orange-500/20';
+
+      const topicsHtml = lec.topics && lec.topics.length > 0 ? `
+        <div class="mt-3 pt-3 border-t border-[var(--border-subtle)]">
+          <span class="text-[11px] font-bold text-[var(--text-dim)] block mb-1.5 flex items-center gap-1.5">
+            <i data-lucide="list-checks" class="w-3.5 h-3.5 text-indigo-400"></i>
+            أبرز المحاور والمفاهيم في هذه المحاضرة:
+          </span>
+          <div class="flex flex-wrap gap-1.5">
+            ${lec.topics.map(t => `<span class="text-[11px] px-2.5 py-0.5 rounded-lg bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-subtle)]">${t}</span>`).join("")}
           </div>
-        ` : "";
+        </div>
+      ` : "";
 
-        return `
-          <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect" data-content-key='${contentKey}'>
-            <div class="flex items-start gap-3.5">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-600 text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono icon-box-modern">
-                <span>L${lec.id}</span>
-                ${lec.chapter ? `<span class="text-[9px] opacity-80">${lec.chapter.replace("Chapter ", "Ch").replace("Lecture ", "Lec ")}</span>` : ""}
-              </div>
+      const doctorName = (staff && staff.doctor && staff.doctor !== "بيانات المحاضر غير متوفرة")
+        ? staff.doctor
+        : (lec.doctor || "أستاذ المادة");
+      const doctorNote = staff && staff.group
+        ? `مجموعتك ${staff.group} • سلايدات موحدة`
+        : (lec.doctorNote || "");
 
-              <div class="flex-1 min-w-0">
-                <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                  <span class="text-xs font-bold text-indigo-400">${lec.date || `المحاضرة ${lec.id}`}</span>
-                  <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${lec.week || lec.id}</span>
-                  <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold border ${fileTypeBadgeColor}">
-                    ${fileTypeLabel}
-                  </span>
-                  ${lec.driveId ? `
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold flex items-center gap-1">
-                      <i data-lucide="cloud" class="w-3 h-3"></i>
-                      <span>متصل بـ Drive</span>
-                    </span>
-                  ` : ""}
-                  ${lec.doctor ? `
-                    <span class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold flex items-center gap-1">
-                      <i data-lucide="graduation-cap" class="w-3 h-3"></i>
-                      ${lec.doctor} ${lec.doctorNote ? `(${lec.doctorNote})` : ""}
-                    </span>
-                  ` : ""}
-                  ${lec.pages ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">${lec.pages} صفحة</span>` : ""}
-                </div>
-
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
-                  <h4 class="text-base font-bold text-[var(--text-main)]">${lec.title}</h4>
-                  ${smartStudyData ? `
-                    <button 
-                      type="button" 
-                      data-open-study-course="${course.id}" 
-                      data-open-study-lecture="${lec.id}" 
-                      class="btn-open-smart-study inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md shadow-purple-500/20 transition-all btn-smooth cursor-pointer"
-                    >
-                      <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                      <span>✨ الشرح وتفكيك السلايدات (${smartStudyData.totalSlides} شريحة)</span>
-                    </button>
-                  ` : ""}
-                </div>
-                <p class="text-xs font-semibold text-[var(--text-muted)] mb-2">${lec.arabicTitle || ""}</p>
-                ${lec.notes ? `<p class="text-xs text-[var(--text-dim)] bg-[var(--bg-surface)] p-2.5 rounded-xl border border-[var(--border-subtle)] leading-relaxed">💡 <strong>ملاحظة:</strong> ${lec.notes}</p>` : ""}
-                ${topicsHtml}
-              </div>
+      return `
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect" data-content-key='${contentKey}'>
+          <div class="flex items-start gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-600 text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono icon-box-modern">
+              <span>L${lec.id}</span>
+              ${lec.chapter ? `<span class="text-[9px] opacity-80">${lec.chapter.replace("Chapter ", "Ch").replace("Lecture ", "Lec ")}</span>` : ""}
             </div>
 
-            <!-- أزرار المعاينة والتحميل وموقع الشرح -->
-            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
-              <div class="flex flex-wrap items-center gap-2">
-                ${osUnit ? `
-                  <a href="education-preview/os/?unit=${osUnit}" data-os-course-link="${lec.id}"
-                    class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm btn-smooth"
-                    aria-label="فتح شرح Chapter ${lec.id}: الرسومات والأسئلة والمصطلحات">
-                    <i data-lucide="book-open" class="w-4 h-4"></i>
-                    <span>فتح الشرح والرسومات والأسئلة</span>
-                  </a>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                <span class="text-xs font-bold text-indigo-400">${lec.date || `المحاضرة ${lec.id}`}</span>
+                <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${lec.week || lec.id}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold border ${fileTypeBadgeColor}">
+                  ${fileTypeLabel}
+                </span>
+                ${lec.driveId ? `
+                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold flex items-center gap-1">
+                    <i data-lucide="cloud" class="w-3 h-3"></i>
+                    <span>متصل بـ Drive</span>
+                  </span>
                 ` : ""}
+                <span class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold flex items-center gap-1" title="أستاذ المادة المخصص لمجموعتك في جدول الكلية">
+                  <i data-lucide="graduation-cap" class="w-3 h-3"></i>
+                  <span>${doctorName}</span>
+                  ${doctorNote ? `<span class="text-[9px] opacity-80">(${doctorNote})</span>` : ""}
+                </span>
+                ${lec.pages ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">${lec.pages} صفحة</span>` : ""}
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+                <h4 class="text-base font-bold text-[var(--text-main)]">${lec.title}</h4>
                 ${smartStudyData ? `
-                  <!-- زر المذاكرة التفاعلية -->
                   <button 
-                    type="button"
-                    data-open-study-course="${course.id}"
-                    data-open-study-lecture="${lec.id}"
-                    class="btn-open-smart-study px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-purple-500/25 cursor-pointer btn-smooth"
-                    title="تصفح الشريحة وتحتها تفكيكها الكامل وتريكات الامتحان وكويز تدريبي بالإنجليزي"
+                    type="button" 
+                    data-open-study-course="${course.id}" 
+                    data-open-study-lecture="${lec.id}" 
+                    class="btn-open-smart-study inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md shadow-purple-500/20 transition-all btn-smooth cursor-pointer"
                   >
-                    <i data-lucide="sparkles" class="w-4 h-4 text-purple-200"></i>
-                    <span>مذاكرة السلايدات والشرح التفاعلي</span>
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    <span>✨ الشرح وتفكيك السلايدات (${smartStudyData.totalSlides} شريحة)</span>
                   </button>
                 ` : ""}
-                ${lec.studyManualUrl ? `
-                  <!-- زر الشرح التفاعلي للمحاضرة -->
-                  <a 
-                    href="${lec.studyManualUrl}" 
-                    class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-amber-500/25 btn-smooth"
-                    title="فتح موقع الشرح التفاعلي للمحاضرة وتفكيك الأكواد والرسومات"
-                  >
-                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-100"></i>
-                    <span>الشرح التفاعلي</span>
-                  </a>
-                ` : ""}
-
-                <!-- زر المعاينة داخل الصفحة -->
-                <button 
-                  type="button"
-                  data-preview-file="${previewUrl}"
-                  data-preview-title="${lec.title}"
-                  data-preview-subtitle="${lec.arabicTitle || ""}"
-                  data-preview-filename="${filename}"
-                  data-preview-download="${downloadUrl}"
-                  data-preview-view="${viewUrl}"
-                  class="btn-preview-pdf px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
-                >
-                  <i data-lucide="eye" class="w-4 h-4"></i>
-                  <span>معاينة السلايدات</span>
-                </button>
-
-                <!-- زر فتح في Google Drive -->
-                <a 
-                  href="${viewUrl}" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                  title="فتح في Google Drive في نافذة جديدة"
-                >
-                  <i data-lucide="external-link" class="w-3.5 h-3.5 text-indigo-400"></i>
-                  <span>فتح في Drive</span>
-                </a>
-
-                <!-- زر تحميل مباشر للملف -->
-                <a 
-                  href="${downloadUrl}" 
-                  download="${filename}"
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                  title="تحميل مباشر من Google Drive"
-                >
-                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>تحميل مباشر</span>
-                </a>
               </div>
+              <p class="text-xs font-semibold text-[var(--text-muted)] mb-2">${lec.arabicTitle || ""}</p>
+              ${lec.notes ? `<p class="text-xs text-[var(--text-dim)] bg-[var(--bg-surface)] p-2.5 rounded-xl border border-[var(--border-subtle)] leading-relaxed">💡 <strong>ملاحظة:</strong> ${lec.notes}</p>` : ""}
+              ${topicsHtml}
             </div>
           </div>
-        `;
-      }).join("");
 
-      // ربط أزرار المعاينة بالنافذة المنبثقة
+          <!-- أزرار المعاينة والتحميل وموقع الشرح -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
+            <div class="flex flex-wrap items-center gap-2">
+              ${osUnit ? `
+                <a href="education-preview/os/?unit=${osUnit}" data-os-course-link="${lec.id}"
+                  class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm btn-smooth"
+                  aria-label="فتح شرح Chapter ${lec.id}: الرسومات والأسئلة والمصطلحات">
+                  <i data-lucide="book-open" class="w-4 h-4"></i>
+                  <span>فتح الشرح والرسومات والأسئلة</span>
+                </a>
+              ` : ""}
+              ${smartStudyData ? `
+                <!-- زر المذاكرة التفاعلية -->
+                <button 
+                  type="button"
+                  data-open-study-course="${course.id}"
+                  data-open-study-lecture="${lec.id}"
+                  class="btn-open-smart-study px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-purple-500/25 cursor-pointer btn-smooth"
+                  title="تصفح الشريحة وتحتها تفكيكها الكامل وتريكات الامتحان وكويز تدريبي بالإنجليزي"
+                >
+                  <i data-lucide="sparkles" class="w-4 h-4 text-purple-200"></i>
+                  <span>مذاكرة السلايدات والشرح التفاعلي</span>
+                </button>
+              ` : ""}
+              ${lec.studyManualUrl ? `
+                <!-- زر الشرح التفاعلي للمحاضرة -->
+                <a 
+                  href="${lec.studyManualUrl}" 
+                  class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-amber-500/25 btn-smooth"
+                  title="فتح موقع الشرح التفاعلي للمحاضرة وتفكيك الأكواد والرسومات"
+                >
+                  <i data-lucide="sparkles" class="w-4 h-4 text-amber-100"></i>
+                  <span>الشرح التفاعلي</span>
+                </a>
+              ` : ""}
 
+              <!-- زر المعاينة داخل الصفحة -->
+              <button 
+                type="button"
+                data-preview-file="${previewUrl}"
+                data-preview-title="${lec.title}"
+                data-preview-subtitle="${lec.arabicTitle || ""}"
+                data-preview-filename="${filename}"
+                data-preview-download="${downloadUrl}"
+                data-preview-view="${viewUrl}"
+                class="btn-preview-pdf px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
+              >
+                <i data-lucide="eye" class="w-4 h-4"></i>
+                <span>معاينة السلايدات</span>
+              </button>
 
-      // ربط أزرار المذاكرة الذكية والشرح التفاعلي
-      lecturesList.querySelectorAll(".btn-open-smart-study").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const cid = this.getAttribute("data-open-study-course");
-          const lid = parseInt(this.getAttribute("data-open-study-lecture"), 10);
-          study.open(cid, lid);
-        });
+              <!-- زر فتح في Google Drive -->
+              <a 
+                href="${viewUrl}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
+                title="فتح في Google Drive في نافذة جديدة"
+              >
+                <i data-lucide="external-link" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>فتح في Drive</span>
+              </a>
+
+              <!-- زر تحميل مباشر للملف -->
+              <a 
+                href="${downloadUrl}" 
+                download="${filename}"
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
+                title="تحميل مباشر من Google Drive"
+              >
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>تحميل مباشر</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    lecturesList.querySelectorAll(".btn-open-smart-study").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        const cid = this.getAttribute("data-open-study-course");
+        const lid = parseInt(this.getAttribute("data-open-study-lecture"), 10);
+        study.open(cid, lid);
       });
-    }
+    });
+
+    window.PortalUI.icons(lecturesList);
   }
 
   const content = window.PortalSubjectContent.create(course);
@@ -515,11 +523,13 @@ document.addEventListener("DOMContentLoaded", function () {
   // الاستماع لتغيير المجموعة والسكشن وتحديث الصفحة فوراً
   window.addEventListener("studentProfileChanged", function () {
     updateStaffAndScheduleInfo();
+    renderLectures();
     content.resetFilters();
     window.dispatchEvent(new CustomEvent("portal:content-ready", { detail: { courseId: course.id } }));
   });
 
   // التطبيق الأولي
+  renderLectures();
   updateStaffAndScheduleInfo();
 
 

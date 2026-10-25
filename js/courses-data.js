@@ -238,7 +238,7 @@ const COURSES_DATA = [
         "chapter": "Chapter 6",
         "title": "External Memory & I/O Systems",
         "arabicTitle": "المحاضرة 5: الذاكرة الخارجية (External Memory) وتنظيم الإدخال والإخراج (I/O)",
-        "doctor": "أ.د. نبيل لاشين / د. أحمد سامي",
+        "doctor": "أ.د. نبيل علي محمد علي لاشين",
         "doctorNote": "B1 • B2 • B3",
         "week": 5,
         "date": "المحاضرة 5",
@@ -1164,8 +1164,8 @@ const COURSES_DATA = [
         "studyManualUrl": "study/db/chapter-1.html",
         "title": "Lecture 2: Databases and Database Users",
         "arabicTitle": "مقدمة قواعد البيانات، أنواع النظم، وتصنيفات المستخدمين",
-        "doctor": "د. محمد ماهر",
-        "doctorNote": "سلايدات موحدة",
+        "doctor": "سلايدات موحدة للدفعة",
+        "doctorNote": "B1 • B2 • B3",
         "week": 2,
         "date": "المحاضرة 2",
         "fileType": "ppt",
@@ -1185,15 +1185,15 @@ const COURSES_DATA = [
           "Types of Database Users (Actors on the Scene vs Behind the Scene)",
           "Advantages of Using the Database Approach (Normalization, Standards, Security)"
         ],
-        "notes": "سلايدات المحاضرة 2 المعتمدة (د. محمد ماهر) متوفرة بشرح تفاعلي ذكي لكل شريحة مع كويزات وتريكات الامتحان."
+        "notes": "سلايدات المحاضرة 2 المعتمدة متوفرة بشرح تفاعلي ذكي لكل شريحة مع كويزات وتريكات الامتحان."
       },
       {
         "id": 3,
         "chapter": "Chapter 2",
         "studyManualUrl": "study/db/chapter-2.html",
         "title": "Database System Concepts and Architecture",
-        "arabicTitle": "معمارية نظم قواعد البيانات، نماذج البيانات، ومستويات Schema الثلاثة (د. محمد ماهر)",
-        "doctor": "د. محمد ماهر (Dr. Mohamed Maher)",
+        "arabicTitle": "معمارية نظم قواعد البيانات، نماذج البيانات، ومستويات Schema الثلاثة",
+        "doctor": "سلايدات موحدة للدفعة",
         "doctorNote": "سلايدات موحدة للدفعة",
         "week": 3,
         "date": "المحاضرة 3",
@@ -1212,7 +1212,7 @@ const COURSES_DATA = [
           "DBMS Languages (DDL, SDL, VDL, DML)",
           "DBMS Architectures (Centralized, 2-Tier, 3-Tier Web Architectures)"
         ],
-        "notes": "المحاضرة 3 الرسمية المعتمدة (lec 3 ch 2.ppt) لدكتور محمد ماهر مع تفكيك المخططات والشرح التفاعلي الذكي"
+        "notes": "المحاضرة 3 الرسمية المعتمدة (lec 3 ch 2.ppt) مع تفكيك المخططات والشرح التفاعلي الذكي"
       },
       {
         "id": 4,
@@ -1244,7 +1244,7 @@ const COURSES_DATA = [
         "chapter": "Chapter 3",
         "title": "Data Modeling Using the Entity-Relationship (ER) Model (Lec 4 & 5)",
         "arabicTitle": "المحاضرة 4 و 5: نمذجة البيانات ومخططات الكيانات والعلاقات (ER Model)",
-        "doctor": "أ.د. نبيل مصطفى / د. أحمد سامي",
+        "doctor": "أ.م.د. نبيل مصطفى - د. أحمد سامي عبد السلام",
         "doctorNote": "B1 • B2 • B3",
         "week": 4,
         "date": "المحاضرة 4 و 5",
@@ -1665,6 +1665,12 @@ const COURSES_DATA = [
         "ta": "م.م. أحمد حسام"
       },
       {
+        "title": "درايف الاستاك (Stack) - م.م. أحمد حسام (فيديوهات وكود)",
+        "url": "https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "color": "from-orange-600 to-amber-600",
+        "ta": "م.م. أحمد حسام"
+      },
+      {
         "title": "درايف م. فاطمة محمود (السكاشن والشيتات)",
         "url": "https://drive.google.com/drive/folders/1UlW-FZzAmRVXQS_BZST1b2StD2AShXeV",
         "color": "from-purple-600 to-indigo-600",
@@ -2051,6 +2057,99 @@ const COURSES_DATA = [
           "Circular Queue Implementation & Priority Queue Basics"
         ],
         "notes": "سلايدات الشرح الرسمية لموضوع Queue من إعداد م. فاطمة محمود"
+      },
+      {
+        "id": 6,
+        "title": "Dynamic Stack Implementation in C++ - Section 4 (Part 1)",
+        "arabicTitle": "السكشن الرابع (جزء 1): مدخل لمفهوم المكدس (Stack) وعمليات push و pop",
+        "ta": "م.م. أحمد حسام",
+        "week": 4,
+        "date": "السكشن الرابع (1)",
+        "tag": "Sec 4 - Pt 1",
+        "subTag": "م.م. أحمد حسام",
+        "fileType": "cpp",
+        "pages": 4,
+        "size": "فيديو مسجل + كود C++",
+        "driveId": "1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "driveViewUrl": "https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "drivePreviewUrl": "https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/preview",
+        "driveDownloadUrl": "https://drive.google.com/uc?export=download&id=179XgT0-xgDM2_qyBbxjaORAQmVh11uVx",
+        "sheetUrl": "https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "codeUrl": "https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit",
+        "localFile": "materials/ds/Stack_DynamicStack.cpp",
+        "videoUrl": "https://drive.google.com/file/d/179XgT0-xgDM2_qyBbxjaORAQmVh11uVx/view",
+        "videoPreviewUrl": "https://drive.google.com/file/d/179XgT0-xgDM2_qyBbxjaORAQmVh11uVx/preview",
+        "videoTitle": "فيديو 1: شرح مفهوم المكدس وعمليات الـ Stack (Part 1) - م.م. أحمد حسام",
+        "videoSubtitle": "شرح مسجل بالفيديو لمفهوم الـ LIFO وبداية تطبيق كود DynamicStack",
+        "topics": [
+          "Stack ADT Concept & LIFO Principle",
+          "DynamicStack Class Definition & Memory Pointers",
+          "Constructor, Destructor & Top Index",
+          "Basic Operations: isEmpty() and push() Syntax"
+        ],
+        "notes": "فيديو الجزء الأول من شرح سكشن المكدس مع الكود البرمجي المعتمد من إعداد م.م. أحمد حسام"
+      },
+      {
+        "id": 7,
+        "title": "Dynamic Stack Template Implementation - Section 4 (Part 2)",
+        "arabicTitle": "السكشن الرابع (جزء 2): التطبيق العملي لبناء DynamicStack وحجز الذاكرة الديناميكية",
+        "ta": "م.م. أحمد حسام",
+        "week": 4,
+        "date": "السكشن الرابع (2)",
+        "tag": "Sec 4 - Pt 2",
+        "subTag": "م.م. أحمد حسام",
+        "fileType": "cpp",
+        "pages": 4,
+        "size": "فيديو مسجل + كود C++",
+        "driveId": "1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "driveViewUrl": "https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "drivePreviewUrl": "https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/preview",
+        "driveDownloadUrl": "https://drive.google.com/uc?export=download&id=1acZrDUOvoVtWJyj8zAuO83769jcEg9Kl",
+        "sheetUrl": "https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "codeUrl": "https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit",
+        "localFile": "materials/ds/Stack_DynamicStack.cpp",
+        "videoUrl": "https://drive.google.com/file/d/1acZrDUOvoVtWJyj8zAuO83769jcEg9Kl/view",
+        "videoPreviewUrl": "https://drive.google.com/file/d/1acZrDUOvoVtWJyj8zAuO83769jcEg9Kl/preview",
+        "videoTitle": "فيديو 2: التطبيق البرمجي لبناء DynamicStack وحجز الذاكرة (Part 2) - م.م. أحمد حسام",
+        "videoSubtitle": "شرح تفصيلي لكتابة كود الـ C++ وبناء الـ Template وحجز المصفوفة الديناميكية",
+        "topics": [
+          "C++ Class Templates with DynamicStack<T>",
+          "Dynamic Array Allocation on Heap (new T[])",
+          "Memory Management & Preventing Memory Leaks (delete[])",
+          "Implementing isFull() and Overflow Handling"
+        ],
+        "notes": "فيديو الجزء الثاني من شرح سكشن المكدس: كتابة كود الـ Template وإدارة الذاكرة مع م.م. أحمد حسام"
+      },
+      {
+        "id": 8,
+        "title": "Dynamic Stack Resizing & Operations - Section 4 (Part 3)",
+        "arabicTitle": "السكشن الرابع (جزء 3): دوال Peek و Resize ومضاعفة السعة واختبار المكدس",
+        "ta": "م.م. أحمد حسام",
+        "week": 4,
+        "date": "السكشن الرابع (3)",
+        "tag": "Sec 4 - Pt 3",
+        "subTag": "م.م. أحمد حسام",
+        "fileType": "cpp",
+        "pages": 4,
+        "size": "فيديو مسجل + كود C++",
+        "driveId": "1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "driveViewUrl": "https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "drivePreviewUrl": "https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/preview",
+        "driveDownloadUrl": "https://drive.google.com/uc?export=download&id=1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x",
+        "sheetUrl": "https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "codeUrl": "https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit",
+        "localFile": "materials/ds/Stack_DynamicStack.cpp",
+        "videoUrl": "https://drive.google.com/file/d/1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x/view",
+        "videoPreviewUrl": "https://drive.google.com/file/d/1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x/preview",
+        "videoTitle": "فيديو 3: دالة التحجيم Resize واسترجاع العناصر واختبار الكود (Part 3) - م.م. أحمد حسام",
+        "videoSubtitle": "استكمال دوال pop و peek وتطبيق Resize لمضاعفة حجم المصفوفة ديناميكياً",
+        "topics": [
+          "Dynamic Resizing Logic (resize(2*capacity))",
+          "Array Copying & Heap Deallocation",
+          "pop() & peek() Operations with Underflow Check",
+          "End-to-End Testing & Demonstration"
+        ],
+        "notes": "فيديو الجزء الثالث من شرح سكشن المكدس: مضاعفة السعة الديناميكية وفحص الـ Underflow واختبار الكود"
       }
     ],
     "assignments": [
@@ -2147,6 +2246,18 @@ const COURSES_DATA = [
         "fileUrl": "https://drive.google.com/file/d/1rLUdeP0zDuERtcxUG-MUc0ur0LQmCClW/view",
         "folderUrl": "https://drive.google.com/drive/folders/1p1zE6XWM2uYRn7_MnnkN51IL_HWirf-m",
         "badge": "تاسك سكشن 1"
+      },
+      {
+        "id": 3,
+        "title": "كود المكدس الديناميكي في C++ (DynamicStack Template Code)",
+        "type": "كود برمجي",
+        "year": "م.م. أحمد حسام",
+        "ta": "م.م. أحمد حسام",
+        "size": "C++ Template",
+        "notes": "الكود البرمجي الكامل لتطبيق هيكل بيانات المكدس الديناميكي (DynamicStack) بالقوالب (Templates) وإعادة التحجيم (Resize) من سكشن م.م. أحمد حسام",
+        "fileUrl": "https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit",
+        "folderUrl": "https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
+        "badge": "كود سكشن الاستاك"
       }
     ]
   },

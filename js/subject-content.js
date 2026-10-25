@@ -507,7 +507,7 @@
                 class="btn-preview-pdf px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
               >
                 <i data-lucide="eye" class="w-4 h-4"></i>
-                <span>معاينة السلايدات</span>
+                <span>${sec.fileType === 'cpp' ? 'معاينة الكود' : 'معاينة السلايدات'}</span>
               </button>
 
               ${sec.videoUrl ? `
@@ -515,7 +515,7 @@
                   type="button"
                   data-play-url="${sec.videoUrl}"
                   data-play-title="${sec.videoTitle || `شرح ${sec.title}`}"
-                  data-play-subtitle="${sec.videoSubtitle || (sec.ta ? `تقديم المعيدة: ${sec.ta}` : '')}"
+                  data-play-subtitle="${sec.videoSubtitle || (sec.ta ? `تقديم ${taRoleLabel}: ${sec.ta}` : '')}"
                   class="btn-play-video px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
                 >
                   <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>

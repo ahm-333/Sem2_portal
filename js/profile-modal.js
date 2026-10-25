@@ -94,6 +94,49 @@
     document.body.insertAdjacentHTML("beforeend", modalHTML);
   }
 
+  // تحديث معاينة هيئة التدريس الفورية المخصصة للسكشن والمجموعة
+  function updateLiveStaffPreview(group, section) {
+    const previewContainer = document.getElementById("modal-staff-preview");
+    if (!previewContainer || !window.SCHEDULE_CONFIG) return;
+
+    const secNum = parseInt(section, 10);
+    const courses = window.COURSES_DATA || [];
+    const secTas = window.SCHEDULE_CONFIG.tasBySection[secNum] || {};
+
+    const items = courses.map((c) => {
+      const doc = (window.SCHEDULE_CONFIG.doctorsByGroup[c.id] || {})[group];
+      const docName = doc?.doctor || "غير محدد";
+      const taData = secTas[c.id];
+      const taName = taData ? taData.ta : "معيد المادة";
+      const room = taData?.room ? ` (${taData.room})` : "";
+      return `
+        <div class="flex items-center justify-between gap-2 py-1 border-b border-[var(--border-subtle)] last:border-0">
+          <span class="font-bold text-[var(--text-main)] truncate">${c.arabicName}:</span>
+          <div class="text-right text-[11px] truncate flex items-center gap-1.5 flex-shrink-0">
+            <span class="text-indigo-400 font-medium">${docName}</span>
+            <span class="text-[var(--text-dim)]">•</span>
+            <span class="text-cyan-400 font-medium">${taName}${room}</span>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    previewContainer.innerHTML = `
+      <div class="flex items-center justify-between pb-1.5 border-b border-[var(--border-subtle)] text-[11px]">
+        <span class="font-bold text-[var(--text-main)] flex items-center gap-1">
+          <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>
+          هيئة التدريس لـ (مجموعة ${group} • سكشن ${secNum}):
+        </span>
+        <span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">مطابق للجدول الرسمي</span>
+      </div>
+      <div class="space-y-1">
+        ${items}
+      </div>
+    `;
+
+    window.PortalUI.icons(previewContainer);
+  }
+
   // تحديث خيارات السكاشن المعروضة بناءً على المجموعة المختارة
   function updateSectionRadios(group, preselectedSection) {
     const container = document.getElementById("modal-section-options");
@@ -115,6 +158,8 @@
         </div>
       </label>
     `).join("");
+
+    updateLiveStaffPreview(group, selectedSec);
   }
 
   // فتح وإغلاق النافذة
@@ -130,8 +175,9 @@
     const groupRadio = modal.querySelector(`input[name="student_group"][value="${current.group}"]`);
     if (groupRadio) groupRadio.checked = true;
 
-    // تحديث أزرار السكاشن
+    // تحديث أزرار السكاشن والمعاينة الحية
     updateSectionRadios(current.group, current.section);
+    updateLiveStaffPreview(current.group, current.section);
 
     modal.classList.remove("opacity-0");
     if (box) box.classList.remove("scale-95");
@@ -173,10 +219,14 @@
     injectModalHTML();
     updateNavBadge();
 
-    // استماع لتغيير المجموعة داخل المودال لتحديث أزرار السكاشن فوراً
+    // استماع لتغيير المجموعة أو السكشن داخل المودال لتحديث أزرار السكاشن والمعاينة فوراً
     document.addEventListener("change", function (e) {
       if (e.target && e.target.name === "student_group") {
         updateSectionRadios(e.target.value);
+      } else if (e.target && e.target.name === "student_section") {
+        const form = document.getElementById("profile-selection-form");
+        const currentGroup = form?.querySelector('input[name="student_group"]:checked')?.value || "B1";
+        updateLiveStaffPreview(currentGroup, e.target.value);
       }
     });
 

@@ -27,7 +27,7 @@ const SCHEDULE_CONFIG = {
         hall: "قاعة الدور الثالث"
       },
       B3: {
-        doctor: "أ.د. نبيل علي لاشين - د. أحمد سامي عبد السلام",
+        doctor: "أ.د. نبيل علي محمد علي لاشين",
         time: "السبت • الفترة الأولى (8:30 - 10:00)",
         hall: "مدرج الخوارزمي"
       }
@@ -45,7 +45,7 @@ const SCHEDULE_CONFIG = {
         hall: "مدرج الإدريسي"
       },
       B3: {
-        doctor: "أ.د. خالد محمد حسني - د. صفا السعيد عبد الكريم",
+        doctor: "أ.د. خالد محمد حسني محمد",
         time: "السبت • الفترة الثالثة (12:00 - 1:30)",
         hall: "مدرج الخوارزمي"
       }
@@ -53,17 +53,17 @@ const SCHEDULE_CONFIG = {
 
     "database-systems": {
       B1: {
-        doctor: "أ.د. نبيل مصطفى - د. أحمد سامي عبد السلام",
+        doctor: "أ.م.د. نبيل مصطفى - د. أحمد سامي عبد السلام",
         time: "الثلاثاء • الفترة الأولى (8:30 - 10:00)",
         hall: "مدرج 3"
       },
       B2: {
-        doctor: "أ.د. نبيل مصطفى - د. أحمد سامي عبد السلام",
+        doctor: "أ.م.د. نبيل مصطفى - د. أحمد سامي عبد السلام",
         time: "الثلاثاء • الفترة الثانية (10:15 - 11:45)",
         hall: "مدرج 3"
       },
       B3: {
-        doctor: "أ.د. أحمد سامي محمد عبد السلام",
+        doctor: "د. أحمد سامي محمد عبد السلام",
         time: "السبت • الفترة الثانية (10:15 - 11:45)",
         hall: "مدرج زويل"
       }
@@ -117,9 +117,9 @@ const SCHEDULE_CONFIG = {
         hall: "المدرج الرئيسي"
       },
       B3: {
-        doctor: "هيئة التدريس - قسم التقارير",
+        doctor: "د. صفا السعيد محمد عبد الكريم",
         time: "السبت • الفترة الرابعة (1:45 - 3:15)",
-        hall: "المدرج الرئيسي"
+        hall: "مدرج 4"
       }
     }
   },
@@ -132,7 +132,7 @@ const SCHEDULE_CONFIG = {
       "operating-system": { ta: "م. أحمد شكري", slot: "السبت • 12:00 - 1:30", room: "م15" },
       "computer-architecture": { ta: "م.م. أمل مجدي", slot: "الاثنين • 8:30 - 10:00", room: "م16" },
       "data-structure": { ta: "م.م. أحمد حسام سلامه درويش الحداد", slot: "الاثنين • 12:00 - 1:30", room: "م12" },
-      "computer-graphics": { ta: "م. شيماء مجدي عبد المنعم بنديري", slot: "الثلاثاء • 10:15 - 11:45", room: "م19" }
+      "computer-graphics": { ta: "م. شيماء مجدي عبد المنعم بنديري", slot: "الثلاثاء • 10:15 - 11:45", room: "معمل 19" }
     },
     2: {
       "database-systems": { ta: "م.م. ميرنا مجدي محمد حلمي الفخراني", slot: "السبت • 10:15 - 11:45", room: "معمل M2" },
@@ -145,7 +145,7 @@ const SCHEDULE_CONFIG = {
       "data-structure": { ta: "م. هاجر جمال", slot: "السبت • 10:15 - 11:45", room: "م2" },
       "database-systems": { ta: "م.م. ميرنا مجدي محمد حلمي الفخراني", slot: "السبت • 3:30 - 5:00", room: "معمل M2" },
       "computer-architecture": { ta: "م. تقى مصطفى", slot: "الثلاثاء • 10:15 - 11:45", room: "م9" },
-      "computer-graphics": { ta: "م. شيماء مجدي عبد المنعم بنديري", slot: "الثلاثاء • 3:30 - 5:00", room: "م19" },
+      "computer-graphics": { ta: "م. شيماء مجدي عبد المنعم بنديري", slot: "الثلاثاء • 3:30 - 5:00", room: "معمل 19" },
       "operating-system": { ta: "م. أحمد شكري", slot: "الخميس • 1:45 - 3:15", room: "م6" }
     },
     4: {
@@ -199,7 +199,7 @@ const SCHEDULE_CONFIG = {
       "data-structure": { ta: "م. فاطمة محمود", slot: "الاثنين • 8:30 - 10:00", room: "معمل الذكاء الاصطناعي" },
       "database-systems": { ta: "م.م. حسن حسن محمد محمد", slot: "الثلاثاء • 10:15 - 11:45", room: "م4" },
       "computer-graphics": { ta: "م. آية عطيه", slot: "الثلاثاء • 12:00 - 1:30", room: "م2" },
-      "computer-architecture": { ta: "م. شاهده أحمد", slot: "الأربعاء • 12:00 - 1:30", room: "م16" },
+      "computer-architecture": { ta: "م. شاهده أحمد", slot: "الأربعاء • 12:00 - 1:30", room: "معمل 16" },
       "operating-system-2": { ta: "م.م. عبد الرحمن فتحي عبد الرحمن صومع", slot: "الأربعاء • 1:45 - 3:15", room: "م18" }
     },
     11: {
@@ -311,8 +311,14 @@ const StudentProfile = {
   },
 
   getSectionSessions(courseId, section = this.get().section) {
-    const value = (SCHEDULE_CONFIG.tasBySection[section] || {})[courseId];
-    return (Array.isArray(value) ? value : value ? [value] : []).filter(item => item && item.slot);
+    const sectionData = SCHEDULE_CONFIG.tasBySection[section] || {};
+    const value = sectionData[courseId];
+    const sessions = (Array.isArray(value) ? value : value ? [value] : []).filter(item => item && item.slot);
+    const secondaryKey = `${courseId}-2`;
+    if (sectionData[secondaryKey] && sectionData[secondaryKey].slot && !sessions.some(s => s.slot === sectionData[secondaryKey].slot)) {
+      sessions.push(sectionData[secondaryKey]);
+    }
+    return sessions;
   },
 
   getUnconfirmedScheduleEntries(section = this.get().section) {
