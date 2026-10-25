@@ -20,3 +20,5 @@ tools/create_test_drive_wf.js
 materials/*.ppt
 
 .vercel
+dist/
+.env*

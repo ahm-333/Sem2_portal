@@ -88,17 +88,22 @@
     const kind = document.getElementById('library-kind');
     const allTas = document.getElementById('library-all-tas');
     const clear = document.getElementById('library-clear');
+    let dirty = true;
+    // Catalog metadata is immutable for this page; normalize it once, not per keystroke.
+    const catalog = window.PortalCatalog.list().map(entry => ({entry, text:normalize([entry.title, entry.arabicTitle, entry.displayCourseName, entry.courseName, entry.code, entry.description, ...entry.topics].join(' '))}));
     for (const course of window.COURSES_DATA) { const option = document.createElement('option'); option.value = course.id; option.textContent = window.PortalPresentation.course(course).name; courseSelect.append(option); }
     function render() {
+      dirty = true;
+      if (document.getElementById('studio-library').hidden) return;
+      dirty = false;
       const words = normalize(query.value).trim().split(/\s+/).filter(Boolean);
-      const entries = window.PortalCatalog.list().filter(entry => {
+      const entries = catalog.filter(({entry,text}) => {
         if (!entry.actions.length) return false;
         if (courseSelect.value !== 'all' && entry.courseId !== courseSelect.value) return false;
         if (kind.value !== 'all' && (kind.value === 'interactive' ? !entry.study : kind.value !== entry.kind)) return false;
         if (!allTas.checked && entry.ta) { const staff = window.StudentProfile.getCourseStaff(entry.courseId); if (!window.StudentProfile.isTaMatch(entry.ta, staff.ta)) return false; }
-        const haystack = normalize([entry.title, entry.arabicTitle, entry.displayCourseName, entry.courseName, entry.code, entry.description, ...entry.topics].join(' '));
-        return words.every(word => haystack.includes(word));
-      });
+        return words.every(word => text.includes(word));
+      }).map(({entry}) => entry);
       const results = document.getElementById('library-results');
       document.getElementById('library-result-count').textContent = `${entries.length} مصدر متاح${query.value.trim() ? ' لبحثك' : ''}`;
       clear.hidden = !query.value;
@@ -109,6 +114,7 @@
     query.addEventListener('input', render); courseSelect.addEventListener('change', render); kind.addEventListener('change', render); allTas.addEventListener('change', render);
     clear.addEventListener('click', () => { query.value = ''; render(); query.focus(); });
     window.addEventListener('studentProfileChanged', render);
+    window.addEventListener('portal:view-changed', () => { if (dirty) render(); });
     render();
   }
   function homeViews() {
@@ -122,6 +128,7 @@
         if (link.dataset.studioNav === (view === 'courses' ? '#courses-section' : hash)) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
       }
       if (view === 'continue') readingHistory();
+      window.dispatchEvent(new CustomEvent('portal:view-changed', {detail:{view}}));
     }
     window.addEventListener('hashchange', show); show();
     document.querySelector('.studio-hero a[href="#courses-section"]').addEventListener('click', event => {

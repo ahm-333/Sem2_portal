@@ -23,6 +23,7 @@
       document.body.style.overflow = previousOverflow;
       document.body.classList.toggle('overflow-hidden', previousOverflowClass);
     }
+    window.dispatchEvent(new CustomEvent('portal:dialog-changed', {detail:{open:Boolean(top)}}));
   }
   function open(element, options = {}) {
     if (!element || stack.some(entry => entry.element === element)) return;

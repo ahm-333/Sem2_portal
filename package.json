@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node tools/serve.cjs",
     "build": "node tools/build-assets.cjs",
+    "package": "node tools/package-site.cjs",
     "check": "node tools/check-syntax.cjs",
     "validate": "node tools/check-data.cjs",
     "lint": "eslint js tests tools/*.cjs *.cjs --max-warnings=0",
@@ -18,11 +19,15 @@
     "test:study": "node tests/study-features-browser.cjs",
     "test:os": "node education-preview/os/check.cjs",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=js/shared/*.js tests/*.test.cjs",
-    "verify": "npm run build && npm run check && npm run validate && npm run lint && npm test && npm run test:browser && npm run test:a1 && npm run test:study && npm run test:os"
+    "test:production": "npm run package && node tests/production-browser.cjs",
+    "verify": "npm run build && npm run check && npm run validate && npm run lint && npm test && npm run test:browser && npm run test:a1 && npm run test:study && npm run test:os && npm run test:production"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "6.5.1",
+    "esbuild": "0.28.2",
     "eslint": "10.13.0",
     "lucide": "1.59.0",
+    "mermaid": "10.9.8",
     "playwright": "1.62.1",
     "tailwindcss": "3.4.17",
     "three": "0.186.1"

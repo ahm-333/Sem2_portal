@@ -1,7 +1,8 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
-const root = path.resolve(__dirname,'..');
+const sourceRoot = path.resolve(__dirname,'..');
+const root = process.env.PORTAL_STATIC_DIR==='dist'?path.join(sourceRoot,'dist'):sourceRoot;
 const port = Number(process.env.PORT || 8765);
 const types = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css','.png':'image/png','.pdf':'application/pdf','.svg':'image/svg+xml'};
 http.createServer((request,response)=>{

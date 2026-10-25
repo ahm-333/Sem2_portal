@@ -1,0 +1,16 @@
+{
+  "base": "547b084330cb744bf9bd6dfc363243c49deafc8e",
+  "files": {
+    "study/arch/chapter-1.html": "bddc7e212a7886fe09d78834d9e3ac7894f65ef23fa850c65bdbd019f073a4aa",
+    "study/arch/chapter-7.html": "1a26a92ac6a1e1231496f144cc8c692579d021de835afb852aeed9d30131029f",
+    "study/arch/index.html": "37bcedad258f90787485457d519d9c118575f04e256537bcf8fa7cc6ea3f6f3a",
+    "study/db/chapter-1.html": "4e4043bb3dd30ed77ccd9029c7ae3fd78c159fd4ad73386d3008e0e6a61fc0f0",
+    "study/db/chapter-2.html": "f4ca114a95be8fe96134e061ac1ce0f5b79602569a8a7cc8feb2ca30bad16ac5",
+    "study/db/index.html": "a5328e6361749ac59324537a268ce30288d60359f6534e336fff1998fe0f7fea",
+    "study/ds/index.html": "215a8887b8624a01956ed08fdd1432be4c946410eecb645aeb8adacabc9531c1",
+    "study/ds/lecture-1.html": "bcd95ab8ab8e07449a099cc64d21df4bf7808aaa56a8c97aca840598e0ec0f51",
+    "study/ds/lecture-2.html": "c5ee0c9285efe58f354f8a2e16c3f765d8705588e52306dbaddaf0bcc4a4f9df",
+    "study/ds/lecture-3.html": "70e163b3b45e7a88f4a4d4528ad0144d1d16f9b26ec6c938e72190c030835bd2"
+  },
+  "normalization": "CRLF is normalized to LF; teaching bodies were first verified against the original byte hashes before this platform normalization."
+}
