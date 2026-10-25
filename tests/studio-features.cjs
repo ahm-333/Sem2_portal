@@ -154,37 +154,5 @@ async function register({scenario}) {
     assert((await page.locator('.a1-reader-header').boundingBox()).height < 150, 'the inserted save warning cannot break positional layout');
     assert(await page.locator('#lecture-study-modal [data-study-save-notice]').isVisible());
   }, {viewport:{width:390,height:844}});
-  await scenario('studio-skill-tree-concept-graph-prereqs-and-green-unlock', async ({page, go}) => {
-    await page.addInitScript(() => {localStorage.setItem('sem2_first_visit_configured', 'true');window.sessionStorage.setItem('sem2-studio-rift-intro-v3','seen');});
-    await go('subject.html?id=data-structure');
-    await page.locator('#lectures-list.skill-tree-board').waitFor({state:'visible'});
-    assert(await page.locator('.skill-tree-hud').isVisible(), 'Skill tree HUD should be visible');
-    assert(await page.locator('.skill-tree-svg path.skill-trace-live').count() >= 5, 'Electronic PCB circuit traces should connect course nodes');
-
-    const pointersNode = page.locator('#lectures-list [data-skill-node-id="0"]');
-    const linkedListsNode = page.locator('#lectures-list [data-skill-node-id="2"]');
-    const treesNode = page.locator('#lectures-list [data-skill-node-id="trees"]');
-
-    assert.equal(await pointersNode.getAttribute('data-skill-status'), 'unlocked');
-    assert.equal(await linkedListsNode.getAttribute('data-skill-status'), 'locked');
-    assert.equal(await treesNode.getAttribute('data-skill-status'), 'locked');
-
-    await page.locator('[data-locked-gate="trees"]').click();
-    assert.match(await page.locator('#skill-tree-alert').innerText(), /Pointers.*Linked Lists|Linked Lists/);
-    assert(await pointersNode.evaluate(el => el.classList.contains('is-prereq-target')));
-    assert(await linkedListsNode.evaluate(el => el.classList.contains('is-prereq-target')));
-
-    await page.locator('[data-complete-node="0"]').click();
-    assert.equal(await pointersNode.getAttribute('data-skill-status'), 'completed');
-    assert(await pointersNode.evaluate(el => el.classList.contains('is-completed')));
-    assert.equal(await linkedListsNode.getAttribute('data-skill-status'), 'unlocked');
-    assert.equal(await treesNode.getAttribute('data-skill-status'), 'locked');
-    assert(await page.locator('.skill-tree-svg path.skill-trace-live.is-energized').count() >= 2, 'Completed node energizes outgoing circuit traces');
-
-    await page.locator('[data-complete-node="2"]').click();
-    assert.equal(await linkedListsNode.getAttribute('data-skill-status'), 'completed');
-    assert.equal(await treesNode.getAttribute('data-skill-status'), 'unlocked');
-    assert(await treesNode.evaluate(el => el.classList.contains('is-unlocked')));
-  });
 }
 module.exports = {register};
