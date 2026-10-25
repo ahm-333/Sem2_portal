@@ -95,7 +95,7 @@
       intervalId: null
     };
 
-    // 1. حقن جرس التنبيهات ومؤقت المذاكرة في شريط التنقل العلوي (.a1-header-actions)
+    // 1. حقن جرس التنبيهات ومؤقت المذاكرة في شريط التنقل العلوي فقط (.a1-header-actions)
     const headerActions = document.querySelector('.a1-header-actions');
     if (headerActions && !document.getElementById('portal-notif-bell-btn')) {
       const timerNavBtn = document.createElement('button');
@@ -103,9 +103,10 @@
       timerNavBtn.id = 'portal-timer-nav-btn';
       timerNavBtn.className = 'header-smart-btn';
       timerNavBtn.dataset.openPowerTool = 'timer';
+      timerNavBtn.setAttribute('aria-label', 'مؤقت المذاكرة');
       timerNavBtn.title = 'مؤقت المذاكرة والتركيز (Pomodoro)';
       timerNavBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M10 2h4"/></svg>
         <span data-study-timer-readout>25:00</span>
       `;
 
@@ -114,93 +115,52 @@
       bellNavBtn.id = 'portal-notif-bell-btn';
       bellNavBtn.className = 'header-smart-btn';
       bellNavBtn.dataset.openPowerTool = 'notifications';
+      bellNavBtn.setAttribute('aria-label', 'جرس التنبيهات — آخر الإضافات');
       bellNavBtn.title = 'جرس التنبيهات — آخر الإضافات والتحديثات';
       bellNavBtn.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-        <span>آخر الإضافات</span>
+        <span class="header-smart-label">آخر الإضافات</span>
         <span class="notif-unread-badge" data-notif-unread-badge>0</span>
       `;
 
       headerActions.prepend(bellNavBtn, timerNavBtn);
     }
 
-    // 2. إنشاء شريط «الأدوات الذكية» في صفحة المادة (أو شريط التنبيهات والمؤقت في الرئيسية)
+    // 2. إنشاء شريط «الأدوات الذكية» في صفحة المادة فقط (الشرح التفاعلي + محاكي الميدتيرم فقط)
     let bar = document.querySelector('.course-power-bar');
-    if (!bar) {
+    if (!bar && isSubjectPage) {
       bar = document.createElement('section');
       bar.className = 'course-power-bar';
-      bar.setAttribute('aria-label', 'الأدوات الذكية وجرس التنبيهات ومؤقت المذاكرة');
-
-      if (isSubjectPage) {
-        bar.innerHTML = `
-          <div class="course-power-intro">
-            <div class="course-power-icon" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </div>
-            <div class="course-power-copy">
-              <h3>الأدوات الذكية — ${escapeHtml(course.arabicName)}</h3>
-              <p>${hasInteractiveHub ? 'الشرح التفاعلي المعتمد • ' : ''}محاكي امتحان الميدتيرم • مؤقت المذاكرة • جرس آخر الإضافات</p>
-            </div>
+      bar.setAttribute('aria-label', 'الأدوات الذكية للمقرر');
+      bar.innerHTML = `
+        <div class="course-power-intro">
+          <div class="course-power-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
           </div>
-          <div class="course-power-actions">
-            ${hasInteractiveHub ? `
-              <button type="button" class="power-tool-btn is-interactive-tool" data-open-power-tool="interactive">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <span>الشرح التفاعلي</span>
-              </button>
-            ` : ''}
-            <button type="button" class="power-tool-btn is-primary-tool" data-open-power-tool="midterm">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-              <span>محاكي الميدتيرم</span>
-            </button>
-            <button type="button" class="power-tool-btn" data-open-power-tool="timer">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span>مؤقت المذاكرة</span>
-              <span class="power-tool-badge" data-study-timer-readout>25:00</span>
-            </button>
-            <button type="button" class="power-tool-btn is-notif-tool" data-open-power-tool="notifications">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-              <span>جرس التنبيهات</span>
-              <span class="power-tool-badge" id="power-notif-badge" data-notif-unread-badge>0</span>
-            </button>
+          <div class="course-power-copy">
+            <h3>الأدوات الذكية — ${escapeHtml(course.arabicName)}</h3>
+            <p>${hasInteractiveHub ? 'الشرح التفاعلي المعتمد ومحاكي امتحان الميدتيرم بالوقت' : 'محاكي امتحان الميدتيرم الشامل بالوقت والتصحيح الفوري'}</p>
           </div>
-        `;
-        const materials = document.querySelector('.a1-materials') || document.getElementById('main-content');
-        const resourceTabs = materials?.querySelector('.a1-resource-tabs');
-        if (resourceTabs) {
-          resourceTabs.after(bar);
-        } else if (materials) {
-          materials.prepend(bar);
-        }
-      } else {
-        bar.innerHTML = `
-          <div class="course-power-intro">
-            <div class="course-power-icon" aria-hidden="true">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-            </div>
-            <div class="course-power-copy">
-              <h3>إشعارات المنصة ومؤقت المذاكرة</h3>
-              <p>تابع أحدث المحاضرات والسكاشن والأكواد المضافة لحظة بلحظة ونظّم وقت مذاكرتك</p>
-            </div>
-          </div>
-          <div class="course-power-actions">
-            <button type="button" class="power-tool-btn is-notif-tool" data-open-power-tool="notifications">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-              <span>آخر الإضافات والتنبيهات</span>
-              <span class="power-tool-badge" data-notif-unread-badge>0</span>
+        </div>
+        <div class="course-power-actions">
+          ${hasInteractiveHub ? `
+            <button type="button" class="power-tool-btn is-interactive-tool" data-open-power-tool="interactive">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
+              <span>الشرح التفاعلي</span>
             </button>
-            <button type="button" class="power-tool-btn" data-open-power-tool="timer">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span>مؤقت المذاكرة</span>
-              <span class="power-tool-badge" data-study-timer-readout>25:00</span>
-            </button>
-          </div>
-        `;
-        const coursesSec = document.getElementById('courses-section');
-        const toolsRow = coursesSec?.querySelector('.studio-course-tools');
-        if (toolsRow) {
-          toolsRow.before(bar);
-        }
+          ` : ''}
+          <button type="button" class="power-tool-btn is-primary-tool" data-open-power-tool="midterm">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+            <span>محاكي الميدتيرم</span>
+          </button>
+        </div>
+      `;
+      const materials = document.querySelector('.a1-materials') || document.getElementById('main-content');
+      const resourceTabs = materials?.querySelector('.a1-resource-tabs');
+      if (resourceTabs) {
+        resourceTabs.after(bar);
+      } else if (materials) {
+        materials.prepend(bar);
       }
     }
 
@@ -217,7 +177,7 @@
             <div class="power-modal-top-row">
               <div class="power-modal-title-wrap">
                 <span class="power-modal-course-code">${escapeHtml(isSubjectPage ? course.code : 'KERNAL')}</span>
-                <h2 class="power-modal-title" id="power-modal-title">${escapeHtml(isSubjectPage ? `الأدوات الذكية — ${course.arabicName}` : 'الأدوات الذكية وجرس التنبيهات')}</h2>
+                <h2 class="power-modal-title" id="power-modal-title">${escapeHtml(isSubjectPage ? `الأدوات الذكية — ${course.arabicName}` : 'جرس التنبيهات ومؤقت المذاكرة')}</h2>
               </div>
               <button type="button" class="power-modal-close-btn" id="power-modal-close">
                 <span>إغلاق</span>
@@ -227,19 +187,23 @@
             <div class="power-modal-tabs" role="tablist" aria-label="أقسام الأدوات الذكية">
               ${hasInteractiveHub ? `
                 <button type="button" role="tab" class="power-modal-tab" data-power-tab="interactive" aria-selected="true">
-                  <span>✨ الشرح التفاعلي</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
+                  <span>الشرح التفاعلي</span>
                 </button>
               ` : ''}
               ${isSubjectPage ? `
                 <button type="button" role="tab" class="power-modal-tab" data-power-tab="midterm" aria-selected="${!hasInteractiveHub ? 'true' : 'false'}">
-                  <span>📝 محاكي الميدتيرم</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
+                  <span>محاكي الميدتيرم</span>
                 </button>
               ` : ''}
               <button type="button" role="tab" class="power-modal-tab" data-power-tab="timer" aria-selected="${!isSubjectPage ? 'true' : 'false'}">
-                <span>⏱️ مؤقت المذاكرة (<span data-study-timer-readout>25:00</span>)</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M10 2h4"/></svg>
+                <span>مؤقت المذاكرة (<span data-study-timer-readout>25:00</span>)</span>
               </button>
               <button type="button" role="tab" class="power-modal-tab" data-power-tab="notifications" aria-selected="false">
-                <span>🔔 آخر الإضافات (<span data-notif-unread-badge>0</span>)</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                <span>آخر الإضافات (<span data-notif-unread-badge>0</span>)</span>
               </button>
             </div>
           </header>
@@ -649,7 +613,7 @@
         <div class="study-timer-box">
           <span class="smart-card-tag">⏱️ مؤقت المذاكرة والتركيز (Pomodoro Focus Timer)</span>
           <div class="study-timer-digits" id="study-timer-big-digits">${formatTime(studyTimer.remainingSec)}</div>
-          <p class="text-xs text-slate-300">يستمر المؤقت في العمل بالخلفية أثناء تصفحك للمحاضرات أو الشرح التفاعلي • الجلسات المكتملة: <strong id="timer-completed-sessions">${completedSessions}</strong></p>
+          <p class="text-xs text-[var(--text-muted)]">يستمر المؤقت في العمل بالخلفية أثناء تصفحك للمحاضرات أو الشرح التفاعلي • الجلسات المكتملة: <strong id="timer-completed-sessions">${completedSessions}</strong></p>
           <div class="study-timer-presets" role="group" aria-label="مدد المؤقت الجاهزة">
             ${presets.map(([min, label]) => `
               <button type="button" class="power-action-btn ${studyTimer.presetMin === min ? 'is-active-preset' : ''}" data-timer-preset="${min}">

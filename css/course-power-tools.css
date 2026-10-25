@@ -1,146 +1,168 @@
-/* ==========================================================================
-   الأدوات الذكية: الشرح التفاعلي + محاكي الميدتيرم + مؤقت المذاكرة + جرس التنبيهات
-   ========================================================================== */
+/**
+ * ==============================================================================
+ * الأدوات الذكية وجرس التنبيهات ومؤقت المذاكرة — متوافقة مع الأوضاع الثلاثة
+ * (Light / Dark / Reading) بنفس هوية المنصة (Studio Design Tokens)
+ * ==============================================================================
+ */
 
-/* أزرار الهيدر العلوي (تظهر في الشاشات المكتبية لتجنب تزاحم شاشات 360px) */
-button.header-smart-btn {
-  display: none !important;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  height: 2.35rem;
-  padding: 0 0.75rem;
-  border-radius: 0.75rem;
-  font-size: 0.74rem;
-  font-weight: 800;
-  cursor: pointer;
-  background-color: #1e293b !important;
-  color: #ffffff !important;
-  border: 1.5px solid #334155 !important;
-  white-space: nowrap;
-}
-
-@media (min-width: 980px) {
-  button.header-smart-btn {
-    display: inline-flex !important;
-  }
-}
-
-button.header-smart-btn:hover,
-button.header-smart-btn:focus,
-button.header-smart-btn:focus-visible,
-button.header-smart-btn:active {
-  background-color: #0f172a !important;
-  color: #ffffff !important;
-  border-color: #6366f1 !important;
-  outline: 2px solid #6366f1;
-  outline-offset: 2px;
-}
-
-button.header-smart-btn svg {
-  width: 0.95rem;
-  height: 0.95rem;
-  color: #ffffff !important;
-  stroke: currentColor;
-  flex-shrink: 0;
-}
-
-.notif-unread-badge {
+/* 1. أزرار جرس التنبيهات ومؤقت المذاكرة في شريط التنقل العلوي (.a1-header-actions) */
+body.studio .a1-header-actions button.header-smart-btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.25rem;
-  height: 1.25rem;
-  padding: 0 0.32rem;
+  gap: 7px;
+  min-height: 36px;
+  height: 36px;
+  padding: 0 11px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: var(--bg) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.15s ease;
+  white-space: nowrap;
+}
+
+body.studio .a1-header-actions button.header-smart-btn:hover {
+  background-color: var(--soft) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+body.studio .a1-header-actions button.header-smart-btn svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.header-smart-btn .notif-unread-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
   border-radius: 999px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.68rem;
-  font-weight: 800;
-  background-color: #be123c;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  font-size: 10px;
+  font-weight: 700;
+  background-color: var(--accent);
+  color: var(--paper);
+  line-height: 1;
 }
 
-.notif-unread-badge.is-read {
-  background-color: #0f172a;
+.header-smart-btn .notif-unread-badge.is-read {
+  background-color: var(--soft);
+  color: var(--ink);
+  border: 1px solid var(--line);
 }
 
-/* شريط الأدوات الذكية داخل صفحة المادة والرئيسية */
+@media (max-width: 920px) {
+  body.studio .a1-header-actions button.header-smart-btn .header-smart-label,
+  body.studio .a1-header-actions button#portal-timer-nav-btn [data-study-timer-readout] {
+    display: none;
+  }
+
+  body.studio .a1-header-actions button.header-smart-btn {
+    padding: 0 8px;
+    min-width: 34px;
+    height: 34px;
+    min-height: 34px;
+  }
+
+  .header-smart-btn .notif-unread-badge {
+    min-width: 15px;
+    height: 15px;
+    font-size: 9px;
+    padding: 0 3px;
+  }
+}
+
+@media (max-width: 540px) {
+  body.studio .studio-topbar {
+    padding-inline: 10px;
+    gap: 6px;
+  }
+
+  body.studio .studio-topbar .a1-brand small {
+    display: none;
+  }
+
+  body.studio .studio-topbar .a1-header-actions {
+    gap: 4px;
+  }
+
+  body.studio .studio-topbar .a1-header-actions button.header-smart-btn {
+    min-width: 30px;
+    width: auto;
+    padding: 0 5px;
+  }
+}
+
+/* 2. شريط «الأدوات الذكية» داخل صفحة المقرر (الشرح التفاعلي + محاكي الميدتيرم فقط) */
 .course-power-bar {
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem 1.15rem;
-  margin-bottom: 1.1rem;
-  border-radius: 1.25rem;
-  border: 1px solid var(--border-subtle, #cbd5e1);
-  background-color: var(--bg-surface, #ffffff);
-  box-shadow: 0 8px 22px -12px rgba(15, 23, 42, 0.14);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 0 0 20px;
+  padding: 15px 18px;
+  border-radius: 13px;
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-html[data-theme="dark"] .course-power-bar {
-  background-color: #111827;
-  border-color: #1e293b;
-}
-
-html[data-theme="reading"] .course-power-bar {
-  background-color: #f5efe2;
-  border-color: #d6cbb5;
-}
-
-@media (min-width: 768px) {
-  .course-power-bar {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
+.course-power-bar:hover {
+  border-color: var(--accent);
 }
 
 .course-power-intro {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  min-width: 0;
+  gap: 12px;
 }
 
 .course-power-icon {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.85rem;
-  background-color: #1e293b;
-  color: #ffffff;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--soft);
+  color: var(--accent);
   flex-shrink: 0;
 }
 
 .course-power-icon svg {
-  width: 1.25rem;
-  height: 1.25rem;
-  stroke: currentColor;
+  width: 20px;
+  height: 20px;
 }
 
 .course-power-copy h3 {
-  font-size: 0.92rem;
-  font-weight: 800;
-  color: var(--text-main, #0f172a);
-  margin: 0 0 0.15rem 0;
-  line-height: 1.35;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.4;
 }
 
 .course-power-copy p {
-  font-size: 0.76rem;
-  color: var(--text-muted, #475569);
-  margin: 0;
-  line-height: 1.45;
+  font-size: 11px;
+  color: var(--muted);
+  margin: 2px 0 0;
 }
 
 .course-power-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 button.power-tool-btn,
@@ -148,93 +170,73 @@ a.power-action-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
-  padding: 0.55rem 0.9rem;
-  border-radius: 0.85rem;
-  font-size: 0.78rem;
-  font-weight: 800;
-  line-height: 1.2;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  font-size: 11.5px;
+  font-weight: 600;
   cursor: pointer;
-  background-color: #1e293b !important;
-  color: #ffffff !important;
-  border: 1.5px solid #334155 !important;
-  transition: transform 0.15s ease, background-color 0.15s ease;
   text-decoration: none;
-}
-
-button.power-tool-btn.is-interactive-tool,
-a.power-action-link.is-interactive-tool {
-  background-color: #065f46 !important;
-  border-color: #10b981 !important;
-  color: #ffffff !important;
-}
-
-button.power-tool-btn.is-primary-tool {
-  background-color: #3730a3 !important;
-  border-color: #4f46e5 !important;
-  color: #ffffff !important;
-}
-
-button.power-tool-btn.is-notif-tool {
-  background-color: #881337 !important;
-  border-color: #be123c !important;
-  color: #ffffff !important;
+  background-color: var(--bg) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
 }
 
 button.power-tool-btn:hover,
-button.power-tool-btn:focus,
-button.power-tool-btn:focus-visible,
-button.power-tool-btn:active,
-a.power-action-link:hover,
-a.power-action-link:focus,
-a.power-action-link:focus-visible,
-a.power-action-link:active {
-  background-color: #0f172a !important;
-  color: #ffffff !important;
-  border-color: #6366f1 !important;
-  outline: 2px solid #6366f1;
-  outline-offset: 2px;
+a.power-action-link:hover {
+  background-color: var(--soft) !important;
+  border-color: var(--accent) !important;
+  transform: translateY(-1px);
 }
 
 button.power-tool-btn svg,
 a.power-action-link svg {
-  width: 0.95rem;
-  height: 0.95rem;
-  color: #ffffff !important;
-  stroke: currentColor;
+  width: 15px;
+  height: 15px;
   flex-shrink: 0;
+  color: var(--accent);
 }
 
-.power-tool-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.35rem;
-  height: 1.35rem;
-  padding: 0 0.35rem;
-  border-radius: 999px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.7rem;
-  font-weight: 800;
-  background-color: #0f172a;
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+button.power-tool-btn.is-primary-tool,
+a.power-action-link.is-interactive-tool {
+  background-color: var(--accent) !important;
+  color: var(--paper) !important;
+  border-color: var(--accent) !important;
 }
 
-/* ==========================================================================
-   النافذة المنبثقة للأدوات الذكية (Course Power Modal)
-   ========================================================================== */
+button.power-tool-btn.is-primary-tool svg,
+a.power-action-link.is-interactive-tool svg {
+  color: var(--paper);
+}
 
+button.power-tool-btn.is-primary-tool:hover,
+a.power-action-link.is-interactive-tool:hover {
+  filter: brightness(0.95);
+}
+
+button.power-tool-btn.is-interactive-tool {
+  background-color: var(--soft) !important;
+  color: var(--ink) !important;
+  border-color: var(--line) !important;
+}
+
+button.power-tool-btn.is-interactive-tool:hover {
+  border-color: var(--accent) !important;
+}
+
+/* 3. النافذة المنبثقة للأدوات الذكية والمؤقت وجرس التنبيهات */
 .course-power-modal {
   position: fixed;
   inset: 0;
-  z-index: 90;
+  z-index: 95;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
-  background-color: rgba(2, 6, 23, 0.75);
-  backdrop-filter: blur(4px);
+  padding: 16px;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
 }
 
 .course-power-modal.hidden {
@@ -242,191 +244,162 @@ a.power-action-link svg {
 }
 
 .power-modal-shell {
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-  width: min(1060px, 96vw);
-  max-height: 90vh;
-  border-radius: 1.5rem;
-  border: 1px solid var(--border-subtle, #cbd5e1);
-  background-color: var(--bg-main, #f8fafc);
-  color: var(--text-main, #0f172a);
-  box-shadow: 0 25px 60px -15px rgba(2, 6, 23, 0.55);
+  border-radius: 16px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.35);
   overflow: hidden;
-}
-
-html[data-theme="dark"] .power-modal-shell {
-  background-color: #0b1120;
-  border-color: #1e293b;
-  color: #f8fafc;
-}
-
-html[data-theme="reading"] .power-modal-shell {
-  background-color: #fbf7ee;
-  border-color: #d6cbb5;
-  color: #2c2218;
 }
 
 .power-modal-header {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  background-color: var(--bg-surface, #ffffff);
-  border-bottom: 1px solid var(--border-subtle, #cbd5e1);
-  flex-shrink: 0;
-}
-
-html[data-theme="dark"] .power-modal-header {
-  background-color: #111827;
-  border-bottom-color: #1e293b;
-}
-
-html[data-theme="reading"] .power-modal-header {
-  background-color: #f3ecdc;
-  border-bottom-color: #d6cbb5;
+  gap: 12px;
+  padding: 16px 20px;
+  background-color: var(--bg);
+  border-bottom: 1px solid var(--line);
 }
 
 .power-modal-top-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .power-modal-title-wrap {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  min-width: 0;
+  gap: 10px;
 }
 
 .power-modal-course-code {
-  padding: 0.25rem 0.6rem;
-  border-radius: 0.5rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.72rem;
-  font-weight: 800;
-  background-color: #1e293b;
-  color: #ffffff;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  background-color: var(--soft);
+  color: var(--accent);
+  border: 1px solid var(--line);
 }
 
 .power-modal-title {
-  font-size: 1rem;
-  font-weight: 800;
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--ink);
   margin: 0;
-  color: var(--text-main, #0f172a);
 }
 
 button.power-modal-close-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.8rem;
-  border-radius: 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 800;
-  background-color: #1e293b !important;
-  color: #ffffff !important;
-  border: 1px solid #334155 !important;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
   cursor: pointer;
+  background-color: var(--paper) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
 }
 
-button.power-modal-close-btn:hover,
-button.power-modal-close-btn:focus,
-button.power-modal-close-btn:active {
-  background-color: #be123c !important;
-  border-color: #e11d48 !important;
-  color: #ffffff !important;
+button.power-modal-close-btn:hover {
+  background-color: var(--soft) !important;
+  border-color: var(--accent) !important;
 }
 
 .power-modal-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
+  gap: 6px;
 }
 
 button.power-modal-tab {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.5rem 0.95rem;
-  border-radius: 0.8rem;
-  font-size: 0.78rem;
-  font-weight: 800;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
   cursor: pointer;
-  background-color: #334155 !important;
-  color: #ffffff !important;
-  border: 1.5px solid transparent !important;
+  background-color: var(--paper) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+  transition: all 0.15s ease;
+}
+
+button.power-modal-tab svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 button.power-modal-tab[aria-selected="true"] {
-  background-color: #3730a3 !important;
-  border-color: #818cf8 !important;
-  color: #ffffff !important;
-}
-
-button.power-modal-tab:hover,
-button.power-modal-tab:focus,
-button.power-modal-tab:active {
-  background-color: #0f172a !important;
-  color: #ffffff !important;
+  background-color: var(--accent) !important;
+  color: var(--paper) !important;
+  border-color: var(--accent) !important;
 }
 
 .power-modal-body {
-  padding: 1.25rem;
+  padding: 20px;
   overflow-y: auto;
   flex: 1;
+  background-color: var(--paper);
 }
 
-/* البطاقات العامة داخل النافذة */
+/* البطاقات الداخلية */
 .smart-card {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  padding: 1.1rem;
-  border-radius: 1.15rem;
-  background-color: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-subtle, #cbd5e1);
-  box-shadow: 0 4px 12px -6px rgba(15, 23, 42, 0.08);
-}
-
-html[data-theme="dark"] .smart-card {
-  background-color: #111827;
-  border-color: #1e293b;
-}
-
-html[data-theme="reading"] .smart-card {
-  background-color: #f5efe2;
-  border-color: #d6cbb5;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: var(--bg);
+  border: 1px solid var(--line);
 }
 
 .smart-card-header {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .smart-card-title {
-  font-size: 0.92rem;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--ink);
+  line-height: 1.45;
   margin: 0;
-  color: var(--text-main, #0f172a);
 }
 
 .smart-card-tag {
-  padding: 0.2rem 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
   border-radius: 999px;
-  font-size: 0.7rem;
-  font-weight: 800;
-  background-color: #1e293b;
-  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 600;
+  background-color: var(--soft);
+  color: var(--ink);
+  border: 1px solid var(--line);
 }
 
 .smart-card-tag.is-new {
-  background-color: #be123c;
+  background-color: var(--accent);
+  color: var(--paper);
+  border-color: var(--accent);
 }
 
 /* مؤقت المذاكرة الذكي (Focus Study Timer) */
@@ -436,20 +409,20 @@ html[data-theme="reading"] .smart-card {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 1.75rem 1.25rem;
-  border-radius: 1.35rem;
-  background-color: #0f172a;
-  color: #ffffff;
-  border: 1px solid #334155;
-  gap: 1rem;
+  padding: 28px 20px;
+  border-radius: 14px;
+  background-color: var(--bg);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  gap: 14px;
 }
 
 .study-timer-digits {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  color: #38bdf8;
+  font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--accent);
   line-height: 1;
 }
 
@@ -459,298 +432,240 @@ html[data-theme="reading"] .smart-card {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 /* محاكي امتحان الميدتيرم */
 .midterm-config-panel {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  padding: 1.15rem;
-  border-radius: 1.2rem;
-  background-color: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-subtle, #cbd5e1);
-  margin-bottom: 1.15rem;
-}
-
-html[data-theme="dark"] .midterm-config-panel {
-  background-color: #111827;
-  border-color: #1e293b;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 12px;
+  background-color: var(--bg);
+  border: 1px solid var(--line);
 }
 
 .midterm-config-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
 }
 
-@media (min-width: 768px) {
-  .midterm-config-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+.midterm-config-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.midterm-config-group label {
-  display: block;
-  font-size: 0.76rem;
-  font-weight: 800;
-  margin-bottom: 0.4rem;
-  color: var(--text-main, #0f172a);
+.midterm-config-field label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink);
 }
 
-.midterm-select {
-  width: 100%;
-  padding: 0.55rem 0.75rem;
-  border-radius: 0.75rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  border: 1px solid var(--border-subtle, #94a3b8);
-  background-color: var(--bg-main, #f8fafc);
-  color: var(--text-main, #0f172a);
+.midterm-config-field select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background-color: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
 }
 
-html[data-theme="dark"] .midterm-select {
-  background-color: #0f172a;
-  border-color: #334155;
-  color: #f8fafc;
-}
-
-.midterm-scope-chips {
+.midterm-lecture-checks {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 7px;
 }
 
-button.midterm-scope-chip {
-  padding: 0.35rem 0.7rem;
-  border-radius: 0.65rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  cursor: pointer;
-  background-color: #334155 !important;
-  color: #ffffff !important;
-  border: 1px solid #475569 !important;
-}
-
-button.midterm-scope-chip[aria-pressed="true"] {
-  background-color: #065f46 !important;
-  border-color: #10b981 !important;
-  color: #ffffff !important;
-}
-
-button.midterm-start-btn {
+button.midterm-lec-chip {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.35rem;
-  border-radius: 0.9rem;
-  font-size: 0.85rem;
-  font-weight: 800;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
   cursor: pointer;
-  background-color: #3730a3 !important;
-  color: #ffffff !important;
-  border: 1.5px solid #6366f1 !important;
-  align-self: flex-start;
+  background-color: var(--paper) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
 }
 
-button.midterm-start-btn:hover,
-button.midterm-start-btn:focus,
-button.midterm-start-btn:active {
-  background-color: #1e1b4b !important;
-  color: #ffffff !important;
+button.midterm-lec-chip.is-selected {
+  background-color: var(--accent) !important;
+  color: var(--paper) !important;
+  border-color: var(--accent) !important;
 }
 
-.midterm-hud-bar {
+/* شريط الامتحان والعداد الزمني */
+.midterm-hud {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem;
-  border-radius: 1rem;
-  background-color: #0f172a;
-  color: #ffffff;
-  margin-bottom: 1rem;
+  gap: 10px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  background-color: var(--bg);
+  border: 1px solid var(--line);
+  margin-bottom: 14px;
 }
 
 .midterm-timer-box {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: 8px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.95rem;
-  font-weight: 800;
-  padding: 0.35rem 0.75rem;
-  border-radius: 0.65rem;
-  background-color: #1e293b;
-  color: #ffffff;
-  border: 1px solid #334155;
+  font-size: 14px;
+  font-weight: 700;
+  background-color: var(--soft);
+  color: var(--ink);
+  border: 1px solid var(--line);
 }
 
-.midterm-timer-box.is-warning {
-  background-color: #991b1b;
-  border-color: #f87171;
+.midterm-timer-box.is-urgent {
+  background-color: var(--negative);
+  color: var(--paper);
 }
 
-.midterm-q-pills {
+.midterm-q-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-bottom: 1rem;
+  gap: 5px;
+  margin-bottom: 14px;
 }
 
-button.midterm-q-pill {
-  min-width: 2rem;
-  height: 2rem;
-  padding: 0 0.4rem;
-  border-radius: 0.55rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.74rem;
-  font-weight: 800;
+button.midterm-q-dot {
+  min-width: 34px;
+  height: 32px;
+  padding: 0 7px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 600;
   cursor: pointer;
-  background-color: #334155 !important;
-  color: #ffffff !important;
-  border: 1.5px solid transparent !important;
+  background-color: var(--bg) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
 }
 
-button.midterm-q-pill.is-current {
-  border-color: #38bdf8 !important;
-  background-color: #0369a1 !important;
+button.midterm-q-dot.is-current {
+  background-color: var(--accent) !important;
+  color: var(--paper) !important;
+  border-color: var(--accent) !important;
 }
 
-button.midterm-q-pill.is-answered {
-  background-color: #3730a3 !important;
-}
-
-button.midterm-q-pill.is-flagged {
-  background-color: #92400e !important;
-  border-color: #fbbf24 !important;
-}
-
-button.midterm-q-pill.is-correct-pill {
-  background-color: #065f46 !important;
-}
-
-button.midterm-q-pill.is-wrong-pill {
-  background-color: #991b1b !important;
+button.midterm-q-dot.is-answered:not(.is-current) {
+  background-color: var(--soft) !important;
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
 }
 
 .midterm-question-card {
-  padding: 1.15rem;
-  border-radius: 1.2rem;
-  background-color: var(--bg-surface, #ffffff);
-  border: 1px solid var(--border-subtle, #cbd5e1);
-  margin-bottom: 1rem;
-}
-
-html[data-theme="dark"] .midterm-question-card {
-  background-color: #111827;
-  border-color: #1e293b;
+  padding: 18px;
+  border-radius: 13px;
+  background-color: var(--bg);
+  border: 1px solid var(--line);
 }
 
 .midterm-q-prompt {
-  padding: 0.9rem 1rem;
-  border-radius: 0.85rem;
-  background-color: var(--bg-main, #f8fafc);
-  border: 1px solid var(--border-subtle, #cbd5e1);
-  font-size: 0.9rem;
-  font-weight: 700;
-  line-height: 1.6;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--ink);
+  line-height: 1.65;
+  margin-bottom: 14px;
   direction: ltr;
   text-align: left;
-  margin-bottom: 0.9rem;
-}
-
-html[data-theme="dark"] .midterm-q-prompt {
-  background-color: #0f172a;
-  border-color: #1e293b;
-  color: #f8fafc;
 }
 
 .midterm-options-list {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 8px;
+  direction: ltr;
+  text-align: left;
 }
 
 button.midterm-opt-btn {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
+  gap: 10px;
   width: 100%;
-  padding: 0.75rem 0.95rem;
-  border-radius: 0.85rem;
-  font-size: 0.82rem;
-  font-weight: 700;
+  padding: 11px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 500;
   text-align: left;
-  direction: ltr;
   cursor: pointer;
-  background-color: #1e293b !important;
-  color: #ffffff !important;
-  border: 1.5px solid #334155 !important;
+  background-color: var(--paper) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+button.midterm-opt-btn:hover:not(:disabled) {
+  border-color: var(--accent) !important;
+  background-color: var(--soft) !important;
 }
 
 button.midterm-opt-btn.is-selected {
-  background-color: #3730a3 !important;
-  border-color: #818cf8 !important;
-  color: #ffffff !important;
+  background-color: var(--soft) !important;
+  border-color: var(--accent) !important;
+  color: var(--ink) !important;
+  font-weight: 650;
 }
 
 button.midterm-opt-btn.is-correct {
-  background-color: #065f46 !important;
-  border-color: #34d399 !important;
-  color: #ffffff !important;
+  background-color: var(--soft) !important;
+  border-color: var(--positive) !important;
+  color: var(--ink) !important;
+  font-weight: 650;
 }
 
 button.midterm-opt-btn.is-wrong {
-  background-color: #991b1b !important;
-  border-color: #f87171 !important;
-  color: #ffffff !important;
+  background-color: var(--soft) !important;
+  border-color: var(--negative) !important;
+  color: var(--ink) !important;
 }
 
 .midterm-explanation-box {
-  margin-top: 0.9rem;
-  padding: 0.85rem 1rem;
-  border-radius: 0.9rem;
-  background-color: #0f172a;
-  color: #f8fafc;
-  border: 1px solid #334155;
-  font-size: 0.8rem;
-  line-height: 1.65;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  font-size: 12px;
+  line-height: 1.7;
 }
 
 button.power-action-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
-  padding: 0.5rem 0.9rem;
-  border-radius: 0.75rem;
-  font-size: 0.76rem;
-  font-weight: 800;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
   cursor: pointer;
-  background-color: #1e293b !important;
-  color: #ffffff !important;
-  border: 1px solid #475569 !important;
+  background-color: var(--paper) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
 }
 
-button.power-action-btn.is-submit {
-  background-color: #065f46 !important;
-  border-color: #10b981 !important;
+button.power-action-btn:hover:not(:disabled) {
+  background-color: var(--soft) !important;
+  border-color: var(--accent) !important;
 }
 
+button.power-action-btn.is-submit,
 button.power-action-btn.is-active-preset {
-  background-color: #3730a3 !important;
-  border-color: #818cf8 !important;
-}
-
-/* إخفاء موقع الشرح الخارجي والمحلي لمادة معمارية الحاسوب من جميع صفحات المنصة */
-a[href*="computer-architecture-study"],
-a[href*="study/arch"],
-.hero-explanation-card[data-content-key='["computer-architecture","explanation-site","site"]'],
-#library-results a[href*="computer-architecture"][href*="explanation-site"] {
-  display: none !important;
+  background-color: var(--accent) !important;
+  color: var(--paper) !important;
+  border-color: var(--accent) !important;
 }
