@@ -410,6 +410,7 @@ async function main() {
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('#lecture-study-modal').isVisible(), false);
   }, {viewport: {width: 720, height: 450}, deviceScaleFactor: 2});
+  // Static capture matrix: motion has dedicated interactive cases; keep software-GPU screenshots deterministic.
   for (const width of [360, 390, 412, 768, 1024, 1440]) await scenario('a1-rendered-' + width, async ({page, go}) => {
     await settled(page); await go('index.html');
     for (const theme of ['light', 'dark', 'reading']) {
@@ -417,27 +418,27 @@ async function main() {
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
       assert.equal(await page.locator('#courses-grid h3').first().evaluate(el => getComputedStyle(el).fontSize), width <= 760 ? '18px' : '20px');
       assert.equal(await page.locator('#courses-grid article').count(), 6);
-      await page.screenshot({path: path.join(output, `home-${width}-${theme}.png`), fullPage: true});
-      if (theme === 'light') await page.screenshot({path: path.join(output, `home-${width}-viewport.png`)});
+      await page.screenshot({animations: 'disabled', timeout: 30000, path: path.join(output, `home-${width}-${theme}.png`), fullPage: true});
+      if (theme === 'light') await page.screenshot({animations: 'disabled', timeout: 30000, path: path.join(output, `home-${width}-viewport.png`)});
     }
     if (width < 1024) assert.equal(await page.evaluate(() => performance.getEntriesByType('resource').filter(x => /ScrollTrigger|InertiaPlugin|processor-intro\.js/.test(x.name)).length), 0);
     await go('subject.html?id=database-systems');
     await page.evaluate(() => window.PortalTheme.setTheme('light'));
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
-    await page.screenshot({path: path.join(output, `subject-${width}.png`), fullPage: true});
+    await page.screenshot({animations: 'disabled', timeout: 30000, path: path.join(output, `subject-${width}.png`), fullPage: true});
     await page.locator('[data-open-study-lecture="2"]').first().click();
     await page.locator('#study-slides-feed img').first().waitFor({state: 'attached'});
     assert.equal(await page.locator('#study-slides-feed img').count(), 30);
-    await page.screenshot({path: path.join(output, `reader-${width}.png`)});
+    await page.screenshot({animations: 'disabled', timeout: 30000, path: path.join(output, `reader-${width}.png`)});
     await page.locator('#study-font-zoom-in').click();
     assert(await page.locator('#study-slides-feed').evaluate(el => el.classList.contains('study-font-lg')));
     await page.locator('#study-font-zoom-out').click();
     await page.locator('#study-tab-btn-quiz').click();
     assert.equal(await page.locator('.full-quiz-opt-btn').count(), 80);
-    await page.screenshot({path: path.join(output, `quiz-${width}.png`)});
+    await page.screenshot({animations: 'disabled', timeout: 30000, path: path.join(output, `quiz-${width}.png`)});
     await page.locator('#study-modal-close').click();
     assert.equal(await page.locator('#lecture-study-modal').isVisible(), false);
-  }, {viewport: {width, height: 900}, ...(width <= 412 ? {hasTouch: true, isMobile: true} : {})});
+  }, {viewport: {width, height: 900}, reducedMotion: 'reduce', ...(width <= 412 ? {hasTouch: true, isMobile: true} : {})});
 }
 main().catch(error => { console.error(error); process.exitCode = 1; }).finally(async () => {
   await browser?.close();

@@ -24,6 +24,7 @@ Audited source: `547b084330cb744bf9bd6dfc363243c49deafc8e` from `ahm-333/Sem2_po
 - `tools/performance-probe.cjs`: controlled Chrome runs, configured profile, intro dismissed. Initial resource requests fell from 36/41 to 10 for home/course. Initial decoded resource bytes were approximately halved. The measured course legacy-frame count fell to zero. These are local controlled observations, not field data or a promise of latency on every connection.
 - `tools/study-page-probe.cjs`: compares original and revised computed layout properties and captures images. Raw logs, captures and measurements stay in ignored `test-results/performance/`.
 - Existing suites cover source actions, all groups/sections, themes, search, back/forward, intro/drag/cancellation, reader/quiz focus, storage restrictions/synchronization, OS content and responsive behavior.
+- The static screenshot matrix uses system reduced motion, disabled CSS animations during capture and a separate 30-second capture timeout. This fixes a software-GPU screenshot timeout observed on hosted Linux; interactive motion cases retain normal motion and their existing assertions/timeouts.
 - No authentication, payments, backend database, AI endpoint or migration exists in the runtime being released. No such infrastructure was added. Existing automation was excluded from publishing and otherwise left alone.
 
 ## Release and rollback
