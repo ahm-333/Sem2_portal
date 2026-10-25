@@ -2,6 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <!-- Vercel Web Analytics -->
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الفصل السابع: معمارية الإدخال والإخراج (Chapter 7: I/O) - وضع القراءة</title>
     <!-- خط القاهرة و تجوال لقراءة عربية مريحة جداً، وخط Inter للإنجليزية -->
@@ -294,7 +299,7 @@
             </div>
 
             <div class="p-3 rounded-xl bg-white/80 border border-slate-200 text-xs sm:text-sm text-slate-700 leading-relaxed">
-                💡 <strong>تغطية هذا الموقع التفاعلي:</strong> هذا الموقع يغطي تحديداً كل ما تم شرحه في <strong>شابتر 7 حتى سكشن 7.5</strong> (الأجهزة الخارجية، موديول الـ I/O ووظائفه الخمس، البرمجة المباشرة Programmed I/O، المقاطعات Interrupts، عنونة الذاكرة Memory-Mapped vs Isolated، الوصول المباشر للذاكرة DMA، وطرق كشف الجهاز المقاطع) + أسئلة الدكتور بالإنجليزية وبالبلدي + كويز الـ 25 سؤال MCQ. السكاشن التالية (7.6 DCA و 7.7 و 7.8) غير مشمولة في الامتحان.
+                💡 <strong>تغطية هذا الموقع التفاعلي:</strong> هذا الموقع يغطي تحديداً كل ما تم شرحه في <strong>شابتر 7 حتى سكشن 7.5</strong> (الأجهزة الخارجية، موديول الـ I/O ووظائفه الخمس، البرمجة المباشرة Programmed I/O، المقاطعات Interrupts، عنونة الذاكرة Memory-Mapped vs Isolated، الوصول المباشر للذاكرة DMA، وطرق كشف الجهاز المقاطع) + أسئ��ة الدكتور بالإنجليزية وبالبلدي + كويز الـ 25 سؤال MCQ. السكاشن التالية (7.6 DCA و 7.7 و 7.8) غير مشمولة في الامتحان.
             </div>
         </div>
 
@@ -423,7 +428,7 @@
 
                     <div class="p-5 rounded-xl bg-slate-50 border border-slate-200/70">
                         <h4 class="font-heading font-bold text-slate-900 text-lg mb-2">
-                            3. تضارب أحجام البيانات (<span class="en-inline">Data Format &amp; Word Length</span>):
+                            3. تض��رب أحجام البيانات (<span class="en-inline">Data Format &amp; Word Length</span>):
                         </h4>
                         <p class="text-slate-700">
                             المعالج بينقل كلمات كاملة (<span class="en-inline">32-bit</span> أو <span class="en-inline">64-bit</span> على التوازي)، بينما كيبورد أو كابل إنترنت بيبعت تيار سيريال متتابع بت ورا بت أو حرف حرف.
@@ -959,7 +964,7 @@
                                 <p class="text-slate-700 text-base">الدكتور لما يسألك عن وظائف موديول الـ I/O عاوز الـ 5 رؤوس دول: تحكم وتوقيت، كلام مع المعالج، كلام مع الجهاز، تخزين مؤقت للسرعة (Buffering)، وكشف الأخطاء.</p>
                             </div>
                             <div class="bg-teal-50/60 p-4 rounded-xl border border-teal-200">
-                                <h5 class="font-heading font-bold text-teal-950 text-sm mb-2">🔑 الكلمات المفتاحية (Keywords للدرجة الكاملة):</h5>
+                                <h5 class="font-heading font-bold text-teal-950 text-sm mb-2">🔑 الكلمات المفتاحية (Keywords للدر��ة الكاملة):</h5>
                                 <div class="flex flex-wrap gap-2" dir="ltr">
                                     <span class="en-inline">Control and timing</span>
                                     <span class="en-inline">Processor communication</span>
@@ -1156,7 +1161,7 @@
                     <div class="flex items-center gap-3">
                         <span class="w-9 h-9 rounded-lg bg-indigo-100 text-indigo-800 font-heading font-bold flex items-center justify-center text-lg">3</span>
                         <h3 class="text-xl sm:text-2xl font-heading font-bold text-slate-900">
-                            معضلة عنونة المنافذ: إزاي المعالج بيوصل لمنافذ الأجهزة؟
+                            معضلة عنونة المنافذ: إزاي المع��لج بيوصل لمنافذ الأجهزة؟
                         </h3>
                     </div>
                     <span class="text-xs font-heading font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full">فكرة سؤال الدكتور 7.5</span>
@@ -1514,7 +1519,7 @@
                             </div>
                             <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
                                 <h5 class="font-heading font-bold text-amber-950 text-sm mb-1">الشرح بالبلدي والتركيز للامتحان:</h5>
-                                <p class="text-slate-700 text-base">قارن بينهما من حيث: مساحة العناوين (واحدة مشتركة ولا منفصلتين؟)، ونوع التعليمات (LOAD/STORE ولا IN/OUT؟)، والتأثير على سعة الرامات.</p>
+                                <p class="text-slate-700 text-base">قارن بينهما من حي��: مساحة العناوين (واحدة مشتركة ولا منفصلتين؟)، ونوع التعليمات (LOAD/STORE ولا IN/OUT؟)، والتأثير على سعة الرامات.</p>
                             </div>
                             <div class="bg-indigo-50/60 p-4 rounded-xl border border-indigo-200">
                                 <h5 class="font-heading font-bold text-indigo-950 text-sm mb-2">🔑 الكلمات المفتاحية (Keywords للدرجة الكاملة):</h5>
@@ -1893,7 +1898,7 @@
                     "D) Address recognition"
                 ],
                 correct: 2,
-                explanation: "موديول الـ I/O مسؤول عن مراقبة صحة وصول البيانات وخلوها من أخطاء النقل الكهربائي، بجانب استشعار أي عطل ميكانيكي هاردوير في الجهاز وإرسال تقرير خطأ فوري للمعالج."
+                explanation: "موديول الـ I/O مسؤول عن مراقبة صحة وصول البيانات وخلوها من أخطاء النقل الكهربائي، بجانب استشعار أ�� عطل ميكانيكي هاردوير في الجهاز وإرسال تقرير خطأ فوري للمعالج."
             },
             {
                 id: 9,
@@ -2097,7 +2102,7 @@
                     "D) Programmed I/O: Uses dedicated DMA chips | Isolated I/O: Uses shared memory spaces"
                 ],
                 correct: 1,
-                explanation: "دي خلاصة الفصل كله: Programmed: المعالج محبوس يراقب ويفحص (Busy-waiting). Interrupt-Driven: المعالج حر لكن بيتدخل لنقل كل كلمة ورا كلمة عند المقاطعة. DMA: المعالج بيسلم أمر البداية ويستقبل إشعار النهاية، ونقل البلوك كله بيتم مباشرة بين الجهاز والرامة."
+                explanation: "دي خلاصة الفصل كله: Programmed: المعالج محبوس يراقب ويفحص (Busy-waiting). Interrupt-Driven: المعالج حر لكن بيتدخل لنقل كل كلمة ورا كلمة عن�� المقاطعة. DMA: المعالج بيسلم أمر البداية ويستقبل إشعار النهاية، ونقل البلوك كله بيتم مباشرة بين الجهاز والرامة."
             }
         ];
 

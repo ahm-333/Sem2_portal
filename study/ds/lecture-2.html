@@ -2,6 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>المحاضرة الثانية الشاملة (Lecture 2) — القوائم المتصلة (Linked Lists): الأجزاء الستة كاملة</title>
   <link href="../../css/fonts/study/cb180f1c5ed1.css" rel="stylesheet">
@@ -370,7 +375,7 @@
         <div class="pr-3 space-y-1 text-xs border-r-4 border-sky-800">
           <a href="#p5-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">أولاً: الحذف من البداية (Delete from Beginning / Delete Head)</a>
 <a href="#p5-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">ثانياً: حذف عقدة بقيمة محددة (Delete by Value)</a>
-<a href="#p5-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">روح طبّق الآن بإيدك (Hands-on Practice)</a>
+<a href="#p5-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">روح طبّق الآن بإيد�� (Hands-on Practice)</a>
         </div>
       </div>
     
@@ -952,7 +957,7 @@ int main() {
 
           <div>
             <button type="button" id="btn-toggle-solution" class="px-5 py-2.5 rounded-xl bg-emerald-900 text-white font-extrabold text-xs sm:text-sm hover:bg-emerald-950 transition-all flex items-center gap-2">
-              <span id="solution-btn-icon">👁️</span>
+              <span id="solution-btn-icon">👁���</span>
               <span id="solution-btn-text">إظهار الحل النموذجي للتطبيق</span>
             </button>
           </div>
@@ -1029,7 +1034,7 @@ int main() {
 <div class="pr-4 py-1 text-sm sm:text-base font-bold text-slate-900 flex items-start gap-2"><span class="text-amber-800 font-black">▪</span><span>الرمز (*) في السطر Node* p;   -&gt; معناه إن p مؤشر بيشيل عنوان مكان في الذاكرة.</span></div>
 <div class="pr-4 py-1 text-sm sm:text-base font-bold text-slate-900 flex items-start gap-2"><span class="text-amber-800 font-black">▪</span><span>علامة السهم (-&gt;): p-&gt;data      -&gt; معناها روح للمكان في الذاكرة وافتح جيب الداتا.</span></div>
 <div class="pr-4 py-1 text-sm sm:text-base font-bold text-slate-900 flex items-start gap-2"><span class="text-amber-800 font-black">▪</span><span>الرابطة first-&gt;next = second; -&gt; معناها خزن عنوان العقدة second جوة مؤشر first.</span></div>
-<div class="pr-4 py-1 text-sm sm:text-base font-bold text-slate-900 flex items-start gap-2"><span class="text-amber-800 font-black">▪</span><span>القيمة NULL في العقدة الأخيرة  -&gt; معناها دي نهاية القائمة (End of List).</span></div>
+<div class="pr-4 py-1 text-sm sm:text-base font-bold text-slate-900 flex items-start gap-2"><span class="text-amber-800 font-black">▪</span><span>القيمة NULL في العقدة الأخير��  -&gt; معناها دي نهاية القائمة (End of List).</span></div>
 <div class="pr-4 py-1 text-sm sm:text-base font-bold text-slate-900 flex items-start gap-2"><span class="text-amber-800 font-black">▪</span><span>فحص القائمة الفاضية           -&gt; بيتعمل بالشرط: if (head == NULL).</span></div>
 </div></div>
 
@@ -2905,7 +2910,7 @@ while (temp-&gt;next != NULL) {
     
 
             <div class="mt-5 mb-2 p-3.5 sm:p-4 rounded-xl bg-amber-100/90 border-r-8 border-r-amber-700 font-extrabold text-amber-950 text-base sm:text-lg">
-              السطر 17: خطوة التوصيل السحرية!
+              السطر 17: خطوة التوص��ل السحرية!
             </div>
             
 
@@ -4309,7 +4314,7 @@ int main() {
 <div class="pr-6 text-sm sm:text-base font-semibold text-slate-800">إننا نزرع عقدة جديدة في وسط القائمة بعد عقدة معينة إحنا عارفين مكانها.</div>
 <div class="p-3.5 rounded-xl bg-[#fffdf9] border-r-4 border-r-sky-800 border border-[#d6cbb5] font-extrabold text-slate-950 text-sm sm:text-base">The 2 Golden Linking Steps (خطوتا الربط بالترتيب الإلزامي):</div>
 <div class="pr-6 text-sm sm:text-base font-semibold text-slate-800">1. newNode-&gt;next = prevNode-&gt;next;</div>
-<div class="pr-4 py-1 text-sm sm:text-base font-bold text-slate-900 flex items-start gap-2"><span class="text-amber-800 font-black">▪</span><span>بالعامية: العقدة الجديدة تشد حبل وتمسك العقدة اللي بعدنا الأول عشان متهربش من الميموري.</span></div>
+<div class="pr-4 py-1 text-sm sm:text-base font-bold text-slate-900 flex items-start gap-2"><span class="text-amber-800 font-black">▪</span><span>بالعامية: ا��عقدة الجديدة تشد حبل وتمسك العقدة اللي بعدنا الأول عشان متهربش من الميموري.</span></div>
 <div class="pr-6 text-sm sm:text-base font-semibold text-slate-800">2. prevNode-&gt;next = newNode;</div>
 <div class="pr-4 py-1 text-sm sm:text-base font-bold text-slate-900 flex items-start gap-2"><span class="text-amber-800 font-black">▪</span><span>بالعامية: العقدة السابقة تسيب اللي وراها وتمسك في العقدة الجديدة، وبكده السلسلة اكتملت.</span></div>
 <div class="p-3.5 rounded-xl bg-[#fffdf9] border-r-4 border-r-sky-800 border border-[#d6cbb5] font-extrabold text-slate-950 text-sm sm:text-base">Safety Check (فحص الأمان لمنع الـ Crash):</div>
@@ -5565,7 +5570,7 @@ int main() {
     <div class="my-8 p-5 sm:p-8 rounded-2xl bg-[#efe5d2] border-2 border-[#a39374] space-y-4 shadow-md">
       <div class="flex items-center gap-2.5 border-b-2 border-[#b8a98e] pb-3">
         <span class="text-2xl">📋</span>
-        <h4 class="text-lg sm:text-2xl font-black text-slate-950">ملخص الامتحان والمراجعة السريعة (Notebook &amp; Exam Cheatsheet)</h4>
+        <h4 class="text-lg sm:text-2xl font-black text-slate-950">ملخص الامتحان وا��مراجعة السريعة (Notebook &amp; Exam Cheatsheet)</h4>
       </div>
       <div class="space-y-2.5">
     
@@ -5760,7 +5765,7 @@ int main() {
 
             <div class="my-2.5 p-3.5 sm:p-4 rounded-xl bg-[#f5efe2] border border-[#d6cbb5] flex items-start gap-3">
               <span class="text-sky-800 font-black text-lg mt-0.5">•</span>
-              <div class="flex-1 text-slate-950 font-semibold leading-relaxed"><strong class="font-black text-slate-950 underline decoration-amber-500/70 decoration-2">العيب القاتل (The Limitation):</strong> <strong class="font-black text-slate-950 underline decoration-amber-500/70 decoration-2">الحركة في اتجاه واحد فقط للأمام (Unidirectional)</strong>. لو كنت واقفاً عند العقدة رقم 3 وأردت الرجوع للعقدة رقم 2، مستحيل! ليس أمامك حل سوى العودة لبداية القائمة عند <code class="inline-code" dir="ltr">head</code> والسير من الصفر من جديد.</div>
+              <div class="flex-1 text-slate-950 font-semibold leading-relaxed"><strong class="font-black text-slate-950 underline decoration-amber-500/70 decoration-2">العيب القاتل (The Limitation):</strong> <strong class="font-black text-slate-950 underline decoration-amber-500/70 decoration-2">الحركة في اتجاه واحد فقط للأمام (Unidirectional)</strong>. لو كنت واقفاً عند العقدة رقم 3 وأردت الرجوع للعقدة رقم 2، مستحيل! ليس أمامك حل سوى العودة لبداية الق��ئمة عند <code class="inline-code" dir="ltr">head</code> والسير من الصفر من جديد.</div>
             </div>
             
 
@@ -6021,7 +6026,7 @@ int main() {
 
             <div class="my-3 p-3.5 sm:p-4 rounded-xl bg-[#f5efe2] border border-[#d6cbb5] flex items-start gap-3.5">
               <span class="w-7 h-7 rounded-lg bg-sky-800 text-white font-extrabold text-sm flex items-center justify-center shrink-0 mt-1">3</span>
-              <div class="flex-1 text-slate-950 font-semibold leading-relaxed">أي عقدة في المنتصف: مرتبطة بحبلين ذهاباً وإياباً مع جيرانها.</div>
+              <div class="flex-1 text-slate-950 font-semibold leading-relaxed">أي عقدة في ��لمنتصف: مرتبطة بحبلين ذهاباً وإياباً مع جيرانها.</div>
             </div>
             
 <div class="my-7 border-t-2 border-[#d6cbb5]"></div>

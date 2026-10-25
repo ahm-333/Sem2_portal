@@ -2,6 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>المحاضرة الثالثة — الاستدعاء الذاتي (Recursion) | وضع القراءة</title>
   <link href="../../css/fonts/study/6573cd97ac50.css" rel="stylesheet">
@@ -316,7 +321,7 @@
 </head>
 <body class="min-h-screen pb-20">
 
-  <!-- شريط تقدم القراءة العلوي -->
+  <!-- شريط تقدم القرا��ة العلوي -->
   <div class="fixed top-0 left-0 right-0 h-1.5 bg-slate-200/60 z-50">
     <div id="readingProgressBar" class="h-full bg-blue-600 transition-all duration-150" style="width: 0%"></div>
   </div>
@@ -682,7 +687,7 @@
         <div class="colloquial-box !border-r-rose-600">
           <h3 class="text-xl font-heading font-extrabold text-rose-700 dark:text-rose-400 mb-2">⚠️ كارثة الاستدعاء اللانهائي (<span class="ltr-token">Infinite Recursion</span>) — سلايد 10:</h3>
           <ul class="list-disc list-inside spaced-list">
-            <li><strong>السبب:</strong> يحدث عندما تستمر الدالة في استدعاء نفسها للأبد دون أن تصل إلى الـ <span class="ltr-token">Base Case</span> إطلاقاً (مثلاً لو نسينا كتابة شرط التوقف أو كبرنا الرقم بدلاً من تصغيره).</li>
+            <li><strong>السبب:</strong> يحدث عندما تستمر الدالة في استدعاء ن��سها للأبد دون أن تصل إلى الـ <span class="ltr-token">Base Case</span> إطلاقاً (مثلاً لو نسينا كتابة شرط التوقف أو كبرنا الرقم بدلاً من تصغيره).</li>
             <li><strong>ماذا يحدث في عتاد الحاسوب والـ <span class="ltr-token">RAM</span>؟</strong> كل استدعاء يحجز صندوقاً (<span class="ltr-token">Stack Frame</span>) في الذاكرة لتخزين المتغيرات والبارامترات. وبما أن ذاكرة الحاسوب محدودة (<span class="ltr-token">Finite system memory</span>)، تمتلئ مساحة الـ <span class="ltr-token">Stack</span> تماماً وينهار البرنامج فوراً بخطأ يسمى: <span class="ltr-token">Stack Overflow / Abnormal Termination</span>.</li>
           </ul>
         </div>
@@ -1139,7 +1144,7 @@ int main() {
             <text x="692" y="73" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">NULL</text>
 
             <!-- مرحلة الرجوع والطباعة -->
-            <text x="380" y="135" text-anchor="middle" direction="rtl" fill="#0f766e" font-family="Cairo, sans-serif" font-weight="800" font-size="15">٢. مرحلة الرجوع من الـ Call Stack (ترتيب الطباعة بالمعكوس):</text>
+            <text x="380" y="135" text-anchor="middle" direction="rtl" fill="#0f766e" font-family="Cairo, sans-serif" font-weight="800" font-size="15">٢. مرحلة الرجوع من الـ Call Stack (ترت��ب الطباعة بالمعكوس):</text>
 
             <rect x="505" y="155" width="105" height="44" rx="8" fill="#0d9488" />
             <text x="557" y="182" text-anchor="middle" direction="ltr" fill="#ffffff" font-family="JetBrains Mono" font-weight="700" font-size="14">1st: 20</text>
@@ -1416,7 +1421,7 @@ int main() {
           "D) 13"
         ],
         correct: 2,
-        explanation: "السلسلة تبدأ بالرقم الأول 2 ثم الثاني 3؛ إذن الرقم الثالث هو 2 + 3 = 5، والرقم الرابع هو 3 + 5 = 8، وهذا هو الناتج الرسمي في سلايد 17."
+        explanation: "السلسلة تبدأ بالرقم الأول 2 ثم الثاني 3؛ إذن الرقم الثالث هو 2 + 3 = 5، والرق�� الرابع هو 3 + 5 = 8، وهذا هو الناتج الرسمي في سلايد 17."
       },
       {
         id: 7,
