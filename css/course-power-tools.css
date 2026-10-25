@@ -83,22 +83,60 @@ body.studio .a1-header-actions button.header-smart-btn svg {
 
 @media (max-width: 540px) {
   body.studio .studio-topbar {
-    padding-inline: 10px;
-    gap: 6px;
+    padding-inline: 8px !important;
+    gap: 4px !important;
+  }
+
+  body.studio .studio-topbar .a1-brand {
+    width: auto !important;
+    gap: 5px !important;
+  }
+
+  body.studio .studio-topbar .a1-brand strong {
+    font-size: 15px !important;
   }
 
   body.studio .studio-topbar .a1-brand small {
-    display: none;
+    display: none !important;
   }
 
   body.studio .studio-topbar .a1-header-actions {
-    gap: 4px;
+    gap: 3px !important;
   }
 
+  body.studio .studio-topbar .a1-header-actions button {
+    min-width: 28px !important;
+    padding: 4px 5px !important;
+  }
+
+  body.studio .studio-topbar .a1-header-actions .a1-profile {
+    padding: 4px 6px !important;
+    font-size: 10px !important;
+  }
+
+  body.studio .studio-topbar .a1-header-actions .student-profile-badge,
+  body.studio .studio-topbar .a1-header-actions .student-profile-badge > span {
+    gap: 3px !important;
+    font-size: 10px !important;
+  }
+
+  body.studio .studio-topbar .a1-header-actions button#cycle-theme-btn,
   body.studio .studio-topbar .a1-header-actions button.header-smart-btn {
-    min-width: 30px;
-    width: auto;
-    padding: 0 5px;
+    min-width: 28px !important;
+    width: 28px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 4px !important;
+  }
+
+  body.studio .studio-topbar .a1-header-actions button.header-smart-btn .notif-unread-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 14px;
+    height: 14px;
+    font-size: 8px;
+    padding: 0 2px;
   }
 }
 
