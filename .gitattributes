@@ -1,2 +1,4 @@
 # Preserve upstream renderer bytes; hide generated vendor sources in GitHub's diff.
 js/vendor/three/*.js -text linguist-vendored=true -whitespace
+js/vendor/mermaid/*.js -text linguist-vendored=true -whitespace
+css/fonts/study/*-OFL.txt -whitespace
