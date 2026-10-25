@@ -25,6 +25,7 @@ Audited source: `547b084330cb744bf9bd6dfc363243c49deafc8e` from `ahm-333/Sem2_po
 - `tools/study-page-probe.cjs`: compares original and revised computed layout properties and captures images. Raw logs, captures and measurements stay in ignored `test-results/performance/`.
 - Existing suites cover source actions, all groups/sections, themes, search, back/forward, intro/drag/cancellation, reader/quiz focus, storage restrictions/synchronization, OS content and responsive behavior.
 - The static screenshot matrix uses system reduced motion, disabled CSS animations during capture and a separate 30-second capture timeout. This fixes a software-GPU screenshot timeout observed on hosted Linux; interactive motion cases retain normal motion and their existing assertions/timeouts.
+- The Canvas regression also exercises a short viewport and the offscreen state after closing a reader. An earlier CI failure expected drawing to resume even when the map had scrolled entirely offscreen. Diagnostics confirmed the background was no longer inert and correctly remained paused; the regression now explicitly returns the map to view before requiring new draws.
 - No authentication, payments, backend database, AI endpoint or migration exists in the runtime being released. No such infrastructure was added. Existing automation was excluded from publishing and otherwise left alone.
 
 ## Release and rollback

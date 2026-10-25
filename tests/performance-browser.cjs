@@ -45,9 +45,17 @@ async function register({scenario}) {
     await page.waitForTimeout(200);
     assert.equal(await page.evaluate(()=>window.energyDraws),paused,'covered canvas performs no drawing');
     await page.keyboard.press('Escape');
+    // Opening a source can scroll its heading offscreen. Closing the dialog must not
+    // restart a scene that is still outside the viewport; resume only after returning.
+    await page.locator('footer').scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>!document.querySelector('.course-atlas').classList.contains('energy-awake'));
+    const offscreen=await page.evaluate(()=>window.energyDraws);
+    await page.waitForTimeout(200);
+    assert.equal(await page.evaluate(()=>window.energyDraws),offscreen,'offscreen canvas remains paused after closing the reader');
+    await page.locator('.course-atlas').scrollIntoViewIfNeeded();
     await page.waitForFunction(()=>document.querySelector('.course-atlas').classList.contains('energy-awake'));
-    await page.waitForFunction(count=>window.energyDraws>count,paused);
-  });
+    await page.waitForFunction(count=>window.energyDraws>count,offscreen);
+  }, {viewport:{width:1440,height:400}});
   await scenario('performance-script-failure-and-no-js-fail-open', async ({page,context,go}) => {
     await configured(page);
     await page.route('**/js/studio-course.js',route=>route.abort());
