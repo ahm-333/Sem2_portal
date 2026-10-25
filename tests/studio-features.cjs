@@ -154,5 +154,37 @@ async function register({scenario}) {
     assert((await page.locator('.a1-reader-header').boundingBox()).height < 150, 'the inserted save warning cannot break positional layout');
     assert(await page.locator('#lecture-study-modal [data-study-save-notice]').isVisible());
   }, {viewport:{width:390,height:844}});
+  await scenario('studio-smart-tools-interactive-midterm-timer-and-notifications', async ({page, go}) => {
+    await page.addInitScript(() => {localStorage.setItem('sem2_first_visit_configured', 'true');window.sessionStorage.setItem('sem2-studio-rift-intro-v3','seen');});
+    await go('subject.html?id=data-structure');
+    await page.locator('.course-power-bar').waitFor({state:'visible'});
+
+    await page.locator('.course-power-bar [data-open-power-tool="interactive"]').click();
+    await page.locator('#course-power-modal').waitFor({state:'visible'});
+    assert(await page.locator('#interactive-hub-main-link').isVisible());
+    assert(await page.locator('#interactive-units-list .smart-card').count() >= 3);
+
+    await page.locator('[data-power-tab="midterm"]').click();
+    await page.locator('#midterm-count-select').selectOption('5');
+    await page.locator('#start-midterm-btn').click();
+    await page.locator('#midterm-timer-display').waitFor({state:'visible'});
+    assert.match(await page.locator('#midterm-timer-display').innerText(), /15:00|14:5/);
+    await page.locator('#midterm-flag-btn').click();
+    assert.match(await page.locator('[data-midterm-jump="0"]').innerText(), /🚩/);
+    await page.locator('[data-midterm-opt="0"]').click();
+    await page.locator('#midterm-submit-btn').click();
+    await page.locator('#midterm-result-banner').waitFor({state:'visible'});
+
+    await page.locator('.power-modal-tabs [data-power-tab="timer"]').click();
+    await page.locator('[data-timer-preset="15"]').click();
+    assert.equal(await page.locator('#study-timer-big-digits').innerText(), '15:00');
+    await page.locator('#study-timer-toggle-btn').click();
+    assert.match(await page.locator('#study-timer-toggle-btn').innerText(), /إيقاف مؤقت/);
+
+    await page.locator('.power-modal-tabs [data-power-tab="notifications"]').click();
+    assert(await page.locator('#notifications-feed-list .smart-card').count() >= 5);
+    await page.locator('#mark-all-notifs-read').click();
+    assert.equal(await page.locator('[data-notif-unread-badge]').first().innerText(), '0');
+  });
 }
 module.exports = {register};
