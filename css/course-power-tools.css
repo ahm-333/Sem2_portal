@@ -746,3 +746,11 @@ button.power-action-btn.is-active-preset {
   background-color: #3730a3 !important;
   border-color: #818cf8 !important;
 }
+
+/* إخفاء موقع الشرح الخارجي والمحلي لمادة معمارية الحاسوب من جميع صفحات المنصة */
+a[href*="computer-architecture-study"],
+a[href*="study/arch"],
+.hero-explanation-card[data-content-key='["computer-architecture","explanation-site","site"]'],
+#library-results a[href*="computer-architecture"][href*="explanation-site"] {
+  display: none !important;
+}

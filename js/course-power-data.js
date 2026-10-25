@@ -58,10 +58,10 @@
       dateLabel: 'مضاف حديثاً 📌',
       courseId: 'computer-architecture',
       courseName: 'معمارية الحاسوب (Computer Architecture)',
-      typeLabel: 'محاضرة 5 + شرح تفاعلي',
-      title: 'المحاضرة 5 (External Memory & I/O) والشرح التفاعلي للـ Cache والـ I/O',
-      desc: 'سلايدات المحاضرة الخامسة (أ.د. نبيل لاشين) وبوابة الشرح التفاعلي لفصل الـ Cache وفصل الـ Input/Output.',
-      url: 'study/arch/index.html'
+      typeLabel: 'محاضرة 5 رسمية',
+      title: 'المحاضرة 5: الذاكرة الخارجية ووحدات الإدخال والإخراج (External Memory & I/O)',
+      desc: 'تمت إضافة سلايدات المحاضرة الخامسة الرسمية المعتمدة (أ.د. نبيل لاشين) على Google Drive.',
+      url: 'subject.html?id=computer-architecture&track=lecture&kind=lectures'
     },
     {
       id: 'notif-os-interactive',
@@ -274,16 +274,7 @@
     },
 
     'computer-architecture': {
-      interactiveHub: {
-        mainUrl: 'study/arch/index.html',
-        mainLabel: 'فتح بوابة الشرح التفاعلي لمعمارية الحاسوب',
-        desc: 'شرح تفاعلي مفصل لفصول معمارية وتنظيم الحاسوب (Cache Memory, I/O, IAS) مع الرسوم التوضيحية والأسئلة.',
-        items: [
-          { title: 'الفصل الرابع (المحاضرة 3): Cache Memory', sub: 'شرح تفاعلي لطرق الـ Mapping الثلاث وسياسات الإحلال والكتابة', url: 'study/arch/chapter-1.html' },
-          { title: 'الفصل السابع (المحاضرة 5): Input / Output & DMA', sub: 'شرح تفاعلي لـ Programmed I/O، المقاطعات، والـ DMA', url: 'study/arch/chapter-7.html' },
-          { title: 'الموقع التفاعلي الخارجي الشامل للمادة', sub: 'مرجع الفصول الكاملة على GitHub Pages', url: 'https://ahm-333.github.io/computer-architecture-study/' }
-        ]
-      },
+      interactiveHub: null,
       midtermQuestions: [
         {
           id: 'arch-q1',

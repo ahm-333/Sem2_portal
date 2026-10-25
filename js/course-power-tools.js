@@ -83,6 +83,7 @@
     if (!course) return;
 
     const powerData = window.COURSE_POWER_DATA?.[course.id];
+    const hasInteractiveHub = Boolean(isSubjectPage && powerData?.interactiveHub);
     const notifications = window.PORTAL_NOTIFICATIONS || [];
 
     // حالة مؤقت المذاكرة (Study Timer)
@@ -138,14 +139,16 @@
             </div>
             <div class="course-power-copy">
               <h3>الأدوات الذكية — ${escapeHtml(course.arabicName)}</h3>
-              <p>الشرح التفاعلي المعتمد • محاكي امتحان الميدتيرم • مؤقت المذاكرة • جرس آخر الإضافات</p>
+              <p>${hasInteractiveHub ? 'الشرح التفاعلي المعتمد • ' : ''}محاكي امتحان الميدتيرم • مؤقت المذاكرة • جرس آخر الإضافات</p>
             </div>
           </div>
           <div class="course-power-actions">
-            <button type="button" class="power-tool-btn is-interactive-tool" data-open-power-tool="interactive">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <span>الشرح التفاعلي</span>
-            </button>
+            ${hasInteractiveHub ? `
+              <button type="button" class="power-tool-btn is-interactive-tool" data-open-power-tool="interactive">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>الشرح التفاعلي</span>
+              </button>
+            ` : ''}
             <button type="button" class="power-tool-btn is-primary-tool" data-open-power-tool="midterm">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
               <span>محاكي الميدتيرم</span>
@@ -222,11 +225,13 @@
               </button>
             </div>
             <div class="power-modal-tabs" role="tablist" aria-label="أقسام الأدوات الذكية">
-              ${isSubjectPage ? `
+              ${hasInteractiveHub ? `
                 <button type="button" role="tab" class="power-modal-tab" data-power-tab="interactive" aria-selected="true">
                   <span>✨ الشرح التفاعلي</span>
                 </button>
-                <button type="button" role="tab" class="power-modal-tab" data-power-tab="midterm" aria-selected="false">
+              ` : ''}
+              ${isSubjectPage ? `
+                <button type="button" role="tab" class="power-modal-tab" data-power-tab="midterm" aria-selected="${!hasInteractiveHub ? 'true' : 'false'}">
                   <span>📝 محاكي الميدتيرم</span>
                 </button>
               ` : ''}
@@ -239,8 +244,8 @@
             </div>
           </header>
           <div class="power-modal-body" id="power-modal-body">
-            <section id="power-panel-interactive" role="tabpanel" ${!isSubjectPage ? 'hidden' : ''}></section>
-            <section id="power-panel-midterm" role="tabpanel" hidden></section>
+            <section id="power-panel-interactive" role="tabpanel" ${!hasInteractiveHub ? 'hidden' : ''}></section>
+            <section id="power-panel-midterm" role="tabpanel" ${isSubjectPage && !hasInteractiveHub ? '' : 'hidden'}></section>
             <section id="power-panel-timer" role="tabpanel" ${isSubjectPage ? 'hidden' : ''}></section>
             <section id="power-panel-notifications" role="tabpanel" hidden></section>
           </div>
@@ -763,6 +768,9 @@
     async function switchPowerTab(tabName) {
       if (!isSubjectPage && (tabName === 'interactive' || tabName === 'midterm')) {
         tabName = 'notifications';
+      }
+      if (tabName === 'interactive' && !hasInteractiveHub) {
+        tabName = isSubjectPage ? 'midterm' : 'notifications';
       }
       activeTab = tabName;
       modal.dataset.activePowerTab = activeTab;
