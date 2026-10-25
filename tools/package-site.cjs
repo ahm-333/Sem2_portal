@@ -39,18 +39,21 @@ function packageSite() {
   for(const page of ['index.html','subject.html']) {
     let html=fs.readFileSync(path.join(root,page),'utf8');
     const scripts=[...html.matchAll(/<script defer src="([^"?]+)(?:\?[^"]*)?"><\/script>/g)];
+    const localScripts=scripts.filter(match=>!match[1].startsWith('https://'));
+    const externalScripts=scripts.filter(match=>match[1].startsWith('https://'));
     const css=[...html.matchAll(/<link rel="stylesheet" href="([^"?]+)(?:\?[^"]*)?">/g)].filter(match=>!match[1].startsWith('css/fonts/'));
     const name=page==='index.html'?'home':'subject';
-    const javascript=transformSync(scripts.map(match=>fs.readFileSync(path.join(root,match[1]),'utf8')).join('\n;\n'),{loader:'js',target:'es2020',minify:true,charset:'utf8',legalComments:'eof'}).code;
+    const javascript=transformSync(localScripts.map(match=>fs.readFileSync(path.join(root,match[1]),'utf8')).join('\n;\n'),{loader:'js',target:'es2020',minify:true,charset:'utf8',legalComments:'eof'}).code;
     const stylesheet=transformSync(css.map(match=>fs.readFileSync(path.join(root,match[1]),'utf8')).join('\n'),{loader:'css',minify:true,legalComments:'inline'}).code;
     const jsFile=`assets/${name}.${hash(javascript)}.js`;
     // assets/ has the same depth as css/, so existing ../favicon.svg URLs retain their meaning.
     const cssFile=`assets/${name}.${hash(stylesheet)}.css`;
     write(jsFile,javascript);write(cssFile,stylesheet);
-    scripts.forEach((match,index)=>{html=html.replace(match[0],index===0?`<script defer src="${jsFile}"></script>`:'');});
+    localScripts.forEach((match,index)=>{html=html.replace(match[0],index===0?`<script defer src="${jsFile}"></script>`:'');});
+    externalScripts.forEach((match)=>{/* Keep external scripts as-is */});
     css.forEach((match,index)=>{html=html.replace(match[0],index===0?`<link rel="stylesheet" href="${cssFile}">`:'');});
     write(page,html);
-    console.log(`${page}: one deferred JS bundle (${Buffer.byteLength(javascript)} bytes), one style bundle (${Buffer.byteLength(stylesheet)} bytes)`);
+    console.log(`${page}: one deferred JS bundle (${Buffer.byteLength(javascript)} bytes), one style bundle (${Buffer.byteLength(stylesheet)} bytes)` + (externalScripts.length>0?`, ${externalScripts.length} external script(s)`:''));
   }
   console.log(`Static release written to ${output}`);
 }
