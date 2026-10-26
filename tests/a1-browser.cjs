@@ -19,7 +19,7 @@ async function scenario(name, fn, options = {}) {
   page.setDefaultTimeout(6000);
   page.on('pageerror', error => errors.push(error.message));
   try {
-    await fn({page, context, go: route => page.goto(base + route), errors});
+    await fn({page, context, go: (route, options) => page.goto(base + route, options), errors});
     assert.deepEqual(errors, [], 'no page errors');
     results.push({name, passed: true});
     console.log('PASS', name);

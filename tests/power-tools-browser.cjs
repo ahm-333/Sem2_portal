@@ -10,30 +10,43 @@ async function openExam(page, go) {
   await page.locator('[data-open-power-tool="midterm"]').click();
   await page.locator('#start-midterm-btn').click();
 }
-exports.register = async ({scenario}) => {
+async function reloadTools(page) {
+  await page.reload({waitUntil: 'domcontentloaded'});
+  await page.locator('#portal-timer-nav-btn').waitFor({state: 'visible'});
+}
+exports.register = async ({scenario: runScenario}) => {
+  // These scenarios exercise timer/data semantics; motion has its own browser suite.
+  const scenario = (name, fn, options = {}) => runScenario(name, async ({go, ...context}) => {
+    const toolsGo = async route => {
+      await go(route, {waitUntil: 'domcontentloaded'});
+      await context.page.locator('#portal-timer-nav-btn').waitFor({state: 'visible'});
+    };
+    await fn({...context, go: toolsGo});
+  }, {reducedMotion: 'reduce', ...options});
   await scenario('power-shared-focus-pause-reset-and-new-session-supersede-stale-tabs', async ({page, context, go}) => {
     await settled(page); await go('index.html');
-    const now = Date.now(); await page.clock.install({time: now});
+    const now = Date.now(); await context.clock.install({time: now});
     await page.locator('#portal-timer-nav-btn').click();
     await page.locator('[data-timer-preset="5"]').click();
     await page.locator('#study-timer-toggle-btn').click();
     const other = await context.newPage(); await settled(other); other.setDefaultTimeout(6000);
-    await other.clock.install({time: now}); await other.goto(page.url());
+    // Playwright's clock belongs to the browser context, so both pages share it.
+    await other.goto(page.url(), {waitUntil: 'domcontentloaded'});
     await other.locator('#portal-timer-nav-btn').click();
     await page.locator('#study-timer-toggle-btn').click();
     const paused = await page.locator('#study-timer-big-digits').innerText();
     await other.clock.fastForward(301000);
-    await page.reload(); await page.locator('#portal-timer-nav-btn').click();
+    await reloadTools(page); await page.locator('#portal-timer-nav-btn').click();
     assert.equal(await page.locator('#study-timer-big-digits').innerText(), paused, 'a stale tab cannot expire the shared paused session');
     assert.equal(await page.locator('#timer-completed-sessions').innerText(), '0');
     assert((await page.locator('#study-timer-toggle-btn').innerText()).includes('ابدأ'));
     await page.locator('[data-timer-preset="45"]').click();
     await other.clock.fastForward(301000);
-    await page.reload(); await page.locator('#portal-timer-nav-btn').click();
+    await reloadTools(page); await page.locator('#portal-timer-nav-btn').click();
     assert.equal(await page.locator('#study-timer-big-digits').innerText(), '45:00', 'reset supersedes the stale running snapshot');
     await page.locator('#study-timer-toggle-btn').click();
     await other.clock.fastForward(301000);
-    await page.reload(); await page.locator('#portal-timer-nav-btn').click();
+    await reloadTools(page); await page.locator('#portal-timer-nav-btn').click();
     const remaining = await page.locator('#study-timer-big-digits').innerText();
     assert(remaining >= '39:50' && remaining <= '40:00', 'new session retains its own deadline after another tab advances the old timer');
     assert.equal(await page.locator('#timer-completed-sessions').innerText(), '0');
@@ -42,18 +55,17 @@ exports.register = async ({scenario}) => {
   await scenario('power-one-shared-focus-session-is-counted-once-across-tabs', async ({page, context, go}) => {
     await settled(page); await go('index.html');
     const now = Date.now();
-    await page.clock.install({time: now});
+    await context.clock.install({time: now});
     await page.locator('#portal-timer-nav-btn').click();
     await page.locator('[data-timer-preset="5"]').click();
     await page.locator('#study-timer-toggle-btn').click();
     const other = await context.newPage();
     await settled(other); other.setDefaultTimeout(6000);
-    await other.clock.install({time: now});
-    await other.goto(page.url());
+    await other.goto(page.url(), {waitUntil: 'domcontentloaded'});
     await other.locator('#portal-timer-nav-btn').click();
     await page.clock.fastForward(301000);
     await other.clock.fastForward(301000);
-    await page.reload();
+    await reloadTools(page);
     await page.locator('#portal-timer-nav-btn').click();
     assert.equal(await page.locator('#timer-completed-sessions').innerText(), '1', 'two tabs finishing one shared session count one completion');
     await page.locator('#study-timer-toggle-btn').click();
@@ -71,7 +83,7 @@ exports.register = async ({scenario}) => {
       saved.deadline = Number.MAX_VALUE;
       localStorage.setItem(key, JSON.stringify(saved));
     });
-    await page.reload();
+    await reloadTools(page);
     await page.locator('#portal-timer-nav-btn').click();
     assert.equal(await page.locator('#study-timer-big-digits').innerText(), '25:00');
     assert((await page.locator('#study-timer-toggle-btn').innerText()).includes('ابدأ'));
@@ -128,13 +140,13 @@ exports.register = async ({scenario}) => {
     const paused = await page.locator('#midterm-timer-display').innerText();
     await page.clock.fastForward(20 * 60 * 1000);
     assert.equal(await page.locator('#midterm-timer-display').innerText(), paused);
-    await page.reload();
+    await reloadTools(page);
     await page.locator('[data-open-power-tool="midterm"]').click();
     assert((await page.locator('#midterm-pause-btn').innerText()).includes('استئناف'));
     await page.locator('#midterm-pause-btn').click();
     await page.locator('#power-modal-close').click();
     await page.clock.fastForward(16 * 60 * 1000);
-    await page.reload();
+    await reloadTools(page);
     await page.locator('[data-open-power-tool="midterm"]').click();
     await page.locator('#midterm-result-banner').waitFor();
     assert((await page.locator('#midterm-result-banner').innerText()).includes('0 من'));
@@ -195,7 +207,7 @@ exports.register = async ({scenario}) => {
   });
   await scenario('power-notifications-mark-visible-course-and-sync-other-tab', async ({page, context, go}) => {
     await settled(page); await go('subject.html?id=database-systems');
-    const other = await context.newPage(); await other.goto(page.url());
+    const other = await context.newPage(); await other.goto(page.url(), {waitUntil: 'domcontentloaded'});
     const initial = Number(await page.locator('#portal-notif-bell-btn [data-notif-unread-badge]').innerText());
     await page.locator('#portal-notif-bell-btn').click();
     await page.locator('[data-notif-scope="course"]').click();
@@ -242,7 +254,7 @@ exports.register = async ({scenario}) => {
     await page.locator('[data-open-power-tool="midterm"]').click();
     assert.notEqual(await page.locator('#midterm-timer-display').innerText(), first, 'closing the modal must not freeze the attempt');
     await page.locator('[data-midterm-jump="1"]').click();
-    await page.reload();
+    await reloadTools(page);
     await page.locator('[data-open-power-tool="midterm"]').click();
     assert.equal(await page.locator('[data-midterm-jump="1"]').getAttribute('class'), 'midterm-q-pill is-current');
     await page.locator('[data-midterm-jump="0"]').click();
