@@ -1,0 +1,1556 @@
+{
+  "commit": "0700072",
+  "reviewedAt": "2026-10-26",
+  "base": "http://127.0.0.1:8876/",
+  "checks": [
+    {
+      "name": "deployment-versions",
+      "value": [
+        {
+          "site": "https://kernal-study-portal.vercel.app/",
+          "includesPowerTools": false,
+          "toolStatus": 404,
+          "matchesCurrentToolSource": false,
+          "scriptFiles": [
+            "js/shared/storage.js",
+            "js/theme.js?v=1792424832344",
+            "assets/subject.ee25f1f27c51.js"
+          ]
+        },
+        {
+          "site": "https://ahm-333.github.io/Sem2_portal/",
+          "includesPowerTools": true,
+          "toolStatus": 200,
+          "matchesCurrentToolSource": true,
+          "scriptFiles": [
+            "/_vercel/insights/script.js",
+            "js/shared/storage.js",
+            "js/theme.js?v=1792424832344",
+            "js/vendor/lucide.min.js",
+            "js/shared/dialog.js",
+            "js/shared/ui.js",
+            "js/shared/media.js",
+            "js/courses-data.js?v=1792424832344",
+            "js/schedule-data.js?v=1792424832344",
+            "js/a1-identity.js",
+            "js/profile-modal.js?v=1792424832344",
+            "js/study-catalog.js",
+            "js/shared/content-catalog.js",
+            "js/shared/content-links.js",
+            "js/content-navigation.js",
+            "js/shared/study-state.js",
+            "js/study-save-status.js",
+            "js/study-loader.js",
+            "js/study-quiz.js",
+            "js/study-reader.js",
+            "js/subject-content.js",
+            "js/subject.js?v=1792424832344",
+            "js/a1-journey.js",
+            "js/studio.js",
+            "js/studio-course.js",
+            "js/course-power-data.js",
+            "js/course-power-tools.js",
+            "js/vendor/gsap/gsap.min.js",
+            "js/studio-motion.js",
+            "js/studio-energy.js"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "exam-close-reopen-timer",
+      "value": {
+        "before": "⏱️ 14:59",
+        "reopened": "⏱️ 14:59",
+        "after": "⏱️ 14:59",
+        "controls": "⏸️ إيقاف مؤقت",
+        "frozen": true
+      }
+    },
+    {
+      "name": "exam-scopes-selection-repeat",
+      "value": [
+        {
+          "id": "data-structure",
+          "scopes": [
+            "✓ المحاضرة 0: Pointers & Memory (2)",
+            "✓ المحاضرة 1: Arrays & Templates (2)",
+            "✓ المحاضرة 2: Linked Lists (3)",
+            "✓ المحاضرة 3: Recursion & Call Stack (2)",
+            "✓ المحاضرة 4: Stacks ADT (2)",
+            "✓ المحاضرة 5: Queues & Priority Queues (1)"
+          ],
+          "loaderCounts": {},
+          "defaultExamLectureTags": [
+            "المحاضرة 0: Pointers & Memory",
+            "المحاضرة 0: Pointers & Memory",
+            "المحاضرة 1: Arrays & Templates",
+            "المحاضرة 1: Arrays & Templates",
+            "المحاضرة 2: Linked Lists",
+            "المحاضرة 2: Linked Lists",
+            "المحاضرة 2: Linked Lists",
+            "المحاضرة 3: Recursion & Call Stack",
+            "المحاضرة 3: Recursion & Call Stack",
+            "المحاضرة 4: Stacks ADT"
+          ],
+          "repeatedLastQuestion": true
+        },
+        {
+          "id": "database-systems",
+          "scopes": [
+            "✓ المحاضرة 4 و 5: ER Data Modeling (2)",
+            "✓ المحاضرة 2 (20)",
+            "✓ المحاضرة 3 (30)"
+          ],
+          "loaderCounts": {
+            "2": 20,
+            "3": 30
+          },
+          "defaultExamLectureTags": [
+            "المحاضرة 4 و 5: ER Data Modeling",
+            "المحاضرة 4 و 5: ER Data Modeling",
+            "المحاضرة 2",
+            "المحاضرة 2",
+            "المحاضرة 2",
+            "المحاضرة 2",
+            "المحاضرة 2",
+            "المحاضرة 2",
+            "المحاضرة 2",
+            "المحاضرة 2"
+          ],
+          "repeatedLastQuestion": true
+        },
+        {
+          "id": "computer-architecture",
+          "scopes": [
+            "✓ المحاضرة 1: Basic Concepts & IAS (2)",
+            "✓ المحاضرة 2: Instruction Cycle & Buses (2)",
+            "✓ المحاضرة 3: Cache Memory (3)",
+            "✓ المحاضرة 4: Internal Memory (1)",
+            "✓ المحاضرة 5: External Memory & I/O (2)"
+          ],
+          "loaderCounts": {},
+          "defaultExamLectureTags": [
+            "المحاضرة 1: Basic Concepts & IAS",
+            "المحاضرة 1: Basic Concepts & IAS",
+            "المحاضرة 2: Instruction Cycle & Buses",
+            "المحاضرة 2: Instruction Cycle & Buses",
+            "المحاضرة 3: Cache Memory",
+            "المحاضرة 3: Cache Memory",
+            "المحاضرة 3: Cache Memory",
+            "المحاضرة 4: Internal Memory",
+            "المحاضرة 5: External Memory & I/O",
+            "المحاضرة 5: External Memory & I/O"
+          ],
+          "repeatedLastQuestion": true
+        },
+        {
+          "id": "operating-system",
+          "scopes": [
+            "✓ الفصل 1: Introduction & Dual-Mode (2)",
+            "✓ الفصل 2: System Calls & OS Structures (1)",
+            "✓ الفصل 3: Processes & IPC (3)"
+          ],
+          "loaderCounts": {},
+          "defaultExamLectureTags": [
+            "الفصل 1: Introduction & Dual-Mode",
+            "الفصل 1: Introduction & Dual-Mode",
+            "الفصل 2: System Calls & OS Structures",
+            "الفصل 3: Processes & IPC",
+            "الفصل 3: Processes & IPC",
+            "الفصل 3: Processes & IPC"
+          ],
+          "repeatedLastQuestion": true
+        },
+        {
+          "id": "computer-graphics",
+          "scopes": [
+            "✓ المحاضرة 1: Graphics Pipeline (1)",
+            "✓ المحاضرة 2: Displays & Frame Buffer (1)",
+            "✓ المحاضرة 3: DDA & Bresenham Line (3)",
+            "✓ المحاضرة 4: Midpoint Circle (2)",
+            "✓ المحاضرة 5: Midpoint Ellipse (1)"
+          ],
+          "loaderCounts": {},
+          "defaultExamLectureTags": [
+            "المحاضرة 1: Graphics Pipeline",
+            "المحاضرة 2: Displays & Frame Buffer",
+            "المحاضرة 3: DDA & Bresenham Line",
+            "المحاضرة 3: DDA & Bresenham Line",
+            "المحاضرة 3: DDA & Bresenham Line",
+            "المحاضرة 4: Midpoint Circle",
+            "المحاضرة 4: Midpoint Circle",
+            "المحاضرة 5: Midpoint Ellipse"
+          ],
+          "repeatedLastQuestion": true
+        },
+        {
+          "id": "report-writing",
+          "scopes": [
+            "✓ المحاضرة 1: Intro & Audience Analysis (1)",
+            "✓ المحاضرة 2: Report Structure & Tone (1)",
+            "✓ المحاضرة 3: Visuals, Tables & Graphs (1)",
+            "✓ المحاضرة 4: Citations (IEEE/APA) (1)"
+          ],
+          "loaderCounts": {},
+          "defaultExamLectureTags": [
+            "المحاضرة 1: Intro & Audience Analysis",
+            "المحاضرة 2: Report Structure & Tone",
+            "المحاضرة 3: Visuals, Tables & Graphs",
+            "المحاضرة 4: Citations (IEEE/APA)"
+          ],
+          "repeatedLastQuestion": true
+        }
+      ]
+    },
+    {
+      "name": "study-timer-navigation",
+      "value": {
+        "before": "14:59",
+        "afterNavigation": "25:00",
+        "control": "▶️ ابدأ المؤقت الآن"
+      }
+    },
+    {
+      "name": "os-chapter-links",
+      "value": [
+        {
+          "chapter": 1,
+          "selectedUnit": "os-01",
+          "selectedChapter": 1,
+          "targetExists": false
+        },
+        {
+          "chapter": 2,
+          "selectedUnit": "os-01",
+          "selectedChapter": 1,
+          "targetExists": false
+        },
+        {
+          "chapter": 3,
+          "selectedUnit": "os-01",
+          "selectedChapter": 1,
+          "targetExists": false
+        }
+      ]
+    },
+    {
+      "name": "db-reader-from-interactive-tools",
+      "value": [
+        {
+          "kind": "lectures",
+          "readerVisible": true,
+          "toolsVisible": false
+        },
+        {
+          "kind": "sections",
+          "readerVisible": true,
+          "toolsVisible": false
+        },
+        {
+          "kind": "videos",
+          "readerVisible": true,
+          "toolsVisible": false
+        }
+      ]
+    },
+    {
+      "name": "notifications-mark-read-scope",
+      "value": {
+        "visible": 1,
+        "totalRead": 6,
+        "all": 6
+      }
+    },
+    {
+      "name": "page-subject.html?id=data-structure",
+      "value": {
+        "path": "subject.html?id=data-structure",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/subject.html?id=data-structure&track=lecture&kind=lectures",
+          "title": "Data Structures (هياكل البيانات والخوارزميات) | Kernal",
+          "theme": "light",
+          "bodyClass": "a1 studio min-h-screen flex flex-col",
+          "font": "Alexandria, Tahoma, sans-serif",
+          "background": "rgb(245, 246, 251)",
+          "ink": "rgb(37, 38, 66)",
+          "h1": "Data Structures",
+          "overflow": 0,
+          "themeControls": [
+            {
+              "id": "",
+              "text": ""
+            },
+            {
+              "id": "",
+              "text": ""
+            },
+            {
+              "id": "",
+              "text": ""
+            },
+            {
+              "id": "cycle-theme-btn",
+              "text": ""
+            }
+          ]
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/subject.html?id=data-structure&track=lecture&kind=lectures",
+          "title": "Data Structures (هياكل البيانات والخوارزميات) | Kernal",
+          "theme": "light",
+          "bodyClass": "a1 studio min-h-screen flex flex-col",
+          "font": "Alexandria, Tahoma, sans-serif",
+          "background": "rgb(245, 246, 251)",
+          "ink": "rgb(37, 38, 66)",
+          "h1": "Data Structures",
+          "overflow": 0,
+          "themeControls": [
+            {
+              "id": "",
+              "text": ""
+            },
+            {
+              "id": "",
+              "text": ""
+            },
+            {
+              "id": "",
+              "text": ""
+            },
+            {
+              "id": "cycle-theme-btn",
+              "text": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "page-study/ds/index.html",
+      "value": {
+        "path": "study/ds/index.html",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/study/ds/index.html",
+          "title": "منصة الشرح التفاعلي — هياكل البيانات والخوارزميات (Data Structures)",
+          "bodyClass": "p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen",
+          "font": "Cairo, sans-serif",
+          "background": "rgb(11, 15, 25)",
+          "ink": "rgb(248, 250, 252)",
+          "h1": "دليل مذاكرة هياكل البيانات (Data Structures)",
+          "overflow": 0,
+          "themeControls": []
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/study/ds/index.html",
+          "title": "منصة الشرح التفاعلي — هياكل البيانات والخوارزميات (Data Structures)",
+          "bodyClass": "p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen",
+          "font": "Cairo, sans-serif",
+          "background": "rgb(11, 15, 25)",
+          "ink": "rgb(248, 250, 252)",
+          "h1": "دليل مذاكرة هياكل البيانات (Data Structures)",
+          "overflow": 0,
+          "themeControls": []
+        }
+      }
+    },
+    {
+      "name": "page-study/ds/lecture-1.html",
+      "value": {
+        "path": "study/ds/lecture-1.html",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/study/ds/lecture-1.html",
+          "title": "المحاضرة الأولى — هياكل البيانات والمصفوفات والقوالب | وضع القراءة",
+          "bodyClass": "min-h-screen pb-20",
+          "font": "Tajawal, Cairo, sans-serif",
+          "background": "rgb(253, 250, 245)",
+          "ink": "rgb(30, 41, 59)",
+          "h1": "المحاضرة الأولى: هياكل البيانات (Lecture 1)",
+          "overflow": 0,
+          "themeControls": [
+            {
+              "id": "btnThemeDark",
+              "text": ""
+            }
+          ]
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/study/ds/lecture-1.html",
+          "title": "المحاضرة الأولى — هياكل البيانات والمصفوفات والقوالب | وضع القراءة",
+          "bodyClass": "min-h-screen pb-20",
+          "font": "Tajawal, Cairo, sans-serif",
+          "background": "rgb(253, 250, 245)",
+          "ink": "rgb(30, 41, 59)",
+          "h1": "المحاضرة الأولى: هياكل البيانات (Lecture 1)",
+          "overflow": 91,
+          "themeControls": [
+            {
+              "id": "btnThemeDark",
+              "text": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "page-study/ds/lecture-2.html",
+      "value": {
+        "path": "study/ds/lecture-2.html",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/study/ds/lecture-2.html",
+          "title": "المحاضرة الثانية الشاملة (Lecture 2) — القوائم المتصلة (Linked Lists): الأجزاء الستة كاملة",
+          "bodyClass": "min-h-screen selection:bg-amber-300 selection:text-slate-950",
+          "font": "Tajawal, Cairo, sans-serif",
+          "background": "rgb(253, 250, 245)",
+          "ink": "rgb(30, 41, 59)",
+          "h1": "المحاضرة الثانية: القوائم المتصلة (Linked Lists)",
+          "overflow": 0,
+          "themeControls": [
+            {
+              "id": "btnThemeDark",
+              "text": ""
+            }
+          ]
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/study/ds/lecture-2.html",
+          "title": "المحاضرة الثانية الشاملة (Lecture 2) — القوائم المتصلة (Linked Lists): الأجزاء الستة كاملة",
+          "bodyClass": "min-h-screen selection:bg-amber-300 selection:text-slate-950",
+          "font": "Tajawal, Cairo, sans-serif",
+          "background": "rgb(253, 250, 245)",
+          "ink": "rgb(30, 41, 59)",
+          "h1": "المحاضرة الثانية: القوائم المتصلة (Linked Lists)",
+          "overflow": 177,
+          "themeControls": [
+            {
+              "id": "btnThemeDark",
+              "text": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "page-study/ds/lecture-3.html",
+      "value": {
+        "path": "study/ds/lecture-3.html",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/study/ds/lecture-3.html",
+          "title": "المحاضرة الثالثة — الاستدعاء الذاتي (Recursion) | وضع القراءة",
+          "bodyClass": "min-h-screen pb-20",
+          "font": "Tajawal, Cairo, sans-serif",
+          "background": "rgb(253, 250, 245)",
+          "ink": "rgb(30, 41, 59)",
+          "h1": "المحاضرة الثالثة: الاستدعاء الذاتي (Lecture 3: Recursion)",
+          "overflow": 0,
+          "themeControls": [
+            {
+              "id": "btnThemeDark",
+              "text": ""
+            }
+          ]
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/study/ds/lecture-3.html",
+          "title": "المحاضرة الثالثة — الاستدعاء الذاتي (Recursion) | وضع القراءة",
+          "bodyClass": "min-h-screen pb-20",
+          "font": "Tajawal, Cairo, sans-serif",
+          "background": "rgb(253, 250, 245)",
+          "ink": "rgb(30, 41, 59)",
+          "h1": "المحاضرة الثالثة: الاستدعاء الذاتي (Lecture 3: Recursion)",
+          "overflow": 173,
+          "themeControls": [
+            {
+              "id": "btnThemeDark",
+              "text": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "page-study/db/index.html",
+      "value": {
+        "path": "study/db/index.html",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/study/db/index.html",
+          "title": "منصة الشرح التفاعلي — أنظمة قواعد البيانات (Database Systems)",
+          "bodyClass": "p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen",
+          "font": "Cairo, sans-serif",
+          "background": "rgb(6, 17, 24)",
+          "ink": "rgb(248, 250, 252)",
+          "h1": "دليل مذاكرة أنظمة قواعد البيانات (Database Systems)",
+          "overflow": 0,
+          "themeControls": []
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/study/db/index.html",
+          "title": "منصة الشرح التفاعلي — أنظمة قواعد البيانات (Database Systems)",
+          "bodyClass": "p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen",
+          "font": "Cairo, sans-serif",
+          "background": "rgb(6, 17, 24)",
+          "ink": "rgb(248, 250, 252)",
+          "h1": "دليل مذاكرة أنظمة قواعد البيانات (Database Systems)",
+          "overflow": 0,
+          "themeControls": []
+        }
+      }
+    },
+    {
+      "name": "page-study/db/chapter-1.html",
+      "value": {
+        "path": "study/db/chapter-1.html",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/study/db/chapter-1.html",
+          "title": "موسوعة قواعد البيانات - الفصل الأول (وضع القراءة المريح)",
+          "bodyClass": "theme-dark min-h-screen pb-24 selection:bg-sky-500 selection:text-white",
+          "font": "Tajawal, sans-serif",
+          "background": "rgb(11, 17, 32)",
+          "ink": "rgb(226, 232, 240)",
+          "h1": "الفصل الأول: أساسيات قواعد البيانات (Chapter 1)",
+          "overflow": 0,
+          "themeControls": [
+            {
+              "id": "btnThemeDark",
+              "text": ""
+            }
+          ]
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/study/db/chapter-1.html",
+          "title": "موسوعة قواعد البيانات - الفصل الأول (وضع القراءة المريح)",
+          "bodyClass": "theme-dark min-h-screen pb-24 selection:bg-sky-500 selection:text-white",
+          "font": "Tajawal, sans-serif",
+          "background": "rgb(11, 17, 32)",
+          "ink": "rgb(226, 232, 240)",
+          "h1": "الفصل الأول: أساسيات قواعد البيانات (Chapter 1)",
+          "overflow": 122,
+          "themeControls": [
+            {
+              "id": "btnThemeDark",
+              "text": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "page-study/db/chapter-2.html",
+      "value": {
+        "path": "study/db/chapter-2.html",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/study/db/chapter-2.html",
+          "title": "موسوعة قواعد البيانات — الفصل الثاني: معمارية ومفاهيم نظم قواعد البيانات (وضع القراءة المريح)",
+          "bodyClass": "theme-dark min-h-screen pb-24 selection:bg-emerald-500 selection:text-white",
+          "font": "Tajawal, sans-serif",
+          "background": "rgb(11, 17, 32)",
+          "ink": "rgb(226, 232, 240)",
+          "h1": "الفصل الثاني: معمارية ومفاهيم النظم (Chapter 2)",
+          "overflow": 0,
+          "themeControls": [
+            {
+              "id": "btnThemeDark",
+              "text": ""
+            }
+          ]
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/study/db/chapter-2.html",
+          "title": "موسوعة قواعد البيانات — الفصل الثاني: معمارية ومفاهيم نظم قواعد البيانات (وضع القراءة المريح)",
+          "bodyClass": "theme-dark min-h-screen pb-24 selection:bg-emerald-500 selection:text-white",
+          "font": "Tajawal, sans-serif",
+          "background": "rgb(11, 17, 32)",
+          "ink": "rgb(226, 232, 240)",
+          "h1": "الفصل الثاني: معمارية ومفاهيم النظم (Chapter 2)",
+          "overflow": 131,
+          "themeControls": [
+            {
+              "id": "btnThemeDark",
+              "text": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "page-study/arch/index.html",
+      "value": {
+        "path": "study/arch/index.html",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/study/arch/index.html",
+          "title": "منصة الشرح التفاعلي — معمارية وتنظيم الحاسب (Computer Architecture)",
+          "bodyClass": "selection:bg-cyan-500/30 selection:text-cyan-200",
+          "font": "Cairo, sans-serif",
+          "background": "rgb(6, 11, 24)",
+          "ink": "rgb(248, 250, 252)",
+          "h1": "معمارية وتنظيم الحاسوب\nCS221",
+          "overflow": 0,
+          "themeControls": []
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/study/arch/index.html",
+          "title": "منصة الشرح التفاعلي — معمارية وتنظيم الحاسب (Computer Architecture)",
+          "bodyClass": "selection:bg-cyan-500/30 selection:text-cyan-200",
+          "font": "Cairo, sans-serif",
+          "background": "rgb(6, 11, 24)",
+          "ink": "rgb(248, 250, 252)",
+          "h1": "معمارية وتنظيم الحاسوب\nCS221",
+          "overflow": 0,
+          "themeControls": []
+        }
+      }
+    },
+    {
+      "name": "page-study/arch/chapter-7.html",
+      "value": {
+        "path": "study/arch/chapter-7.html",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/study/arch/chapter-7.html",
+          "title": "الفصل السابع: معمارية الإدخال والإخراج (Chapter 7: I/O) - وضع القراءة",
+          "bodyClass": "antialiased selection:bg-teal-100 selection:text-teal-900 theme-sepia",
+          "font": "Tajawal, Cairo, sans-serif",
+          "background": "rgb(250, 248, 245)",
+          "ink": "rgb(30, 41, 59)",
+          "h1": "معمارية الإدخال والإخراج (I/O Architecture)",
+          "overflow": 0,
+          "themeControls": [
+            {
+              "id": "btn-theme-sepia",
+              "text": "سيبيا"
+            },
+            {
+              "id": "btn-theme-light",
+              "text": "فاتح"
+            },
+            {
+              "id": "btn-theme-dark",
+              "text": "داكن"
+            }
+          ]
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/study/arch/chapter-7.html",
+          "title": "الفصل السابع: معمارية الإدخال والإخراج (Chapter 7: I/O) - وضع القراءة",
+          "bodyClass": "antialiased selection:bg-teal-100 selection:text-teal-900 theme-sepia",
+          "font": "Tajawal, Cairo, sans-serif",
+          "background": "rgb(250, 248, 245)",
+          "ink": "rgb(30, 41, 59)",
+          "h1": "معمارية الإدخال والإخراج (I/O Architecture)",
+          "overflow": 0,
+          "themeControls": [
+            {
+              "id": "btn-theme-sepia",
+              "text": "سيبيا"
+            },
+            {
+              "id": "btn-theme-light",
+              "text": "فاتح"
+            },
+            {
+              "id": "btn-theme-dark",
+              "text": "داكن"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "page-education-preview/os/index.html",
+      "value": {
+        "path": "education-preview/os/index.html",
+        "desktop": {
+          "url": "http://127.0.0.1:8876/education-preview/os/index.html",
+          "title": "OS-01 · مين بيعمل إيه جوّه جهازك؟ | Study Hub",
+          "bodyClass": "",
+          "font": "Alexandria, Tahoma, sans-serif",
+          "background": "rgb(242, 246, 252)",
+          "ink": "rgb(22, 43, 75)",
+          "h1": "مين بيعمل إيه جوّه جهازك؟",
+          "overflow": 0,
+          "themeControls": []
+        },
+        "mobile": {
+          "url": "http://127.0.0.1:8876/education-preview/os/index.html",
+          "title": "OS-01 · مين بيعمل إيه جوّه جهازك؟ | Study Hub",
+          "bodyClass": "",
+          "font": "Alexandria, Tahoma, sans-serif",
+          "background": "rgb(242, 246, 252)",
+          "ink": "rgb(22, 43, 75)",
+          "h1": "مين بيعمل إيه جوّه جهازك؟",
+          "overflow": 0,
+          "themeControls": []
+        }
+      }
+    },
+    {
+      "name": "dark-theme-continuity",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-theme=\"dark\"]')\u001b[22m\n",
+      "supersededBy": "hosted-dark-continuity: corrected probe selector from data-theme to data-theme-btn; verified on hosted site."
+    },
+    {
+      "name": "tools-mobile-states",
+      "value": [
+        {
+          "tab": "interactive",
+          "viewport": 360,
+          "overflow": 0,
+          "headerHeight": 347.34375,
+          "bodyHeight": 370.65625,
+          "selected": "rgb(255, 255, 255)",
+          "selectedBg": "rgb(70, 83, 214)"
+        },
+        {
+          "tab": "midterm",
+          "viewport": 360,
+          "overflow": 0,
+          "headerHeight": 347.34375,
+          "bodyHeight": 370.65625,
+          "selected": "rgb(255, 255, 255)",
+          "selectedBg": "rgb(70, 83, 214)"
+        },
+        {
+          "tab": "timer",
+          "viewport": 360,
+          "overflow": 0,
+          "headerHeight": 347.34375,
+          "bodyHeight": 370.65625,
+          "selected": "rgb(255, 255, 255)",
+          "selectedBg": "rgb(70, 83, 214)"
+        },
+        {
+          "tab": "notifications",
+          "viewport": 360,
+          "overflow": 0,
+          "headerHeight": 347.34375,
+          "bodyHeight": 370.65625,
+          "selected": "rgb(255, 255, 255)",
+          "selectedBg": "rgb(70, 83, 214)"
+        }
+      ]
+    },
+    {
+      "name": "hosted-mobile-overflow-fresh",
+      "value": [
+        {
+          "url": "https://ahm-333.github.io/Sem2_portal/study/ds/lecture-1.html",
+          "width": 481,
+          "client": 390,
+          "scrollWidth": 481,
+          "bodyWidth": 390,
+          "scrollX": -91,
+          "overflowing": [
+            {
+              "tag": "HEADER",
+              "id": "mainReadingHeader",
+              "x": 91,
+              "width": 390,
+              "scrollWidth": 481
+            },
+            {
+              "tag": "MAIN",
+              "id": "",
+              "x": 91,
+              "width": 390,
+              "scrollWidth": 390
+            }
+          ]
+        },
+        {
+          "url": "https://ahm-333.github.io/Sem2_portal/study/ds/lecture-2.html",
+          "width": 567,
+          "client": 390,
+          "scrollWidth": 567,
+          "bodyWidth": 390,
+          "scrollX": -177,
+          "overflowing": [
+            {
+              "tag": "NAV",
+              "id": "",
+              "x": 410,
+              "width": 316,
+              "scrollWidth": 316
+            },
+            {
+              "tag": "HEADER",
+              "id": "mainReadingHeader",
+              "x": 177,
+              "width": 390,
+              "scrollWidth": 567
+            },
+            {
+              "tag": "MAIN",
+              "id": "",
+              "x": 193,
+              "width": 358,
+              "scrollWidth": 369
+            }
+          ]
+        },
+        {
+          "url": "https://ahm-333.github.io/Sem2_portal/study/ds/lecture-3.html",
+          "width": 563,
+          "client": 390,
+          "scrollWidth": 563,
+          "bodyWidth": 390,
+          "scrollX": -172,
+          "overflowing": [
+            {
+              "tag": "HEADER",
+              "id": "mainReadingHeader",
+              "x": 172,
+              "width": 390,
+              "scrollWidth": 563
+            },
+            {
+              "tag": "MAIN",
+              "id": "",
+              "x": 172,
+              "width": 390,
+              "scrollWidth": 390
+            }
+          ]
+        },
+        {
+          "url": "https://ahm-333.github.io/Sem2_portal/study/db/chapter-1.html",
+          "width": 512,
+          "client": 390,
+          "scrollWidth": 512,
+          "bodyWidth": 390,
+          "scrollX": -122,
+          "overflowing": [
+            {
+              "tag": "HEADER",
+              "id": "mainReadingHeader",
+              "x": 122,
+              "width": 390,
+              "scrollWidth": 512
+            },
+            {
+              "tag": "MAIN",
+              "id": "mainContainer",
+              "x": 122,
+              "width": 390,
+              "scrollWidth": 390
+            }
+          ]
+        },
+        {
+          "url": "https://ahm-333.github.io/Sem2_portal/study/db/chapter-2.html",
+          "width": 521,
+          "client": 390,
+          "scrollWidth": 521,
+          "bodyWidth": 390,
+          "scrollX": -131,
+          "overflowing": [
+            {
+              "tag": "HEADER",
+              "id": "mainReadingHeader",
+              "x": 131,
+              "width": 390,
+              "scrollWidth": 521
+            },
+            {
+              "tag": "MAIN",
+              "id": "mainContainer",
+              "x": 131,
+              "width": 390,
+              "scrollWidth": 390
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "hosted-timer-close-reopen",
+      "value": {
+        "before": "⏱️ 14:59",
+        "after": "⏱️ 14:59",
+        "pauseButton": "⏸️ إيقاف مؤقت"
+      }
+    },
+    {
+      "name": "hosted-os-chapter-3",
+      "value": {
+        "url": "https://ahm-333.github.io/Sem2_portal/education-preview/os/index.html#chapter-3",
+        "selectedUnit": "os-01",
+        "chapter": 1
+      }
+    },
+    {
+      "name": "hosted-dark-continuity",
+      "value": {
+        "before": {
+          "theme": "dark",
+          "bg": "rgb(23, 26, 44)"
+        },
+        "after": {
+          "bodyClass": "min-h-screen pb-20",
+          "bg": "rgb(253, 250, 245)",
+          "saved": "dark"
+        },
+        "afterReload": {
+          "bodyClass": "min-h-screen pb-20",
+          "bg": "rgb(253, 250, 245)"
+        }
+      }
+    },
+    {
+      "name": "hosted-standalone-quiz-counts",
+      "value": [
+        {
+          "url": "https://ahm-333.github.io/Sem2_portal/study/ds/lecture-1.html",
+          "quiz": 16,
+          "mcq": null,
+          "questionButtons": 64
+        },
+        {
+          "url": "https://ahm-333.github.io/Sem2_portal/study/ds/lecture-2.html",
+          "quiz": null,
+          "mcq": null,
+          "questionButtons": 0
+        },
+        {
+          "url": "https://ahm-333.github.io/Sem2_portal/study/ds/lecture-3.html",
+          "quiz": 12,
+          "mcq": null,
+          "questionButtons": 48
+        },
+        {
+          "url": "https://ahm-333.github.io/Sem2_portal/study/arch/chapter-7.html",
+          "quiz": null,
+          "mcq": 25,
+          "questionButtons": 0
+        }
+      ]
+    },
+    {
+      "name": "hosted-notification-targets",
+      "value": {
+        "href": "subject.html?id=data-structure&track=section&kind=sections",
+        "url": "https://ahm-333.github.io/Sem2_portal/subject.html?id=data-structure&track=section&kind=sections",
+        "headings": [
+          "الأدوات الذكية — هياكل البيانات والخوارزميات",
+          "الفيديوهات",
+          "شرح هياكل البيانات بالعربي - Arrays & Data Structures",
+          "بلاي ليست د. محمد الدسوقي - هياكل البيانات بلغة C++",
+          "دورة هياكل البيانات والخوارزميات باللغة الإنجليزية (عبد الباري / متقدم)",
+          "دورة هياكل البيانات الكاملة للمبتدئين والمتقدمين (freeCodeCamp)",
+          "Introduction to Data Structure - كورس تأسيس هياكل البيانات",
+          "المحاضرات والمراجع",
+          "Course Overview & C++ Foundations",
+          "Lecture 1: Data Structures, Arrays & Templates",
+          "Lecture 2: Linked Lists (Complete 6 Parts)",
+          "Lecture 3: Recursion & Memory Tracing",
+          "Stacks Data Structure & Applications",
+          "Queue ADT, Priority Queues & C++ STL Implementations",
+          "ملخصات وامتحانات النظري",
+          "بنك امتحانات وملخصات النظري",
+          "السكاشن والشيتات",
+          "Introduction to Arrays in C++ - Beginners Teaching",
+          "C++ Foundations & Revision - Beginners Teaching",
+          "Dynamic Stack Implementation in C++ - Section 4 (Part 1)",
+          "Dynamic Stack Template Implementation - Section 4 (Part 2)",
+          "Dynamic Stack Resizing & Operations - Section 4 (Part 3)",
+          "التكليفات",
+          "Task 1: 20 Progressive C++ Array Tasks (Array Practice)",
+          "أدوات وامتحانات العملي",
+          "سلايدات مراجعة وتأسيس C++ (Revision Slides)",
+          "شيت المهام والتكليفات العملية (20 Progressive Array Tasks)",
+          "كود المكدس الديناميكي في C++ (DynamicStack Template Code)"
+        ],
+        "selectedItem": null,
+        "hash": ""
+      }
+    },
+    {
+      "name": "hosted-mobile-modal-footprint",
+      "value": {
+        "header": {
+          "x": 17,
+          "y": 41,
+          "width": 326,
+          "height": 347.34375,
+          "bottom": 388.34375
+        },
+        "body": {
+          "x": 17,
+          "y": 388.34375,
+          "width": 326,
+          "height": 370.65625,
+          "bottom": 759
+        },
+        "start": {
+          "x": 114.078125,
+          "y": 845.921875,
+          "width": 131.859375,
+          "height": 44,
+          "bottom": 889.921875
+        },
+        "timerControlVisible": false
+      }
+    },
+    {
+      "name": "standalone-continue-gap",
+      "value": {
+        "before": 0,
+        "after": 0,
+        "emptyMessage": "أول خطوة لسه قدّامك\n\nلما تبدأ شرح أو تدريب، هتلاقيه هنا عشان ترجع له بسهولة.\n\nاستكشف المصادر"
+      }
+    },
+    {
+      "name": "analytics-endpoint-hosts",
+      "value": [
+        {
+          "origin": "https://ahm-333.github.io/Sem2_portal/",
+          "status": 404,
+          "contentType": "text/html; charset=utf-8",
+          "includedInSubject": true
+        },
+        {
+          "origin": "https://kernal-study-portal.vercel.app/",
+          "status": 404,
+          "contentType": "text/plain; charset=utf-8",
+          "includedInSubject": false
+        }
+      ]
+    },
+    {
+      "name": "external-hub-links",
+      "value": [
+        {
+          "url": "https://ahm-333.github.io/computer-graphics-study/",
+          "status": 404,
+          "final": "https://ahm-333.github.io/computer-graphics-study/"
+        },
+        {
+          "url": "https://ahm-333.github.io/technical-writing-study/",
+          "status": 404,
+          "final": "https://ahm-333.github.io/technical-writing-study/"
+        },
+        {
+          "url": "https://ahm-333.github.io/computer-architecture-study/",
+          "status": 200,
+          "final": "https://ahm-333.github.io/computer-architecture-study/"
+        }
+      ]
+    },
+    {
+      "name": "os-existing-question-bank-count",
+      "value": {
+        "rows": [
+          {
+            "unit": "os-01",
+            "count": 8
+          },
+          {
+            "unit": "os-02",
+            "count": 3
+          },
+          {
+            "unit": "os-03",
+            "count": 4
+          },
+          {
+            "unit": "os-04",
+            "count": 4
+          },
+          {
+            "unit": "os-05",
+            "count": 5
+          },
+          {
+            "unit": "os-06",
+            "count": 4
+          },
+          {
+            "unit": "os-07",
+            "count": 4
+          },
+          {
+            "unit": "os-08",
+            "count": 6
+          },
+          {
+            "unit": "os-09",
+            "count": 7
+          },
+          {
+            "unit": "os-10",
+            "count": 10
+          },
+          {
+            "unit": "os-11",
+            "count": 4
+          },
+          {
+            "unit": "os-12",
+            "count": 10
+          },
+          {
+            "unit": "os-13",
+            "count": 4
+          },
+          {
+            "unit": "os-14",
+            "count": 4
+          },
+          {
+            "unit": "os-15",
+            "count": 4
+          },
+          {
+            "unit": "os-16",
+            "count": 5
+          },
+          {
+            "unit": "os-17",
+            "count": 4
+          },
+          {
+            "unit": "os-18",
+            "count": 9
+          },
+          {
+            "unit": "os-19",
+            "count": 8
+          }
+        ],
+        "total": 107
+      }
+    },
+    {
+      "name": "tools-theme-and-keyboard",
+      "value": [
+        {
+          "theme": "light",
+          "selectedTab": "timer",
+          "focusTab": "timer",
+          "tabStops": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "selectedColor": "rgb(255, 255, 255)",
+          "selectedBackground": "rgb(70, 83, 214)"
+        },
+        {
+          "theme": "dark",
+          "selectedTab": "timer",
+          "focusTab": "timer",
+          "tabStops": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "selectedColor": "rgb(34, 38, 60)",
+          "selectedBackground": "rgb(184, 191, 255)"
+        },
+        {
+          "theme": "reading",
+          "selectedTab": "timer",
+          "focusTab": "timer",
+          "tabStops": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "selectedColor": "rgb(252, 253, 247)",
+          "selectedBackground": "rgb(52, 99, 77)"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "path": "subject.html?id=data-structure",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/subject.html?id=data-structure&track=lecture&kind=lectures",
+        "title": "Data Structures (هياكل البيانات والخوارزميات) | Kernal",
+        "theme": "light",
+        "bodyClass": "a1 studio min-h-screen flex flex-col",
+        "font": "Alexandria, Tahoma, sans-serif",
+        "background": "rgb(245, 246, 251)",
+        "ink": "rgb(37, 38, 66)",
+        "h1": "Data Structures",
+        "overflow": 0,
+        "themeControls": [
+          {
+            "id": "",
+            "text": ""
+          },
+          {
+            "id": "",
+            "text": ""
+          },
+          {
+            "id": "",
+            "text": ""
+          },
+          {
+            "id": "cycle-theme-btn",
+            "text": ""
+          }
+        ]
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/subject.html?id=data-structure&track=lecture&kind=lectures",
+        "title": "Data Structures (هياكل البيانات والخوارزميات) | Kernal",
+        "theme": "light",
+        "bodyClass": "a1 studio min-h-screen flex flex-col",
+        "font": "Alexandria, Tahoma, sans-serif",
+        "background": "rgb(245, 246, 251)",
+        "ink": "rgb(37, 38, 66)",
+        "h1": "Data Structures",
+        "overflow": 0,
+        "themeControls": [
+          {
+            "id": "",
+            "text": ""
+          },
+          {
+            "id": "",
+            "text": ""
+          },
+          {
+            "id": "",
+            "text": ""
+          },
+          {
+            "id": "cycle-theme-btn",
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "path": "study/ds/index.html",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/study/ds/index.html",
+        "title": "منصة الشرح التفاعلي — هياكل البيانات والخوارزميات (Data Structures)",
+        "bodyClass": "p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen",
+        "font": "Cairo, sans-serif",
+        "background": "rgb(11, 15, 25)",
+        "ink": "rgb(248, 250, 252)",
+        "h1": "دليل مذاكرة هياكل البيانات (Data Structures)",
+        "overflow": 0,
+        "themeControls": []
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/study/ds/index.html",
+        "title": "منصة الشرح التفاعلي — هياكل البيانات والخوارزميات (Data Structures)",
+        "bodyClass": "p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen",
+        "font": "Cairo, sans-serif",
+        "background": "rgb(11, 15, 25)",
+        "ink": "rgb(248, 250, 252)",
+        "h1": "دليل مذاكرة هياكل البيانات (Data Structures)",
+        "overflow": 0,
+        "themeControls": []
+      }
+    },
+    {
+      "path": "study/ds/lecture-1.html",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/study/ds/lecture-1.html",
+        "title": "المحاضرة الأولى — هياكل البيانات والمصفوفات والقوالب | وضع القراءة",
+        "bodyClass": "min-h-screen pb-20",
+        "font": "Tajawal, Cairo, sans-serif",
+        "background": "rgb(253, 250, 245)",
+        "ink": "rgb(30, 41, 59)",
+        "h1": "المحاضرة الأولى: هياكل البيانات (Lecture 1)",
+        "overflow": 0,
+        "themeControls": [
+          {
+            "id": "btnThemeDark",
+            "text": ""
+          }
+        ]
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/study/ds/lecture-1.html",
+        "title": "المحاضرة الأولى — هياكل البيانات والمصفوفات والقوالب | وضع القراءة",
+        "bodyClass": "min-h-screen pb-20",
+        "font": "Tajawal, Cairo, sans-serif",
+        "background": "rgb(253, 250, 245)",
+        "ink": "rgb(30, 41, 59)",
+        "h1": "المحاضرة الأولى: هياكل البيانات (Lecture 1)",
+        "overflow": 91,
+        "themeControls": [
+          {
+            "id": "btnThemeDark",
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "path": "study/ds/lecture-2.html",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/study/ds/lecture-2.html",
+        "title": "المحاضرة الثانية الشاملة (Lecture 2) — القوائم المتصلة (Linked Lists): الأجزاء الستة كاملة",
+        "bodyClass": "min-h-screen selection:bg-amber-300 selection:text-slate-950",
+        "font": "Tajawal, Cairo, sans-serif",
+        "background": "rgb(253, 250, 245)",
+        "ink": "rgb(30, 41, 59)",
+        "h1": "المحاضرة الثانية: القوائم المتصلة (Linked Lists)",
+        "overflow": 0,
+        "themeControls": [
+          {
+            "id": "btnThemeDark",
+            "text": ""
+          }
+        ]
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/study/ds/lecture-2.html",
+        "title": "المحاضرة الثانية الشاملة (Lecture 2) — القوائم المتصلة (Linked Lists): الأجزاء الستة كاملة",
+        "bodyClass": "min-h-screen selection:bg-amber-300 selection:text-slate-950",
+        "font": "Tajawal, Cairo, sans-serif",
+        "background": "rgb(253, 250, 245)",
+        "ink": "rgb(30, 41, 59)",
+        "h1": "المحاضرة الثانية: القوائم المتصلة (Linked Lists)",
+        "overflow": 177,
+        "themeControls": [
+          {
+            "id": "btnThemeDark",
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "path": "study/ds/lecture-3.html",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/study/ds/lecture-3.html",
+        "title": "المحاضرة الثالثة — الاستدعاء الذاتي (Recursion) | وضع القراءة",
+        "bodyClass": "min-h-screen pb-20",
+        "font": "Tajawal, Cairo, sans-serif",
+        "background": "rgb(253, 250, 245)",
+        "ink": "rgb(30, 41, 59)",
+        "h1": "المحاضرة الثالثة: الاستدعاء الذاتي (Lecture 3: Recursion)",
+        "overflow": 0,
+        "themeControls": [
+          {
+            "id": "btnThemeDark",
+            "text": ""
+          }
+        ]
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/study/ds/lecture-3.html",
+        "title": "المحاضرة الثالثة — الاستدعاء الذاتي (Recursion) | وضع القراءة",
+        "bodyClass": "min-h-screen pb-20",
+        "font": "Tajawal, Cairo, sans-serif",
+        "background": "rgb(253, 250, 245)",
+        "ink": "rgb(30, 41, 59)",
+        "h1": "المحاضرة الثالثة: الاستدعاء الذاتي (Lecture 3: Recursion)",
+        "overflow": 173,
+        "themeControls": [
+          {
+            "id": "btnThemeDark",
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "path": "study/db/index.html",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/study/db/index.html",
+        "title": "منصة الشرح التفاعلي — أنظمة قواعد البيانات (Database Systems)",
+        "bodyClass": "p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen",
+        "font": "Cairo, sans-serif",
+        "background": "rgb(6, 17, 24)",
+        "ink": "rgb(248, 250, 252)",
+        "h1": "دليل مذاكرة أنظمة قواعد البيانات (Database Systems)",
+        "overflow": 0,
+        "themeControls": []
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/study/db/index.html",
+        "title": "منصة الشرح التفاعلي — أنظمة قواعد البيانات (Database Systems)",
+        "bodyClass": "p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen",
+        "font": "Cairo, sans-serif",
+        "background": "rgb(6, 17, 24)",
+        "ink": "rgb(248, 250, 252)",
+        "h1": "دليل مذاكرة أنظمة قواعد البيانات (Database Systems)",
+        "overflow": 0,
+        "themeControls": []
+      }
+    },
+    {
+      "path": "study/db/chapter-1.html",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/study/db/chapter-1.html",
+        "title": "موسوعة قواعد البيانات - الفصل الأول (وضع القراءة المريح)",
+        "bodyClass": "theme-dark min-h-screen pb-24 selection:bg-sky-500 selection:text-white",
+        "font": "Tajawal, sans-serif",
+        "background": "rgb(11, 17, 32)",
+        "ink": "rgb(226, 232, 240)",
+        "h1": "الفصل الأول: أساسيات قواعد البيانات (Chapter 1)",
+        "overflow": 0,
+        "themeControls": [
+          {
+            "id": "btnThemeDark",
+            "text": ""
+          }
+        ]
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/study/db/chapter-1.html",
+        "title": "موسوعة قواعد البيانات - الفصل الأول (وضع القراءة المريح)",
+        "bodyClass": "theme-dark min-h-screen pb-24 selection:bg-sky-500 selection:text-white",
+        "font": "Tajawal, sans-serif",
+        "background": "rgb(11, 17, 32)",
+        "ink": "rgb(226, 232, 240)",
+        "h1": "الفصل الأول: أساسيات قواعد البيانات (Chapter 1)",
+        "overflow": 122,
+        "themeControls": [
+          {
+            "id": "btnThemeDark",
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "path": "study/db/chapter-2.html",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/study/db/chapter-2.html",
+        "title": "موسوعة قواعد البيانات — الفصل الثاني: معمارية ومفاهيم نظم قواعد البيانات (وضع القراءة المريح)",
+        "bodyClass": "theme-dark min-h-screen pb-24 selection:bg-emerald-500 selection:text-white",
+        "font": "Tajawal, sans-serif",
+        "background": "rgb(11, 17, 32)",
+        "ink": "rgb(226, 232, 240)",
+        "h1": "الفصل الثاني: معمارية ومفاهيم النظم (Chapter 2)",
+        "overflow": 0,
+        "themeControls": [
+          {
+            "id": "btnThemeDark",
+            "text": ""
+          }
+        ]
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/study/db/chapter-2.html",
+        "title": "موسوعة قواعد البيانات — الفصل الثاني: معمارية ومفاهيم نظم قواعد البيانات (وضع القراءة المريح)",
+        "bodyClass": "theme-dark min-h-screen pb-24 selection:bg-emerald-500 selection:text-white",
+        "font": "Tajawal, sans-serif",
+        "background": "rgb(11, 17, 32)",
+        "ink": "rgb(226, 232, 240)",
+        "h1": "الفصل الثاني: معمارية ومفاهيم النظم (Chapter 2)",
+        "overflow": 131,
+        "themeControls": [
+          {
+            "id": "btnThemeDark",
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "path": "study/arch/index.html",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/study/arch/index.html",
+        "title": "منصة الشرح التفاعلي — معمارية وتنظيم الحاسب (Computer Architecture)",
+        "bodyClass": "selection:bg-cyan-500/30 selection:text-cyan-200",
+        "font": "Cairo, sans-serif",
+        "background": "rgb(6, 11, 24)",
+        "ink": "rgb(248, 250, 252)",
+        "h1": "معمارية وتنظيم الحاسوب\nCS221",
+        "overflow": 0,
+        "themeControls": []
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/study/arch/index.html",
+        "title": "منصة الشرح التفاعلي — معمارية وتنظيم الحاسب (Computer Architecture)",
+        "bodyClass": "selection:bg-cyan-500/30 selection:text-cyan-200",
+        "font": "Cairo, sans-serif",
+        "background": "rgb(6, 11, 24)",
+        "ink": "rgb(248, 250, 252)",
+        "h1": "معمارية وتنظيم الحاسوب\nCS221",
+        "overflow": 0,
+        "themeControls": []
+      }
+    },
+    {
+      "path": "study/arch/chapter-7.html",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/study/arch/chapter-7.html",
+        "title": "الفصل السابع: معمارية الإدخال والإخراج (Chapter 7: I/O) - وضع القراءة",
+        "bodyClass": "antialiased selection:bg-teal-100 selection:text-teal-900 theme-sepia",
+        "font": "Tajawal, Cairo, sans-serif",
+        "background": "rgb(250, 248, 245)",
+        "ink": "rgb(30, 41, 59)",
+        "h1": "معمارية الإدخال والإخراج (I/O Architecture)",
+        "overflow": 0,
+        "themeControls": [
+          {
+            "id": "btn-theme-sepia",
+            "text": "سيبيا"
+          },
+          {
+            "id": "btn-theme-light",
+            "text": "فاتح"
+          },
+          {
+            "id": "btn-theme-dark",
+            "text": "داكن"
+          }
+        ]
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/study/arch/chapter-7.html",
+        "title": "الفصل السابع: معمارية الإدخال والإخراج (Chapter 7: I/O) - وضع القراءة",
+        "bodyClass": "antialiased selection:bg-teal-100 selection:text-teal-900 theme-sepia",
+        "font": "Tajawal, Cairo, sans-serif",
+        "background": "rgb(250, 248, 245)",
+        "ink": "rgb(30, 41, 59)",
+        "h1": "معمارية الإدخال والإخراج (I/O Architecture)",
+        "overflow": 0,
+        "themeControls": [
+          {
+            "id": "btn-theme-sepia",
+            "text": "سيبيا"
+          },
+          {
+            "id": "btn-theme-light",
+            "text": "فاتح"
+          },
+          {
+            "id": "btn-theme-dark",
+            "text": "داكن"
+          }
+        ]
+      }
+    },
+    {
+      "path": "education-preview/os/index.html",
+      "desktop": {
+        "url": "http://127.0.0.1:8876/education-preview/os/index.html",
+        "title": "OS-01 · مين بيعمل إيه جوّه جهازك؟ | Study Hub",
+        "bodyClass": "",
+        "font": "Alexandria, Tahoma, sans-serif",
+        "background": "rgb(242, 246, 252)",
+        "ink": "rgb(22, 43, 75)",
+        "h1": "مين بيعمل إيه جوّه جهازك؟",
+        "overflow": 0,
+        "themeControls": []
+      },
+      "mobile": {
+        "url": "http://127.0.0.1:8876/education-preview/os/index.html",
+        "title": "OS-01 · مين بيعمل إيه جوّه جهازك؟ | Study Hub",
+        "bodyClass": "",
+        "font": "Alexandria, Tahoma, sans-serif",
+        "background": "rgb(242, 246, 252)",
+        "ink": "rgb(22, 43, 75)",
+        "h1": "مين بيعمل إيه جوّه جهازك؟",
+        "overflow": 0,
+        "themeControls": []
+      }
+    }
+  ],
+  "pageErrors": []
+}

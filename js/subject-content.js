@@ -403,7 +403,7 @@
       const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "section", sec.id) : JSON.stringify([String(course.id), "section", String(sec.id)]);
       const previewUrl = sec.drivePreviewUrl || sec.sheetUrl || "#";
       const viewUrl = sec.driveViewUrl || sec.sheetUrl || "#";
-      const downloadUrl = sec.driveDownloadUrl || sec.sheetUrl || "#";
+      const downloadUrl = sec.localFile || sec.driveDownloadUrl || sec.sheetUrl || "#";
       const filename = `${course.name}_Section_${sec.id}.${sec.fileType || 'pptx'}`;
       const fileTypeLabel = (sec.fileType || 'pptx').toUpperCase();
       const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
@@ -540,10 +540,10 @@
                 target="_blank" 
                 rel="noopener noreferrer" 
                 class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                title="تحميل مباشر من Google Drive"
+                title="${sec.localFile ? 'تحميل الملف المحلي' : 'تحميل مباشر من Google Drive'}"
               >
                 <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                <span>تحميل مباشر</span>
+                <span>${sec.fileType === 'cpp' ? 'تحميل الكود C++' : 'تحميل مباشر'}</span>
               </a>
 
               ${sec.codeUrl ? `
@@ -882,6 +882,7 @@
     renderSectionsList();
     renderAssignmentsList();
     renderPracticalResourcesList();
+    window.dispatchEvent(new CustomEvent('portal:sources-changed', {detail: {courseId: course.id}}));
   }
 
   // الاستدعاء المبدئي لرندر النظري والعملي

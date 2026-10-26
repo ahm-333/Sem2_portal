@@ -1,0 +1,37 @@
+[
+  {
+    "file": "js/courses-data.js",
+    "status": 200,
+    "matchesAuditedSource": true
+  },
+  {
+    "file": "js/shared/content-catalog.js",
+    "status": 200,
+    "matchesAuditedSource": true
+  },
+  {
+    "file": "js/studio.js",
+    "status": 200,
+    "matchesAuditedSource": true
+  },
+  {
+    "file": "js/studio-course.js",
+    "status": 200,
+    "matchesAuditedSource": true
+  },
+  {
+    "file": "study/ds/lecture-2.html",
+    "status": 200,
+    "matchesAuditedSource": true
+  },
+  {
+    "file": "study/db/chapter-1.html",
+    "status": 200,
+    "matchesAuditedSource": true
+  },
+  {
+    "file": "education-preview/os/lesson-loader.js",
+    "status": 200,
+    "matchesAuditedSource": true
+  }
+]

@@ -16,7 +16,7 @@ const out=path.resolve(__dirname,'../test-results/education/os-course/portal-ent
    if(chapter===1)await page.screenshot({path:path.join(out,`os-subject-${prefix?'pages':'root'}-${width}.png`),fullPage:true});
    await link.click();await page.locator('#glossary-content article').last().waitFor();assert.equal(await page.evaluate(()=>window.OSPilotLesson.id),unit);assert.equal(await page.locator('#course-index a').count(),19);
    assert.equal(new URL(page.url()).pathname,'/'+prefix+'education-preview/os/');
-   await page.locator('.brand').click();await page.locator('#courses-grid').waitFor();assert.equal(new URL(page.url()).pathname,'/'+prefix+'index.html');
+   await page.locator('.study-shell-brand').click();await page.locator('#courses-grid').waitFor();assert.equal(new URL(page.url()).pathname,'/'+prefix+'index.html');
    results.push({prefix,width,chapter,unit,passed:true});
   }
   await page.goto(origin+prefix+'subject.html?id=database-systems');assert.equal(await page.locator('[data-os-course-link]').count(),0);await page.locator('[data-open-study-lecture="2"]').first().click();await page.locator('#lecture-study-modal').waitFor();await page.locator('#study-slides-feed img').first().waitFor({state:'attached'});await page.keyboard.press('Escape');

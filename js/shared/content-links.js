@@ -10,6 +10,13 @@
     function href(key, options = {}) {
       const catalog = getCatalog();
       const entry = catalog ? catalog.get(key) : null;
+      if (entry?.module && options.actionId === 'standalone-study') {
+        const url = new URL(entry.module.url, 'http://localhost/');
+        const section = Number(options.slide);
+        if (typeof options.anchor === 'string' && /^[\w.-]+$/.test(options.anchor)) url.hash = options.anchor;
+        else if (Number.isSafeInteger(section) && section > 0) url.searchParams.set('section', section);
+        return url.pathname.slice(1) + url.search + url.hash;
+      }
 
       let courseId = entry?.courseId;
       let track = entry?.track || 'lecture';

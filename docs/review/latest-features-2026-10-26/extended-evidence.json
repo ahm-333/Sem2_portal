@@ -1,0 +1,1019 @@
+{
+  "base": "http://127.0.0.1:8876/",
+  "baseCommit": "0700072",
+  "localChange": "Only the two coming-soon hubs differ from the audited baseline.",
+  "checks": [
+    {
+      "name": "interactive-library-discovery",
+      "value": [
+        {
+          "id": "all",
+          "results": 2,
+          "titles": [
+            "Lecture 2: Databases and Database Users",
+            "Database System Concepts and Architecture"
+          ]
+        },
+        {
+          "id": "data-structure",
+          "results": 0,
+          "titles": [
+            "مفيش مصادر مطابقة"
+          ]
+        },
+        {
+          "id": "database-systems",
+          "results": 2,
+          "titles": [
+            "Lecture 2: Databases and Database Users",
+            "Database System Concepts and Architecture"
+          ]
+        },
+        {
+          "id": "computer-architecture",
+          "results": 0,
+          "titles": [
+            "مفيش مصادر مطابقة"
+          ]
+        },
+        {
+          "id": "operating-system",
+          "results": 0,
+          "titles": [
+            "مفيش مصادر مطابقة"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "midterm-keyboard-focus-loss",
+      "value": {
+        "before": "<button type=\"button\" class=\"midterm-opt-btn \" data-midterm-opt=\"0\">\n            <span>Composite attribute in a double rectangle</span>\n            <span class=\"power-too",
+        "after": {
+          "tag": "BODY",
+          "id": ""
+        },
+        "next": {
+          "tag": "BUTTON",
+          "id": "power-modal-close",
+          "text": "إغلاق\n✕"
+        }
+      }
+    },
+    {
+      "name": "midterm-unanswered-submit",
+      "value": {
+        "dialogs": 0,
+        "result": "🏆 نتيجة امتحان الميدتيرم: 0 من 10 (0%)\n\nيمكنك الآن التنقل بين أرقام الأسئلة بالأسفل لمراجعة الإجابات الصحيحة وشرح كل تريكة بالتفصيل.\n\n🔄 إعداد امتحان جديد"
+      }
+    },
+    {
+      "name": "midterm-reload-loss",
+      "value": {
+        "chosenBefore": 1,
+        "returnedToConfig": true,
+        "selectedAfter": 0,
+        "dialogs": 0
+      }
+    },
+    {
+      "name": "midterm-study-data-network-failure",
+      "value": {
+        "scopes": [
+          "✓ المحاضرة 4 و 5: ER Data Modeling (2)"
+        ],
+        "config": "إعداد محاكي امتحان الميدتيرم — أنظمة قواعد البيانات\n\nحدد المحاضرات الداخلة في الامتحان، عدد الأسئلة، والوقت المحدد، واختبر استعدادك الفعلي مع التايمر والتصحيح الفوري.\n\n1. اختر المحاضرات الداخلة في الامتحان (2 سؤال متاح):\n✓ المحاضرة 4 و 5: ER Data Modeling (2)\n2. عدد أسئلة الامتحان: \n5 أسئلة (مراجعة سريعة)\n10 أسئلة (ميدتيرم قياسي)\n15 سؤال (امتحان شامل)\nكل الأسئلة المتاحة (2)\n3. زمن الامتحان (التايمر): \n10 دقائق\n15 دقيقة (موصى به)\n25 دقيقة\nبدون تايمر (تدريب مفتوح)\n🚀 ابدأ امتحان الميدتيرم الآن (2 سؤال)",
+        "alerts": 0
+      }
+    },
+    {
+      "name": "timer-and-notifications-multiple-tabs",
+      "value": {
+        "secondTabBefore": "6",
+        "secondTabAfter": "6",
+        "storedRead": 6
+      }
+    },
+    {
+      "name": "standalone-dark-contrast",
+      "value": [
+        {
+          "path": "study/ds/lecture-1.html",
+          "issues": []
+        },
+        {
+          "path": "study/ds/lecture-2.html",
+          "issues": [
+            {
+              "name": "1\nالجزء 1: البداية من الصفر والـ RAM",
+              "kind": "text",
+              "contrast": 1.05,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                224,
+                242,
+                254
+              ],
+              "tag": "A",
+              "classes": "p-3.5 rounded-xl bg-sky-100 hover:bg-sky-200 border-2 border-sky-600 text-sky-950 font-black text-xs sm:text-sm flex items-center gap-2.5 transition-all"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100"
+            },
+            {
+              "name": "نسخ الكود بالكامل",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold"
+            },
+            {
+              "name": "المرحلة ب: ربط 1 بـ 2",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-sky-50 transition-all"
+            },
+            {
+              "name": "المرحلة ج: ربط 2 بـ 3",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-sky-50 transition-all"
+            },
+            {
+              "name": "المرحلة د: قفل وربط head",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-sky-50 transition-all"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100"
+            },
+            {
+              "name": "مسح المسودة",
+              "kind": "text",
+              "contrast": 2.12,
+              "required": 4.5,
+              "color": "rgb(159, 18, 57)",
+              "background": [
+                19,
+                28,
+                49
+              ],
+              "tag": "BUTTON",
+              "classes": "text-xs font-extrabold text-rose-800 hover:underline"
+            },
+            {
+              "name": "نسخ الحل",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-4 py-2 rounded-xl bg-white text-slate-950 text-xs sm:text-sm font-extrabold hover:bg-emerald-200 transition-all shadow-md"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-4 py-2 rounded-xl bg-white text-slate-950 text-xs sm:text-sm font-extrabold hover:bg-emerald-200 transition-all shadow-md"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-4 py-2 rounded-xl bg-white text-slate-950 text-xs sm:text-sm font-extrabold hover:bg-emerald-200 transition-all shadow-md"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-4 py-2 rounded-xl bg-white text-slate-950 text-xs sm:text-sm font-extrabold hover:bg-emerald-200 transition-all shadow-md"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "✓ تم الفهم",
+              "kind": "text",
+              "contrast": 1.1,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                255,
+                255,
+                255
+              ],
+              "tag": "BUTTON",
+              "classes": "check-sec-btn shrink-0 px-4 py-2 rounded-xl bg-white text-slate-950 text-xs sm:text-sm font-extrabold hover:bg-emerald-200 transition-all shadow-md"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            },
+            {
+              "name": "نسخ الكود",
+              "kind": "text",
+              "contrast": 1.52,
+              "required": 4.5,
+              "color": "rgb(241, 245, 249)",
+              "background": [
+                251,
+                191,
+                36
+              ],
+              "tag": "BUTTON",
+              "classes": "copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all"
+            }
+          ]
+        },
+        {
+          "path": "study/ds/lecture-3.html",
+          "issues": []
+        },
+        {
+          "path": "study/db/chapter-1.html",
+          "issues": []
+        },
+        {
+          "path": "study/db/chapter-2.html",
+          "issues": []
+        },
+        {
+          "path": "study/arch/chapter-7.html",
+          "issues": [
+            {
+              "name": "العودة لصفحة مادة المعمارية",
+              "kind": "text",
+              "contrast": 1.26,
+              "required": 4.5,
+              "color": "rgb(226, 232, 240)",
+              "background": [
+                206,
+                207,
+                210
+              ],
+              "tag": "A",
+              "classes": "flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-300 bg-white/80 hover:bg-slate-100 text-slate-700 text-xs font-heading font-bold transition shadow-sm"
+            },
+            {
+              "name": "العودة لصفحة مادة المعمارية",
+              "kind": "text",
+              "contrast": 1.26,
+              "required": 4.5,
+              "color": "rgb(226, 232, 240)",
+              "background": [
+                206,
+                207,
+                210
+              ],
+              "tag": "A",
+              "classes": "flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-300 bg-white/80 hover:bg-slate-100 text-slate-700 text-xs font-heading font-bold transition shadow-sm"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "header-width-matrix",
+      "value": [
+        {
+          "url": "http://127.0.0.1:8876/index.html#library",
+          "width": 320,
+          "scrollWidth": 320,
+          "topbar": 320
+        },
+        {
+          "url": "http://127.0.0.1:8876/subject.html?id=database-systems&track=lecture&kind=lectures",
+          "width": 320,
+          "scrollWidth": 320,
+          "topbar": 320
+        },
+        {
+          "url": "http://127.0.0.1:8876/index.html#library",
+          "width": 340,
+          "scrollWidth": 340,
+          "topbar": 340
+        },
+        {
+          "url": "http://127.0.0.1:8876/subject.html?id=database-systems&track=lecture&kind=lectures",
+          "width": 340,
+          "scrollWidth": 340,
+          "topbar": 340
+        },
+        {
+          "url": "http://127.0.0.1:8876/index.html#library",
+          "width": 360,
+          "scrollWidth": 360,
+          "topbar": 360
+        },
+        {
+          "url": "http://127.0.0.1:8876/subject.html?id=database-systems&track=lecture&kind=lectures",
+          "width": 360,
+          "scrollWidth": 360,
+          "topbar": 360
+        },
+        {
+          "url": "http://127.0.0.1:8876/index.html#library",
+          "width": 390,
+          "scrollWidth": 390,
+          "topbar": 390
+        },
+        {
+          "url": "http://127.0.0.1:8876/subject.html?id=database-systems&track=lecture&kind=lectures",
+          "width": 390,
+          "scrollWidth": 390,
+          "topbar": 390
+        },
+        {
+          "url": "http://127.0.0.1:8876/index.html#library",
+          "width": 768,
+          "scrollWidth": 768,
+          "topbar": 768
+        },
+        {
+          "url": "http://127.0.0.1:8876/subject.html?id=database-systems&track=lecture&kind=lectures",
+          "width": 768,
+          "scrollWidth": 768,
+          "topbar": 768
+        }
+      ]
+    },
+    {
+      "name": "course-counts-vs-visible-resources",
+      "value": [
+        {
+          "id": "data-structure",
+          "section": 1,
+          "own": {
+            "count": "5 مصدر",
+            "rows": 5,
+            "ta": "م.م. أحمد حسام سلامه درويش الحداد"
+          },
+          "all": {
+            "count": "5 مصدر",
+            "rows": 5
+          }
+        },
+        {
+          "id": "data-structure",
+          "section": 10,
+          "own": {
+            "count": "4 مصدر",
+            "rows": 4,
+            "ta": "م. فاطمة محمود"
+          },
+          "all": {
+            "count": "4 مصدر",
+            "rows": 4
+          }
+        },
+        {
+          "id": "database-systems",
+          "section": 1,
+          "own": {
+            "count": "11 مصدر",
+            "rows": 11,
+            "ta": "م.م. ميرنا مجدي محمد حلمي الفخراني"
+          },
+          "all": {
+            "count": "11 مصدر",
+            "rows": 11
+          }
+        },
+        {
+          "id": "database-systems",
+          "section": 10,
+          "own": {
+            "count": "0 مصدر",
+            "rows": 1,
+            "ta": "م.م. حسن حسن محمد محمد"
+          },
+          "all": {
+            "count": "0 مصدر",
+            "rows": 1
+          }
+        },
+        {
+          "id": "operating-system",
+          "section": 1,
+          "own": {
+            "count": "3 مصدر",
+            "rows": 3,
+            "ta": "م. أحمد شكري"
+          },
+          "all": {
+            "count": "3 مصدر",
+            "rows": 3
+          }
+        },
+        {
+          "id": "operating-system",
+          "section": 10,
+          "own": {
+            "count": "3 مصدر",
+            "rows": 3,
+            "ta": "م. أحمد شكري"
+          },
+          "all": {
+            "count": "3 مصدر",
+            "rows": 3
+          }
+        }
+      ]
+    },
+    {
+      "name": "standalone-same-origin-broken-links-and-fragments",
+      "value": [
+        {
+          "path": "study/ds/index.html",
+          "failures": []
+        },
+        {
+          "path": "study/ds/lecture-1.html",
+          "failures": []
+        },
+        {
+          "path": "study/ds/lecture-2.html",
+          "failures": []
+        },
+        {
+          "path": "study/ds/lecture-3.html",
+          "failures": []
+        },
+        {
+          "path": "study/db/index.html",
+          "failures": []
+        },
+        {
+          "path": "study/db/chapter-1.html",
+          "failures": []
+        },
+        {
+          "path": "study/db/chapter-2.html",
+          "failures": []
+        },
+        {
+          "path": "study/arch/index.html",
+          "failures": []
+        },
+        {
+          "path": "study/arch/chapter-7.html",
+          "failures": []
+        }
+      ]
+    }
+  ],
+  "pageErrors": []
+}

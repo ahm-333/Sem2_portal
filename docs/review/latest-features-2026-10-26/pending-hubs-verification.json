@@ -1,0 +1,51 @@
+{
+  "baseCommit": "0700072",
+  "branch": "codex/portal-coming-soon",
+  "deployed": false,
+  "checks": [
+    {
+      "id": "computer-graphics",
+      "width": 360,
+      "label": "الشرح التفاعلي — قريبًا",
+      "disabled": true,
+      "missingLinksRemoved": true,
+      "midtermAvailable": true
+    },
+    {
+      "id": "report-writing",
+      "width": 360,
+      "label": "الشرح التفاعلي — قريبًا",
+      "disabled": true,
+      "missingLinksRemoved": true,
+      "midtermAvailable": true
+    },
+    {
+      "id": "data-structure",
+      "width": 360,
+      "existingInteractiveHubWorks": true,
+      "pageErrors": []
+    },
+    {
+      "id": "computer-graphics",
+      "width": 1440,
+      "label": "الشرح التفاعلي — قريبًا",
+      "disabled": true,
+      "missingLinksRemoved": true,
+      "midtermAvailable": true
+    },
+    {
+      "id": "report-writing",
+      "width": 1440,
+      "label": "الشرح التفاعلي — قريبًا",
+      "disabled": true,
+      "missingLinksRemoved": true,
+      "midtermAvailable": true
+    },
+    {
+      "id": "data-structure",
+      "width": 1440,
+      "existingInteractiveHubWorks": true,
+      "pageErrors": []
+    }
+  ]
+}

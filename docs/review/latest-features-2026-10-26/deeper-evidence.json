@@ -1,0 +1,128 @@
+{
+  "checks": [
+    {
+      "name": "stack-code-download-target",
+      "value": [
+        {
+          "id": 6,
+          "title": "Dynamic Stack Implementation in C++ - Section 4 (Part 1)",
+          "downloadUrl": "https://drive.google.com/uc?export=download&id=179XgT0-xgDM2_qyBbxjaORAQmVh11uVx",
+          "videoUrl": "https://drive.google.com/file/d/179XgT0-xgDM2_qyBbxjaORAQmVh11uVx/view",
+          "localFile": "materials/ds/Stack_DynamicStack.cpp",
+          "sameId": true,
+          "renderedDownload": "https://drive.google.com/uc?export=download&id=179XgT0-xgDM2_qyBbxjaORAQmVh11uVx"
+        },
+        {
+          "id": 7,
+          "title": "Dynamic Stack Template Implementation - Section 4 (Part 2)",
+          "downloadUrl": "https://drive.google.com/uc?export=download&id=1acZrDUOvoVtWJyj8zAuO83769jcEg9Kl",
+          "videoUrl": "https://drive.google.com/file/d/1acZrDUOvoVtWJyj8zAuO83769jcEg9Kl/view",
+          "localFile": "materials/ds/Stack_DynamicStack.cpp",
+          "sameId": true,
+          "renderedDownload": "https://drive.google.com/uc?export=download&id=1acZrDUOvoVtWJyj8zAuO83769jcEg9Kl"
+        },
+        {
+          "id": 8,
+          "title": "Dynamic Stack Resizing & Operations - Section 4 (Part 3)",
+          "downloadUrl": "https://drive.google.com/uc?export=download&id=1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x",
+          "videoUrl": "https://drive.google.com/file/d/1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x/view",
+          "localFile": "materials/ds/Stack_DynamicStack.cpp",
+          "sameId": true,
+          "renderedDownload": "https://drive.google.com/uc?export=download&id=1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x"
+        }
+      ]
+    },
+    {
+      "name": "cpp-source-vs-packaged-http",
+      "value": [
+        {
+          "url": "http://127.0.0.1:8876/materials/ds/Stack_DynamicStack.cpp",
+          "status": 200,
+          "type": "application/octet-stream"
+        },
+        {
+          "url": "http://127.0.0.1:8877/materials/ds/Stack_DynamicStack.cpp",
+          "status": 404,
+          "type": null
+        },
+        {
+          "url": "https://ahm-333.github.io/Sem2_portal/materials/ds/Stack_DynamicStack.cpp",
+          "status": 200,
+          "type": "text/x-c"
+        }
+      ]
+    },
+    {
+      "name": "linked-lists-closed-toc-focus",
+      "value": {
+        "activeId": "btn-close-toc",
+        "text": "✕ إغلاق الفهرس",
+        "focusBox": {
+          "x": 1484.800048828125,
+          "width": 112.875,
+          "right": 1597.675048828125
+        },
+        "viewport": 1440,
+        "drawerOpen": false,
+        "drawerInert": false
+      }
+    },
+    {
+      "name": "linked-lists-open-toc-escape",
+      "value": {
+        "opened": "fixed top-0 right-0 bottom-0 w-80 sm:w-[26rem] max-w-[92vw] z-50 bg-[#fffdf8] border-l-4 border-[#a39374] shadow-2xl flex flex-col open",
+        "after": {
+          "open": true,
+          "role": null,
+          "modal": null,
+          "bodyOverflow": "auto",
+          "focusId": "btn-open-toc"
+        }
+      }
+    },
+    {
+      "name": "linked-lists-completion-reload",
+      "value": {
+        "count": 11,
+        "uniqueKeys": 11,
+        "before": "1/11",
+        "after": "0/11",
+        "button": "✓ تم الفهم"
+      }
+    },
+    {
+      "name": "atlas-count-after-ta-filter",
+      "value": {
+        "before": "0 مصدر",
+        "after": "0 مصدر",
+        "visibleSourceRows": 11,
+        "filterText": "01\nERD Design & Conceptual Data Modeling - Section 1\n\nالسكشن الأول: نمذجة البيانات ومخططات الكيانات والعلاقات (ERD)\n\nPDF · م.م. ميرنا مجدي\n\nمعاينة الس"
+      }
+    },
+    {
+      "name": "new-notification-storage-failure-feedback",
+      "value": {
+        "before": "0",
+        "after": "6",
+        "warnings": 1
+      }
+    },
+    {
+      "name": "packaged-pending-hubs",
+      "value": [
+        {
+          "id": "computer-graphics",
+          "label": "الشرح التفاعلي — قريبًا",
+          "disabled": true,
+          "missingLinkCount": 0
+        },
+        {
+          "id": "report-writing",
+          "label": "الشرح التفاعلي — قريبًا",
+          "disabled": true,
+          "missingLinkCount": 0
+        }
+      ]
+    }
+  ]
+}

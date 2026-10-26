@@ -16,6 +16,7 @@
     const courses = context.courses || [];
     const studyCatalog = context.studyCatalog || {};
     const presentation = context.presentation || null;
+    const modules = context.modules || [];
 
     const entriesByKey = new Map();
     const allEntries = [];
@@ -241,6 +242,22 @@
       }
     });
 
+    modules.forEach(lesson => {
+      const existing = entriesByKey.get(lesson.key);
+      if (existing) {
+        existing.module = lesson;
+        existing.actions.unshift({id: 'standalone-study', type: 'internal', url: lesson.url, label: 'الشرح التفاعلي'});
+        return;
+      }
+      const course = courses.find(value => value.id === lesson.courseId);
+      if (!course) return;
+      addEntry({key: lesson.key, courseId: course.id, type: lesson.type, id: lesson.id,
+        courseName: course.name, displayCourseName: presentation?.course(course)?.name || course.name,
+        code: course.code || '', title: lesson.title, arabicTitle: null, description: '', topics: [],
+        ta: null, track: 'lecture', kind: 'resources', study: null, module: lesson,
+        actions: [{id: 'standalone-study', type: 'internal', url: lesson.url, label: 'الشرح التفاعلي'}]});
+    });
+
     return {
       key: formatKey,
       list: () => allEntries.slice(),
@@ -260,6 +277,7 @@
     window.PortalCatalog = createCatalog({
       courses: window.COURSES_DATA || [],
       studyCatalog: window.STUDY_CATALOG || {},
+      modules: window.PortalStudyModules || [],
       presentation: window.PortalPresentation || null
     });
   }

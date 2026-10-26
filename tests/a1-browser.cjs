@@ -55,6 +55,10 @@ async function main() {
     ...(fs.existsSync('C:/Program Files/Google/Chrome/Application/chrome.exe') ? {executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe'} : {})});
   await require('./studio-scroll-intro.cjs').register({scenario});
   await require('./studio-features.cjs').register({scenario});
+  await require('./power-tools-browser.cjs').register({scenario});
+  await require('./study-shell-browser.cjs').register({scenario});
+  await require('./study-integration-browser.cjs').register({scenario});
+  await require('./release-features-browser.cjs').register({scenario});
   await require('./performance-browser.cjs').register({scenario});
   await scenario('a1-shell-and-real-course-actions', async ({page, go}) => {
     await settled(page); await go('index.html');

@@ -173,6 +173,7 @@ async function register({scenario}) {
     assert.match(await page.locator('[data-midterm-jump="0"]').innerText(), /🚩/);
     await page.locator('[data-midterm-opt="0"]').click();
     await page.locator('#midterm-submit-btn').click();
+    await page.locator('#midterm-confirm-submit').click();
     await page.locator('#midterm-result-banner').waitFor({state:'visible'});
 
     await page.locator('.power-modal-tabs [data-power-tab="timer"]').click();
