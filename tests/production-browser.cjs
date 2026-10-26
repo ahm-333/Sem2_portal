@@ -25,13 +25,17 @@ async function main(){
         if(new URL(r.request().url()).origin===new URL(base).origin)return r.continue();
         external.push(r.request().url());return r.abort();
       });
+      // Vercel serves this endpoint; the local static server has no analytics service.
+      if(!process.env.PORTAL_RELEASE_URL)await context.route('**/_vercel/insights/script.js',route=>route.fulfill({contentType:'application/javascript',body:'window.__analyticsScriptLoaded = true;'}));
       const page=await context.newPage(),errors=[],missing=[];
       page.on('pageerror',error=>errors.push(error.message));
       page.on('response',res=>{if(res.url().startsWith(base)&&res.status()>=400)missing.push(res.url());});
       await page.goto(base+prefix+'index.html');await page.locator('#courses-grid article').first().waitFor();
       assert.equal(await page.locator('#courses-grid article').count(),6);
       assert.equal(await page.locator('#library-results .studio-library-row').count(),0);
-      assert.equal(await page.locator('script[defer][src]').count(),1,'production has one application bundle');
+      assert.equal(await page.locator('script[defer][src^="assets/"]').count(),1,'production has one application bundle');
+      assert.equal(await page.locator('script[defer][src="/_vercel/insights/script.js"]').count(),1,'platform analytics remains separate');
+      if(!process.env.PORTAL_RELEASE_URL)assert.equal(await page.evaluate(()=>window.__analyticsScriptLoaded),true,'platform analytics script loads');
       const courses=await page.evaluate(()=>window.COURSES_DATA.map(course=>course.id));
       for(const id of courses){
         await page.goto(base+prefix+'subject.html?id='+id);await page.locator('.course-atlas').waitFor({state:'visible'});
