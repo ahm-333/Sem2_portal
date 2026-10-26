@@ -1,7 +1,18 @@
 const assert=require('node:assert/strict');
 const {test}=require('node:test');
-const {runtime}=require('../tools/package-site.cjs');
+const {runtime,packageSite}=require('../tools/package-site.cjs');
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+test('packaging preserves platform analytics separately from the application bundle',()=>{
+  packageSite();
+  for(const page of ['index.html','subject.html']){
+    const html=fs.readFileSync(path.resolve(__dirname,'../dist',page),'utf8');
+    const scripts=[...html.matchAll(/<script defer src="([^"]+)"><\/script>/g)].map(match=>match[1]);
+    assert.equal(scripts.filter(src=>src==='/_vercel/insights/script.js').length,1,page);
+    assert.equal(scripts.filter(src=>/^assets\/.+\.js$/.test(src)).length,1,page);
+    assert.equal(scripts.length,2,page);
+    assert(html.includes('window.vaq'),page);
+  }
+});
 test('static release includes all teaching formats and excludes non-runtime files',()=>{
   for(const file of ['js/study-reader.js','css/fonts/alexandria-0.woff2','js/vendor/gsap/GSAP-NOTICE.txt','study/ds/lecture-2.html','materials/slides/db/slide-01.png','education-preview/os/units/os-19.js','education-preview/os/sources/ch3/slide-01.png'])assert(runtime(file),file);
   for(const file of ['automation/docker-compose.yml','.env','docs/DESIGN.md','tests/browser.cjs','package-lock.json','education-preview/os/check.cjs','education-preview/os/units/os-19.review.json','study/private.txt','js/debug.log'])assert(!runtime(file),file);

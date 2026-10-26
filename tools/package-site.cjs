@@ -38,7 +38,9 @@ function packageSite() {
   for(const file of ['favicon.svg','favicon.ico','favicon-96x96.png','apple-touch-icon.png','site.webmanifest','web-app-manifest-192x192.png','web-app-manifest-512x512.png'])write(file,fs.readFileSync(path.join(root,file)));
   for(const page of ['index.html','subject.html']) {
     let html=fs.readFileSync(path.join(root,page),'utf8');
-    const scripts=[...html.matchAll(/<script defer src="([^"?]+)(?:\?[^"]*)?"><\/script>/g)];
+    // Only repository-relative scripts belong in our bundle. Platform endpoints
+    // such as /_vercel/insights/script.js must stay as separate script tags.
+    const scripts=[...html.matchAll(/<script defer src="([^"?]+)(?:\?[^"]*)?"><\/script>/g)].filter(match=>! /^(?:\/|[a-z][\w+.-]*:)/i.test(match[1]));
     const css=[...html.matchAll(/<link rel="stylesheet" href="([^"?]+)(?:\?[^"]*)?">/g)].filter(match=>!match[1].startsWith('css/fonts/'));
     const name=page==='index.html'?'home':'subject';
     const javascript=transformSync(scripts.map(match=>fs.readFileSync(path.join(root,match[1]),'utf8')).join('\n;\n'),{loader:'js',target:'es2020',minify:true,charset:'utf8',legalComments:'eof'}).code;

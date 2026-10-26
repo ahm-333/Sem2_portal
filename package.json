@@ -31,5 +31,8 @@
     "playwright": "1.62.1",
     "tailwindcss": "3.4.17",
     "three": "0.186.1"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
   }
 }
