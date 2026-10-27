@@ -181,11 +181,13 @@ async function register({scenario}) {
     assert.equal(await page.locator('#study-timer-big-digits').innerText(), '15:00');
     await page.locator('#study-timer-toggle-btn').click();
     assert.match(await page.locator('#study-timer-toggle-btn').innerText(), /إيقاف مؤقت/);
+    await page.locator('#study-timer-toggle-btn').click();
+    assert.match(await page.locator('#study-timer-toggle-btn').innerText(), /ابدأ|استئناف/);
 
     await page.locator('.power-modal-tabs [data-power-tab="notifications"]').click();
     assert(await page.locator('#notifications-feed-list .smart-card').count() >= 5);
     await page.locator('#mark-all-notifs-read').click();
     assert.equal(await page.locator('[data-notif-unread-badge]').first().innerText(), '0');
-  });
+  }, {reducedMotion: 'reduce'});
 }
 module.exports = {register};
