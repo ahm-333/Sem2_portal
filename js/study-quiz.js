@@ -3,7 +3,9 @@
   function create(studyFullQuizView) {
   function renderFullQuiz(data) {
     if (!studyFullQuizView) return;
-    const questions = data.fullQuiz || [];
+    const sourceQuestions = data.fullQuiz || [];
+    const presentQuestions = () => sourceQuestions.map(q => window.PortalQuizChoices.present(q, 'full:' + q.id + ':' + q.question));
+    let questions = presentQuestions();
     if (questions.length === 0) {
       studyFullQuizView.innerHTML = `
         <div class="text-center py-16">
@@ -180,6 +182,8 @@
         return;
       }
       if (event.target.closest("#full-quiz-reset-btn")) {
+        window.PortalQuizChoices.renew();
+        questions = presentQuestions();
         userAnswers = {};
         score = 0; activeIndex = 0;
         studyFullQuizView.innerHTML = buildQuizHtml();

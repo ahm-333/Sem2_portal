@@ -58,6 +58,8 @@ async function main() {
   await require('./power-tools-browser.cjs').register({scenario});
   await require('./study-shell-browser.cjs').register({scenario});
   await require('./study-integration-browser.cjs').register({scenario});
+  await require('./quiz-choice-browser.cjs').register({scenario});
+  await require('./course-refinements-browser.cjs').register({scenario});
   await require('./release-features-browser.cjs').register({scenario});
   await require('./performance-browser.cjs').register({scenario});
   await scenario('a1-shell-and-real-course-actions', async ({page, go}) => {
@@ -273,10 +275,10 @@ async function main() {
     await check('#lecture-study-modal', 'reader-and-slide-quiz');
     await page.locator('#study-tab-btn-quiz').click();
     await check('#lecture-study-modal', 'quiz-unanswered');
-    const answers = await page.evaluate(() => window.LECTURE_EXPLANATIONS['database-systems'][2].fullQuiz.slice(0, 2).map(q => ({id: q.id, correct: q.correct, count: q.options.length})));
-    await page.locator(`.full-quiz-opt-btn[data-qid="${answers[0].id}"][data-opt-idx="${answers[0].correct}"]`).click();
+    const answers = await page.evaluate(() => window.LECTURE_EXPLANATIONS['database-systems'][2].fullQuiz.slice(0, 2).map(q => ({id: q.id, correctText: q.options[q.correct], wrongText: q.options[(q.correct + 1) % q.options.length]})));
+    await page.locator(`.full-quiz-opt-btn[data-qid="${answers[0].id}"]`).filter({hasText: answers[0].correctText}).click();
     await question(page, answers[1].id);
-    await page.locator(`.full-quiz-opt-btn[data-qid="${answers[1].id}"][data-opt-idx="${(answers[1].correct + 1) % answers[1].count}"]`).click();
+    await page.locator(`.full-quiz-opt-btn[data-qid="${answers[1].id}"]`).filter({hasText: answers[1].wrongText}).click();
     await check('#lecture-study-modal', 'quiz-correct-and-wrong');
     await page.keyboard.press('Escape');
     await page.locator('#share-btn').click(); await page.locator('#copy-link-fallback').waitFor();

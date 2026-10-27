@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+const path = require('node:path');
 async function settled(page) {
   await page.addInitScript(() => {
     localStorage.setItem('sem2_first_visit_configured', 'true');
@@ -23,6 +24,129 @@ exports.register = async ({scenario: runScenario}) => {
     };
     await fn({...context, go: toolsGo});
   }, {reducedMotion: 'reduce', ...options});
+  await scenario('power-ui-setup-has-clear-lecture-controls-and-visible-start', async ({page, go}) => {
+    await settled(page); await go('subject.html?id=data-structure');
+    await page.locator('[data-open-power-tool="midterm"]').click();
+    await page.locator('#start-midterm-btn:enabled').waitFor();
+    await page.screenshot({path: path.resolve(__dirname, '../test-results/a1/power-ui-setup-current.png')});
+    const lectures = await page.locator('[data-toggle-scope-lec]').evaluateAll(els => els.map(el => ({height: el.getBoundingClientRect().height, border: getComputedStyle(el).borderTopStyle, width: getComputedStyle(el).borderTopWidth})));
+    assert(lectures.every(control => control.height >= 44 && control.border !== 'none' && parseFloat(control.width) >= 1), 'lecture choices have a visible boundary and a finger-sized target');
+    const start = await page.locator('#start-midterm-btn').boundingBox();
+    assert(start && start.height >= 44 && start.y + start.height <= 800, 'Start is visible on opening the mobile setup');
+    const colors = await page.locator('#start-midterm-btn').evaluate(el => [getComputedStyle(el).backgroundColor, getComputedStyle(el.parentElement).backgroundColor]);
+    assert.notEqual(colors[0], colors[1], 'Start stands out from its surrounding surface');
+    assert.deepEqual(await page.evaluate(require('./control-contrast.cjs').auditActionContrast, '#power-panel-midterm'), []);
+    await page.locator('[data-toggle-scope-lec="1"]').focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('[data-toggle-scope-lec="1"]').getAttribute('aria-pressed'), 'false');
+    assert(await page.locator('[data-toggle-scope-lec="1"]').evaluate(el => document.activeElement === el), 'lecture selection preserves keyboard focus');
+  }, {viewport: {width: 360, height: 800}});
+  await scenario('power-ui-exam-navigation-has-visible-active-flag-and-result-states', async ({page, go}) => {
+    await openExam(page, go);
+    const option = page.locator('[data-midterm-opt]').first();
+    const choiceLabel = option.locator('.power-tool-badge');
+    const labelBox = await choiceLabel.boundingBox(), answerBox = await option.locator('span').first().boundingBox();
+    assert(labelBox.width >= 24 && labelBox.x + labelBox.width <= answerBox.x, 'choice letters have a distinct marker before the answer text');
+    assert.equal(await page.locator('#midterm-active-question').getByText(/^1 \/ \d+$/, {exact:true}).evaluate(el => getComputedStyle(el).direction), 'ltr', 'question progress reads current / total in the RTL interface');
+    await page.screenshot({path: path.resolve(__dirname, '../test-results/a1/power-ui-exam-current.png')});
+    const pills = await page.locator('[data-midterm-jump]').evaluateAll(els => els.map(el => ({height: el.getBoundingClientRect().height, width: el.getBoundingClientRect().width, border: parseFloat(getComputedStyle(el).borderTopWidth)})));
+    assert(pills.every(pill => pill.height >= 44 && pill.width >= 44 && pill.border >= 1), 'every question number is a visibly styled touch target');
+    assert.equal(await page.locator('[data-midterm-jump="0"]').getAttribute('aria-current'), 'step');
+    await page.locator('#midterm-flag-btn').click();
+    await page.locator('[data-midterm-jump="1"]').click();
+    const flagged = page.locator('[data-midterm-jump="0"]');
+    assert((await flagged.getAttribute('aria-label')).includes('للمراجعة'));
+    await page.locator('#midterm-submit-btn').click(); await page.locator('#midterm-confirm-submit').click();
+    assert.equal(await page.locator('.midterm-q-pill.is-wrong-pill').count(), 10);
+    assert.deepEqual(await page.evaluate(require('./control-contrast.cjs').auditActionContrast, '#power-panel-midterm'), []);
+  }, {viewport: {width: 360, height: 800}});
+  await scenario('power-ui-course-exam-entry-is-distinct-from-focus-timer', async ({page, go}) => {
+    await settled(page); await go('subject.html?id=database-systems');
+    const exam = page.locator('.course-exam-entry');
+    assert.equal(await exam.count(), 1, 'the course has a dedicated practice-exam entry');
+    assert((await page.locator('.course-power-bar').boundingBox()).height <= 160, 'course tools stay compact enough to leave room for lecture sources');
+    assert((await exam.innerText()).includes('امتحان تدريبي'));
+    assert.equal(await exam.locator('[data-open-power-tool="timer"]').count(), 0);
+    await exam.locator('[data-open-power-tool="midterm"]').click();
+    assert.equal(await page.locator('#power-modal-title').innerText(), 'امتحان الميدتيرم التدريبي');
+    assert.equal(await page.locator('.power-modal-tabs').isVisible(), false, 'exam setup has no unrelated timer or notification tabs');
+    assert.equal(await page.locator('#power-panel-midterm').getAttribute('role'), 'region');
+    assert.equal(await page.locator('#power-panel-midterm').getAttribute('aria-labelledby'), 'power-modal-title');
+    await page.locator('#power-modal-close').click();
+    await page.locator('#portal-timer-nav-btn').click();
+    assert.equal(await page.locator('#power-modal-title').innerText(), 'مؤقت المذاكرة');
+    assert.equal(await page.locator('.power-modal-tabs').isVisible(), false);
+    await page.locator('#study-timer-toggle-btn').waitFor();
+  }, {viewport: {width: 390, height: 844}});
+  await scenario('power-new-attempt-varies-options-and-keeps-correct-text-score-after-reload', async ({page, go}) => {
+    const answers = {
+      'What is the primary goal of Technical Report Writing compared to creative writing?': 'To convey complex technical information clearly, concisely, and accurately to support decision-making',
+      'Which type of Abstract includes the actual key findings, numerical results, and main conclusions of the report?': 'Informative Abstract',
+      'According to standard technical writing conventions, where should captions be placed for Tables and Figures?': 'Table captions go ABOVE the table; Figure captions go BELOW the figure',
+      'How are in-text citations formatted in the IEEE referencing style commonly used in Computer Science and Engineering?': 'Bracketed numbers like [1], [2] numbered in the order they first appear in the text'
+    };
+    await settled(page); await page.addInitScript(() => { Math.random = () => .125; });
+    await go('subject.html?id=report-writing');
+    await page.locator('[data-open-power-tool="midterm"]').click();
+    await page.locator('#start-midterm-btn').click();
+    const layouts = [];
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const layout = {};
+      for (let index = 0; index < 4; index++) {
+        await page.locator(`[data-midterm-jump="${index}"]`).click();
+        const prompt = await page.locator('.midterm-q-prompt').innerText();
+        assert(answers[prompt], 'every displayed report question retains its reviewed answer');
+        layout[prompt] = await page.locator('[data-midterm-opt] > span:first-child').allTextContents();
+        await page.locator('[data-midterm-opt]').filter({hasText: answers[prompt]}).click();
+      }
+      layouts.push(layout);
+      if (attempt === 0) {
+        const prompt = await page.locator('.midterm-q-prompt').innerText();
+        await reloadTools(page); await page.locator('[data-open-power-tool="midterm"]').click();
+        assert.deepEqual(await page.locator('[data-midterm-opt] > span:first-child').allTextContents(), layout[prompt], 'saved attempt keeps the same option order');
+        assert.equal(await page.locator('[data-midterm-opt][aria-pressed="true"]').count(), 1);
+      }
+      await page.locator('#midterm-submit-btn').click();
+      assert((await page.locator('#midterm-result-banner').innerText()).includes('4 من 4 (100%)'), 'correct answer text yields full score after remapping');
+      if (attempt === 0) {
+        await page.locator('#midterm-new-exam-btn').click();
+        await page.evaluate(() => { Math.random = () => .875; });
+        await page.locator('#start-midterm-btn').click();
+      }
+    }
+    const goal = 'What is the primary goal of Technical Report Writing compared to creative writing?';
+    assert.notDeepEqual(layouts[0][goal], layouts[1][goal], 'new attempts can change answer position when randomness changes');
+  });
+  for (const width of [360, 1440]) for (const theme of ['light', 'dark', 'reading']) await scenario(`power-ui-readable-${width}-${theme}`, async ({page, go}) => {
+    const audit = require('./control-contrast.cjs').auditActionContrast;
+    await settled(page); await go('subject.html?id=data-structure');
+    if (await page.locator(`[data-theme-btn="${theme}"]`).isVisible()) await page.locator(`[data-theme-btn="${theme}"]`).click();
+    else for (let step = 0; step < 3 && await page.locator('html').getAttribute('data-theme') !== theme; step++) await page.locator('#cycle-theme-btn').click();
+    assert.equal(await page.locator('html').getAttribute('data-theme'), theme);
+    assert.deepEqual(await page.evaluate(audit, '.course-power-bar'), []);
+    await page.locator('[data-open-power-tool="midterm"]').click();
+    await page.locator('#start-midterm-btn:enabled').waitFor();
+    const start = await page.locator('#start-midterm-btn').boundingBox();
+    assert(start && start.y >= 0 && start.y + start.height <= 800, 'setup opens with its start action visible');
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
+    await page.locator('#midterm-count-select').selectOption('5');
+    await page.locator('#midterm-timer-select').selectOption('10');
+    assert((await page.locator('#midterm-setup-summary').innerText()).includes('5 سؤال · 10 دقيقة'));
+    assert(await page.locator('#midterm-timer-select').evaluate(el => document.activeElement === el));
+    await page.screenshot({path: path.resolve(__dirname, `../test-results/a1/power-ui-setup-${width}-${theme}.png`)});
+    await page.locator('#start-midterm-btn').hover();
+    assert.deepEqual(await page.evaluate(audit, '#power-panel-midterm'), [], 'setup labels remain readable under real hover');
+    await page.locator('#start-midterm-btn').click();
+    await page.locator('[data-midterm-opt="0"]').click();
+    await page.locator('#midterm-flag-btn').click();
+    await page.locator('[data-midterm-jump="1"]').click();
+    assert.deepEqual(await page.evaluate(audit, '#power-panel-midterm'), [], 'active, answered and flagged controls remain readable');
+    await page.screenshot({path: path.resolve(__dirname, `../test-results/a1/power-ui-exam-${width}-${theme}.png`)});
+    await page.locator('#midterm-submit-btn').click(); await page.locator('#midterm-confirm-submit').click();
+    await page.locator('#midterm-new-exam-btn').hover();
+    assert.deepEqual(await page.evaluate(audit, '#power-panel-midterm'), [], 'result navigation and the hovered new-exam action remain readable');
+    await page.screenshot({path: path.resolve(__dirname, `../test-results/a1/power-ui-result-${width}-${theme}.png`)});
+  }, {viewport: {width, height: 800}});
   await scenario('power-shared-focus-pause-reset-and-new-session-supersede-stale-tabs', async ({page, context, go}) => {
     await settled(page); await go('index.html');
     const now = Date.now(); await context.clock.install({time: now});
@@ -217,17 +341,24 @@ exports.register = async ({scenario: runScenario}) => {
     assert.equal(Number(await page.locator('#portal-notif-bell-btn [data-notif-unread-badge]').innerText()), initial - visible);
     await other.waitForFunction(value => Number(document.querySelector('#portal-notif-bell-btn [data-notif-unread-badge]').textContent) === value, initial - visible);
   });
-  await scenario('power-mobile-timer-start-fits-and-tabs-use-arrow-keys', async ({page, go}) => {
+  await scenario('power-mobile-focused-timer-fits-and-course-tabs-use-arrow-keys', async ({page, go}) => {
     await settled(page); await go('subject.html?id=database-systems');
     await page.locator('#portal-timer-nav-btn').click();
     const start = await page.locator('#study-timer-toggle-btn').boundingBox();
     assert(start && start.y + start.height < 780, 'start timer is visible at 360 × 800 without scrolling');
     const header = await page.locator('.power-modal-header').boundingBox();
     assert(header.height < 200, 'mobile modal chrome stays compact');
-    await page.locator('[data-power-tab="timer"]').focus();
+    assert.equal(await page.locator('.power-modal-tabs').isVisible(), false);
+    await page.locator('#power-modal-close').click();
+    await page.locator('[data-open-power-tool="interactive"]').click();
+    await page.locator('[data-power-tab="interactive"]').focus();
     await page.keyboard.press('End');
-    assert.equal(await page.locator('[data-power-tab="notifications"]').getAttribute('aria-selected'), 'true');
-    assert.equal(await page.locator('[role="tab"][tabindex="0"]').count(), 1);
+    assert.equal(await page.locator('[data-power-tab="midterm"]').getAttribute('aria-selected'), 'true');
+    assert.equal(await page.locator('[role="tab"][tabindex="0"]:visible').count(), 1);
+    await page.keyboard.press('Home');
+    assert.equal(await page.locator('[data-power-tab="interactive"]').getAttribute('aria-selected'), 'true');
+    assert.equal(await page.locator('[data-power-tab="timer"]').isVisible(), false);
+    assert.equal(await page.locator('[data-power-tab="notifications"]').isVisible(), false);
   }, {viewport: {width: 360, height: 800}});
   await scenario('power-bank-failure-is-visible-and-retryable', async ({page, go}) => {
     await settled(page);

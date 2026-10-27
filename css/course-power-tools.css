@@ -494,60 +494,43 @@ button.power-modal-tab[aria-selected="true"] {
 
 .midterm-config-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
-.midterm-config-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.midterm-setup-intro p { margin: 5px 0 0; font-size: 12px; line-height: 1.7; color: var(--muted); }
+.midterm-scope-field { min-width: 0; padding: 0; margin: 0; border: 0; }
+.midterm-scope-field legend { width: 100%; margin-bottom: 10px; font-size: 12px; font-weight: 650; color: var(--ink); }
+.midterm-scope-field legend span { color: var(--muted); font-weight: 400; }
+.midterm-config-group { display: flex; flex-direction: column; min-width: 0; gap: 6px; }
+.midterm-config-group label { font-size: 12px; font-weight: 650; color: var(--ink); }
+#course-power-modal .midterm-select {
+  width: 100%; min-width: 0; min-height: 44px; padding: 8px 10px;
+  border-radius: 8px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font-size: 13px;
 }
-
-.midterm-config-field label {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--ink);
+.midterm-scope-chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+#course-power-modal button.midterm-scope-chip {
+  display: flex; align-items: center; gap: 8px; min-width: 0; min-height: 54px; padding: 10px 12px;
+  border: 1px solid var(--line) !important; border-radius: 9px; background: var(--paper) !important;
+  color: var(--ink) !important; cursor: pointer; text-align: start;
 }
-
-.midterm-config-field select {
-  padding: 8px 12px;
-  border-radius: 8px;
-  background-color: var(--paper);
-  border: 1px solid var(--line);
-  color: var(--ink);
-  font-size: 12px;
-  font-weight: 500;
+#course-power-modal button.midterm-scope-chip[aria-pressed="true"] { background: var(--soft) !important; border-color: var(--accent) !important; }
+.midterm-scope-mark { flex: 0 0 20px; font-size: 16px; font-weight: 750; color: var(--accent); text-align: center; }
+.midterm-scope-copy { display: grid; gap: 3px; min-width: 0; }
+.midterm-scope-copy > span { font-size: 12px; line-height: 1.5; font-weight: 600; overflow-wrap: anywhere; }
+.midterm-scope-copy small { color: var(--muted); font-size: 11px; }
+.midterm-setup-start { display: grid; gap: 8px; text-align: center; }
+.midterm-setup-start p { margin: 0; color: var(--ink); font-size: 12px; font-weight: 600; }
+.midterm-setup-start small { color: var(--muted); font-size: 11px; line-height: 1.6; }
+#course-power-modal #start-midterm-btn {
+  display: flex; align-items: center; justify-content: center; min-height: 48px; width: 100%; padding: 12px 18px;
+  border: 1px solid var(--accent) !important; border-radius: 9px; background: var(--accent) !important;
+  color: var(--paper) !important; font-size: 14px; font-weight: 700; cursor: pointer;
 }
-
-.midterm-lecture-checks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-}
-
-button.midterm-lec-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  background-color: var(--paper) !important;
-  color: var(--ink) !important;
-  border: 1px solid var(--line) !important;
-}
-
-button.midterm-lec-chip.is-selected {
-  background-color: var(--accent) !important;
-  color: var(--paper) !important;
-  border-color: var(--accent) !important;
-}
+#course-power-modal #start-midterm-btn:disabled { opacity: .55; cursor: not-allowed; }
 
 /* شريط الامتحان والعداد الزمني */
-.midterm-hud {
+.midterm-hud-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -574,22 +557,19 @@ button.midterm-lec-chip.is-selected {
   border: 1px solid var(--line);
 }
 
-.midterm-timer-box.is-urgent {
-  background-color: var(--negative);
-  color: var(--paper);
-}
+.midterm-timer-box.is-warning { background: var(--soft); color: var(--negative); border-color: var(--negative); }
 
-.midterm-q-nav {
+.midterm-q-pills {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 6px;
   margin-bottom: 14px;
 }
 
-button.midterm-q-dot {
-  min-width: 34px;
-  height: 32px;
-  padding: 0 7px;
+button.midterm-q-pill {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 7px;
   border-radius: 7px;
   font-size: 11px;
   font-weight: 600;
@@ -599,17 +579,25 @@ button.midterm-q-dot {
   border: 1px solid var(--line) !important;
 }
 
-button.midterm-q-dot.is-current {
+button.midterm-q-pill.is-current {
   background-color: var(--accent) !important;
   color: var(--paper) !important;
   border-color: var(--accent) !important;
 }
 
-button.midterm-q-dot.is-answered:not(.is-current) {
+button.midterm-q-pill.is-answered:not(.is-current) {
   background-color: var(--soft) !important;
   color: var(--accent) !important;
   border-color: var(--accent) !important;
 }
+
+button.midterm-q-pill.is-flagged { background: var(--soft) !important; color: var(--ink) !important; border-color: var(--warning) !important; }
+button.midterm-q-pill.is-correct-pill { background: var(--soft) !important; color: var(--ink) !important; border-color: var(--positive) !important; }
+button.midterm-q-pill.is-wrong-pill { background: var(--soft) !important; color: var(--ink) !important; border-color: var(--negative) !important; }
+button.midterm-q-pill.is-correct-pill::after { content: ' ✓'; color: var(--positive); }
+button.midterm-q-pill.is-wrong-pill::after { content: ' ×'; color: var(--negative); }
+button.midterm-q-pill[aria-current="step"]:not(.is-current) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.midterm-hud-bar .power-action-btn { min-height: 44px; }
 
 .midterm-question-card {
   padding: 18px;
@@ -656,6 +644,13 @@ button.midterm-opt-btn {
 button.midterm-opt-btn:hover:not(:disabled) {
   border-color: var(--accent) !important;
   background-color: var(--soft) !important;
+}
+
+.midterm-opt-btn > span:first-child { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.midterm-opt-btn .power-tool-badge {
+  order: -1; display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 26px; width: 26px; height: 26px; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--soft); color: var(--ink); font-weight: 700;
 }
 
 button.midterm-opt-btn.is-selected {
@@ -716,6 +711,12 @@ button.power-action-btn.is-active-preset {
   border-color: var(--accent) !important;
 }
 
+button.power-action-btn:is(.is-submit, .is-active-preset):hover:not(:disabled) {
+  background-color: var(--accent) !important;
+  color: var(--paper) !important;
+  border-color: var(--accent) !important;
+}
+
 .power-storage-warning {
   margin: 0;
   padding: 6px 8px;
@@ -742,4 +743,29 @@ button.power-action-btn.is-active-preset {
   .study-timer-presets { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .study-timer-controls { gap: 6px; }
   .study-timer-controls button { min-height: 44px; }
+}
+
+@media (max-width: 540px) {
+  #power-panel-midterm > .midterm-config-panel { padding: 12px; gap: 12px; }
+  .midterm-scope-chips { gap: 6px; }
+  #course-power-modal button.midterm-scope-chip { padding: 8px; gap: 5px; }
+  .midterm-scope-mark { flex-basis: 15px; }
+  .midterm-scope-copy > span { font-size: 11px; }
+  .midterm-config-grid { gap: 8px; }
+}
+
+/* Compact course actions; the focus timer remains independently in the header. */
+body.studio .course-power-bar { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); padding: 0; border: 1px solid var(--line); background: var(--paper); gap: 0; }
+.course-study-entry, .course-exam-entry { display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap; gap: 12px; min-width: 0; padding: 12px 14px; }
+.course-study-entry { border-inline-end: 1px solid var(--line); }
+.course-exam-entry { background: var(--soft); }
+.course-exam-entry:only-child { grid-column: 1 / -1; }
+.course-study-entry > div, .course-exam-entry > div { min-width: 0; flex: 1; }
+.course-study-entry h3, .course-exam-entry h3 { margin: 0; font-size: 12px; line-height: 1.6; font-weight: 650; color: var(--ink); }
+.course-exam-entry p { margin: 3px 0 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.course-study-entry .power-tool-btn, .course-exam-entry .power-tool-btn { min-height: 44px; flex-shrink: 0; font-size: 11px; padding-inline: 12px; }
+@media (max-width: 700px) {
+  body.studio .course-power-bar { grid-template-columns: 1fr; }
+  .course-study-entry, .course-exam-entry { padding: 6px 12px; gap: 10px; }
+  .course-study-entry { border-inline-end: 0; border-bottom: 1px solid var(--line); }
 }

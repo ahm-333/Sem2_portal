@@ -176,7 +176,8 @@ async function register({scenario}) {
     await page.locator('#midterm-confirm-submit').click();
     await page.locator('#midterm-result-banner').waitFor({state:'visible'});
 
-    await page.locator('.power-modal-tabs [data-power-tab="timer"]').click();
+    await page.locator('#power-modal-close').click();
+    await page.locator('#portal-timer-nav-btn').click();
     await page.locator('[data-timer-preset="15"]').click();
     assert.equal(await page.locator('#study-timer-big-digits').innerText(), '15:00');
     await page.locator('#study-timer-toggle-btn').click();
@@ -184,7 +185,8 @@ async function register({scenario}) {
     await page.locator('#study-timer-toggle-btn').click();
     assert.match(await page.locator('#study-timer-toggle-btn').innerText(), /ابدأ|استئناف/);
 
-    await page.locator('.power-modal-tabs [data-power-tab="notifications"]').click();
+    await page.locator('#power-modal-close').click();
+    await page.locator('#portal-notif-bell-btn').click();
     assert(await page.locator('#notifications-feed-list .smart-card').count() >= 5);
     await page.locator('#mark-all-notifs-read').click();
     assert.equal(await page.locator('[data-notif-unread-badge]').first().innerText(), '0');

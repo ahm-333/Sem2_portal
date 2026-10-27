@@ -44,7 +44,7 @@ test('standalone teaching bodies remain unchanged across platform line endings',
     const html=fs.readFileSync(path.join(root,file),'utf8');
     let body=html.slice(html.indexOf('<body')).replace(/\r\n/g,'\n').replace('../../js/vendor/mermaid/mermaid.min.js','https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js').replace('../../css/vendor/fontawesome/css/all.min.css','https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
     // The authorized educational shell adds runtime integrations; all original teaching bytes remain protected.
-    for(const script of ['shared/storage','shared/study-state','study-modules','study-session','theme','study-shell']){
+    for(const script of ['shared/storage','shared/study-state','study-modules','study-session','theme','study-shell','shared/quiz-choices']){
       body=body.replace('  <script src="../../js/'+script+'.js"></script>\n','');
     }
     for(const change of baseline.navigationFixes?.[file] || [])body=body.replaceAll(change.after,change.before);
