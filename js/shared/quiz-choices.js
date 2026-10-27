@@ -111,7 +111,7 @@
     }
   }
   function install() {
-    const roots = [...document.querySelectorAll('#quiz-questions-container,#quizQuestionsContainer,#quizContainer,#lesson-content')];
+    const roots = [...document.querySelectorAll('#quiz-questions-container,#quizQuestionsContainer,#quizContainer,#lesson-content,#mixed-questions')];
     if (!roots.length) return;
     roots.forEach(root => {
       shuffleGroups(root);

@@ -7,6 +7,25 @@ async function settled(page) {
   });
 }
 exports.register = async ({scenario}) => {
+  await scenario('choices-os-final-review-varies-options-with-correct-feedback-and-reset', async ({page, go}) => {
+    await settled(page); await go('education-preview/os/index.html?unit=os-01');
+    const userView = page.locator('#mixed-questions [data-question="view-response"]');
+    const kernel = page.locator('#mixed-questions [data-question="historical-kernel"]');
+    await userView.waitFor();
+    const before = [await userView.locator('fieldset label').allTextContents(), await kernel.locator('fieldset label').allTextContents()];
+    assert.notDeepEqual([before[0].findIndex(text => text.includes('User view: convenience and performance')), before[1].findIndex(text => text.includes('To manage the system’s CPU'))], [0,1], 'final-review questions vary their authored correct-answer positions too');
+    await userView.getByLabel('User view: convenience and performance', {exact:true}).check();
+    await userView.getByRole('button', {name:'راجع الإجابة'}).click();
+    assert.match(await userView.locator('.feedback').innerText(), /إجابة صحيحة/);
+    assert.match(await userView.locator('.feedback').innerText(), /User view/);
+    assert.deepEqual(await userView.locator('fieldset label').allTextContents(), before[0], 'answering keeps final-review choices stable');
+    await page.getByRole('button', {name:'ابدأ المحاولة من جديد'}).click();
+    assert.equal(await userView.locator('input:checked').count(), 0);
+    assert.notDeepEqual([await userView.locator('fieldset label').allTextContents(), await kernel.locator('fieldset label').allTextContents()], before, 'final-review reset starts a fresh presentation');
+    await userView.getByLabel('User view: convenience and performance', {exact:true}).check();
+    await userView.getByRole('button', {name:'راجع الإجابة'}).click();
+    assert.match(await userView.locator('.feedback').innerText(), /إجابة صحيحة/);
+  });
   await scenario('choices-reader-slide-check-keeps-the-authored-answer-text-correct', async ({page, go}) => {
     await settled(page); await go('subject.html?id=database-systems');
     await page.locator('[data-open-study-lecture="2"]').first().click();
