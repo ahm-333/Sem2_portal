@@ -240,7 +240,7 @@
                   ${score / questions.length >= 0.85 ? "عاش جداً يا هندسة! إنت كده هضمت المحاضرة بالكامل ومستعد لأي سؤال ميدتيرم أو فاينل 🚀" : "مستوى كويس جداً! راجع الأسئلة اللي غلطت فيها وخلي بالك من التريكات."}
                 </p>
                 <div id="full-quiz-actions" class="pt-2 flex flex-wrap items-center justify-center gap-3">
-                  <button id="full-quiz-review-wrong-btn" type="button" class="glass-panel px-4 py-2 rounded-xl border border-rose-500/30 text-rose-700 dark:text-rose-300 font-bold text-xs sm:text-sm hover:bg-rose-500/10 transition-all ${hasWrong ? '' : 'hidden'}">
+                  <button id="full-quiz-review-wrong-btn" type="button" class="glass-panel px-4 py-2 rounded-xl border border-rose-500/30 text-rose-700 dark:text-rose-300 font-bold text-xs sm:text-sm transition-all ${hasWrong ? '' : 'hidden'}">
                     مراجعة الأسئلة الخاطئة (${wrongQuestions.length})
                   </button>
                   <div id="full-quiz-all-correct-banner" class="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 font-bold text-xs sm:text-sm ${hasWrong ? 'hidden' : ''}">
