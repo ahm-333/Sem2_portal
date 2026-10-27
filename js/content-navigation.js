@@ -1,5 +1,6 @@
 /* Content row revelation and safe deep-link navigation for Study Hub. */
 (function () {
+  let focusGeneration = 0;
   function removeNotices() {
     document.querySelectorAll('.portal-nav-notice').forEach(el => el.remove());
   }
@@ -133,6 +134,15 @@
   }
 
   function scrollToAndFocus(row, focus) {
+    const generation = ++focusGeneration;
+    const navigation = window.location.href;
+    const previousFocus = document.activeElement;
+    // The ready event can fire before the course layout has moved its source rows.
+    // Focus only after those synchronous moves, while this navigation is still current.
+    window.requestAnimationFrame(() => {
+      if (generation !== focusGeneration || !row.isConnected || navigation !== window.location.href) return;
+      if ([...document.querySelectorAll('[aria-modal="true"]')].some(dialog => dialog.getClientRects().length)) return;
+      if (document.activeElement !== previousFocus && document.activeElement !== document.body) return;
     const header = document.querySelector('header');
     const navHeight = header ? header.getBoundingClientRect().height : 70;
     const rect = row.getBoundingClientRect();
@@ -149,6 +159,7 @@
         row.classList.remove('ring-2', 'ring-indigo-500', 'ring-offset-2');
       }, 2500);
     }
+    });
   }
 
   function init() {

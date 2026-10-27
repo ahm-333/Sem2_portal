@@ -19,7 +19,7 @@ async function scenario(name, fn, options = {}) {
   page.setDefaultTimeout(6000);
   page.on('pageerror', error => errors.push(error.message));
   try {
-    await fn({page, context, go: route => page.goto(base + route), errors});
+    await fn({page, context, go: (route, options) => page.goto(base + route, options), errors});
     assert.deepEqual(errors, [], 'no page errors');
     results.push({name, passed: true});
     console.log('PASS', name);
@@ -55,6 +55,10 @@ async function main() {
     ...(fs.existsSync('C:/Program Files/Google/Chrome/Application/chrome.exe') ? {executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe'} : {})});
   await require('./studio-scroll-intro.cjs').register({scenario});
   await require('./studio-features.cjs').register({scenario});
+  await require('./power-tools-browser.cjs').register({scenario});
+  await require('./study-shell-browser.cjs').register({scenario});
+  await require('./study-integration-browser.cjs').register({scenario});
+  await require('./release-features-browser.cjs').register({scenario});
   await require('./performance-browser.cjs').register({scenario});
   await scenario('a1-shell-and-real-course-actions', async ({page, go}) => {
     await settled(page); await go('index.html');

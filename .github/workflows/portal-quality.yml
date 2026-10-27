@@ -9,7 +9,7 @@ permissions:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -19,4 +19,15 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npx --no-install playwright install --with-deps chromium
       - run: npm run verify
-      - run: git diff --exit-code -- css js/vendor js/study-catalog.js
+      - run: git diff --exit-code -- css js/vendor js/study-catalog.js js/course-question-bank.js
+      - name: Save browser verification evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: portal-quality-evidence
+          path: |
+            test-results/**/*.json
+            test-results/**/*.png
+            test-results/**/*.log
+          if-no-files-found: ignore
+          retention-days: 7

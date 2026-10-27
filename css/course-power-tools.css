@@ -222,11 +222,18 @@ a.power-action-link {
   transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
 }
 
-button.power-tool-btn:hover,
+button.power-tool-btn:hover:not(:disabled),
 a.power-action-link:hover {
   background-color: var(--soft) !important;
   border-color: var(--accent) !important;
   transform: translateY(-1px);
+}
+
+button.power-tool-btn.is-upcoming-tool:disabled {
+  cursor: default;
+  color: var(--muted) !important;
+  background-color: var(--soft) !important;
+  border-style: dashed !important;
 }
 
 button.power-tool-btn svg,
@@ -372,7 +379,8 @@ button.power-modal-tab {
   background-color: var(--paper) !important;
   color: var(--ink) !important;
   border: 1px solid var(--line) !important;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  font-variant-numeric: tabular-nums;
 }
 
 button.power-modal-tab svg {
@@ -706,4 +714,32 @@ button.power-action-btn.is-active-preset {
   background-color: var(--accent) !important;
   color: var(--paper) !important;
   border-color: var(--accent) !important;
+}
+
+.power-storage-warning {
+  margin: 0;
+  padding: 6px 8px;
+  font-size: 12px;
+  color: var(--ink);
+  background: var(--soft);
+  border: 1px solid var(--line);
+}
+
+@media (max-width: 540px) {
+  .course-power-modal { padding: 8px; }
+  .power-modal-shell { max-height: calc(100dvh - 16px); }
+  .power-modal-header { padding: 10px; gap: 8px; flex-shrink: 0; }
+  #course-power-modal .power-modal-top-row { display: flex; flex-direction: row; align-items: center; gap: 8px; min-height: 0; padding: 0; margin: 0; }
+  #course-power-modal .power-modal-title-wrap { min-width: 0; flex: 1; gap: 5px; }
+  #course-power-modal .power-modal-title { font-size: 12px; line-height: 1.4; }
+  .power-modal-course-code { display: none; }
+  .power-modal-close-btn { flex-shrink: 0; min-height: 40px; }
+  #course-power-modal .power-modal-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 0; margin: 0; }
+  button.power-modal-tab { padding: 7px 6px; min-height: 40px; gap: 4px; font-size: 10px; }
+  button.power-modal-tab svg { width: 12px; height: 12px; }
+  .power-modal-body { min-height: 0; padding: 10px; }
+  .study-timer-box { padding: 16px 10px; gap: 12px; }
+  .study-timer-presets { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .study-timer-controls { gap: 6px; }
+  .study-timer-controls button { min-height: 44px; }
 }

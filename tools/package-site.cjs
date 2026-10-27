@@ -17,7 +17,7 @@ function walk(directory) {
 }
 function runtime(file) {
   return /^(?:css|js)\//.test(file) && /(?:\.(?:js|css|woff2?|ttf|svg)|LICENSE|OFL\.txt|GSAP-NOTICE\.txt)$/.test(file)
-    || /^materials\//.test(file) && /\.(?:pdf|pptx|png|jpe?g|webp|svg)$/i.test(file)
+    || /^materials\//.test(file) && /\.(?:pdf|pptx|cpp|png|jpe?g|webp|svg)$/i.test(file)
     || /^study\//.test(file) && /\.(?:html|css|js|png|jpe?g|webp|svg|woff2?)$/i.test(file)
     || /^education-preview\/os\/(?:index\.html|style\.css|(?:lesson|lesson-data|course-catalog|lesson-loader|visuals)\.js|units\/os-\d\d\.js|sources\/(?:ch\d\/)?slide-\d\d\.png)$/.test(file);
 }

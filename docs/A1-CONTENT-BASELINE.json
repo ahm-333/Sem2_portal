@@ -2753,5 +2753,24 @@
       "resources": []
     }
   ],
-  "coursesDataSha256": "daa0a0aee064af88084598556c3f8407a023f33b565401638cc31f918d96507e"
+  "coursesDataSha256": "daa0a0aee064af88084598556c3f8407a023f33b565401638cc31f918d96507e",
+  "approvedSourceFixes": {
+    "js/courses-data.js": [
+      {
+        "before": "        \"driveDownloadUrl\": \"https://drive.google.com/uc?export=download&id=179XgT0-xgDM2_qyBbxjaORAQmVh11uVx\",\n        \"sheetUrl\": \"https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0\",\n        \"codeUrl\": \"https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit\",\n        \"localFile\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"videoUrl\": \"https://drive.google.com/file/d/179XgT0-xgDM2_qyBbxjaORAQmVh11uVx/view\",",
+        "after": "        \"driveDownloadUrl\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"sheetUrl\": \"https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0\",\n        \"codeUrl\": \"https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit\",\n        \"localFile\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"videoUrl\": \"https://drive.google.com/file/d/179XgT0-xgDM2_qyBbxjaORAQmVh11uVx/view\",",
+        "reason": "F24: download the advertised C++ file instead of its MP4 recording"
+      },
+      {
+        "before": "        \"driveDownloadUrl\": \"https://drive.google.com/uc?export=download&id=1acZrDUOvoVtWJyj8zAuO83769jcEg9Kl\",\n        \"sheetUrl\": \"https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0\",\n        \"codeUrl\": \"https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit\",\n        \"localFile\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"videoUrl\": \"https://drive.google.com/file/d/1acZrDUOvoVtWJyj8zAuO83769jcEg9Kl/view\",",
+        "after": "        \"driveDownloadUrl\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"sheetUrl\": \"https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0\",\n        \"codeUrl\": \"https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit\",\n        \"localFile\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"videoUrl\": \"https://drive.google.com/file/d/1acZrDUOvoVtWJyj8zAuO83769jcEg9Kl/view\",",
+        "reason": "F24: download the advertised C++ file instead of its MP4 recording"
+      },
+      {
+        "before": "        \"driveDownloadUrl\": \"https://drive.google.com/uc?export=download&id=1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x\",\n        \"sheetUrl\": \"https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0\",\n        \"codeUrl\": \"https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit\",\n        \"localFile\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"videoUrl\": \"https://drive.google.com/file/d/1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x/view\",",
+        "after": "        \"driveDownloadUrl\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"sheetUrl\": \"https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0\",\n        \"codeUrl\": \"https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit\",\n        \"localFile\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"videoUrl\": \"https://drive.google.com/file/d/1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x/view\",",
+        "reason": "F24: download the advertised C++ file instead of its MP4 recording"
+      }
+    ]
+  }
 }

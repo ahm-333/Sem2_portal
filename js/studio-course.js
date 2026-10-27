@@ -48,10 +48,8 @@
     const materials = document.querySelector('.a1-materials'); materials.prepend(sourceHeading);
     document.querySelector('.a1-course-layout').classList.add('atlas-workspace');
     function updateCounts() {
-      const staff = window.StudentProfile.getCourseStaff(courseId);
-      const sections = window.StudentProfile.filterItemsForTa(course.sections || [],'my-ta',staff.ta);
-      const assignments = window.StudentProfile.filterItemsForTa(course.assignments || [],'my-ta',staff.ta,true);
-      const counts = {lectures:course.lectures?.length || 0,sections:sections.length,videos:course.videoExplanations?.length || 0,assignments:assignments.length,resources:(course.resources?.length || 0)+(course.practicalResources?.length || 0)+(course.explanationSite?.url ? 1:0)};
+      const count = selector => document.querySelectorAll(selector + ' [data-content-key]').length;
+      const counts = {lectures:count('#lectures-list'),sections:count('#sections-list'),videos:count('#video-explanations-list'),assignments:count('#assignments-list'),resources:count('#theory-resources-list')+count('#practical-resources-list')+(course.explanationSite?.url ? 1:0)};
       for (const [kind,count] of Object.entries(counts)) nav.querySelector(`[data-atlas-count="${kind}"]`).textContent = count + ' مصدر';
     }
     function drawConnections() {
@@ -95,9 +93,10 @@
     }
     updateCounts(); selected(); drawConnections();
     const resize = new window.ResizeObserver(drawConnections); resize.observe(map);
-    const rows = new window.MutationObserver(decorateRows); rows.observe(materials,{childList:true,subtree:true});
+    const rows = new window.MutationObserver(() => { decorateRows(); updateCounts(); }); rows.observe(materials,{childList:true,subtree:true});
     window.addEventListener('portal:family-changed',selected);
     window.addEventListener('studentProfileChanged',updateCounts);
+    window.addEventListener('portal:sources-changed',updateCounts);
     window.addEventListener('pagehide',() => {resize.disconnect();rows.disconnect();});
     window.addEventListener('pageshow',() => {resize.observe(map);rows.observe(materials,{childList:true,subtree:true});drawConnections();decorateRows();});
   });

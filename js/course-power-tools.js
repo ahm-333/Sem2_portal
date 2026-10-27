@@ -8,6 +8,15 @@
 
   const READ_NOTIFS_KEY = 'sem2_read_notifications_v1';
   const TIMER_SESSIONS_KEY = 'sem2_study_timer_sessions_v1';
+  const TIMER_ACTIVE_KEY = 'sem2_study_timer_active_v1';
+  const TIMER_COMPLETED_PREFIX = 'sem2_study_timer_completed_v1:';
+  const completedTimerIds = new Set();
+  const validTimerId = value => typeof value === 'string' && /^[\w.:-]{1,128}$/.test(value);
+
+  function readSaved(key) {
+    try { return JSON.parse((window.PortalStorage || window.localStorage).getItem(key)); }
+    catch { return null; }
+  }
 
   function escapeHtml(value) {
     return String(value ?? '')
@@ -45,28 +54,33 @@
   }
 
   function getCompletedTimerSessions() {
+    let legacyCount = 0;
+    const completed = new Set(completedTimerIds);
     try {
       const raw = window.PortalStorage && typeof window.PortalStorage.getItem === 'function'
         ? window.PortalStorage.getItem(TIMER_SESSIONS_KEY)
         : window.localStorage.getItem(TIMER_SESSIONS_KEY);
-      return Math.max(0, Number(raw) || 0);
-    } catch {
-      return 0;
-    }
+      legacyCount = Math.max(0, Number(raw) || 0);
+      for (let i = 0; i < window.localStorage.length; i++) {
+        const key = window.localStorage.key(i);
+        const id = key?.startsWith(TIMER_COMPLETED_PREFIX) && key.slice(TIMER_COMPLETED_PREFIX.length);
+        if (validTimerId(id) && window.localStorage.getItem(key) === '1') completed.add(id);
+      }
+    } catch { /* Current-page completion markers remain available when storage is blocked. */ }
+    return legacyCount + completed.size;
   }
 
-  function incrementCompletedTimerSessions() {
-    const next = getCompletedTimerSessions() + 1;
+  function incrementCompletedTimerSessions(sessionId) {
+    // One immutable key per focus session makes simultaneous tab completion idempotent.
     try {
       if (window.PortalStorage && typeof window.PortalStorage.setItem === 'function') {
-        window.PortalStorage.setItem(TIMER_SESSIONS_KEY, String(next));
+        if (window.PortalStorage.setItem(TIMER_COMPLETED_PREFIX + sessionId, '1') === false) throw new Error('unavailable');
       } else {
-        window.localStorage.setItem(TIMER_SESSIONS_KEY, String(next));
+        window.localStorage.setItem(TIMER_COMPLETED_PREFIX + sessionId, '1');
       }
-    } catch {
-      // Ignore storage errors
-    }
-    return next;
+      completedTimerIds.delete(sessionId);
+      return true;
+    } catch { completedTimerIds.add(sessionId); return false; }
   }
 
   function formatTime(sec) {
@@ -83,7 +97,8 @@
     if (!course) return;
 
     const powerData = window.COURSE_POWER_DATA?.[course.id];
-    const hasInteractiveHub = Boolean(isSubjectPage && powerData?.interactiveHub);
+    const hasUpcomingHub = Boolean(isSubjectPage && powerData?.interactiveHub?.status === 'coming-soon');
+    const hasInteractiveHub = Boolean(isSubjectPage && powerData?.interactiveHub && !hasUpcomingHub);
     const notifications = window.PORTAL_NOTIFICATIONS || [];
 
     // حالة مؤقت المذاكرة (Study Timer)
@@ -91,6 +106,8 @@
       presetMin: 25,
       totalSec: 25 * 60,
       remainingSec: 25 * 60,
+      deadline: null,
+      sessionId: null,
       running: false,
       intervalId: null
     };
@@ -143,6 +160,11 @@
           </div>
         </div>
         <div class="course-power-actions">
+          ${hasUpcomingHub ? `
+            <button type="button" class="power-tool-btn is-upcoming-tool" disabled title="${escapeHtml(powerData.interactiveHub.desc)}">
+              <span>الشرح التفاعلي — قريبًا</span>
+            </button>
+          ` : ''}
           ${hasInteractiveHub ? `
             <button type="button" class="power-tool-btn is-interactive-tool" data-open-power-tool="interactive">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
@@ -232,6 +254,84 @@
     let examCountSetting = '10';
     let examTimerSetting = '15';
     let activeExam = null;
+    const examKey = `sem2_active_exam_v1:${course.id}`;
+    let confirmSubmit = false;
+    let bankError = false;
+    let bankLoaded = false;
+
+    function visibleNotifications() {
+      return notifScope === 'course' && isSubjectPage ? notifications.filter(n => n.courseId === course.id) : notifications;
+    }
+
+    function refreshNotifications() {
+      updateNotifBadges();
+      if (activeTab === 'notifications') renderNotificationsPanel();
+    }
+
+    function saveState(key, value) {
+      try {
+        const saved = (window.PortalStorage || window.localStorage).setItem(key, JSON.stringify(value));
+        if (saved === false) throw new Error('unavailable');
+      } catch { showStorageWarning(); }
+    }
+
+    function showStorageWarning() {
+        let warning = document.getElementById('power-storage-warning');
+        if (!warning) {
+          warning = document.createElement('p'); warning.id = 'power-storage-warning';
+          warning.className = 'power-storage-warning'; warning.setAttribute('role', 'status');
+          modal.querySelector('.power-modal-header').append(warning);
+        }
+        warning.textContent = 'تعذّر الحفظ على هذا الجهاز. الحالة متاحة في الصفحة الحالية فقط وقد تضيع عند الانتقال أو إعادة التحميل.';
+    }
+
+    function persistExam() {
+      saveState(examKey, activeExam ? {...activeExam, flags: [...activeExam.flags], timerId: null} : null);
+    }
+
+    function persistStudyTimer() {
+      saveState(TIMER_ACTIVE_KEY, {...studyTimer, intervalId: null});
+    }
+
+    function validatedStudyTimer(saved) {
+      if (!saved || ![5, 15, 25, 45].includes(saved.presetMin) || saved.totalSec !== saved.presetMin * 60 || !Number.isInteger(saved.remainingSec) || saved.remainingSec < 0 || saved.remainingSec > saved.totalSec || typeof saved.running !== 'boolean' || (saved.sessionId && !validTimerId(saved.sessionId))) return null;
+      if (saved.running && (!Number.isFinite(saved.deadline) || saved.deadline <= 0 || saved.deadline > Date.now() + saved.totalSec * 1000 + 1000)) return null;
+      return {presetMin: saved.presetMin, totalSec: saved.totalSec, remainingSec: saved.remainingSec,
+        running: saved.running, deadline: saved.running ? saved.deadline : null,
+        sessionId: saved.sessionId || (saved.running ? `legacy:${saved.totalSec}:${saved.deadline}` : null)};
+    }
+
+    function timerIdentity(timer) {
+      return JSON.stringify([timer.sessionId, timer.presetMin, timer.totalSec, timer.running, timer.deadline, timer.running ? null : timer.remainingSec]);
+    }
+
+    function reconcileStudyTimer() {
+      const authoritative = validatedStudyTimer(readSaved(TIMER_ACTIVE_KEY)) ||
+        {presetMin: 25, totalSec: 1500, remainingSec: 1500, running: false, deadline: null, sessionId: null};
+      if (timerIdentity(authoritative) === timerIdentity(studyTimer)) return false;
+      if (studyTimer.intervalId) window.clearInterval(studyTimer.intervalId);
+      Object.assign(studyTimer, authoritative, {intervalId: null});
+      if (studyTimer.running) studyTimer.intervalId = window.setInterval(tickStudyTimer, 1000);
+      const focused = panelTimer.contains(document.activeElement) ? document.activeElement.id : '';
+      if (panelTimer.childElementCount) renderTimerPanel();
+      if (focused) document.getElementById(focused)?.focus({preventScroll: true});
+      updateStudyTimerReadouts();
+      return true;
+    }
+
+    function restoreExam() {
+      const saved = readSaved(examKey);
+      if (!saved || !Array.isArray(saved.questions) || !saved.questions.length || saved.questions.length > 1000) return;
+      const valid = saved.questions.every(q => q && typeof q.uid === 'string' && q.courseId === course.id && typeof q.question === 'string' && typeof q.lectureLabel === 'string' && Array.isArray(q.options) && q.options.length >= 2 && q.options.every(option => typeof option === 'string') && Number.isInteger(q.correct) && q.correct >= 0 && q.correct < q.options.length) && new Set(saved.questions.map(q => q.uid)).size === saved.questions.length;
+      if (!valid || !Number.isInteger(saved.currentIndex) || saved.currentIndex < 0 || saved.currentIndex >= saved.questions.length || !Number.isFinite(saved.remainingSec) || saved.remainingSec < 0 || !Number.isFinite(saved.totalSec) || saved.totalSec < 0 || saved.remainingSec > saved.totalSec || typeof saved.paused !== 'boolean' || typeof saved.submitted !== 'boolean') return;
+      if (saved.totalSec && !saved.paused && !saved.submitted && !Number.isFinite(saved.deadline)) return;
+      if (![0, 600, 900, 1500].includes(saved.totalSec) || !Number.isInteger(saved.remainingSec) || (saved.deadline !== null && (!Number.isFinite(saved.deadline) || saved.deadline > Date.now() + saved.totalSec * 1000 + 1000))) return;
+      const answers = {};
+      for (const q of saved.questions) if (Number.isInteger(saved.answers?.[q.uid]) && saved.answers[q.uid] >= 0 && saved.answers[q.uid] < q.options.length) answers[q.uid] = saved.answers[q.uid];
+      activeExam = {...saved, answers, flags: new Set((Array.isArray(saved.flags) ? saved.flags : []).filter(id => saved.questions.some(q => q.uid === id))), timerId: null};
+      tickExam();
+      startExamClock();
+    }
 
     function updateNotifBadges() {
       const readSet = getReadNotifIds();
@@ -300,14 +400,15 @@
     // =========================================================================
     // 2. رندر تبويب «📝 محاكي امتحان الميدتيرم المجمع بالتايمر»
     // =========================================================================
-    async function ensureAllQuestionsLoaded() {
+    async function ensureAllQuestionsLoaded(retry = false) {
       if (!powerData) return [];
+      if (bankLoaded) return allCourseQuestions;
       const merged = [];
       const seenQuestions = new Set();
 
       const addQuestion = (q, lecId, lecLabel) => {
         const key = String(q.question || '').trim().toLowerCase();
-        if (!key || seenQuestions.has(key)) return;
+        if (!key || seenQuestions.has(key) || !Array.isArray(q.options) || q.options.length < 2 || !Number.isInteger(q.correct) || q.correct < 0 || q.correct >= q.options.length) return;
         seenQuestions.add(key);
         merged.push({
           uid: `${course.id}:${lecId}:${q.id || merged.length + 1}`,
@@ -327,26 +428,20 @@
         addQuestion(q, q.lectureId || '1', q.lectureLabel || `محاضرة ${q.lectureId || 1}`);
       }
 
-      if (window.PortalStudyLoader?.load) {
-        try {
-          const explanations = await window.PortalStudyLoader.load();
-          const courseExp = explanations?.[course.id];
-          if (courseExp) {
-            for (const [lecId, lecData] of Object.entries(courseExp)) {
-              const lecObj = (course.lectures || []).find(l => String(l.id) === String(lecId));
-              const label = lecObj ? (lecObj.date || lecObj.chapter || `محاضرة ${lecId}`) : `محاضرة ${lecId}`;
-              for (const q of lecData.fullQuiz || []) {
-                addQuestion(q, lecId, label);
-              }
-            }
-          }
-        } catch {
-          // Use built-in midterm questions
-        }
+      try {
+        if (!window.PortalQuestionBank?.load) throw new Error('Question bank loader unavailable');
+        const bank = await window.PortalQuestionBank.load({retry});
+        if (!Array.isArray(bank[course.id]) || !bank[course.id].length) throw new Error('Course bank unavailable');
+        if (!bank[course.id].every(q => q && typeof q.question === 'string' && q.question.trim() && Array.isArray(q.options) && q.options.length >= 2 && q.options.every(option => typeof option === 'string') && Number.isInteger(q.correct) && q.correct >= 0 && q.correct < q.options.length && q.lectureId !== undefined)) throw new Error('Course bank is incomplete');
+        for (const q of bank[course.id]) addQuestion(q, q.lectureId || '1', q.lectureLabel || `محاضرة ${q.lectureId || 1}`);
+        bankError = false;
+        bankLoaded = true;
+      } catch {
+        bankError = true;
       }
 
       allCourseQuestions = merged;
-      if (selectedLectures.size === 0) {
+      if (selectedLectures.size === 0 && !bankError) {
         for (const q of allCourseQuestions) selectedLectures.add(String(q.lectureId));
       }
       return allCourseQuestions;
@@ -359,46 +454,66 @@
       }
     }
 
+    function tickExam() {
+      if (!activeExam || activeExam.paused || activeExam.submitted || !activeExam.totalSec) return;
+      activeExam.remainingSec = Math.max(0, Math.ceil((activeExam.deadline - Date.now()) / 1000));
+      const timerEl = document.getElementById('midterm-timer-display');
+      if (timerEl) {
+        timerEl.textContent = `⏱️ ${formatTime(activeExam.remainingSec)}`;
+        timerEl.classList.toggle('is-warning', activeExam.remainingSec <= 60);
+      }
+      if (!activeExam.remainingSec) submitMidtermExam();
+    }
+
+    function startExamClock() {
+      if (activeExam && activeExam.totalSec && !activeExam.submitted && !activeExam.timerId) activeExam.timerId = window.setInterval(tickExam, 1000);
+    }
+
     function submitMidtermExam() {
       if (!activeExam || activeExam.submitted) return;
       stopMidtermTimer();
       activeExam.submitted = true;
+      confirmSubmit = false;
+      persistExam();
       renderMidtermPanel();
+      document.getElementById('midterm-result-banner')?.focus();
     }
 
     function startMidtermWithQuestions(questionsPool, durationMinutes) {
       stopMidtermTimer();
-      if (!questionsPool || questionsPool.length === 0) return;
-
+      if (!questionsPool?.length) return;
       const totalSec = Number(durationMinutes) > 0 ? Number(durationMinutes) * 60 : 0;
-      activeExam = {
-        questions: questionsPool,
-        answers: {},
-        flags: new Set(),
-        currentIndex: 0,
-        submitted: false,
-        totalSec,
-        remainingSec: totalSec,
-        paused: false,
-        timerId: null
-      };
-
-      if (totalSec > 0) {
-        activeExam.timerId = window.setInterval(() => {
-          if (!activeExam || activeExam.paused || activeExam.submitted) return;
-          activeExam.remainingSec = Math.max(0, activeExam.remainingSec - 1);
-          const timerEl = document.getElementById('midterm-timer-display');
-          if (timerEl) {
-            timerEl.textContent = `⏱️ ${formatTime(activeExam.remainingSec)}`;
-            timerEl.classList.toggle('is-warning', activeExam.remainingSec <= 60);
-          }
-          if (activeExam.remainingSec <= 0) {
-            submitMidtermExam();
-          }
-        }, 1000);
-      }
-
+      activeExam = {questions: questionsPool, answers: {}, flags: new Set(), currentIndex: 0,
+        submitted: false, totalSec, remainingSec: totalSec, deadline: totalSec ? Date.now() + totalSec * 1000 : null,
+        paused: false, timerId: null};
+      persistExam();
+      startExamClock();
       renderMidtermPanel();
+    }
+
+    function balancedQuestions(pool, limit) {
+      const shuffle = values => {
+        const copy = [...values];
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      };
+      const groups = new Map();
+      for (const question of pool) {
+        if (!groups.has(question.lectureId)) groups.set(question.lectureId, []);
+        groups.get(question.lectureId).push(question);
+      }
+      const queues = shuffle([...groups.values()].map(shuffle));
+      const questions = [];
+      while (questions.length < limit) {
+        for (const queue of queues) {
+          if (queue.length) questions.push(queue.pop());
+          if (questions.length === limit) break;
+        }
+      }
+      return questions;
     }
 
     function renderMidtermPanel() {
@@ -425,6 +540,7 @@
 
         panelMidterm.innerHTML = `
           <div class="midterm-config-panel">
+            ${bankError ? `<p role="alert">تعذّر تحميل بنك الأسئلة الكامل. البنك غير مكتمل؛ أعد المحاولة قبل بدء الامتحان.</p><button type="button" class="power-action-btn" id="midterm-retry-bank">إعادة تحميل بنك الأسئلة</button>` : ''}
             <div>
               <h3 class="smart-card-title">إعداد محاكي امتحان الميدتيرم — ${escapeHtml(course.arabicName)}</h3>
               <p class="text-xs text-[var(--text-muted)] mt-1">حدد المحاضرات الداخلة في الامتحان، عدد الأسئلة، والوقت المحدد، واختبر استعدادك الفعلي مع التايمر والتصحيح الفوري.</p>
@@ -455,7 +571,7 @@
                 </select>
               </div>
               <div class="midterm-config-group flex items-end">
-                <button type="button" class="midterm-start-btn" id="start-midterm-btn" ${availableCount === 0 ? 'disabled' : ''}>
+                <button type="button" class="midterm-start-btn" id="start-midterm-btn" ${availableCount === 0 || bankError ? 'disabled' : ''}>
                   <span>🚀 ابدأ امتحان الميدتيرم الآن (${availableCount > 0 ? (examCountSetting === 'all' ? availableCount : Math.min(Number(examCountSetting), availableCount)) : 0} سؤال)</span>
                 </button>
               </div>
@@ -511,6 +627,7 @@
             type="button"
             class="midterm-opt-btn ${btnClass}"
             data-midterm-opt="${idx}"
+            aria-pressed="${idx === chosenIdx}"
             ${submitted ? 'disabled' : ''}
           >
             <span>${escapeHtml(opt)}</span>
@@ -523,7 +640,7 @@
         ? (() => {
             const pct = Math.round((score / questions.length) * 100);
             return `
-              <div class="midterm-config-panel" id="midterm-result-banner">
+              <div class="midterm-config-panel" id="midterm-result-banner" tabindex="-1" role="status">
                 <div class="flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <h3 class="smart-card-title">🏆 نتيجة امتحان الميدتيرم: ${score} من ${questions.length} (${pct}%)</h3>
@@ -540,6 +657,10 @@
 
       panelMidterm.innerHTML = `
         ${summaryHtml}
+        ${confirmSubmit ? `<div class="midterm-config-panel" role="region" aria-labelledby="midterm-confirm-title">
+          <h3 id="midterm-confirm-title">باقي ${questions.length - answeredCount} سؤال بدون إجابة. هل تريد التسليم؟</h3>
+          <div><button type="button" class="power-action-btn" id="midterm-cancel-submit">العودة لاستكمال الإجابات</button>
+          <button type="button" class="power-action-btn is-submit" id="midterm-confirm-submit">تأكيد التسليم والتصحيح</button></div></div>` : ''}
         <div class="midterm-hud-bar">
           <div class="flex flex-wrap items-center gap-2">
             <span class="midterm-timer-box ${remainingSec > 0 && remainingSec <= 60 && !submitted ? 'is-warning' : ''}" id="midterm-timer-display">
@@ -613,7 +734,7 @@
         <div class="study-timer-box">
           <span class="smart-card-tag">⏱️ مؤقت المذاكرة والتركيز (Pomodoro Focus Timer)</span>
           <div class="study-timer-digits" id="study-timer-big-digits">${formatTime(studyTimer.remainingSec)}</div>
-          <p class="text-xs text-[var(--text-muted)]">يستمر المؤقت في العمل بالخلفية أثناء تصفحك للمحاضرات أو الشرح التفاعلي • الجلسات المكتملة: <strong id="timer-completed-sessions">${completedSessions}</strong></p>
+          <p class="text-xs text-[var(--text-muted)]">يستمر المؤقت أثناء التنقل وإعادة التحميل على هذا المتصفح. الحفظ محلي على جهازك فقط • الجلسات المكتملة: <strong id="timer-completed-sessions">${completedSessions}</strong></p>
           <div class="study-timer-presets" role="group" aria-label="مدد المؤقت الجاهزة">
             ${presets.map(([min, label]) => `
               <button type="button" class="power-action-btn ${studyTimer.presetMin === min ? 'is-active-preset' : ''}" data-timer-preset="${min}">
@@ -633,31 +754,41 @@
       `;
     }
 
+    function tickStudyTimer() {
+      reconcileStudyTimer();
+      if (!studyTimer.running) return;
+      studyTimer.remainingSec = Math.max(0, Math.min(studyTimer.totalSec, Math.ceil((studyTimer.deadline - Date.now()) / 1000)));
+      updateStudyTimerReadouts();
+      if (!studyTimer.remainingSec) {
+        // Re-read immediately before publishing: another tab may have paused, reset,
+        // or replaced this session while our interval was suspended.
+        if (reconcileStudyTimer()) return;
+        studyTimer.running = false;
+        studyTimer.deadline = null;
+        window.clearInterval(studyTimer.intervalId);
+        studyTimer.intervalId = null;
+        persistStudyTimer();
+        if (!incrementCompletedTimerSessions(studyTimer.sessionId)) showStorageWarning();
+        renderTimerPanel();
+      }
+    }
+
     function toggleStudyTimer() {
+      reconcileStudyTimer();
+      tickStudyTimer();
       if (studyTimer.running) {
         studyTimer.running = false;
-        if (studyTimer.intervalId) {
-          window.clearInterval(studyTimer.intervalId);
-          studyTimer.intervalId = null;
-        }
+        window.clearInterval(studyTimer.intervalId);
+        studyTimer.intervalId = null;
+        studyTimer.deadline = null;
       } else {
-        if (studyTimer.remainingSec <= 0) {
-          studyTimer.remainingSec = studyTimer.totalSec;
-        }
+        if (!studyTimer.remainingSec) { studyTimer.remainingSec = studyTimer.totalSec; studyTimer.sessionId = null; }
+        if (!studyTimer.sessionId) studyTimer.sessionId = window.crypto?.randomUUID?.() || Date.now().toString(36) + '.' + Math.random().toString(36).slice(2);
         studyTimer.running = true;
-        studyTimer.intervalId = window.setInterval(() => {
-          if (!studyTimer.running) return;
-          studyTimer.remainingSec = Math.max(0, studyTimer.remainingSec - 1);
-          updateStudyTimerReadouts();
-          if (studyTimer.remainingSec <= 0) {
-            studyTimer.running = false;
-            window.clearInterval(studyTimer.intervalId);
-            studyTimer.intervalId = null;
-            incrementCompletedTimerSessions();
-            renderTimerPanel();
-          }
-        }, 1000);
+        studyTimer.deadline = Date.now() + studyTimer.remainingSec * 1000;
+        studyTimer.intervalId = window.setInterval(tickStudyTimer, 1000);
       }
+      persistStudyTimer();
       renderTimerPanel();
       updateStudyTimerReadouts();
     }
@@ -671,6 +802,9 @@
       studyTimer.presetMin = minutes;
       studyTimer.totalSec = minutes * 60;
       studyTimer.remainingSec = minutes * 60;
+      studyTimer.deadline = null;
+      studyTimer.sessionId = null;
+      persistStudyTimer();
       renderTimerPanel();
       updateStudyTimerReadouts();
     }
@@ -681,9 +815,7 @@
     function renderNotificationsPanel() {
       if (!panelNotifications) return;
       const readSet = getReadNotifIds();
-      const filtered = notifScope === 'course' && isSubjectPage
-        ? notifications.filter(n => n.courseId === course.id)
-        : notifications;
+      const filtered = visibleNotifications();
 
       const listHtml = filtered.map(item => {
         const isUnread = !readSet.has(item.id);
@@ -742,6 +874,10 @@
       modal.querySelectorAll('[data-power-tab]').forEach(btn => {
         if (btn.getAttribute('role') === 'tab') {
           btn.setAttribute('aria-selected', String(btn.dataset.powerTab === tabName));
+          btn.tabIndex = btn.dataset.powerTab === tabName ? 0 : -1;
+          btn.id = `power-tab-${btn.dataset.powerTab}`;
+          btn.setAttribute('aria-controls', `power-panel-${btn.dataset.powerTab}`);
+          document.getElementById(`power-panel-${btn.dataset.powerTab}`)?.setAttribute('aria-labelledby', btn.id);
         }
       });
 
@@ -753,6 +889,7 @@
       if (tabName === 'interactive') {
         renderInteractivePanel();
       } else if (tabName === 'midterm') {
+        if (!bankLoaded && !activeExam) panelMidterm.innerHTML = '<p role="status">جارٍ تحميل بنك الأسئلة الكامل…</p>';
         await ensureAllQuestionsLoaded();
         renderMidtermPanel();
       } else if (tabName === 'timer') {
@@ -763,16 +900,16 @@
     }
 
     async function openPowerModal(tabName) {
-      await switchPowerTab(tabName || (isSubjectPage ? 'interactive' : 'notifications'));
+      const ready = switchPowerTab(tabName || (isSubjectPage ? 'interactive' : 'notifications'));
       if (window.PortalDialog?.open) {
-        window.PortalDialog.open(modal, { onClose: stopMidtermTimer });
+        window.PortalDialog.open(modal);
       } else {
         modal.classList.remove('hidden');
       }
+      await ready;
     }
 
     function closePowerModal() {
-      stopMidtermTimer();
       if (window.PortalDialog?.close) {
         window.PortalDialog.close(modal);
       } else {
@@ -789,6 +926,7 @@
     });
 
     modal.addEventListener('click', event => {
+      tickExam();
       if (event.target === modal || event.target.closest('#power-modal-close')) {
         closePowerModal();
         return;
@@ -823,6 +961,7 @@
       }
 
       if (event.target.closest('#study-timer-reset-btn')) {
+        reconcileStudyTimer();
         setStudyTimerPreset(studyTimer.presetMin);
         return;
       }
@@ -837,7 +976,7 @@
 
       if (event.target.closest('#mark-all-notifs-read')) {
         const readSet = getReadNotifIds();
-        for (const n of notifications) readSet.add(n.id);
+        for (const n of visibleNotifications()) readSet.add(n.id);
         saveReadNotifIds(readSet);
         updateNotifBadges();
         renderNotificationsPanel();
@@ -867,25 +1006,35 @@
         return;
       }
 
-      if (event.target.closest('#start-midterm-btn')) {
+      if (event.target.closest('#midterm-retry-bank')) {
+        const button = event.target.closest('button'); button.disabled = true;
+        ensureAllQuestionsLoaded(true).then(renderMidtermPanel);
+        return;
+      }
+      if (event.target.closest('#start-midterm-btn') && !bankError) {
         const pool = allCourseQuestions.filter(q => selectedLectures.has(String(q.lectureId)));
         const limit = examCountSetting === 'all' ? pool.length : Math.min(Number(examCountSetting) || 10, pool.length);
-        startMidtermWithQuestions(pool.slice(0, limit), Number(examTimerSetting));
+        startMidtermWithQuestions(balancedQuestions(pool, limit), Number(examTimerSetting));
         return;
       }
 
       const optBtn = event.target.closest('[data-midterm-opt]');
       if (optBtn && activeExam && !activeExam.submitted) {
         const q = activeExam.questions[activeExam.currentIndex];
-        activeExam.answers[q.uid] = Number(optBtn.dataset.midtermOpt);
+        const option = optBtn.dataset.midtermOpt;
+        activeExam.answers[q.uid] = Number(option);
+        persistExam();
         renderMidtermPanel();
+        panelMidterm.querySelector(`[data-midterm-opt="${option}"]`)?.focus();
         return;
       }
 
       const jumpBtn = event.target.closest('[data-midterm-jump]');
       if (jumpBtn && activeExam) {
         activeExam.currentIndex = Number(jumpBtn.dataset.midtermJump);
+        persistExam();
         renderMidtermPanel();
+        panelMidterm.querySelector(`[data-midterm-jump="${activeExam.currentIndex}"]`)?.focus();
         return;
       }
 
@@ -893,7 +1042,10 @@
       if (stepBtn && activeExam) {
         const delta = stepBtn.dataset.midtermStep === 'next' ? 1 : -1;
         activeExam.currentIndex = Math.max(0, Math.min(activeExam.questions.length - 1, activeExam.currentIndex + delta));
+        persistExam();
         renderMidtermPanel();
+        panelMidterm.querySelector('.midterm-q-prompt')?.setAttribute('tabindex', '-1');
+        panelMidterm.querySelector('.midterm-q-prompt')?.focus();
         return;
       }
 
@@ -901,17 +1053,31 @@
         const q = activeExam.questions[activeExam.currentIndex];
         if (activeExam.flags.has(q.uid)) activeExam.flags.delete(q.uid);
         else activeExam.flags.add(q.uid);
+        persistExam();
         renderMidtermPanel();
+        document.getElementById('midterm-flag-btn')?.focus();
         return;
       }
 
       if (event.target.closest('#midterm-pause-btn') && activeExam && !activeExam.submitted) {
+        tickExam();
+        if (activeExam.submitted) return;
         activeExam.paused = !activeExam.paused;
+        activeExam.deadline = activeExam.paused ? null : Date.now() + activeExam.remainingSec * 1000;
+        persistExam();
         renderMidtermPanel();
+        document.getElementById('midterm-pause-btn')?.focus();
         return;
       }
 
-      if (event.target.closest('#midterm-submit-btn')) {
+      if (event.target.closest('#midterm-cancel-submit')) {
+        confirmSubmit = false; renderMidtermPanel(); document.getElementById('midterm-submit-btn')?.focus(); return;
+      }
+      if (event.target.closest('#midterm-confirm-submit')) { submitMidtermExam(); return; }
+      if (event.target.closest('#midterm-submit-btn') && activeExam) {
+        if (Object.keys(activeExam.answers).length < activeExam.questions.length) {
+          confirmSubmit = true; renderMidtermPanel(); document.getElementById('midterm-cancel-submit')?.focus(); return;
+        }
         submitMidtermExam();
         return;
       }
@@ -919,8 +1085,23 @@
       if (event.target.closest('#midterm-new-exam-btn')) {
         stopMidtermTimer();
         activeExam = null;
+        persistExam();
         renderMidtermPanel();
       }
+    });
+
+    modal.addEventListener('keydown', event => {
+      const tab = event.target.closest('[role="tab"][data-power-tab]');
+      if (!tab || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const tabs = [...modal.querySelectorAll('[role="tab"][data-power-tab]')];
+      const direction = getComputedStyle(tab).direction === 'rtl' ? -1 : 1;
+      let index = tabs.indexOf(tab);
+      if (event.key === 'Home') index = 0;
+      else if (event.key === 'End') index = tabs.length - 1;
+      else index = (index + (event.key === 'ArrowRight' ? direction : -direction) + tabs.length) % tabs.length;
+      switchPowerTab(tabs[index].dataset.powerTab);
+      tabs[index].focus();
     });
 
     modal.addEventListener('change', event => {
@@ -933,6 +1114,19 @@
       }
     });
 
+    restoreExam();
+    reconcileStudyTimer();
+    tickStudyTimer();
+    window.addEventListener('storage', event => {
+      if (event.key === READ_NOTIFS_KEY || event.key === null) refreshNotifications();
+      if (event.key === TIMER_ACTIVE_KEY || event.key === null) tickStudyTimer();
+      if (event.key === TIMER_SESSIONS_KEY || event.key?.startsWith(TIMER_COMPLETED_PREFIX) || event.key === null) {
+        const completed = document.getElementById('timer-completed-sessions');
+        if (completed) completed.textContent = String(getCompletedTimerSessions());
+      }
+    });
+    window.addEventListener('pageshow', () => { tickExam(); tickStudyTimer(); refreshNotifications(); });
+    window.addEventListener('focus', () => { tickExam(); tickStudyTimer(); refreshNotifications(); });
     updateNotifBadges();
     updateStudyTimerReadouts();
   }

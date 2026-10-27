@@ -63,12 +63,18 @@
   }
   function resourceRow(entry, options = {}) {
     const url = window.PortalContentLinks.href(entry.key, options);
-    return `<a class="studio-library-row" href="${escape(url)}" style="${palette(entry.courseId)}"><span><i data-lucide="${icons[entry.kind] || 'file-text'}" aria-hidden="true"></i></span><div><h3 dir="auto">${escape(entry.title)}</h3><p><bdi lang="en">${escape(entry.displayCourseName)}</bdi> / ${escape(labels[entry.kind] || 'مصدر')}${entry.arabicTitle ? ' / ' + escape(entry.arabicTitle) : ''}${entry.ta ? ' / ' + escape(entry.ta) : ''}</p></div><span>${entry.study ? 'افتح الشرح' : 'افتح المصدر'}<i data-lucide="arrow-up-left" aria-hidden="true"></i></span></a>`;
+    return `<a class="studio-library-row" href="${escape(url)}" style="${palette(entry.courseId)}"><span><i data-lucide="${icons[entry.kind] || 'file-text'}" aria-hidden="true"></i></span><div><h3 dir="auto">${escape(entry.title)}</h3><p><bdi lang="en">${escape(entry.displayCourseName)}</bdi> / ${escape(labels[entry.kind] || 'مصدر')}${entry.arabicTitle ? ' / ' + escape(entry.arabicTitle) : ''}${entry.ta ? ' / ' + escape(entry.ta) : ''}</p></div><span>${entry.study || entry.module ? 'افتح الشرح' : 'افتح المصدر'}<i data-lucide="arrow-up-left" aria-hidden="true"></i></span></a>`;
   }
-  function resumeOptions(entry, item) {
-    if (!entry.study) return {};
-      const options = {actionId: 'internal-study'};
+  function resumeOptions(entry, item, last) {
+    if (!entry.study && !entry.module) return {};
+    let bridge;
+    try {
+      const saved = JSON.parse(window.PortalStorage.getItem('sem2_standalone_v1:' + encodeURIComponent(entry.key)));
+      if (saved?.version === 1 && typeof saved.anchor === 'string' && /^[\w.-]+$/.test(saved.anchor) && saved.updatedAt === item?.reader?.updatedAt) bridge = saved;
+    } catch { /* A malformed standalone marker cannot override the validated reader. */ }
+    const options = {actionId: entry.module && (!entry.study || last?.actionId === 'standalone-study' || bridge) ? 'standalone-study' : 'internal-study'};
     if (item?.reader) { options.slide = item.reader.slideId; options.tab = item.reader.tab; }
+    if (bridge) options.anchor = bridge.anchor;
     return options;
   }
   function readingHistory() {
@@ -77,9 +83,9 @@
     const entry = last && window.PortalCatalog.get(last.key);
     const resume = document.getElementById('studio-resume');
     resume.hidden = !entry;
-    resume.innerHTML = entry ? `<a class="studio-resume-link" href="${escape(window.PortalContentLinks.href(entry.key, resumeOptions(entry, snapshot.items[entry.key])))}"><i data-lucide="history" aria-hidden="true"></i><div><strong>كمّل من آخر مرة</strong><p dir="auto">${escape(entry.title)}</p></div><span>كمّل المذاكرة</span><i data-lucide="arrow-left" aria-hidden="true"></i></a>` : '';
+    resume.innerHTML = entry ? `<a class="studio-resume-link" href="${escape(window.PortalContentLinks.href(entry.key, resumeOptions(entry, snapshot.items[entry.key], last)))}"><i data-lucide="history" aria-hidden="true"></i><div><strong>كمّل من آخر مرة</strong><p dir="auto">${escape(entry.title)}</p></div><span>كمّل المذاكرة</span><i data-lucide="arrow-left" aria-hidden="true"></i></a>` : '';
     const history = Object.entries(snapshot.items).filter(([, item]) => item.startedAt || item.reader || item.quiz).sort((a, b) => String(b[1].reader?.updatedAt || b[1].startedAt || '').localeCompare(String(a[1].reader?.updatedAt || a[1].startedAt || ''))).map(([key, item]) => ({entry: window.PortalCatalog.get(key), item})).filter(value => value.entry);
-    document.getElementById('continue-results').innerHTML = history.length ? history.map(({entry: value, item}) => resourceRow(value, resumeOptions(value, item))).join('') : `<div class="studio-empty"><i data-lucide="book-open" aria-hidden="true"></i><h3>أول خطوة لسه قدّامك</h3><p>لما تبدأ شرح أو تدريب، هتلاقيه هنا عشان ترجع له بسهولة.</p><a href="#library" class="studio-button">استكشف المصادر</a></div>`;
+    document.getElementById('continue-results').innerHTML = history.length ? history.map(({entry: value, item}) => resourceRow(value, resumeOptions(value, item, last?.key === value.key ? last : null))).join('') : `<div class="studio-empty"><i data-lucide="book-open" aria-hidden="true"></i><h3>أول خطوة لسه قدّامك</h3><p>لما تبدأ شرح أو تدريب، هتلاقيه هنا عشان ترجع له بسهولة.</p><a href="#library" class="studio-button">استكشف المصادر</a></div>`;
     window.PortalUI.icons(resume); window.PortalUI.icons(document.getElementById('continue-results'));
   }
   function library() {
@@ -100,14 +106,14 @@
       const entries = catalog.filter(({entry,text}) => {
         if (!entry.actions.length) return false;
         if (courseSelect.value !== 'all' && entry.courseId !== courseSelect.value) return false;
-        if (kind.value !== 'all' && (kind.value === 'interactive' ? !entry.study : kind.value !== entry.kind)) return false;
+        if (kind.value !== 'all' && (kind.value === 'interactive' ? !entry.study && !entry.module : kind.value !== entry.kind)) return false;
         if (!allTas.checked && entry.ta) { const staff = window.StudentProfile.getCourseStaff(entry.courseId); if (!window.StudentProfile.isTaMatch(entry.ta, staff.ta)) return false; }
         return words.every(word => text.includes(word));
       }).map(({entry}) => entry);
       const results = document.getElementById('library-results');
       document.getElementById('library-result-count').textContent = `${entries.length} مصدر متاح${query.value.trim() ? ' لبحثك' : ''}`;
       clear.hidden = !query.value;
-      results.innerHTML = entries.length ? entries.map(entry => resourceRow(entry, entry.study ? {actionId: 'internal-study'} : {})).join('') : '<div class="studio-empty"><i data-lucide="search-x" aria-hidden="true"></i><h3>مفيش مصادر مطابقة</h3><p>جرّب كلمة أقل، غيّر المادة أو نوع المصدر، أو اعرض مصادر كل المعيدين.</p><button class="studio-button" id="library-reset">مسح البحث والفلاتر</button></div>';
+      results.innerHTML = entries.length ? entries.map(entry => resourceRow(entry, entry.study ? {actionId: 'internal-study'} : entry.module ? {actionId: 'standalone-study'} : {})).join('') : '<div class="studio-empty"><i data-lucide="search-x" aria-hidden="true"></i><h3>مفيش مصادر مطابقة</h3><p>جرّب كلمة أقل، غيّر المادة أو نوع المصدر، أو اعرض مصادر كل المعيدين.</p><button class="studio-button" id="library-reset">مسح البحث والفلاتر</button></div>';
       document.getElementById('library-reset')?.addEventListener('click', () => { query.value = ''; courseSelect.value = 'all'; kind.value = 'all'; allTas.checked = false; render(); query.focus(); });
       window.PortalUI.icons(results);
     }

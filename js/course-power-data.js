@@ -17,7 +17,7 @@
       typeLabel: 'سكشن عملي + 3 فيديوهات + كود C++',
       title: 'السكشن الرابع (الأجزاء 1، 2، 3): تطبيق DynamicStack ودالة Resize',
       desc: 'تمت إضافة فيديوهات الشرح المسجلة (3 أجزاء) والكود البرمجي الكامل لبناء المكدس الديناميكي باستخدام القوالب (Templates) من إعداد م.م. أحمد حسام.',
-      url: 'subject.html?id=data-structure&track=section&kind=sections'
+      url: 'subject.html?id=data-structure&track=section&kind=sections&item=' + encodeURIComponent(JSON.stringify(['data-structure', 'section', '6']))
     },
     {
       id: 'notif-ds-lec5-queue',
@@ -28,7 +28,7 @@
       typeLabel: 'محاضرة 5 + سكشن 5',
       title: 'المحاضرة 5 والسكشن 5: هيكل الطابور (Queue ADT & Circular Queue)',
       desc: 'سلايدات المحاضرة الخامسة الرسمية (Queue & Priority Queues) وسلايدات السكشن الخامس من إعداد م. فاطمة محمود.',
-      url: 'subject.html?id=data-structure&track=lecture&kind=lectures'
+      url: 'subject.html?id=data-structure&track=lecture&kind=lectures&item=' + encodeURIComponent(JSON.stringify(['data-structure', 'lecture', '5']))
     },
     {
       id: 'notif-ds-interactive',
@@ -50,7 +50,7 @@
       typeLabel: 'محاضرة 4 و 5 + شرح تفاعلي',
       title: 'المحاضرة 4 و 5: نمذجة البيانات ومخططات الكيانات والعلاقات (ER Model)',
       desc: 'سلايدات المحاضرتين 4 و 5 (أ.م.د. نبيل مصطفى - د. أحمد سامي) بالإضافة للشرح التفاعلي الكامل للمحاضرتين 2 و 3.',
-      url: 'subject.html?id=database-systems&track=lecture&kind=lectures'
+      url: 'subject.html?id=database-systems&track=lecture&kind=lectures&item=' + encodeURIComponent(JSON.stringify(['database-systems', 'lecture', '5']))
     },
     {
       id: 'notif-arch-lec5-io',
@@ -440,12 +440,9 @@
 
     'computer-graphics': {
       interactiveHub: {
-        mainUrl: 'https://ahm-333.github.io/computer-graphics-study/',
-        mainLabel: 'فتح منصة الشرح التفاعلي لرسوميات الحاسوب',
-        desc: 'شرح تفاعلي لخوارزميات الرسم (DDA, Bresenham, Midpoint Circle & Ellipse) مع أمثلة التتبع الرقمي للجدول.',
-        items: [
-          { title: 'منصة الشرح التفاعلي الكاملة (Computer Graphics Study)', sub: 'تغطية شاملة للمحاضرات وخوارزميات الرسم وحل المسائل', url: 'https://ahm-333.github.io/computer-graphics-study/' }
-        ]
+        status: 'coming-soon',
+        desc: 'الشرح التفاعلي للرسم بالحاسوب قادم قريبًا.',
+        items: []
       },
       midtermQuestions: [
         {
@@ -621,9 +618,9 @@
         mainLabel: 'فتح المنصة التفاعلية لنظم التشغيل (19 وحدة)',
         desc: 'رحلة تفاعلية كاملة تغطي الفصول الثلاثة الأولى بالرسوم المتحركة، مختبر الـ Kernel، و 107 سؤال تدريبي.',
         items: [
-          { title: 'الفصل الأول: مقدمة نظم التشغيل والـ Dual-Mode', sub: 'وحدات العتاد، المقاطعات، والتخزين', url: 'education-preview/os/index.html#chapter-1' },
-          { title: 'الفصل الثاني: تراكيب نظم التشغيل والـ System Calls', sub: 'استدعاءات النظام وهياكل النواة', url: 'education-preview/os/index.html#chapter-2' },
-          { title: 'الفصل الثالث: العمليات (Processes, PCB & IPC)', sub: 'جدولة العمليات، الـ Context Switch، والـ fork()', url: 'education-preview/os/index.html#chapter-3' }
+          { title: 'الفصل الأول: مقدمة نظم التشغيل والـ Dual-Mode', sub: 'وحدات العتاد، المقاطعات، والتخزين', url: 'education-preview/os/index.html?unit=os-01' },
+          { title: 'الفصل الثاني: تراكيب نظم التشغيل والـ System Calls', sub: 'استدعاءات النظام وهياكل النواة', url: 'education-preview/os/index.html?unit=os-09' },
+          { title: 'الفصل الثالث: العمليات (Processes, PCB & IPC)', sub: 'جدولة العمليات، الـ Context Switch، والـ fork()', url: 'education-preview/os/index.html?unit=os-13' }
         ]
       },
       midtermQuestions: [
@@ -722,12 +719,9 @@
 
     'report-writing': {
       interactiveHub: {
-        mainUrl: 'https://ahm-333.github.io/technical-writing-study/',
-        mainLabel: 'فتح منصة الشرح التفاعلي لكتابة التقارير الفنية',
-        desc: 'شرح تفاعلي لمعايير الكتابة الفنية (5 Cs)، هيكلة التقارير الهندسية، وتوثيق المراجع بنظام IEEE و APA.',
-        items: [
-          { title: 'منصة الشرح التفاعلي الكاملة (Technical Report Writing)', sub: 'تغطية شاملة للمحاضرات الـ 4 والأمثلة التطبيقية', url: 'https://ahm-333.github.io/technical-writing-study/' }
-        ]
+        status: 'coming-soon',
+        desc: 'الشرح التفاعلي لكتابة التقارير الفنية قادم قريبًا.',
+        items: []
       },
       midtermQuestions: [
         {

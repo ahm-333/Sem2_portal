@@ -34,8 +34,9 @@ async function main(){
       assert.equal(await page.locator('#courses-grid article').count(),6);
       assert.equal(await page.locator('#library-results .studio-library-row').count(),0);
       assert.equal(await page.locator('script[defer][src^="assets/"]').count(),1,'production has one application bundle');
-      assert.equal(await page.locator('script[defer][src="/_vercel/insights/script.js"]').count(),1,'platform analytics remains separate');
-      if(!process.env.PORTAL_RELEASE_URL)assert.equal(await page.evaluate(()=>window.__analyticsScriptLoaded),true,'platform analytics script loads');
+      const platformHost=/(?:^|\.)vercel\.app$/i.test(new URL(base).hostname);
+      assert.equal(await page.locator('script[defer][src="/_vercel/insights/script.js"]').count(),platformHost?1:0,'platform analytics is requested only on its supported deployment');
+      if(!process.env.PORTAL_RELEASE_URL)assert.equal(await page.evaluate(()=>window.__analyticsScriptLoaded),undefined,'static previews do not request missing platform services');
       const courses=await page.evaluate(()=>window.COURSES_DATA.map(course=>course.id));
       for(const id of courses){
         await page.goto(base+prefix+'subject.html?id='+id);await page.locator('.course-atlas').waitFor({state:'visible'});
@@ -48,6 +49,20 @@ async function main(){
           await page.locator('#study-slides-feed .slide-study-card').first().waitFor();
           await page.locator('#study-tab-btn-quiz').click();await page.locator('.full-quiz-opt-btn').first().waitFor();
           await page.keyboard.press('Escape');
+        }
+        // Exercise the actual bundled loader and all six course banks, not only source scripts.
+        await page.locator('[data-open-power-tool="midterm"]').click();
+        await page.locator('#start-midterm-btn:enabled').waitFor();
+        await page.locator('#start-midterm-btn').click();
+        await page.locator('.midterm-q-prompt').waitFor();
+        await page.locator('[data-midterm-opt="0"]').click();
+        await page.locator('#midterm-submit-btn').click();
+        await page.locator('#midterm-confirm-submit').click();
+        await page.locator('#midterm-result-banner').waitFor();
+        await page.keyboard.press('Escape');
+        if(['computer-graphics','report-writing'].includes(id)){
+          assert(await page.locator('.is-upcoming-tool').isDisabled());
+          assert.equal(await page.locator('[data-open-power-tool="interactive"]').count(),0);
         }
         cases++;
       }

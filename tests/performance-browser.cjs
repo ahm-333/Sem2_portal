@@ -28,7 +28,7 @@ async function register({scenario}) {
     await page.locator('.studio-rail nav a[href="#library"]').click();
     await page.locator('#library-results .studio-library-row').first().waitFor();
     await page.locator('#library-kind').selectOption('interactive');
-    assert.equal(await page.locator('#library-results .studio-library-row').count(),2);
+    assert.equal(await page.locator('#library-results .studio-library-row').count(),25,'all 25 available local lessons appear after the first library entry');
   });
   await scenario('performance-background-canvas-pauses-under-dialog', async ({page,go}) => {
     await page.addInitScript(()=>{
