@@ -234,7 +234,7 @@
                 <div class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] shadow-sm">
                   <span class="text-xs font-bold text-[var(--text-muted)]">الدرجة النهائية:</span>
                   <span id="full-quiz-final-score" class="text-2xl font-black text-indigo-500 font-mono">${score} / ${questions.length}</span>
-                  <span id="full-quiz-pct" class="text-xs font-bold font-mono">(${Math.round((score / questions.length) * 100)}%)</span>
+                  <span id="full-quiz-percent" class="text-xs font-bold font-mono">(${Math.round((score / questions.length) * 100)}%)</span>
                 </div>
                 <p id="full-quiz-evaluation" class="text-sm font-bold text-[var(--text-main)] max-w-md mx-auto leading-relaxed">
                   ${score / questions.length >= 0.85 ? "عاش جداً يا هندسة! إنت كده هضمت المحاضرة بالكامل ومستعد لأي سؤال ميدتيرم أو فاينل 🚀" : "مستوى كويس جداً! راجع الأسئلة اللي غلطت فيها وخلي بالك من التريكات."}
@@ -299,8 +299,8 @@
             summary.classList.toggle("hidden", !isComplete);
             const finalScore = document.getElementById("full-quiz-final-score");
             if (finalScore) finalScore.textContent = `${score} / ${questions.length}`;
-            const pct = document.getElementById("full-quiz-pct");
-            if (pct) pct.textContent = `(${Math.round(score / questions.length * 100)}%)`;
+            const pctNode = document.getElementById("full-quiz-percent");
+            if (pctNode) pctNode.textContent = `(${Math.round(score / questions.length * 100)}%)`;
             const evalText = document.getElementById("full-quiz-evaluation");
             if (evalText) evalText.textContent = score / questions.length >= 0.85 ? "ممتاز! راجع النقاط المتبقية واستمر في التدريب." : "راجع الأسئلة التي أخطأت فيها وجرب مرة أخرى.";
 
