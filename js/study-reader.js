@@ -231,6 +231,7 @@
 
     // بناء بطاقات التغذية المستمرة للشرائح
     studySlidesFeed.innerHTML = data.slides.map((s) => {
+      if (s.quiz) s = {...s, quiz: window.PortalQuizChoices.present(s.quiz, 'slide:' + s.num + ':' + s.quiz.question)};
       // تفكيك النقاط المتعددة إذا كانت الشريحة تحوي أكثر من مفهوم
       const pointsHtml = s.points && s.points.length > 0 ? `
         <div class="space-y-2.5 mt-3 pt-3 border-t border-[var(--border-subtle)]">

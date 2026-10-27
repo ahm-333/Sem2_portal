@@ -48,6 +48,8 @@ async function main(){
           await page.locator('[data-open-study-lecture="2"]').first().click();
           await page.locator('#study-slides-feed .slide-study-card').first().waitFor();
           await page.locator('#study-tab-btn-quiz').click();await page.locator('.full-quiz-opt-btn').first().waitFor();
+          await page.locator('#full-q-1 .full-quiz-opt-btn').filter({hasText:'Traditional applications (Numeric and Textual databases)'}).click();
+          assert.equal(await page.locator('#full-quiz-score-val').innerText(),'1 / 20','the packaged quiz grades the authored correct answer after choice presentation');
           await page.keyboard.press('Escape');
         }
         // Exercise the actual bundled loader and all six course banks, not only source scripts.

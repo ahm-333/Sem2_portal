@@ -150,31 +150,14 @@
       bar.className = 'course-power-bar';
       bar.setAttribute('aria-label', 'الأدوات الذكية للمقرر');
       bar.innerHTML = `
-        <div class="course-power-intro">
-          <div class="course-power-icon" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
-          </div>
-          <div class="course-power-copy">
-            <h3>الأدوات الذكية — ${escapeHtml(course.arabicName)}</h3>
-            <p>${hasInteractiveHub ? 'الشرح التفاعلي المعتمد ومحاكي امتحان الميدتيرم بالوقت' : 'محاكي امتحان الميدتيرم الشامل بالوقت والتصحيح الفوري'}</p>
-          </div>
-        </div>
-        <div class="course-power-actions">
-          ${hasUpcomingHub ? `
-            <button type="button" class="power-tool-btn is-upcoming-tool" disabled title="${escapeHtml(powerData.interactiveHub.desc)}">
-              <span>الشرح التفاعلي — قريبًا</span>
-            </button>
-          ` : ''}
-          ${hasInteractiveHub ? `
-            <button type="button" class="power-tool-btn is-interactive-tool" data-open-power-tool="interactive">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
-              <span>الشرح التفاعلي</span>
-            </button>
-          ` : ''}
-          <button type="button" class="power-tool-btn is-primary-tool" data-open-power-tool="midterm">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>
-            <span>محاكي الميدتيرم</span>
-          </button>
+        ${hasInteractiveHub || hasUpcomingHub ? `<div class="course-study-entry">
+          <div><h3>الشرح التفاعلي</h3></div>
+          ${hasUpcomingHub ? `<button type="button" class="power-tool-btn is-upcoming-tool" disabled title="${escapeHtml(powerData.interactiveHub.desc)}">الشرح التفاعلي — قريبًا</button>` : ''}
+          ${hasInteractiveHub ? `<button type="button" class="power-tool-btn is-interactive-tool" data-open-power-tool="interactive">افتح الشرح</button>` : ''}
+        </div>` : ''}
+        <div class="course-exam-entry">
+          <div><h3>امتحان تدريبي للميدتيرم</h3><p>اختَر محاضراتك ووقت الامتحان.</p></div>
+          <button type="button" class="power-tool-btn is-primary-tool" data-open-power-tool="midterm">جهّز الامتحان</button>
         </div>
       `;
       const materials = document.querySelector('.a1-materials') || document.getElementById('main-content');
@@ -483,7 +466,9 @@
       stopMidtermTimer();
       if (!questionsPool?.length) return;
       const totalSec = Number(durationMinutes) > 0 ? Number(durationMinutes) * 60 : 0;
-      activeExam = {questions: questionsPool, answers: {}, flags: new Set(), currentIndex: 0,
+      const choiceAttempt = window.PortalQuizChoices.createAttempt();
+      const questions = questionsPool.map(question => choiceAttempt.present(question, question.uid));
+      activeExam = {questions, answers: {}, flags: new Set(), currentIndex: 0,
         submitted: false, totalSec, remainingSec: totalSec, deadline: totalSec ? Date.now() + totalSec * 1000 : null,
         paused: false, timerId: null};
       persistExam();
@@ -531,50 +516,53 @@
           const isSelected = selectedLectures.has(String(group.id));
           return `
             <button type="button" class="midterm-scope-chip" data-toggle-scope-lec="${escapeHtml(group.id)}" aria-pressed="${isSelected ? 'true' : 'false'}">
-              <span>${isSelected ? '✓' : '○'} ${escapeHtml(group.label)} (${group.count})</span>
+              <span class="midterm-scope-mark" aria-hidden="true">${isSelected ? '✓' : '+'}</span>
+              <span class="midterm-scope-copy"><span dir="auto">${escapeHtml(group.label)}</span><small>${group.count} سؤال</small></span>
             </button>
           `;
         }).join('');
 
         const availableCount = allCourseQuestions.filter(q => selectedLectures.has(String(q.lectureId))).length;
+        const questionCount = availableCount ? (examCountSetting === 'all' ? availableCount : Math.min(Number(examCountSetting), availableCount)) : 0;
+        const durationLabel = Number(examTimerSetting) ? `${examTimerSetting} دقيقة` : 'بدون مؤقت';
 
         panelMidterm.innerHTML = `
           <div class="midterm-config-panel">
             ${bankError ? `<p role="alert">تعذّر تحميل بنك الأسئلة الكامل. البنك غير مكتمل؛ أعد المحاولة قبل بدء الامتحان.</p><button type="button" class="power-action-btn" id="midterm-retry-bank">إعادة تحميل بنك الأسئلة</button>` : ''}
-            <div>
-              <h3 class="smart-card-title">إعداد محاكي امتحان الميدتيرم — ${escapeHtml(course.arabicName)}</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">حدد المحاضرات الداخلة في الامتحان، عدد الأسئلة، والوقت المحدد، واختبر استعدادك الفعلي مع التايمر والتصحيح الفوري.</p>
+            <div class="midterm-setup-intro">
+              <h3 class="smart-card-title">جهّز امتحانك التدريبي</h3>
+              <p>اختر محاضراتك، ثم عدد الأسئلة والوقت المناسب لك.</p>
             </div>
-            <div>
-              <label class="block text-xs font-extrabold mb-2">1. اختر المحاضرات الداخلة في الامتحان (${availableCount} سؤال متاح):</label>
-              <div class="midterm-scope-chips">
-                ${scopeChips}
-              </div>
-            </div>
+            <fieldset class="midterm-scope-field">
+              <legend>المحاضرات الداخلة في الامتحان <span>(${availableCount} سؤال متاح)</span></legend>
+              <div class="midterm-scope-chips">${scopeChips}</div>
+            </fieldset>
             <div class="midterm-config-grid">
               <div class="midterm-config-group">
-                <label for="midterm-count-select">2. عدد أسئلة الامتحان:</label>
+                <label for="midterm-count-select">عدد الأسئلة</label>
                 <select id="midterm-count-select" class="midterm-select">
-                  <option value="5" ${examCountSetting === '5' ? 'selected' : ''}>5 أسئلة (مراجعة سريعة)</option>
-                  <option value="10" ${examCountSetting === '10' ? 'selected' : ''}>10 أسئلة (ميدتيرم قياسي)</option>
-                  <option value="15" ${examCountSetting === '15' ? 'selected' : ''}>15 سؤال (امتحان شامل)</option>
-                  <option value="all" ${examCountSetting === 'all' ? 'selected' : ''}>كل الأسئلة المتاحة (${availableCount})</option>
+                  <option value="5" ${examCountSetting === '5' ? 'selected' : ''}>5 أسئلة</option>
+                  <option value="10" ${examCountSetting === '10' ? 'selected' : ''}>10 أسئلة</option>
+                  <option value="15" ${examCountSetting === '15' ? 'selected' : ''}>15 سؤال</option>
+                  <option value="all" ${examCountSetting === 'all' ? 'selected' : ''}>كل الأسئلة (${availableCount})</option>
                 </select>
               </div>
               <div class="midterm-config-group">
-                <label for="midterm-timer-select">3. زمن الامتحان (التايمر):</label>
+                <label for="midterm-timer-select">وقت الامتحان</label>
                 <select id="midterm-timer-select" class="midterm-select">
                   <option value="10" ${examTimerSetting === '10' ? 'selected' : ''}>10 دقائق</option>
-                  <option value="15" ${examTimerSetting === '15' ? 'selected' : ''}>15 دقيقة (موصى به)</option>
+                  <option value="15" ${examTimerSetting === '15' ? 'selected' : ''}>15 دقيقة</option>
                   <option value="25" ${examTimerSetting === '25' ? 'selected' : ''}>25 دقيقة</option>
-                  <option value="0" ${examTimerSetting === '0' ? 'selected' : ''}>بدون تايمر (تدريب مفتوح)</option>
+                  <option value="0" ${examTimerSetting === '0' ? 'selected' : ''}>بدون مؤقت</option>
                 </select>
               </div>
-              <div class="midterm-config-group flex items-end">
-                <button type="button" class="midterm-start-btn" id="start-midterm-btn" ${availableCount === 0 || bankError ? 'disabled' : ''}>
-                  <span>🚀 ابدأ امتحان الميدتيرم الآن (${availableCount > 0 ? (examCountSetting === 'all' ? availableCount : Math.min(Number(examCountSetting), availableCount)) : 0} سؤال)</span>
-                </button>
-              </div>
+            </div>
+            <div class="midterm-setup-start">
+              <p id="midterm-setup-summary" aria-live="polite">${questionCount} سؤال · ${durationLabel} · ${selectedLectures.size} محاضرات</p>
+              <button type="button" class="midterm-start-btn" id="start-midterm-btn" ${availableCount === 0 || bankError ? 'disabled' : ''}>
+                ابدأ الامتحان التدريبي
+              </button>
+              <small>محاولتك تُحفظ على هذا المتصفح. إغلاق النافذة لا يوقف وقت الامتحان.</small>
             </div>
           </div>
         `;
@@ -608,7 +596,7 @@
           stateClass = 'is-answered';
         }
         return `
-          <button type="button" class="midterm-q-pill ${stateClass}" data-midterm-jump="${idx}">
+          <button type="button" class="midterm-q-pill ${stateClass}" data-midterm-jump="${idx}" ${isCurrent ? 'aria-current="step"' : ''} aria-label="السؤال ${idx + 1}${submitted ? (answers[q.uid] === q.correct ? '، إجابة صحيحة' : '، إجابة غير صحيحة') : `${isAns ? '، تمت الإجابة' : ''}${isFlag ? '، للمراجعة' : ''}`}">
             ${idx + 1}${isFlag && !submitted ? '🚩' : ''}
           </button>
         `;
@@ -679,7 +667,7 @@
                 <span>${flags.has(currentQ.uid) ? '🚩 إزالة العلامة' : '🚩 علّم للمراجعة'}</span>
               </button>
               <button type="button" class="power-action-btn is-submit" id="midterm-submit-btn">
-                <span>✅ تسليم الامتحان وتصحيح الإجابات</span>
+                <span>تسليم الامتحان</span>
               </button>
             ` : ''}
           </div>
@@ -708,7 +696,7 @@
             <button type="button" class="power-action-btn" data-midterm-step="prev" ${currentIndex === 0 ? 'disabled' : ''}>
               <span>→ السؤال السابق</span>
             </button>
-            <span class="text-xs font-mono font-bold">${currentIndex + 1} / ${questions.length}</span>
+            <bdi dir="ltr" class="text-xs font-mono font-bold">${currentIndex + 1} / ${questions.length}</bdi>
             <button type="button" class="power-action-btn" data-midterm-step="next" ${currentIndex === questions.length - 1 ? 'disabled' : ''}>
               <span>السؤال التالي ←</span>
             </button>
@@ -870,14 +858,19 @@
       }
       activeTab = tabName;
       modal.dataset.activePowerTab = activeTab;
+      const titles = {interactive: 'الشرح التفاعلي', midterm: 'امتحان الميدتيرم التدريبي', timer: 'مؤقت المذاكرة', notifications: 'آخر الإضافات'};
+      document.getElementById('power-modal-title').textContent = titles[activeTab] || 'أدوات المقرر';
 
       modal.querySelectorAll('[data-power-tab]').forEach(btn => {
         if (btn.getAttribute('role') === 'tab') {
           btn.setAttribute('aria-selected', String(btn.dataset.powerTab === tabName));
-          btn.tabIndex = btn.dataset.powerTab === tabName ? 0 : -1;
+          btn.tabIndex = btn.dataset.powerTab === tabName && !btn.hidden ? 0 : -1;
           btn.id = `power-tab-${btn.dataset.powerTab}`;
           btn.setAttribute('aria-controls', `power-panel-${btn.dataset.powerTab}`);
-          document.getElementById(`power-panel-${btn.dataset.powerTab}`)?.setAttribute('aria-labelledby', btn.id);
+          const panel = document.getElementById(`power-panel-${btn.dataset.powerTab}`);
+          const tabbed = !modal.querySelector('.power-modal-tabs').hidden;
+          panel?.setAttribute('role', tabbed ? 'tabpanel' : 'region');
+          panel?.setAttribute('aria-labelledby', tabbed ? btn.id : 'power-modal-title');
         }
       });
 
@@ -900,7 +893,12 @@
     }
 
     async function openPowerModal(tabName) {
-      const ready = switchPowerTab(tabName || (isSubjectPage ? 'interactive' : 'notifications'));
+      const requested = tabName || (isSubjectPage ? 'interactive' : 'notifications');
+      const allowedTabs = requested === 'interactive' ? ['interactive', 'midterm'] : [requested];
+      const tabs = [...modal.querySelectorAll('[data-power-tab]')];
+      tabs.forEach(button => { button.hidden = !allowedTabs.includes(button.dataset.powerTab); });
+      modal.querySelector('.power-modal-tabs').hidden = tabs.filter(button => !button.hidden).length < 2;
+      const ready = switchPowerTab(requested);
       if (window.PortalDialog?.open) {
         window.PortalDialog.open(modal);
       } else {
@@ -1003,6 +1001,7 @@
           selectedLectures.add(lecId);
         }
         renderMidtermPanel();
+        [...panelMidterm.querySelectorAll('[data-toggle-scope-lec]')].find(button => button.dataset.toggleScopeLec === lecId)?.focus({preventScroll: true});
         return;
       }
 
@@ -1094,7 +1093,7 @@
       const tab = event.target.closest('[role="tab"][data-power-tab]');
       if (!tab || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
       event.preventDefault();
-      const tabs = [...modal.querySelectorAll('[role="tab"][data-power-tab]')];
+      const tabs = [...modal.querySelectorAll('[role="tab"][data-power-tab]')].filter(button => !button.hidden);
       const direction = getComputedStyle(tab).direction === 'rtl' ? -1 : 1;
       let index = tabs.indexOf(tab);
       if (event.key === 'Home') index = 0;
@@ -1108,9 +1107,11 @@
       if (event.target.id === 'midterm-count-select') {
         examCountSetting = event.target.value;
         renderMidtermPanel();
+        document.getElementById('midterm-count-select')?.focus({preventScroll: true});
       } else if (event.target.id === 'midterm-timer-select') {
         examTimerSetting = event.target.value;
         renderMidtermPanel();
+        document.getElementById('midterm-timer-select')?.focus({preventScroll: true});
       }
     });
 
