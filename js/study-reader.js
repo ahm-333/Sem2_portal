@@ -33,7 +33,7 @@
     const existing = window.PortalStudyState.getItem(activeContentKey);
     window.PortalStudyState.updateItem(activeContentKey, {
       startedAt: existing?.startedAt || new Date().toISOString(),
-      reader: {slideId: currentLecture.slides[currentSlideIndex].num, tab: readerMode === 'slide' ? 'original' : 'explanation', updatedAt: new Date().toISOString()}
+      reader: {slideId: currentLecture.slides[currentSlideIndex].num, tab: Boolean(studyTabBtnQuiz && studyTabBtnQuiz.classList.contains('active')) ? 'quiz' : (readerMode === 'slide' ? 'original' : 'explanation'), updatedAt: new Date().toISOString()}
     });
   }
   studyModal.classList.add("a1-reader-workspace");
@@ -122,6 +122,7 @@
       if (studyFullQuizView) studyFullQuizView.classList.remove("hidden");
     }
     window.PortalUI.icons(studyModal);
+    saveReaderPosition();
   }
 
   if (studyTabBtnSlides) {
@@ -589,10 +590,21 @@
     });
     const savedPosition = window.PortalStudyState.getItem(activeContentKey)?.reader;
     const deepLink = window.PortalContentLinks.parse(window.location);
-    const requestedSlide = deepLink.item === activeContentKey && deepLink.slide ? deepLink.slide : savedPosition?.slideId;
-    const requestedTab = deepLink.item === activeContentKey && deepLink.tab ? deepLink.tab : savedPosition?.tab;
-    setReaderMode(requestedTab === 'original' ? 'slide' : 'explanation');
-    selectSlide(Math.max(0, data.slides.findIndex(slide => Number(slide.num) === Number(requestedSlide))));
+    const hasExplicitItem = deepLink.isValid && deepLink.item === activeContentKey;
+    const requestedSlide = hasExplicitItem && deepLink.slide ? deepLink.slide : savedPosition?.slideId;
+    const requestedTab = hasExplicitItem && deepLink.tab ? deepLink.tab : savedPosition?.tab;
+    let slideIdx = data.slides.findIndex(slide => Number(slide.num) === Number(requestedSlide));
+    if (slideIdx < 0) slideIdx = 0;
+    selectSlide(slideIdx);
+    if (requestedTab === 'quiz' && data.fullQuiz && data.fullQuiz.length > 0) {
+      switchStudyTab('quiz');
+    } else if (requestedTab === 'original') {
+      switchStudyTab('slides');
+      setReaderMode('slide');
+    } else {
+      switchStudyTab('slides');
+      setReaderMode('explanation');
+    }
     restoringPosition = false;
     saveReaderPosition();
     window.PortalStudyState.setLastUsed({key: activeContentKey, actionId: 'internal-study'});
@@ -611,7 +623,11 @@
   }
 
 
-    return {open: openSmartStudyModal};
+    const instance = {open: openSmartStudyModal};
+    if (typeof window !== 'undefined' && window.PortalStudyReader) {
+      window.PortalStudyReader.current = instance;
+    }
+    return instance;
   }
   window.PortalStudyReader = {create};
 })();

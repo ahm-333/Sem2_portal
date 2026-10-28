@@ -33,6 +33,31 @@
     }
   }
 
+  function showUnavailableActionNotice() {
+    removeNotices();
+    const container = document.getElementById('materials') || document.querySelector('main');
+    if (!container) return;
+
+    const notice = document.createElement('div');
+    notice.className = 'portal-nav-notice glass-panel p-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 mb-6 text-right flex items-center justify-between gap-4';
+    notice.setAttribute('role', 'alert');
+    notice.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
+          <i data-lucide="alert-triangle" class="w-5 h-5" aria-hidden="true"></i>
+        </div>
+        <div>
+          <h4 class="text-xs sm:text-sm font-bold text-[var(--text-main)]">الإجراء المطلوب غير متوفر حالياً</h4>
+          <p class="text-xs text-[var(--text-muted)]">تم إظهار المصدر في الصفحة، لكن الإجراء المخصص لم يعد متاحاً في الخطة الحالية.</p>
+        </div>
+      </div>
+    `;
+    container.prepend(notice);
+    if (window.PortalUI && typeof window.PortalUI.icons === 'function') {
+      window.PortalUI.icons(notice);
+    }
+  }
+
   function showTaFilterNotice(entry, onReveal) {
     removeNotices();
     const container = document.getElementById('materials') || document.querySelector('main');
@@ -162,14 +187,91 @@
     });
   }
 
+  function resolveAction(key, actionId, context = {}) {
+    const catalog = context.catalog || (typeof window !== 'undefined' && window.PortalCatalog);
+    if (!catalog) return { valid: false, reason: 'catalog_unavailable' };
+
+    const entry = catalog.get(key);
+    if (!entry) return { valid: false, reason: 'not_found' };
+
+    if (!actionId || typeof actionId !== 'string') return { valid: false, reason: 'action_required' };
+    const action = Array.isArray(entry.actions) && entry.actions.find(a => a.id === actionId);
+    if (!action) return { valid: false, reason: 'action_unavailable' };
+
+    if (action.type === 'internal') {
+      return { valid: true, entry, action, isInternal: true };
+    }
+
+    if (action.url) {
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(action.url, 'http://localhost/');
+      } catch (_) {
+        return { valid: false, reason: 'invalid_url' };
+      }
+      if (!['http:', 'https:'].includes(parsedUrl.protocol) && !action.url.startsWith('materials/')) {
+        return { valid: false, reason: 'unsafe_url_scheme' };
+      }
+      return { valid: true, entry, action, url: action.url, isExternal: true };
+    }
+
+    return { valid: true, entry, action };
+  }
+
+  async function dispatchAction(key, actionId, row, parsed = {}) {
+    const resolved = resolveAction(key, actionId);
+    if (!resolved.valid) {
+      if (resolved.reason === 'action_unavailable') {
+        showUnavailableActionNotice();
+      }
+      return resolved;
+    }
+
+    if (actionId === 'internal-study') {
+      if (window.PortalStudyReader?.current?.open) {
+        window.PortalStudyReader.current.open(resolved.entry.courseId, resolved.entry.id);
+      } else {
+        const btn = row?.querySelector('[data-action-id="internal-study"], .btn-open-smart-study');
+        if (btn) btn.click();
+      }
+      return { dispatched: true, action: resolved.action };
+    }
+
+    if (actionId === 'drivePreviewUrl') {
+      const btn = row?.querySelector('[data-action-id="drivePreviewUrl"], .btn-preview-pdf');
+      if (btn) btn.click();
+      return { dispatched: true, action: resolved.action };
+    }
+
+    if (row) {
+      const actionEl = row.querySelector(`[data-action-id="${actionId}"]`);
+      if (actionEl) {
+        actionEl.focus?.({ preventScroll: true });
+        actionEl.classList.add('ring-2', 'ring-indigo-400');
+        setTimeout(() => actionEl.classList.remove('ring-2', 'ring-indigo-400'), 2500);
+      }
+    }
+
+    if (window.PortalStudyActivity && typeof window.PortalStudyActivity.record === 'function') {
+      window.PortalStudyActivity.record(key, actionId);
+    }
+
+    return { dispatched: true, action: resolved.action, url: resolved.url };
+  }
+
   function init() {
     if (typeof window === 'undefined' || !window.location) return;
     if (!window.PortalContentLinks) return;
 
-    function checkAndReveal() {
+    async function checkAndReveal() {
       const parsed = window.PortalContentLinks.parse(window.location);
       if (parsed.isValid && parsed.item) {
-        reveal(parsed.item, { focus: true });
+        const revealed = await reveal(parsed.item, { focus: !parsed.actionId });
+        if (parsed.actionId && revealed.found) {
+          await dispatchAction(parsed.item, parsed.actionId, revealed.element, parsed);
+        } else if (parsed.actionId && !revealed.found && revealed.reason !== 'hidden_by_ta_filter') {
+          showUnavailableNotice(parsed.item);
+        }
       } else if (new URLSearchParams(window.location.search).has('item')) showUnavailableNotice(parsed.item);
     }
 
@@ -184,6 +286,8 @@
 
   const nav = {
     reveal,
+    resolveAction,
+    dispatchAction,
     init
   };
 

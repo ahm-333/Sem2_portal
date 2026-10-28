@@ -116,7 +116,7 @@
             target="_blank" 
             rel="noopener noreferrer" 
             class="flex-1 py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm btn-smooth"
-            title="فتح الملف في Google Drive"
+            data-action-id="fileUrl" title="فتح الملف في Google Drive"
           >
             <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
             <span>فتح المذكرة</span>
@@ -504,7 +504,7 @@
                 data-preview-filename="${filename}"
                 data-preview-download="${downloadUrl}"
                 data-preview-view="${viewUrl}"
-                class="btn-preview-pdf px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
+                data-action-id="drivePreviewUrl" class="btn-preview-pdf px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
               >
                 <i data-lucide="eye" class="w-4 h-4"></i>
                 <span>${sec.fileType === 'cpp' ? 'معاينة الكود' : 'معاينة السلايدات'}</span>
@@ -516,7 +516,7 @@
                   data-play-url="${sec.videoUrl}"
                   data-play-title="${sec.videoTitle || `شرح ${sec.title}`}"
                   data-play-subtitle="${sec.videoSubtitle || (sec.ta ? `تقديم ${taRoleLabel}: ${sec.ta}` : '')}"
-                  class="btn-play-video px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
+                  data-action-id="videoUrl" class="btn-play-video px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
                 >
                   <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
                   <span>مشاهدة فيديو الشرح</span>
@@ -528,7 +528,7 @@
                 target="_blank" 
                 rel="noopener noreferrer" 
                 class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-cyan-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                title="فتح الملف في Google Drive"
+                data-action-id="driveViewUrl" title="فتح الملف في Google Drive"
               >
                 <i data-lucide="external-link" class="w-3.5 h-3.5 text-cyan-400"></i>
                 <span>فتح في Drive</span>
@@ -540,7 +540,7 @@
                 target="_blank" 
                 rel="noopener noreferrer" 
                 class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                title="${sec.localFile ? 'تحميل الملف المحلي' : 'تحميل مباشر من Google Drive'}"
+                data-action-id="${sec.localFile ? 'localFile' : 'driveDownloadUrl'}" title="${sec.localFile ? 'تحميل الملف المحلي' : 'تحميل مباشر من Google Drive'}"
               >
                 <i data-lucide="download" class="w-3.5 h-3.5"></i>
                 <span>${sec.fileType === 'cpp' ? 'تحميل الكود C++' : 'تحميل مباشر'}</span>
@@ -549,7 +549,7 @@
               ${sec.codeUrl ? `
                 <a 
                   href="${sec.codeUrl}" 
-                  target="_blank" 
+                  data-action-id="sheetUrl" target="_blank" 
                   rel="noopener noreferrer" 
                   class="px-3.5 py-2 rounded-xl glass-panel border border-emerald-500/30 text-emerald-400 text-xs font-bold hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
                 >
@@ -744,7 +744,7 @@
                 data-preview-filename="${filename}"
                 data-preview-download="${downloadUrl}"
                 data-preview-view="${viewUrl}"
-                class="btn-preview-pdf px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
+                data-action-id="drivePreviewUrl" class="btn-preview-pdf px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
               >
                 <i data-lucide="eye" class="w-4 h-4"></i>
                 <span>معاينة شيت التكليف</span>
@@ -755,7 +755,7 @@
                 target="_blank" 
                 rel="noopener noreferrer" 
                 class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-amber-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                title="فتح التكليف في Google Drive"
+                data-action-id="driveViewUrl" title="فتح التكليف في Google Drive"
               >
                 <i data-lucide="external-link" class="w-3.5 h-3.5 text-amber-400"></i>
                 <span>فتح في Google Drive</span>
@@ -768,7 +768,7 @@
               target="_blank" 
               rel="noopener noreferrer" 
               class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-amber-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-              title="تحميل ملف التكليف"
+              data-action-id="${task.localFile ? 'localFile' : task.driveDownloadUrl ? 'driveDownloadUrl' : 'fileUrl'}" title="تحميل ملف التكليف"
             >
               <i data-lucide="download" class="w-3.5 h-3.5 text-amber-400"></i>
               <span>تحميل PDF</span>
@@ -855,7 +855,7 @@
               href="${res.folderUrl}" 
               target="_blank" 
               class="p-2.5 rounded-xl glass-panel border text-xs font-bold flex items-center justify-center hover:bg-cyan-600 hover:text-white transition-all btn-smooth"
-              title="فتح مجلد الأداة في Google Drive"
+              data-action-id="folderUrl" title="فتح مجلد الأداة في Google Drive"
             >
               <i data-lucide="folder" class="w-4 h-4 text-cyan-400"></i>
             </a>
@@ -864,7 +864,7 @@
             href="${res.fileUrl}" 
             target="_blank" 
             class="px-3 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm btn-smooth"
-            title="تحميل مباشر"
+            data-action-id="fileUrl" title="تحميل مباشر"
           >
             <i data-lucide="download" class="w-3.5 h-3.5"></i>
             <span>تحميل</span>

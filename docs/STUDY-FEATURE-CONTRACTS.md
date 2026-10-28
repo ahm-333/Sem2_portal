@@ -331,3 +331,96 @@ interface AttemptEvent {
 - **Earned Completion:** Answering all questions (even with score 0) marks `quizVersion` complete in `completedVersions` and records `lastCompleted`.
 - **Reset Invariant:** Resetting an attempt renews choice order, zeroes current score and clears answers, but retains earned `completedVersions`, `lastCompleted`, and `bestCompleted` for that same version.
 - **Wrong-Answer Review:** Allows stepping through incorrectly answered questions with feedback preserved, providing an "العودة للنتائج" action to regain results focus. All-correct states display clear praise without displaying a misleading review action.
+
+---
+
+## 5. Study 05 — Quiz-Tab Resume, External-Source Activity, and Reader Recovery
+
+**Owner:** Issue #9 (`[Study 05] Finish quiz-tab resume, external-source activity and reader recovery`)
+
+### Browser Singletons & Factories
+
+- **Activity Tracker:** `window.PortalStudyActivity` (Node.js CommonJS & browser global) created via `createStudyActivity({ catalog, state })` from `js/study-activity.js`.
+- **Action Resolver & Dispatcher:** `window.PortalContentNavigation.resolveAction(key, actionId, context)` and `dispatchAction(key, actionId, row, parsed)` in `js/content-navigation.js`.
+- **Reader Instance API:** `window.PortalStudyReader.current` exposing `{ open(courseId, lectureId), close() }`.
+- **Studio Resume Generator:** `resumeOptions(entry, item, last)` in `js/studio.js`.
+
+### Interface Contract
+
+```typescript
+interface StudyActivityTracker {
+  record(key: string, actionId: string): boolean;
+  init(): void;
+}
+
+interface ActionResolutionResult {
+  valid: boolean;
+  reason?: 'catalog_unavailable' | 'not_found' | 'action_required' | 'action_unavailable' | 'invalid_url' | 'unsafe_url_scheme';
+  entry?: CatalogEntry;
+  action?: ActionDescriptor;
+  url?: string;
+  isInternal?: boolean;
+  isExternal?: boolean;
+}
+
+interface ActionDispatchResult {
+  dispatched: boolean;
+  action?: ActionDescriptor;
+  url?: string;
+  reason?: string;
+}
+
+interface ResumeOptions {
+  actionId?: string;
+  slide?: number;
+  tab?: 'explanation' | 'original' | 'quiz';
+  anchor?: string;
+}
+```
+
+### Methods & Behavior
+
+#### `PortalStudyActivity.record(key: string, actionId: string): boolean`
+- Validates that `key` is a canonical JSON string matching an existing catalog entry.
+- Validates that `actionId` exists in `entry.actions`.
+- Preserves canonical identifiers, including numerical ID `0` (`["data-structure","lecture","0"]`).
+- Sets `startedAt` on the item if not already recorded.
+- Updates `lastUsed` with `{ key, actionId, updatedAt: ISOString }` via `PortalStudyState.setLastUsed`.
+- Returns `true` if saved successfully, `false` otherwise.
+- Attached via delegated event listener to clicks on `[data-content-key] [data-action-id]`. Pure hover, render, scroll, copy, and prefetch never trigger recording.
+
+#### `PortalContentNavigation.resolveAction(key: string, actionId: string, context?: object): ActionResolutionResult`
+- Resolves catalog action for given `key` and `actionId`.
+- Strictly validates URL protocols: only `http:`, `https:`, and relative `materials/` paths are allowed. Rejects executable schemes (`javascript:`, `data:`, `vbscript:`) with `unsafe_url_scheme`.
+- Never guesses action IDs, fabricates Drive page numbers, or adds unverified video timestamps.
+
+#### `PortalContentNavigation.dispatchAction(key: string, actionId: string, row?: HTMLElement, parsed?: object): Promise<ActionDispatchResult>`
+- Dispatches validated action upon deep-link resolution or programmatic invocation:
+  - `internal-study`: Opens modal via `PortalStudyReader.current.open(courseId, id)` or clicks `.btn-open-smart-study`.
+  - `drivePreviewUrl`: Clicks modal preview trigger `.btn-preview-pdf`.
+  - External URL actions: Highlights and focuses target element with an accessible focus ring (`ring-2 ring-indigo-400`).
+- If action is unavailable in catalog, displays accessible `role="alert"` notification via `showUnavailableActionNotice()`.
+
+### Reader State Hierarchy & Quiz-Tab Resume
+
+1. **State Persistence:**
+   - Reader actively inspects tab selection on switch: persists `tab: 'quiz'` when `#study-tab-btn-quiz` is active, and `'original'` or `'explanation'` according to `readerMode`.
+   - Reader position saving is suspended during initialization (`restoringPosition = true`) until all restored parameters are verified and applied.
+2. **Restoration Precedence:**
+   - **Priority 1 (Explicit Deep Link):** Valid URL query parameters (`&action=...`, `&tab=...`, `&slide=...`, `&anchor=...`) override saved state.
+   - **Priority 2 (Saved State):** Stored `reader.tab` and `reader.slideId` restore the previous workspace session.
+   - **Priority 3 (Fallback Default):** If target slide is missing/out of bounds, falls back safely to slide index 0. If saved tab is unavailable, falls back to `'explanation'`.
+3. **Recovery Semantics:**
+   - Missing/deleted slides, invalid keys, or corrupted reader states do not trigger unhandled exceptions.
+   - Storage failures (quota, disabled localStorage) announce status via `#study-save-status` and fall back gracefully to in-memory session state without blocking reader interaction.
+
+### Standalone Bridge & Storage Ownership Invariants
+
+- **Ownership Boundary:** All Study Hub persistence belongs exclusively to `PortalStudyState` under namespace `sem2_study_v1:`.
+- **Preserved Namespaces:** Existing standalone markers `sem2_standalone_v1:` and native check preferences `sem2_standalone_check_v1:` remain independent. They are not renamed, migrated, overwritten, or substituted by the Study Hub reader.
+- **Bridge Invariant:** Standalone markers are only consumed as a bridge in `resumeOptions` when:
+  - `saved.version === 1`
+  - `saved.anchor` matches `/^[\w.-]+$/`
+  - `saved.updatedAt === item.reader.updatedAt`
+  A mismatched or invalid standalone marker is discarded safely and never overrides validated reader state.
+

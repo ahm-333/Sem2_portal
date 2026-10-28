@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
   const expMainBtn = document.getElementById("exp-main-btn");
   expMainBtn.href = course.explanationSite.url;
+  expMainBtn.setAttribute("data-action-id", "url");
 
   const expFeatures = document.getElementById("exp-features");
   const expTitle = document.getElementById("exp-title");
@@ -188,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 data-play-url="${vid.url}"
                 data-play-title="${vid.title}"
                 data-play-subtitle="${vid.subtitle || ""}"
-                class="btn-play-video flex-1 py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer btn-smooth"
+                data-action-id="url" class="btn-play-video flex-1 py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer btn-smooth"
               >
                 <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
                 <span>مشاهدة الشرح</span>
@@ -199,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 target="_blank" 
                 rel="noopener noreferrer" 
                 class="p-2.5 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-red-600 hover:text-white transition-all flex items-center justify-center btn-smooth"
-                title="فتح في تطبيق YouTube"
+                data-action-id="url" title="فتح في تطبيق YouTube"
               >
                 <i data-lucide="external-link" class="w-4 h-4"></i>
               </a>
@@ -237,6 +238,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const study = window.PortalStudyReader.create();
+  if (typeof window !== "undefined" && window.PortalStudyReader) {
+    window.PortalStudyReader.current = study;
+  }
 
   function renderLectures() {
     const lecturesList = document.getElementById("lectures-list");
@@ -322,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     type="button" 
                     data-open-study-course="${course.id}" 
                     data-open-study-lecture="${lec.id}" 
-                    class="btn-open-smart-study inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md shadow-purple-500/20 transition-all btn-smooth cursor-pointer"
+                    data-action-id="internal-study" class="btn-open-smart-study inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md shadow-purple-500/20 transition-all btn-smooth cursor-pointer"
                   >
                     <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
                     <span>✨ الشرح وتفكيك السلايدات (${smartStudyData.totalSlides} شريحة)</span>
@@ -339,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
             <div class="flex flex-wrap items-center gap-2">
               ${osUnit ? `
-                <a href="education-preview/os/?unit=${osUnit}" data-os-course-link="${lec.id}"
+                <a href="education-preview/os/?unit=${osUnit}" data-os-course-link="${lec.id}" data-action-id="standalone-study"
                   class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm btn-smooth"
                   aria-label="فتح شرح Chapter ${lec.id}: الرسومات والأسئلة والمصطلحات">
                   <i data-lucide="book-open" class="w-4 h-4"></i>
@@ -352,7 +356,7 @@ document.addEventListener("DOMContentLoaded", function () {
                   type="button"
                   data-open-study-course="${course.id}"
                   data-open-study-lecture="${lec.id}"
-                  class="btn-open-smart-study px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-purple-500/25 cursor-pointer btn-smooth"
+                  data-action-id="internal-study" class="btn-open-smart-study px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-purple-500/25 cursor-pointer btn-smooth"
                   title="تصفح الشريحة وتحتها تفكيكها الكامل وتريكات الامتحان وكويز تدريبي بالإنجليزي"
                 >
                   <i data-lucide="sparkles" class="w-4 h-4 text-purple-200"></i>
@@ -363,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- زر الشرح التفاعلي للمحاضرة -->
                 <a 
                   href="${lec.studyManualUrl}" 
-                  class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-amber-500/25 btn-smooth"
+                  data-action-id="studyManualUrl" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-amber-500/25 btn-smooth"
                   title="فتح موقع الشرح التفاعلي للمحاضرة وتفكيك الأكواد والرسومات"
                 >
                   <i data-lucide="sparkles" class="w-4 h-4 text-amber-100"></i>
@@ -380,7 +384,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 data-preview-filename="${filename}"
                 data-preview-download="${downloadUrl}"
                 data-preview-view="${viewUrl}"
-                class="btn-preview-pdf px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
+                data-action-id="drivePreviewUrl" class="btn-preview-pdf px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
               >
                 <i data-lucide="eye" class="w-4 h-4"></i>
                 <span>معاينة السلايدات</span>
@@ -392,7 +396,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 target="_blank" 
                 rel="noopener noreferrer" 
                 class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                title="فتح في Google Drive في نافذة جديدة"
+                data-action-id="driveViewUrl" title="فتح في Google Drive في نافذة جديدة"
               >
                 <i data-lucide="external-link" class="w-3.5 h-3.5 text-indigo-400"></i>
                 <span>فتح في Drive</span>
@@ -405,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 target="_blank" 
                 rel="noopener noreferrer" 
                 class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                title="تحميل مباشر من Google Drive"
+                data-action-id="driveDownloadUrl" title="تحميل مباشر من Google Drive"
               >
                 <i data-lucide="download" class="w-3.5 h-3.5"></i>
                 <span>تحميل مباشر</span>
