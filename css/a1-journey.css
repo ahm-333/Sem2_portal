@@ -122,6 +122,12 @@ body.a1 .a1-question-map .q-map-pill {width:100%;min-height:38px;border-radius:8
 body.a1 .a1-question-map .q-map-pill[aria-current="step"] {outline:2px solid var(--accent);outline-offset:1px}
 .a1-quiz-note {font-size:12px;color:var(--muted);line-height:1.9;margin-top:14px}
 .a1-quiz-main #full-quiz-summary-card {margin-top:20px}
+.a1-quiz-main #full-quiz-percent {color:var(--accent)}
+.a1-quiz-main #full-quiz-actions {margin-top:14px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.a1-quiz-main #full-quiz-review-wrong-btn {min-height:44px;padding:8px 16px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer}
+.a1-quiz-main #full-quiz-review-wrong-btn:hover {background:rgba(244,63,94,0.1)}
+.a1-quiz-main #full-quiz-all-correct-banner {padding:10px 18px;border-radius:10px;font-weight:700;font-size:13px}
+.a1-quiz-pagination #full-quiz-back-to-results-btn {min-height:44px;border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-weight:700;font-size:12px;color:var(--accent);background:var(--paper);cursor:pointer}
 
 @media(max-width:1023px) {
  .a1-course-layout {display:flex;flex-direction:column;gap:12px}
