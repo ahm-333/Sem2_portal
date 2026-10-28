@@ -65,6 +65,7 @@ body.a1 .a1-source-actions>:is(a,button) {width:auto;flex:none;padding:9px 12px;
 body.a1 .a1-source-actions>:is(a,button):is(:hover,:focus-visible) {background:var(--soft);color:var(--accent);border-color:var(--accent)}
 body.a1 .a1-source-actions>.a1-action-primary,body.a1 .a1-source-actions>.a1-action-primary:is(:hover,:focus-visible) {background:var(--accent);color:var(--paper);border-color:var(--accent)}
 body.a1 .a1-source-actions>:is(a,button) :is(span,svg,small) {color:inherit}
+body.a1 .a1-source-actions>:is(a,button):disabled,body.a1 .a1-source-actions>:is(a,button)[aria-disabled="true"],body.a1 .a1-source-actions>.a1-action-disabled {opacity:.55;cursor:not-allowed;pointer-events:none;background:var(--bg);color:var(--muted);border-color:var(--line);box-shadow:none!important;transform:none!important}
 .a1-source-details {border-top:1px solid var(--line);padding-top:7px;min-width:0}
 .a1-source-details>summary {font-size:12px;color:var(--muted);cursor:pointer;width:fit-content;min-height:36px;display:list-item;padding-block:5px}
 .a1-source-details>div {padding-top:10px}

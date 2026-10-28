@@ -254,3 +254,40 @@ PortalStudyState.replaceAll(candidate: StudySnapshot): {
 - **Validation:** accept only documented fields, canonical keys (including ID `0`), dense arrays and valid nested reader/quiz/result/last-used shapes. Reject unsafe keys, non-JSON values and cycles before mutation. All ingress paths use the same validators. Current quiz answer bounds/version membership are additionally checked by their future consumer, not guessed by this storage layer.
 - **Protected bytes:** `replaceAll` also refuses corrupt/unsupported backing state. Explicit recovery authorization and raw-byte export belong to the future backup/recovery contract; it must not bypass this protection implicitly.
 - **Accessible status:** warnings are routed into the active dialog when background `main` is inert, and return to the page region after close. Failure notices never weaken background isolation or take keyboard focus.
+
+
+---
+
+## 4. Study 10 — Per-Item Unavailable Explanation States and Action Recovery
+
+**Owner:** Issue #14 (`[Study 10] Finish per-item unavailable explanation states using the current content map`)
+
+### Availability Semantics
+
+- **Evaluation Basis:** Availability of interactive explanations is derived dynamically from catalog and module mappings:
+  1. `entry.study` (or `window.STUDY_CATALOG[courseId][lectureId]`): Interactive modal reader data.
+  2. `entry.module` (from `window.PortalStudyModules`): Standalone interactive lesson URL (e.g., `study/arch/chapter-7.html`, `study/ds/lecture-*.html`, `study/db/chapter-*.html`).
+  3. `lec.studyManualUrl`: Standalone or external study manual (e.g., Computer Architecture study website).
+  4. Course-specific mapped chapter units (e.g., Operating System `education-preview/os/?unit=os-XX`).
+- Availability is **never inferred** from course name, hardcoded lecture counts, or obsolete static lists.
+- A missing `entry.study` does not imply a lesson is unavailable if a standalone module or external study manual is mapped.
+
+### Per-Item Unavailable UI & Compaction
+
+- Lecture items without a mapped explanation render a non-operable, disabled button:
+  - Element: `<button type="button" disabled aria-disabled="true" data-study-unavailable="true" class="btn-study-disabled a1-action-disabled ...">`
+  - Text label: `الشرح — قريبًا`
+  - Accessible label & title explaining the upcoming state.
+  - Sizing meets WCAG 2.2 AA target size (minimum 44px touch target height via `.a1-source-actions > :is(a, button)`).
+- **Compaction Contract (`PortalJourney` / `compact`):**
+  - Compaction retains the disabled `data-study-unavailable` action with its `الشرح — قريبًا` label.
+  - The disabled action is never designated as `.a1-action-primary`.
+  - On rows without an available explanation (including ID `0`), the primary action falls back to the operable primary source action (`data-preview-file` for lecture slides or genuine view/download link).
+  - Profile re-rendering preserves disabled states and working primary actions across group/section switches.
+
+### Crafted URL & Action Recovery
+
+- Deep links requesting `action=internal-study` or `action=standalone-study` on items lacking that respective capability do not trigger an empty, corrupted, or incorrect lesson view.
+- Instead:
+  1. An accessible warning notice (`.portal-nav-notice`, `role="alert"`) is rendered at the top of the content area explaining that the requested explanation is coming soon.
+  2. The target content row is still revealed and focused (`PortalContentNavigation.reveal`), allowing the student to access the genuine source slides, Drive files, and downloads.
