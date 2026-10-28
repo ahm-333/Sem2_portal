@@ -2,9 +2,9 @@
   "head": "729f29150f95f580f4f12678223fdbfc62a338a6",
   "files": {
     "js/courses-data.js": "d6c58ac2ba92275f469ea6b882a39221f2a341bbcf9e2271bbc634913ea0ee42",
-    "js/schedule-data.js": "b68e370de977f31a0f48377a3f53e1266fcf6d22fd674951cdbadd3295dc0b81",
+    "js/schedule-data.js": "47448803fa0f545c33e927f29bcdadf46f84f80da8d408db772b079ec847a619",
     "js/lecture-explanations-data.js": "34faac751e92214171ab5529633922a43b7c90feb2918daa98625a740aec5bb8",
-    "tools/pending-schedule.json": "6723a3a6e610a3ffbad6fb76f3d3c6d6287907868df453e00cf183a9fc878616",
+    "tools/pending-schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
     "docs/PLANNING-NOTES.md": "ee5a2edd665d669066b99ce9409bc32400694b71669d648188b1f25eecfb2f31",
     "materials/arch/Arch_Lecture_01_Chapter1_Basic_Concepts.pdf": "a78ee7cbdfb262149e5b33beed6d39da02e6cc9e5a3adaa16bbdf5fca15f57a7",
     "materials/arch/Arch_Lecture_02_Chapter3_Computer_Function_Interconnection.pdf": "efd3f0fc70b20de2abf908942dcf510cddbdbe5f97472f404b13b473dc67256c",
