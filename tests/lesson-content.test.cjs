@@ -49,6 +49,32 @@ test('Inventory record counts match acceptance criteria exactly', () => {
   assert.equal(result.clean, true, 'Integrity check must pass with 0 errors');
 });
 
+test('Content verification is stable across Windows and Linux line endings', () => {
+  const { verifyLessonContent } = require('../tools/check-lesson-content.cjs');
+  const ch1Lf = fs.readFileSync(path.join(root, 'study/db/chapter-1.html'), 'utf8').replace(/\r\n/g, '\n');
+  const ch2Lf = fs.readFileSync(path.join(root, 'study/db/chapter-2.html'), 'utf8').replace(/\r\n/g, '\n');
+
+  // Verify pure LF input passes
+  const lfResult = verifyLessonContent({
+    root,
+    overrideHtml: {
+      'study/db/chapter-1.html': ch1Lf,
+      'study/db/chapter-2.html': ch2Lf
+    }
+  });
+  assert.equal(lfResult.clean, true, 'Integrity check must pass with pure LF line endings');
+
+  // Verify CRLF input passes
+  const crlfResult = verifyLessonContent({
+    root,
+    overrideHtml: {
+      'study/db/chapter-1.html': ch1Lf.replace(/\n/g, '\r\n'),
+      'study/db/chapter-2.html': ch2Lf.replace(/\n/g, '\r\n')
+    }
+  });
+  assert.equal(crlfResult.clean, true, 'Integrity check must pass with CRLF line endings');
+});
+
 test('All 62 source images exist and match pinned cryptographic hashes', () => {
   const { verifyImages } = require('../tools/check-lesson-content.cjs');
   const imageResult = verifyImages(root);

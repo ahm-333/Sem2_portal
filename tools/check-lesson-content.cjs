@@ -53,19 +53,20 @@ function verifyImages(rootPath) {
  * Extract topic blocks from chapter HTML.
  */
 function extractBlocks(html, tagName) {
+  const cleanHtml = html.replace(/\r\n/g, '\n');
   const blocks = [];
   const regex = new RegExp(`<${tagName}\\s+[^>]*id="(block-[^"]+|block-add)"[^>]*>([\\s\\S]*?)<\\/${tagName}>`, 'gi');
   let m;
   let order = 1;
-  while ((m = regex.exec(html)) !== null) {
+  while ((m = regex.exec(cleanHtml)) !== null) {
     const id = m[1];
     const raw = m[2];
     const headings = [...raw.matchAll(/<h[1-4][^>]*>([\s\S]*?)<\/h[1-4]>/gi)].map(h => normalizeWhitespace(h[1].replace(/<[^>]+>/g, '')));
     const title = headings[0] || id;
 
-    // Extract code blocks preserving exact punctuation and inner whitespace
+    // Extract code blocks preserving exact punctuation and inner whitespace, normalized to LF
     const codeBlocks = [...raw.matchAll(/<pre\b[^>]*>([\s\S]*?)<\/pre>|<code\b[^>]*>([\s\S]*?)<\/code>/gi)]
-      .map(c => (c[1] || c[2] || '').trim())
+      .map(c => (c[1] || c[2] || '').replace(/\r\n/g, '\n').trim())
       .filter(Boolean);
 
     // Extract table cells

@@ -32,9 +32,9 @@
     "totalSlideImages": 62
   },
   "sourceFiles": {
-    "study/db/chapter-1.html": "f36bc15097bf5d82b2abe80c1f5c28e409532ecd642f2686756e4447dcdfff1b",
-    "study/db/chapter-2.html": "869b324ffbb83d1183c45113fd208cef05c064ae01a2d63e9bc3d2a828064df2",
-    "js/lecture-explanations-data.js": "9f63d13c4fb0ce3333367cb9aadfb395f6559a4190881b3b30ef5bc67fcaef8e"
+    "study/db/chapter-1.html": "079c34bfcb7e32415ef253139182d6491b3414c476023717c14fd0d3827650db",
+    "study/db/chapter-2.html": "7e3b49d394e1092a85f9a27a8e58d6d2fda105d8a0b51988638728b1aeccd20e",
+    "js/lecture-explanations-data.js": "34faac751e92214171ab5529633922a43b7c90feb2918daa98625a740aec5bb8"
   },
   "slideImages": {
     "materials/slides/db-lec2/slide_1.png": "9660c79e16a45ecb9403e1cff3fd0d5ab6ad74186a22805b6c23cb8ecffd1abb",
@@ -133,7 +133,7 @@
           "codeBlocksCount": 0,
           "tableCellsCount": 0,
           "svgTextsCount": 17,
-          "rawHash": "4853e78f317e26602be3fcc79c7c5c94434f49652db49d9e84122bcd5a4f8044",
+          "rawHash": "fe1d0f26f90c0b78d216421807fdea35c2c1f4ab33ad80131edde236b9d172b9",
           "contentHash": "fc1c7e860b8f7a6ecbf03939afc325b91df04f0fca033ef8a59269971422fe96"
         },
         {
@@ -160,7 +160,7 @@
           "codeBlocksCount": 0,
           "tableCellsCount": 25,
           "svgTextsCount": 15,
-          "rawHash": "77a641d04d8d27d9fbd8c05f31e949e29498e832a5a0932b7c726cc6386e79aa",
+          "rawHash": "3e9a1b7e3101c079596007b9d04f63f807d6b2b403dc8bd0ad857423d34d95b7",
           "contentHash": "16f8b53747f76eea25dfd3c82eeb4cbfd7419fddf884b299a13e1e918deebd03"
         },
         {
@@ -185,7 +185,7 @@
           "codeBlocksCount": 0,
           "tableCellsCount": 0,
           "svgTextsCount": 18,
-          "rawHash": "f446beeb548383c0dc0631f64ce9972ea564a773dcce575b520b15a8cc364f64",
+          "rawHash": "e04e2dc09dabc4196a38b6dada8b91fb89b27722239bca00f77feae8612d138d",
           "contentHash": "696d27171fe21bf044afff88c894da1830af93e9700e5a5ac17e665e8b5aacd5"
         },
         {
@@ -206,7 +206,7 @@
           "codeBlocksCount": 0,
           "tableCellsCount": 0,
           "svgTextsCount": 17,
-          "rawHash": "4111c19a584820c45c6e77bd5242fd89998dfb67ba2d56fd1680286e2c150191",
+          "rawHash": "ed0742d89ce48c1854f2494d9a4ea01cab895cfebae221a15938514c8986122a",
           "contentHash": "ea4bb25a5d7dedf115b873f48f63366738bb468ad0d990bfb2a83bf236a4e902"
         },
         {
@@ -230,7 +230,7 @@
           "codeBlocksCount": 0,
           "tableCellsCount": 0,
           "svgTextsCount": 16,
-          "rawHash": "b7b679c99d9bba6970bdd252ffe24c3b3356649b10a32155b427254d4092ce27",
+          "rawHash": "72319e0c43d1485817f6f3d639015a57fddf77c5267a695ce196ae23bf21a0dc",
           "contentHash": "2f564d8db6b13bbf43d3738a39e5c5000aa0379255dbdab096ffa129ca1c2b34"
         },
         {
@@ -256,7 +256,7 @@
           "codeBlocksCount": 0,
           "tableCellsCount": 0,
           "svgTextsCount": 0,
-          "rawHash": "f4cd03ec5d83206e9eb91752064d5f77cceabb68c99462890bb72edefe47f5e1",
+          "rawHash": "77a7b3a8a542fdd7aeef95e351ffcbb313a9fc630faf6a4239c7ef5122cbac8f",
           "contentHash": "a89255b17e70fe67789d3576816984e41c72e2f578650ea2f754cbc44c69adfa"
         },
         {
@@ -274,7 +274,7 @@
           "codeBlocksCount": 0,
           "tableCellsCount": 0,
           "svgTextsCount": 16,
-          "rawHash": "7ac885ca144c9e57c37b04628fd5a76ab4ef8ad71083b7341572e83f0320e52c",
+          "rawHash": "8a7c79161edcafcc75800fe331f5a6ebb7d30bff0c1f31917e5d2667d09bac9d",
           "contentHash": "40a0af9eee67fca1a456ae4623a66db8c1ce8959b1da00436d851bf505e5e461"
         }
       ],
@@ -2313,7 +2313,7 @@
           "codeBlocksCount": 3,
           "tableCellsCount": 0,
           "svgTextsCount": 0,
-          "rawHash": "0a358135cf1ce9593307d1400051e77d71bede7f4ac15922d8b9587641ed88bf",
+          "rawHash": "c74f2490e365ed4f155b47a6df8f2dc8e4a5eb10a0f45170b74c1e0ba9a204ed",
           "contentHash": "550a3c762e20998e801b85e3dae403192fbe238cd65fba11a950ab5359d97d4e"
         },
         {
@@ -2330,7 +2330,7 @@
           "codeBlocksCount": 2,
           "tableCellsCount": 27,
           "svgTextsCount": 0,
-          "rawHash": "0c61d488719b10668351153bcb6bcddec26db63e646a20d7b461da9bbd62d71b",
+          "rawHash": "8186d449966276bd1281e594438a4283c2f6230274eb999b17cfab6f82b2edc0",
           "contentHash": "cc6e3e0635e41eec026d3bc1e79ed68b92698a98b87d2ded9232eef903cc010d"
         },
         {
@@ -2353,7 +2353,7 @@
           "codeBlocksCount": 0,
           "tableCellsCount": 0,
           "svgTextsCount": 0,
-          "rawHash": "db59e7cd01f87a93c800ff12e43f77c076dbcbdab1949979e835cf9556a7ceb8",
+          "rawHash": "80aed6a11f81e0dff5967e927a368e21a303b6297f29594e3858b3355920a702",
           "contentHash": "c540d1ea848924fd66d0a00a90ec3368c0bdde368de33e1f2e7ed3a5d97d2229"
         },
         {
@@ -2369,7 +2369,7 @@
           "codeBlocksCount": 0,
           "tableCellsCount": 0,
           "svgTextsCount": 0,
-          "rawHash": "8fb227b338860084c26511d369651385f06b93e81da1b76649abfcff11d433c5",
+          "rawHash": "2d540166258b8d0a3983883a8853c425d14674df81a84c9ba3cfbc88671d0ee4",
           "contentHash": "d88c3e981eda3a874f1fbaa1ada86580194c77cb2bda6c01397dcc4753f4ef8f"
         },
         {
@@ -2386,8 +2386,8 @@
           "codeBlocksCount": 4,
           "tableCellsCount": 0,
           "svgTextsCount": 0,
-          "rawHash": "1bfc37991bc5735d7aed8eb5290b13fa2bae225fcdc9a281c3ba33b1d5ec1d13",
-          "contentHash": "483e3db2354a7a7aeee3bf1728ebc42e9d1ea834ecbd089f81c349c32fbbcab0"
+          "rawHash": "fc316688b9246c06878d884bd4d9c29eaf94e79c2601885447ba89fc87f9999c",
+          "contentHash": "088418a61b7b60b2b8f069c8046f4ac79bcfe7ba9bbfde28c56c9766c183a561"
         },
         {
           "id": "block-6",
@@ -2399,7 +2399,7 @@
           "codeBlocksCount": 0,
           "tableCellsCount": 36,
           "svgTextsCount": 0,
-          "rawHash": "6e25c8d9631a458f2426c233f470a84b5366e654890b73745f1ac6cc4e000494",
+          "rawHash": "8cfa551575779d9929772eb9e25d4568c0d3988a6082259939a03760209bda91",
           "contentHash": "9197e7a51ecfe460c5d381522e0f5b748eb396e07bd815674db0af61869c2e96"
         }
       ],
