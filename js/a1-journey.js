@@ -132,10 +132,10 @@
         const actions = document.createElement('div'); actions.className = 'a1-source-actions';
         let internal = false;
         for (const action of [...row.querySelectorAll('a[href],button')]) {
-          if (action.matches('[data-open-study-lecture],[data-os-course-link]')) { if (internal) { action.remove(); continue; } internal = true; action.textContent = 'فتح الشرح'; }
+          if (action.matches('[data-open-study-lecture],[data-os-course-link]')) { if (internal) { action.remove(); continue; } internal = true; action.textContent = 'فتح الشرح'; } else if (action.matches('[data-standalone-study-link]')) { action.textContent = 'فتح الشرح'; } else if (action.matches('[data-study-unavailable]')) { action.setAttribute('disabled', 'true'); action.setAttribute('aria-disabled', 'true'); action.classList.add('a1-action-disabled'); action.textContent = 'الشرح — قريبًا'; }
           actions.append(action);
         }
-        const primary = actions.querySelector('[data-open-study-lecture],[data-os-course-link]') || actions.querySelector('[data-preview-file]') || actions.querySelector('[data-play-url]') || actions.querySelector('a');
+        const primary = actions.querySelector(':is([data-open-study-lecture],[data-os-course-link],[data-standalone-study-link]):not(:disabled):not([aria-disabled="true"])') || actions.querySelector('[data-preview-file]') || actions.querySelector('[data-play-url]') || actions.querySelector('a:not([aria-disabled="true"])');
         primary?.classList.add('a1-action-primary');
         const copy = document.createElement('div'); copy.className = 'a1-source-copy'; title.dir = 'auto'; copy.append(title); if (subtitle) copy.append(subtitle);
         const meta = document.createElement('p'); meta.className = 'a1-source-meta';

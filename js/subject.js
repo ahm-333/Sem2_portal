@@ -261,6 +261,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const allExp = window.STUDY_CATALOG;
       const osUnit = course.id === "operating-system" ? {1: "os-01", 2: "os-09", 3: "os-13"}[lec.id] : null;
       const smartStudyData = !osUnit && allExp && allExp[course.id] && allExp[course.id][lec.id];
+      const catalogEntry = window.PortalCatalog ? window.PortalCatalog.get(contentKey) : null;
+      const standaloneUrl = catalogEntry?.module?.url || lec.studyManualUrl || null;
+      const hasExplanation = Boolean(smartStudyData || osUnit || standaloneUrl);
 
       const fileTypeLabel = (lec.fileType || 'pdf').toUpperCase();
       const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
@@ -359,16 +362,33 @@ document.addEventListener("DOMContentLoaded", function () {
                   <span>مذاكرة السلايدات والشرح التفاعلي</span>
                 </button>
               ` : ""}
-              ${lec.studyManualUrl ? `
+              ${standaloneUrl ? `
                 <!-- زر الشرح التفاعلي للمحاضرة -->
                 <a 
-                  href="${lec.studyManualUrl}" 
+                  href="${standaloneUrl}"
+                  data-standalone-study-link="${lec.id}" 
                   class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-amber-500/25 btn-smooth"
                   title="فتح موقع الشرح التفاعلي للمحاضرة وتفكيك الأكواد والرسومات"
                 >
                   <i data-lucide="sparkles" class="w-4 h-4 text-amber-100"></i>
                   <span>الشرح التفاعلي</span>
                 </a>
+              ` : ""}
+
+              ${(!hasExplanation) ? `
+                <!-- زر الشرح غير متوفر حالياً — قريبًا -->
+                <button 
+                  type="button"
+                  disabled
+                  aria-disabled="true"
+                  data-study-unavailable="true"
+                  class="btn-study-disabled a1-action-disabled px-4 py-2 rounded-xl bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-subtle)] text-xs font-bold flex items-center gap-2 cursor-not-allowed opacity-60 shadow-none"
+                  title="الشرح التفاعلي غير متوفر حالياً لهذه المحاضرة — قريبًا"
+                  aria-label="الشرح لهذه المحاضرة غير متوفر حالياً — قريبًا"
+                >
+                  <i data-lucide="clock" class="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true"></i>
+                  <span>الشرح — قريبًا</span>
+                </button>
               ` : ""}
 
               <!-- زر المعاينة داخل الصفحة -->
