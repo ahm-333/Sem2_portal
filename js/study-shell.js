@@ -53,6 +53,7 @@
       }
     });
     new MutationObserver(syncTheme).observe(root,{attributes:true,attributeFilter:['data-theme']});
+    window.addEventListener('pageshow',syncTheme);
     syncTheme();
     // The existing standalone title and lesson controls stay in place.
     document.querySelectorAll('body > header:not(.study-portal-bar)').forEach(header => header.classList.add('study-native-header'));

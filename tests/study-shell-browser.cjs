@@ -155,5 +155,7 @@ async function register({scenario}) {
       assert.equal(failures.length,0,theme + ': readable static lesson headings and question stems ' + JSON.stringify(failures.slice(0,2)));
     }
   });
+  await require('./lesson-theme-browser.cjs').register({scenario});
 }
 module.exports = {register};
+
