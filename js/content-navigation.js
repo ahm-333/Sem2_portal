@@ -5,10 +5,18 @@
     document.querySelectorAll('.portal-nav-notice').forEach(el => el.remove());
   }
 
-  function showUnavailableNotice(key) {
+  function showUnavailableNotice(key, options = {}) {
     removeNotices();
     const container = document.getElementById('materials') || document.querySelector('main');
     if (!container) return;
+
+    const isActionNotice = Boolean(options && options.actionId);
+    const titleText = isActionNotice
+      ? 'الشرح المطلوب غير متوفر حالياً لهذا المصدر'
+      : 'المحتوى المطلوب غير متوفر حالياً';
+    const descText = isActionNotice
+      ? 'الشرح التفاعلي لهذا العنصر قيد التجهيز (قريبًا). يمكنك الاستفادة من الملفات والمصادر المتاحة بالأسفل.'
+      : 'قد يكون تم تحديث الرابط أو إزالة هذا المصدر من خطة المادة.';
 
     const notice = document.createElement('div');
     notice.className = 'portal-nav-notice glass-panel p-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 mb-6 text-right flex items-center justify-between gap-4';
@@ -19,8 +27,8 @@
           <i data-lucide="alert-triangle" class="w-5 h-5" aria-hidden="true"></i>
         </div>
         <div>
-          <h4 class="text-xs sm:text-sm font-bold text-[var(--text-main)]">المحتوى المطلوب غير متوفر حالياً</h4>
-          <p class="text-xs text-[var(--text-muted)]">قد يكون تم تحديث الرابط أو إزالة هذا المصدر من خطة المادة.</p>
+          <h4 class="text-xs sm:text-sm font-bold text-[var(--text-main)]">${titleText}</h4>
+          <p class="text-xs text-[var(--text-muted)]">${descText}</p>
         </div>
       </div>
       <a href="index.html" class="px-3.5 py-1.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 flex-shrink-0">
@@ -116,6 +124,21 @@
       return { found: false, reason: 'not_found' };
     }
 
+    let hasUnavailableActionNotice = false;
+    if (options.actionId) {
+      const isInternal = options.actionId === 'internal-study';
+      const isStandalone = options.actionId === 'standalone-study';
+      if (isInternal || isStandalone) {
+        const hasStudy = Boolean(entry.study);
+        const hasModule = Boolean(entry.module || (entry.actions || []).some(a => a.id === 'standalone-study'));
+        const isActionAvailable = isInternal ? hasStudy : hasModule;
+        if (!isActionAvailable) {
+          showUnavailableNotice(key, { actionId: options.actionId });
+          hasUnavailableActionNotice = true;
+        }
+      }
+    }
+
     // 1. Select the correct resource family in the UI
     if (window.PortalJourney && typeof window.PortalJourney.selectFamily === 'function') {
       window.PortalJourney.selectFamily(entry.kind, { push: false });
@@ -153,7 +176,9 @@
       return { found: false, reason: 'row_not_found' };
     }
 
-    removeNotices();
+    if (!hasUnavailableActionNotice) {
+      removeNotices();
+    }
     scrollToAndFocus(row, focus);
     return { found: true, element: row };
   }
@@ -222,7 +247,9 @@
     const resolved = resolveAction(key, actionId);
     if (!resolved.valid) {
       if (resolved.reason === 'action_unavailable') {
-        showUnavailableActionNotice();
+        if (!document.querySelector('.portal-nav-notice')) {
+          showUnavailableActionNotice();
+        }
       }
       return resolved;
     }
@@ -266,11 +293,11 @@
     async function checkAndReveal() {
       const parsed = window.PortalContentLinks.parse(window.location);
       if (parsed.isValid && parsed.item) {
-        const revealed = await reveal(parsed.item, { focus: !parsed.actionId });
+        const revealed = await reveal(parsed.item, { focus: !parsed.actionId, actionId: parsed.actionId });
         if (parsed.actionId && revealed.found) {
           await dispatchAction(parsed.item, parsed.actionId, revealed.element, parsed);
         } else if (parsed.actionId && !revealed.found && revealed.reason !== 'hidden_by_ta_filter') {
-          showUnavailableNotice(parsed.item);
+          showUnavailableNotice(parsed.item, { actionId: parsed.actionId });
         }
       } else if (new URLSearchParams(window.location.search).has('item')) showUnavailableNotice(parsed.item);
     }
