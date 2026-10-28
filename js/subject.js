@@ -81,9 +81,10 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("exp-title").textContent = course.explanationSite.title;
   document.getElementById("exp-desc").textContent = course.explanationSite.description;
   document.getElementById("exp-status").textContent = course.explanationSite.status || "متاح الآن";
-  
+
   const expMainBtn = document.getElementById("exp-main-btn");
   expMainBtn.href = course.explanationSite.url;
+  expMainBtn.setAttribute("data-action-id", "url");
 
   const expFeatures = document.getElementById("exp-features");
   const expTitle = document.getElementById("exp-title");
@@ -183,29 +184,29 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
 
             <div class="flex items-center gap-2 pt-3 border-t border-[var(--border-subtle)]">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 data-play-url="${vid.url}"
                 data-play-title="${vid.title}"
                 data-play-subtitle="${vid.subtitle || ""}"
-                class="btn-play-video flex-1 py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer btn-smooth"
+                data-action-id="url" class="btn-play-video flex-1 py-2.5 px-3 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm cursor-pointer btn-smooth"
               >
                 <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
                 <span>مشاهدة الشرح</span>
               </button>
 
-              <a 
-                href="${vid.url}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                href="${vid.url}"
+                target="_blank"
+                rel="noopener noreferrer"
                 class="p-2.5 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-red-600 hover:text-white transition-all flex items-center justify-center btn-smooth"
-                title="فتح في تطبيق YouTube"
+                data-action-id="url" title="فتح في تطبيق YouTube"
               >
                 <i data-lucide="external-link" class="w-4 h-4"></i>
               </a>
 
-              <button 
-                type="button" 
+              <button
+                type="button"
                 data-copy-url="${vid.url}"
                 class="btn-copy-link p-2.5 rounded-xl glass-panel border text-xs font-medium text-[var(--text-muted)] hover:text-indigo-400 transition-all flex items-center justify-center btn-smooth"
                 title="نسخ رابط الشرح"
@@ -237,6 +238,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const study = window.PortalStudyReader.create();
+  if (typeof window !== "undefined" && window.PortalStudyReader) {
+    window.PortalStudyReader.current = study;
+  }
 
   function renderLectures() {
     const lecturesList = document.getElementById("lectures-list");
@@ -257,14 +261,17 @@ document.addEventListener("DOMContentLoaded", function () {
       const downloadUrl = lec.driveDownloadUrl || lec.pdfUrl || "#";
       const filename = `${course.name}_Lecture_${lec.id}.${lec.fileType || 'pdf'}`;
       const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "lecture", lec.id) : JSON.stringify([String(course.id), "lecture", String(lec.id)]);
-      
+
       const allExp = window.STUDY_CATALOG;
       const osUnit = course.id === "operating-system" ? {1: "os-01", 2: "os-09", 3: "os-13"}[lec.id] : null;
       const smartStudyData = !osUnit && allExp && allExp[course.id] && allExp[course.id][lec.id];
+      const catalogEntry = window.PortalCatalog ? window.PortalCatalog.get(contentKey) : null;
+      const standaloneUrl = catalogEntry?.module?.url || lec.studyManualUrl || null;
+      const hasExplanation = Boolean(smartStudyData || osUnit || standaloneUrl);
 
       const fileTypeLabel = (lec.fileType || 'pdf').toUpperCase();
-      const fileTypeBadgeColor = fileTypeLabel === 'PDF' 
-        ? 'bg-red-500/10 text-red-400 border-red-500/20' 
+      const fileTypeBadgeColor = fileTypeLabel === 'PDF'
+        ? 'bg-red-500/10 text-red-400 border-red-500/20'
         : 'bg-orange-500/10 text-orange-400 border-orange-500/20';
 
       const topicsHtml = lec.topics && lec.topics.length > 0 ? `
@@ -318,11 +325,11 @@ document.addEventListener("DOMContentLoaded", function () {
               <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
                 <h4 class="text-base font-bold text-[var(--text-main)]">${lec.title}</h4>
                 ${smartStudyData ? `
-                  <button 
-                    type="button" 
-                    data-open-study-course="${course.id}" 
-                    data-open-study-lecture="${lec.id}" 
-                    class="btn-open-smart-study inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md shadow-purple-500/20 transition-all btn-smooth cursor-pointer"
+                  <button
+                    type="button"
+                    data-open-study-course="${course.id}"
+                    data-open-study-lecture="${lec.id}"
+                    data-action-id="internal-study" class="btn-open-smart-study inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md shadow-purple-500/20 transition-all btn-smooth cursor-pointer"
                   >
                     <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
                     <span>✨ الشرح وتفكيك السلايدات (${smartStudyData.totalSlides} شريحة)</span>
@@ -339,7 +346,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
             <div class="flex flex-wrap items-center gap-2">
               ${osUnit ? `
-                <a href="education-preview/os/?unit=${osUnit}" data-os-course-link="${lec.id}"
+                <a href="education-preview/os/?unit=${osUnit}" data-os-course-link="${lec.id}" data-action-id="standalone-study"
                   class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm btn-smooth"
                   aria-label="فتح شرح Chapter ${lec.id}: الرسومات والأسئلة والمصطلحات">
                   <i data-lucide="book-open" class="w-4 h-4"></i>
@@ -348,21 +355,23 @@ document.addEventListener("DOMContentLoaded", function () {
               ` : ""}
               ${smartStudyData ? `
                 <!-- زر المذاكرة التفاعلية -->
-                <button 
+                <button
                   type="button"
                   data-open-study-course="${course.id}"
                   data-open-study-lecture="${lec.id}"
-                  class="btn-open-smart-study px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-purple-500/25 cursor-pointer btn-smooth"
+                  data-action-id="internal-study" class="btn-open-smart-study px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-purple-500/25 cursor-pointer btn-smooth"
                   title="تصفح الشريحة وتحتها تفكيكها الكامل وتريكات الامتحان وكويز تدريبي بالإنجليزي"
                 >
                   <i data-lucide="sparkles" class="w-4 h-4 text-purple-200"></i>
                   <span>مذاكرة السلايدات والشرح التفاعلي</span>
                 </button>
               ` : ""}
-              ${lec.studyManualUrl ? `
+              ${standaloneUrl ? `
                 <!-- زر الشرح التفاعلي للمحاضرة -->
-                <a 
-                  href="${lec.studyManualUrl}" 
+                <a
+                  href="${standaloneUrl}"
+                  data-standalone-study-link="${lec.id}"
+                  data-action-id="${catalogEntry?.module ? 'standalone-study' : 'studyManualUrl'}"
                   class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-amber-500/25 btn-smooth"
                   title="فتح موقع الشرح التفاعلي للمحاضرة وتفكيك الأكواد والرسومات"
                 >
@@ -371,8 +380,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 </a>
               ` : ""}
 
+              ${(!hasExplanation) ? `
+                <!-- زر الشرح غير متوفر حالياً — قريبًا -->
+                <button
+                  type="button"
+                  disabled
+                  aria-disabled="true"
+                  data-study-unavailable="true"
+                  class="btn-study-disabled a1-action-disabled px-4 py-2 rounded-xl bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-subtle)] text-xs font-bold flex items-center gap-2 cursor-not-allowed opacity-60 shadow-none"
+                  title="الشرح التفاعلي غير متوفر حالياً لهذه المحاضرة — قريبًا"
+                  aria-label="الشرح لهذه المحاضرة غير متوفر حالياً — قريبًا"
+                >
+                  <i data-lucide="clock" class="w-4 h-4 text-[var(--text-muted)]" aria-hidden="true"></i>
+                  <span>الشرح — قريبًا</span>
+                </button>
+              ` : ""}
+
               <!-- زر المعاينة داخل الصفحة -->
-              <button 
+              <button
                 type="button"
                 data-preview-file="${previewUrl}"
                 data-preview-title="${lec.title}"
@@ -380,32 +405,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 data-preview-filename="${filename}"
                 data-preview-download="${downloadUrl}"
                 data-preview-view="${viewUrl}"
-                class="btn-preview-pdf px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
+                data-action-id="drivePreviewUrl" class="btn-preview-pdf px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
               >
                 <i data-lucide="eye" class="w-4 h-4"></i>
                 <span>معاينة السلايدات</span>
               </button>
 
               <!-- زر فتح في Google Drive -->
-              <a 
-                href="${viewUrl}" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                href="${viewUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
                 class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                title="فتح في Google Drive في نافذة جديدة"
+                data-action-id="driveViewUrl" title="فتح في Google Drive في نافذة جديدة"
               >
                 <i data-lucide="external-link" class="w-3.5 h-3.5 text-indigo-400"></i>
                 <span>فتح في Drive</span>
               </a>
 
               <!-- زر تحميل مباشر للملف -->
-              <a 
-                href="${downloadUrl}" 
+              <a
+                href="${downloadUrl}"
                 download="${filename}"
-                target="_blank" 
-                rel="noopener noreferrer" 
+                target="_blank"
+                rel="noopener noreferrer"
                 class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
-                title="تحميل مباشر من Google Drive"
+                data-action-id="driveDownloadUrl" title="تحميل مباشر من Google Drive"
               >
                 <i data-lucide="download" class="w-3.5 h-3.5"></i>
                 <span>تحميل مباشر</span>

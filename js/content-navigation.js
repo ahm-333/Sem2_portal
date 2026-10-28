@@ -5,7 +5,43 @@
     document.querySelectorAll('.portal-nav-notice').forEach(el => el.remove());
   }
 
-  function showUnavailableNotice(key) {
+  function showUnavailableNotice(key, options = {}) {
+    removeNotices();
+    const container = document.getElementById('materials') || document.querySelector('main');
+    if (!container) return;
+
+    const isActionNotice = Boolean(options && options.actionId);
+    const titleText = isActionNotice
+      ? 'الشرح المطلوب غير متوفر حالياً لهذا المصدر'
+      : 'المحتوى المطلوب غير متوفر حالياً';
+    const descText = isActionNotice
+      ? 'الشرح التفاعلي لهذا العنصر قيد التجهيز (قريبًا). يمكنك الاستفادة من الملفات والمصادر المتاحة بالأسفل.'
+      : 'قد يكون تم تحديث الرابط أو إزالة هذا المصدر من خطة المادة.';
+
+    const notice = document.createElement('div');
+    notice.className = 'portal-nav-notice glass-panel p-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 mb-6 text-right flex items-center justify-between gap-4';
+    notice.setAttribute('role', 'alert');
+    notice.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
+          <i data-lucide="alert-triangle" class="w-5 h-5" aria-hidden="true"></i>
+        </div>
+        <div>
+          <h4 class="text-xs sm:text-sm font-bold text-[var(--text-main)]">${titleText}</h4>
+          <p class="text-xs text-[var(--text-muted)]">${descText}</p>
+        </div>
+      </div>
+      <a href="index.html" class="px-3.5 py-1.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 flex-shrink-0">
+        <span>العودة للرئيسية</span>
+      </a>
+    `;
+    container.prepend(notice);
+    if (window.PortalUI && typeof window.PortalUI.icons === 'function') {
+      window.PortalUI.icons(notice);
+    }
+  }
+
+  function showUnavailableActionNotice() {
     removeNotices();
     const container = document.getElementById('materials') || document.querySelector('main');
     if (!container) return;
@@ -19,13 +55,10 @@
           <i data-lucide="alert-triangle" class="w-5 h-5" aria-hidden="true"></i>
         </div>
         <div>
-          <h4 class="text-xs sm:text-sm font-bold text-[var(--text-main)]">المحتوى المطلوب غير متوفر حالياً</h4>
-          <p class="text-xs text-[var(--text-muted)]">قد يكون تم تحديث الرابط أو إزالة هذا المصدر من خطة المادة.</p>
+          <h4 class="text-xs sm:text-sm font-bold text-[var(--text-main)]">الإجراء المطلوب غير متوفر حالياً</h4>
+          <p class="text-xs text-[var(--text-muted)]">تم إظهار المصدر في الصفحة، لكن الإجراء المخصص لم يعد متاحاً في الخطة الحالية.</p>
         </div>
       </div>
-      <a href="index.html" class="px-3.5 py-1.5 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 flex-shrink-0">
-        <span>العودة للرئيسية</span>
-      </a>
     `;
     container.prepend(notice);
     if (window.PortalUI && typeof window.PortalUI.icons === 'function') {
@@ -91,6 +124,21 @@
       return { found: false, reason: 'not_found' };
     }
 
+    let hasUnavailableActionNotice = false;
+    if (options.actionId) {
+      const isInternal = options.actionId === 'internal-study';
+      const isStandalone = options.actionId === 'standalone-study';
+      if (isInternal || isStandalone) {
+        const hasStudy = Boolean(entry.study);
+        const hasModule = Boolean(entry.module || (entry.actions || []).some(a => a.id === 'standalone-study'));
+        const isActionAvailable = isInternal ? hasStudy : hasModule;
+        if (!isActionAvailable) {
+          showUnavailableNotice(key, { actionId: options.actionId });
+          hasUnavailableActionNotice = true;
+        }
+      }
+    }
+
     // 1. Select the correct resource family in the UI
     if (window.PortalJourney && typeof window.PortalJourney.selectFamily === 'function') {
       window.PortalJourney.selectFamily(entry.kind, { push: false });
@@ -128,7 +176,9 @@
       return { found: false, reason: 'row_not_found' };
     }
 
-    removeNotices();
+    if (!hasUnavailableActionNotice) {
+      removeNotices();
+    }
     scrollToAndFocus(row, focus);
     return { found: true, element: row };
   }
@@ -162,14 +212,93 @@
     });
   }
 
+  function resolveAction(key, actionId, context = {}) {
+    const catalog = context.catalog || (typeof window !== 'undefined' && window.PortalCatalog);
+    if (!catalog) return { valid: false, reason: 'catalog_unavailable' };
+
+    const entry = catalog.get(key);
+    if (!entry) return { valid: false, reason: 'not_found' };
+
+    if (!actionId || typeof actionId !== 'string') return { valid: false, reason: 'action_required' };
+    const action = Array.isArray(entry.actions) && entry.actions.find(a => a.id === actionId);
+    if (!action) return { valid: false, reason: 'action_unavailable' };
+
+    if (action.type === 'internal') {
+      return { valid: true, entry, action, isInternal: true };
+    }
+
+    if (action.url) {
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(action.url, 'http://localhost/');
+      } catch (_) {
+        return { valid: false, reason: 'invalid_url' };
+      }
+      if (!['http:', 'https:'].includes(parsedUrl.protocol) && !action.url.startsWith('materials/')) {
+        return { valid: false, reason: 'unsafe_url_scheme' };
+      }
+      return { valid: true, entry, action, url: action.url, isExternal: true };
+    }
+
+    return { valid: true, entry, action };
+  }
+
+  async function dispatchAction(key, actionId, row, parsed = {}) {
+    const resolved = resolveAction(key, actionId);
+    if (!resolved.valid) {
+      if (resolved.reason === 'action_unavailable') {
+        if (!document.querySelector('.portal-nav-notice')) {
+          showUnavailableActionNotice();
+        }
+      }
+      return resolved;
+    }
+
+    if (actionId === 'internal-study') {
+      if (window.PortalStudyReader?.current?.open) {
+        window.PortalStudyReader.current.open(resolved.entry.courseId, resolved.entry.id);
+      } else {
+        const btn = row?.querySelector('[data-action-id="internal-study"], .btn-open-smart-study');
+        if (btn) btn.click();
+      }
+      return { dispatched: true, action: resolved.action };
+    }
+
+    if (actionId === 'drivePreviewUrl') {
+      const btn = row?.querySelector('[data-action-id="drivePreviewUrl"], .btn-preview-pdf');
+      if (btn) btn.click();
+      return { dispatched: true, action: resolved.action };
+    }
+
+    if (row) {
+      const actionEl = row.querySelector(`[data-action-id="${actionId}"]`);
+      if (actionEl) {
+        actionEl.focus?.({ preventScroll: true });
+        actionEl.classList.add('ring-2', 'ring-indigo-400');
+        setTimeout(() => actionEl.classList.remove('ring-2', 'ring-indigo-400'), 2500);
+      }
+    }
+
+    if (window.PortalStudyActivity && typeof window.PortalStudyActivity.record === 'function') {
+      window.PortalStudyActivity.record(key, actionId);
+    }
+
+    return { dispatched: true, action: resolved.action, url: resolved.url };
+  }
+
   function init() {
     if (typeof window === 'undefined' || !window.location) return;
     if (!window.PortalContentLinks) return;
 
-    function checkAndReveal() {
+    async function checkAndReveal() {
       const parsed = window.PortalContentLinks.parse(window.location);
       if (parsed.isValid && parsed.item) {
-        reveal(parsed.item, { focus: true });
+        const revealed = await reveal(parsed.item, { focus: !parsed.actionId, actionId: parsed.actionId });
+        if (parsed.actionId && revealed.found) {
+          await dispatchAction(parsed.item, parsed.actionId, revealed.element, parsed);
+        } else if (parsed.actionId && !revealed.found && revealed.reason !== 'hidden_by_ta_filter') {
+          showUnavailableNotice(parsed.item, { actionId: parsed.actionId });
+        }
       } else if (new URLSearchParams(window.location.search).has('item')) showUnavailableNotice(parsed.item);
     }
 
@@ -184,6 +313,8 @@
 
   const nav = {
     reveal,
+    resolveAction,
+    dispatchAction,
     init
   };
 

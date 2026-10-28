@@ -66,13 +66,20 @@
     return `<a class="studio-library-row" href="${escape(url)}" style="${palette(entry.courseId)}"><span><i data-lucide="${icons[entry.kind] || 'file-text'}" aria-hidden="true"></i></span><div><h3 dir="auto">${escape(entry.title)}</h3><p><bdi lang="en">${escape(entry.displayCourseName)}</bdi> / ${escape(labels[entry.kind] || 'مصدر')}${entry.arabicTitle ? ' / ' + escape(entry.arabicTitle) : ''}${entry.ta ? ' / ' + escape(entry.ta) : ''}</p></div><span>${entry.study || entry.module ? 'افتح الشرح' : 'افتح المصدر'}<i data-lucide="arrow-up-left" aria-hidden="true"></i></span></a>`;
   }
   function resumeOptions(entry, item, last) {
-    if (!entry.study && !entry.module) return {};
+    if (!entry) return {};
     let bridge;
     try {
       const saved = JSON.parse(window.PortalStorage.getItem('sem2_standalone_v1:' + encodeURIComponent(entry.key)));
       if (saved?.version === 1 && typeof saved.anchor === 'string' && /^[\w.-]+$/.test(saved.anchor) && saved.updatedAt === item?.reader?.updatedAt) bridge = saved;
     } catch { /* A malformed standalone marker cannot override the validated reader. */ }
-    const options = {actionId: entry.module && (!entry.study || last?.actionId === 'standalone-study' || bridge) ? 'standalone-study' : 'internal-study'};
+    const lastAction = last?.actionId && entry.actions?.find(a => a.id === last.actionId);
+    let actionId = lastAction ? lastAction.id : null;
+    if (!actionId) {
+      if (entry.module && (!entry.study || bridge)) actionId = 'standalone-study';
+      else if (entry.study) actionId = 'internal-study';
+      else if (entry.actions?.[0]) actionId = entry.actions[0].id;
+    }
+    const options = actionId ? {actionId} : {};
     if (item?.reader) { options.slide = item.reader.slideId; options.tab = item.reader.tab; }
     if (bridge) options.anchor = bridge.anchor;
     return options;
