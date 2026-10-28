@@ -119,7 +119,7 @@ const SCHEDULE_CONFIG = {
       B3: {
         doctor: "د. صفا السعيد محمد عبد الكريم",
         time: "السبت • الفترة الرابعة (1:45 - 3:15)",
-        hall: "مدرج 4"
+        hall: "المدرج الرئيسي"
       }
     }
   },
@@ -165,21 +165,21 @@ const SCHEDULE_CONFIG = {
       "computer-graphics": { ta: "م. آية عطيه", slot: "الخميس • 10:15 - 11:45", room: "م16" }
     },
     6: {
-      "computer-graphics": { ta: "م. رحمه أحمد", slot: "الأحد • 3:30 - 5:00", room: "معمل الذكاء الاصطناعي" },
-      "computer-graphics-2": { ta: "م. آية عطيه", slot: "الأربعاء • 10:15 - 11:45", room: "م15" },
+      "computer-graphics": { ta: "م. آية عطيه", slot: "الأربعاء • 10:15 - 11:45", room: "م15" },
       "operating-system": { ta: "م.م. عبد الرحمن فتحي عبد الرحمن صومع", slot: "الأربعاء • 12:00 - 1:30", room: "م18" },
       "computer-architecture": { ta: "م.م. أمل مجدي", slot: "الأربعاء • 1:45 - 3:15", room: "م11" },
       "database-systems": { ta: "م.م. حسن حسن محمد محمد", slot: "الأربعاء • 3:30 - 5:00", room: "م14" },
       "data-structure": { ta: "م. أحمد شكري", slot: "الخميس • 8:30 - 10:00", room: "م6" }
     },
     7: {
-      "operating-system": { ta: "م.م. عبد الرحمن فتحي عبد الرحمن صومع", slot: "الأحد • 3:30 - 5:00", room: "م15" },
+      "computer-graphics": { ta: "م. رحمه أحمد", slot: "الأحد • 3:30 - 5:00", room: "معمل الذكاء الاصطناعي" },
       "computer-architecture": { ta: "م. تقى مصطفى", slot: "الثلاثاء • 12:00 - 1:30", room: "م9" },
       "database-systems": { ta: "م.م. حسن حسن محمد محمد", slot: "الثلاثاء • 3:30 - 5:00", room: "م4" },
-      "operating-system-2": { ta: "م.م. عبد الرحمن فتحي عبد الرحمن صومع", slot: "الخميس • 8:30 - 10:00", room: "م20" },
+      "operating-system": { ta: "م.م. عبد الرحمن فتحي عبد الرحمن صومع", slot: "الخميس • 8:30 - 10:00", room: "م20" },
       "data-structure": { ta: "م. فاطمة محمود", slot: "الخميس • 10:15 - 11:45", room: "معمل الذكاء الاصطناعي" }
     },
     8: {
+      "operating-system": { ta: "م.م. عبد الرحمن فتحي عبد الرحمن صومع", slot: "الأحد • 3:30 - 5:00", room: "م15" },
       "computer-architecture": { ta: "م. تقى مصطفى", slot: "الاثنين • 8:30 - 10:00", room: "معمل M3" },
       "data-structure": { ta: "م. فاطمة محمود", slot: "الاثنين • 10:15 - 11:45", room: "معمل الذكاء الاصطناعي" },
       "computer-graphics": { ta: "م. رحمه أحمد", slot: "الثلاثاء • 12:00 - 1:30", room: "م6" },
@@ -195,14 +195,14 @@ const SCHEDULE_CONFIG = {
       "database-systems": { ta: "م.م. حسن حسن محمد محمد", slot: "الأربعاء • 1:45 - 3:15", room: "م14" }
     },
     10: {
-      "operating-system": { ta: "م. أحمد شكري", slot: "السبت • 3:30 - 5:00", room: "م15" },
       "data-structure": { ta: "م. فاطمة محمود", slot: "الاثنين • 8:30 - 10:00", room: "معمل الذكاء الاصطناعي" },
       "database-systems": { ta: "م.م. حسن حسن محمد محمد", slot: "الثلاثاء • 10:15 - 11:45", room: "م4" },
       "computer-graphics": { ta: "م. آية عطيه", slot: "الثلاثاء • 12:00 - 1:30", room: "م2" },
       "computer-architecture": { ta: "م. شاهده أحمد", slot: "الأربعاء • 12:00 - 1:30", room: "معمل 16" },
-      "operating-system-2": { ta: "م.م. عبد الرحمن فتحي عبد الرحمن صومع", slot: "الأربعاء • 1:45 - 3:15", room: "م18" }
+      "operating-system": { ta: "م.م. عبد الرحمن فتحي عبد الرحمن صومع", slot: "الأربعاء • 1:45 - 3:15", room: "م18" }
     },
     11: {
+      "operating-system": { ta: "م. أحمد شكري", slot: "السبت • 3:30 - 5:00", room: "م15" },
       "computer-architecture": { ta: "م. شاهده أحمد", slot: "الاثنين • 8:30 - 10:00", room: "م9" },
       "database-systems": { ta: "م.م. حسن حسن محمد محمد", slot: "الأربعاء • 12:00 - 1:30", room: "م14" },
       "data-structure": { ta: "م. فاطمة محمود", slot: "الأربعاء • 1:45 - 3:15", room: "معمل الذكاء الاصطناعي" },

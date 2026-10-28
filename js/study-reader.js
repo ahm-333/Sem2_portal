@@ -27,7 +27,7 @@
   let quizRendered = false;
   let currentSlideIndex = 0;
   let readerMode = "explanation";
-  let activeContentKey = null, restoringPosition = true;
+  let activeContentKey = null, activeQuizVersion = null, restoringPosition = true;
   function saveReaderPosition() {
     if (restoringPosition || !activeContentKey || !currentLecture) return;
     const existing = window.PortalStudyState.getItem(activeContentKey);
@@ -113,7 +113,7 @@
     } else {
       if (!currentLecture) return;
       if (!quizRendered) {
-        renderFullQuiz(currentLecture);
+        renderFullQuiz(currentLecture, { key: activeContentKey, quizVersion: activeQuizVersion });
         quizRendered = true;
       }
       modes.querySelectorAll('[data-reader-mode]').forEach(button => { button.classList.remove('active'); button.setAttribute('aria-pressed', 'false'); });
@@ -151,11 +151,13 @@
   }
 
   const fullQuiz = window.PortalStudyQuiz.create(studyFullQuizView);
-  const renderFullQuiz = data => fullQuiz.render(data);
+  const renderFullQuiz = (data, context) => fullQuiz.render(data, context);
 
   async function openSmartStudyModal(courseId, lectureId) {
     restoringPosition = true;
     activeContentKey = window.PortalCatalog.key(courseId, 'lecture', lectureId);
+    const catalogEntry = window.PortalCatalog ? window.PortalCatalog.get(activeContentKey) : null;
+    activeQuizVersion = catalogEntry?.study?.quizVersion || window.STUDY_CATALOG?.[courseId]?.[lectureId]?.quizVersion || null;
     if (!studyModal || !studySlidesFeed) return;
     const sequence = ++requestSequence;
     currentLecture = undefined;

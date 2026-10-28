@@ -255,10 +255,85 @@ PortalStudyState.replaceAll(candidate: StudySnapshot): {
 - **Protected bytes:** `replaceAll` also refuses corrupt/unsupported backing state. Explicit recovery authorization and raw-byte export belong to the future backup/recovery contract; it must not bypass this protection implicitly.
 - **Accessible status:** warnings are routed into the active dialog when background `main` is inert, and return to the page region after close. Failure notices never weaken background isolation or take keyboard focus.
 
+## 4. Study 04 — DB Reader Full Quiz Attempts, Versioned Results, and Shuffled Choice Identity
+
+### Browser Singletons & Factory
+
+- **Quiz Renderer:** `window.PortalStudyQuiz.create(view)` returning `{ render(data, context?) }`.
+- **Pure Attempt Engine:** `window.PortalQuizAttempt` (Node.js CommonJS & browser global) exported from `js/shared/quiz-attempt.js`.
+
+### Interface Contract
+
+```typescript
+interface QuizRenderContext {
+  key?: string;          // Canonical content key, e.g. '["database-systems","lecture","2"]'
+  quizVersion?: string;  // Deterministic catalog quiz version hash
+}
+
+interface Question {
+  id: number | string;
+  question: string;
+  options: string[];
+  correct: number;       // Authored correct index (0-based)
+  explanation?: string;
+  topic?: string;
+  slideNum?: number;
+}
+
+interface QuizResultSummary {
+  version: string;
+  score: number;
+  total: number;
+  completedAt: string;
+}
+
+interface QuizStorageState {
+  version: string;
+  answers: Record<string, number>; // Canonical string ID -> Authored option index
+  activeQuestionId?: string | number;
+  completedVersions?: string[];
+  lastCompleted?: QuizResultSummary;
+  bestCompleted?: QuizResultSummary;
+  archivedResults?: QuizResultSummary[];
+}
+
+interface AttemptEvent {
+  type: 'answer' | 'reset' | 'navigate';
+  questionId?: string | number;
+  choice?: number;       // Authored option index
+  completedAt?: string;
+}
+```
+
+### Public Helper Methods (`PortalQuizAttempt`)
+
+- `scoreAnswers(questions: Question[], answers: Record<string, number>): { score: number, total: number, answeredCount: number, isComplete: boolean }`
+  Derives score solely from authored option indices matching `q.correct`.
+- `hydrateAttempt(storedQuiz: unknown, questions: Question[], currentQuizVersion: string): QuizAttemptState`
+  Defensively filters alien IDs and out-of-range choices; archives older version results and resets active answers when `quizVersion` changes.
+- `transitionAttempt(previous: QuizAttemptState, questions: Question[], currentQuizVersion: string, event: AttemptEvent): QuizAttemptState`
+  Immutable state transition for user actions. Idempotently publishes completed result upon answering the final question.
+- `getWrongQuestions(questions: Question[], answers: Record<string, number>): Question[]`
+  Identifies questions where the student's answered option does not match `q.correct`.
+- `serializeForStorage(attempt: QuizAttemptState): QuizStorageState`
+  Extracts only schema-conforming fields accepted by `PortalStudyState` validation.
+
+### Choice Identity & Presentation Invariant
+
+1. **Transient Display Order:** Choices displayed on screen are permuted via `PortalQuizChoices.order(key, options, prompt)`.
+2. **Authored Storage Identity:** `quiz.answers[id]` holds the integer authored index within source `q.options`.
+3. **Session & Reload Independence:** Changing display seeds, clearing sessionStorage, or inspecting on different devices preserves the recorded authored choice.
+4. **Position-Dependent Safety:** Questions containing relative references ("All of the above", "A and B") bypass permutation, preserving authored option positions.
+
+### Completion & Review Policy
+
+- **Earned Completion:** Answering all questions (even with score 0) marks `quizVersion` complete in `completedVersions` and records `lastCompleted`.
+- **Reset Invariant:** Resetting an attempt renews choice order, zeroes current score and clears answers, but retains earned `completedVersions`, `lastCompleted`, and `bestCompleted` for that same version.
+- **Wrong-Answer Review:** Allows stepping through incorrectly answered questions with feedback preserved, providing an "العودة للنتائج" action to regain results focus. All-correct states display clear praise without displaying a misleading review action.
 
 ---
 
-## 4. Study 10 — Per-Item Unavailable Explanation States and Action Recovery
+## 5. Study 10 — Per-Item Unavailable Explanation States and Action Recovery
 
 **Owner:** Issue #14 (`[Study 10] Finish per-item unavailable explanation states using the current content map`)
 
