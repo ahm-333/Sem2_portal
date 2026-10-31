@@ -14,6 +14,13 @@
 })(typeof window !== 'undefined' ? window : globalThis, function () {
   'use strict';
 
+  const assetBase = typeof document !== 'undefined' && document.currentScript
+    ? new URL('../', document.currentScript.src).href : null;
+
+  function imageUrl(src) {
+    return assetBase && src ? new URL(src, assetBase).href : src;
+  }
+
   function escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -273,18 +280,18 @@
         <!-- صورة الشريحة كاملة وتظهر أولاً بشكل بارز -->
         <div class="rounded-2xl overflow-hidden border border-[var(--border-subtle)] bg-black/40 shadow-xl relative group">
           <img 
-            src="${escapeHtml(s.image)}" 
+            src="${escapeHtml(imageUrl(s.image))}"
             alt="Slide ${s.num}: ${escapeHtml(s.title)}" 
             class="w-full h-auto object-contain max-h-[580px] mx-auto block cursor-pointer transition-transform duration-200 hover:scale-[1.01]" 
             loading="lazy" 
-            data-zoom-image="${escapeHtml(s.image)}"
+            data-zoom-image="${escapeHtml(imageUrl(s.image))}"
             data-zoom-title="Slide #${s.num}: ${escapeHtml(s.title)}"
           />
           <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-md text-white text-[11px] font-mono px-2.5 py-1 rounded-lg border border-white/10 flex items-center gap-1.5 opacity-85 group-hover:opacity-100 transition-opacity">
             <i data-lucide="presentation" class="w-3.5 h-3.5 text-purple-400"></i>
             <span>Slide #${s.num}</span>
           </div>
-          <button type="button" class="absolute top-3 left-3 bg-black/60 hover:bg-black/80 text-white text-xs px-2.5 py-1.5 rounded-lg border border-white/20 flex items-center gap-1 opacity-70 hover:opacity-100 transition-opacity" data-zoom-btn="${escapeHtml(s.image)}" aria-label="تكبير صورة السلايد #${s.num}">
+          <button type="button" class="absolute top-3 left-3 bg-black/60 hover:bg-black/80 text-white text-xs px-2.5 py-1.5 rounded-lg border border-white/20 flex items-center gap-1 opacity-70 hover:opacity-100 transition-opacity" data-zoom-btn="${escapeHtml(imageUrl(s.image))}" aria-label="تكبير صورة السلايد #${s.num}">
             <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i>
             <span>تكبير</span>
           </button>

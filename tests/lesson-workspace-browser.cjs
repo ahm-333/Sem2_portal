@@ -54,6 +54,90 @@ async function scenario(name, fn, options = {}) {
 }
 
 async function register({ scenario: testScenario }) {
+  await testScenario('regression-content-styles', async ({ page, go }) => {
+    for (const lecture of [2, 3]) {
+      await go('study/db/lesson.html?lecture=' + lecture);
+      await page.locator('.topic-block-wrapper').first().waitFor();
+      assert.equal(await page.locator('.topic-block-body .grid').first().evaluate(el => getComputedStyle(el).display), 'grid');
+      assert.equal(await page.locator('.topic-block-body .en-badge').first().evaluate(el => getComputedStyle(el).direction), 'ltr');
+      await page.locator('#view-btn-slides').click();
+      assert.equal(await page.locator('#slide-card-1 img').evaluate(el => getComputedStyle(el).maxHeight), '580px');
+    }
+  });
+
+  await testScenario('regression-navigation-and-recovery', async ({ page, go }) => {
+    await go('study/db/lesson.html?lecture=2');
+    for (const prefix of ['', '/Sem2_portal']) {
+      const origin = new URL(page.url()).origin;
+      const lesson = origin + prefix + '/study/db/lesson.html?lecture=2';
+      await page.goto(lesson);
+      await page.locator('.topic-block-wrapper').first().waitFor();
+      await page.locator('.workspace-actions a').click();
+      assert.equal(page.url(), lesson + '#topic-reading-view');
+      assert.equal(await page.locator('.study-shell-brand').evaluate(el => el.pathname), prefix + '/index.html');
+      assert.equal(await page.locator('.study-portal-bar nav a').evaluate(el => el.pathname), prefix + '/subject.html');
+      await page.goto(origin + prefix + '/study/db/lesson.html?lecture=99');
+      await page.locator('#recovery-view a[href="lesson.html?lecture=2"]').click();
+      await page.locator('.topic-block-wrapper').first().waitFor();
+      assert.equal(page.url(), lesson);
+    }
+    await page.goto(require('node:url').pathToFileURL(path.join(root, 'study/db/lesson.html')).href + '?lecture=2');
+    const fallback = page.locator('#recovery-view a').filter({hasText: 'فتح الشرح الأصلي'});
+    await fallback.waitFor();
+    assert.equal(await fallback.evaluate(el => el.href), require('node:url').pathToFileURL(path.join(root, 'study/db/chapter-1.html')).href);
+  });
+
+  await testScenario('regression-workspace-zoom-focus', async ({ page, go }) => {
+    await go('study/db/lesson.html?lecture=2');
+    await page.locator('.topic-block-wrapper').first().waitFor();
+    await page.locator('#view-btn-slides').click();
+    const trigger = page.locator('#slide-card-1 [data-zoom-btn]');
+    await trigger.click();
+    await page.keyboard.press('Tab');
+    assert.equal(await page.locator('#slide-zoom-modal').evaluate(el => el.contains(document.activeElement)), true, 'Tab stays inside zoom');
+    assert.equal(await page.locator('#main').evaluate(el => el.inert), true, 'background is inert');
+    await page.keyboard.press('Escape');
+    assert.equal(await trigger.evaluate(el => el === document.activeElement), true, 'focus restored');
+    assert.equal(await page.locator('#main').evaluate(el => el.inert), false);
+    await trigger.click();
+    await page.locator('#slide-zoom-close').click();
+    assert.equal(await page.locator('#slide-zoom-modal').isVisible(), false);
+  });
+
+  await testScenario('regression-reduced-motion-scroll', async ({ page, go }) => {
+    await page.emulateMedia({reducedMotion: 'reduce'});
+    await page.addInitScript(() => {
+      window.__scrollBehaviors = [];
+      const original = window.Element.prototype.scrollIntoView;
+      window.Element.prototype.scrollIntoView = function (options) {
+        window.__scrollBehaviors.push(options?.behavior);
+        return original.call(this, options);
+      };
+    });
+    await go('study/db/lesson.html?lecture=2');
+    await page.locator('[data-jump-slide]').first().click();
+    await page.locator('[data-slide-nav="next"]').click();
+    await page.locator('[data-return-to-topic]').click();
+    await page.locator('[data-topic-link]').first().click();
+    const behaviors = await page.evaluate(() => window.__scrollBehaviors);
+    assert(behaviors.length >= 4);
+    assert(behaviors.every(value => value === 'auto' || value === 'instant'), JSON.stringify(behaviors));
+  });
+
+  await testScenario('regression-existing-reader-zoom', async ({ page, go }) => {
+    const key = encodeURIComponent(JSON.stringify(['database-systems', 'lecture', '2']));
+    await go('subject.html?id=database-systems&item=' + key + '&action=internal-study&tab=original&slide=1');
+    const trigger = page.locator('#study-slides-feed #slide-card-1 [data-zoom-btn]');
+    await trigger.click();
+    const zoom = page.locator('[role="dialog"][aria-modal="true"]').filter({has: page.locator('[data-reader-zoom-close]')});
+    await zoom.waitFor();
+    assert.equal(await zoom.locator('img').evaluate(el => el.src.includes('slide_1.png')), true);
+    await page.keyboard.press('Escape');
+    assert.equal(await zoom.isVisible(), false);
+    assert.equal(await trigger.evaluate(el => el === document.activeElement), true);
+    assert.equal(await page.locator('#lecture-study-modal').isVisible(), true, 'parent reader stays open');
+  });
+
   // 1. Canonical route and OS visual reference for Lecture 2 and 3
   await testScenario('lesson-workspace-canonical-route', async ({ page, go, errors }) => {
     await go('study/db/lesson.html?lecture=2');
@@ -294,11 +378,28 @@ async function register({ scenario: testScenario }) {
       await p.goto(`http://127.0.0.1:${distPort}/Sem2_portal/study/db/lesson.html?lecture=2`, { waitUntil: 'load' });
       assert.equal(await p.locator('#workspace-outline').isVisible(), true, 'outline loads under /Sem2_portal/');
       assert(await p.locator('.topic-block-wrapper').count() > 0, 'topics load under /Sem2_portal/');
+      await p.locator('.workspace-actions a').click();
+      assert.equal(new URL(p.url()).pathname, '/Sem2_portal/study/db/lesson.html');
+      assert.equal(await p.locator('.study-shell-brand').evaluate(el => el.pathname), '/Sem2_portal/index.html');
+      await p.locator('#view-btn-slides').click();
+      const slideImage = p.locator('#slide-card-1 img');
+      await slideImage.scrollIntoViewIfNeeded();
+      await p.waitForFunction(() => document.querySelector('#slide-card-1 img').naturalWidth > 0);
+      assert.equal(await slideImage.evaluate(el => getComputedStyle(el).maxHeight), '580px');
 
       // Test at root / prefix
       await p.goto(`http://127.0.0.1:${distPort}/study/db/lesson.html?lecture=2`, { waitUntil: 'load' });
       assert.equal(await p.locator('#workspace-outline').isVisible(), true, 'outline loads under root /');
       assert(await p.locator('.topic-block-wrapper').count() > 0, 'topics load under root /');
+
+      // The data loader must also resolve relative to the packaged subject bundle.
+      const key = encodeURIComponent(JSON.stringify(['database-systems', 'lecture', '2']));
+      await p.goto(`http://127.0.0.1:${distPort}/Sem2_portal/subject.html?id=database-systems&item=${key}&action=internal-study&tab=original&slide=1`);
+      const zoomTrigger = p.locator('#slide-card-1 [data-zoom-btn]');
+      await zoomTrigger.click();
+      await p.locator('[data-reader-zoom-close]').waitFor();
+      await p.keyboard.press('Escape');
+      assert.equal(await zoomTrigger.evaluate(el => el === document.activeElement), true);
     } finally {
       await ctx.close();
       distServer.close();

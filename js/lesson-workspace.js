@@ -49,16 +49,16 @@
     img.alt = title || 'تكبير صورة السلايد';
     if (titleEl) titleEl.textContent = title || '';
     modal.hidden = false;
-    modal.setAttribute('aria-modal', 'true');
-    const closeBtn = document.getElementById('slide-zoom-close');
-    if (closeBtn) closeBtn.focus();
+    window.PortalDialog.open(modal, {
+      initialFocus: '#slide-zoom-close',
+      onClose() { modal.hidden = true; }
+    });
   }
 
   function closeImageZoom() {
     const modal = document.getElementById('slide-zoom-modal');
     if (!modal) return;
-    modal.hidden = true;
-    modal.removeAttribute('aria-modal');
+    window.PortalDialog.close(modal);
   }
 
   function switchView(view) {
@@ -90,6 +90,10 @@
         slideBtn.setAttribute('aria-pressed', 'true');
       }
     }
+  }
+
+  function scrollBehavior() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
   }
 
   function showSlide(slideNum, callerAnchor = null) {
@@ -133,7 +137,7 @@
     // Scroll to top of slide feed & focus card
     const targetCard = document.getElementById('slide-card-' + num);
     if (targetCard) {
-      targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      targetCard.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
       targetCard.tabIndex = -1;
       targetCard.focus({ preventScroll: true });
     }
@@ -151,7 +155,7 @@
                      document.querySelector(`[data-block-id="${lastTopicAnchor}"]`);
 
     if (targetEl) {
-      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      targetEl.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
       targetEl.tabIndex = -1;
       targetEl.focus({ preventScroll: true });
     }
@@ -295,7 +299,7 @@
         switchView('topics');
         const target = document.getElementById('topic-' + blockId) || document.getElementById(blockId);
         if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
           target.focus({ preventScroll: true });
         }
       });
@@ -520,11 +524,6 @@
         if (e.target === zoomModal) closeImageZoom();
       });
     }
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && zoomModal && !zoomModal.hidden) {
-        closeImageZoom();
-      }
-    });
 
     // Handle deep link if slide requested
     const requestedSlide = getQueryParam('slide');

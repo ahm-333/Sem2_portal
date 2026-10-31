@@ -20,6 +20,25 @@
   const studyFontZoomIn = document.getElementById("study-font-zoom-in");
   const studyFontZoomOut = document.getElementById("study-font-zoom-out");
 
+  let imageZoom;
+  function openImageZoom(src, title) {
+    if (!imageZoom) {
+      imageZoom = document.createElement('div');
+      imageZoom.className = 'fixed inset-0 z-[9999] bg-black/90 p-4 hidden';
+      imageZoom.setAttribute('aria-label', 'تكبير صورة السلايد');
+      imageZoom.innerHTML = '<div class="flex h-full flex-col items-center gap-3"><button type="button" data-reader-zoom-close class="self-end rounded-lg bg-white px-4 py-2 text-black">إغلاق تكبير الصورة</button><img class="min-h-0 max-h-full max-w-full object-contain" alt=""></div>';
+      document.body.append(imageZoom);
+      imageZoom.querySelector('button').addEventListener('click', () => window.PortalDialog.close(imageZoom));
+      imageZoom.addEventListener('click', event => {
+        if (event.target === imageZoom || event.target === imageZoom.firstElementChild) window.PortalDialog.close(imageZoom);
+      });
+    }
+    const image = imageZoom.querySelector('img');
+    image.src = src;
+    image.alt = title || 'صورة السلايد بالحجم الكامل';
+    window.PortalDialog.open(imageZoom, {initialFocus: '[data-reader-zoom-close]'});
+  }
+
   let isStudyFullscreen = false;
   let currentStudyFontZoom = 0; // 0 = normal, 1 = lg, 2 = xl
   let requestSequence = 0;
@@ -250,7 +269,7 @@
     studySlidesFeed.innerHTML = window.PortalSlideView.renderSlideCards(data.slides, {
       totalSlides: data.totalSlides
     });
-    window.PortalSlideView.bindSlideInteractions(studySlidesFeed);
+    window.PortalSlideView.bindSlideInteractions(studySlidesFeed, {onImageZoom: openImageZoom});
 
     // The full quiz is built only when its tab is selected.
 

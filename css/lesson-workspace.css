@@ -29,6 +29,47 @@ html[data-theme="reading"] {
 }
 
 /* Page Container & Layout */
+/* Preserve the chapter's authored content treatments inside the extracted blocks. */
+.topic-block-body { --reader-font-size: 1.15em; font-family: 'Tajawal', sans-serif; }
+.topic-block-body :is(h1, h2, h3, h4, .heading-font) { font-family: 'Cairo', sans-serif; }
+.topic-block-body .reader-text { font-size: var(--reader-font-size); line-height: 2.1; letter-spacing: 0.01em; }
+.topic-block-body :is(.reader-card, .sub-box) { background: var(--ws-soft); border-color: var(--ws-line); }
+.topic-block-body .slide-quote { background: var(--ws-soft); color: var(--ws-ink); border-right-color: var(--ws-accent); }
+.topic-block-body .balady-box { background: var(--ws-soft); border-color: var(--ws-good); }
+.topic-block-body .en-badge {
+  direction: ltr;
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--ws-line);
+  border-radius: 0.375rem;
+  font-size: 0.85em;
+  font-weight: 600;
+  margin: 0 0.2rem;
+  background: var(--ws-soft);
+  color: var(--ws-accent);
+}
+.topic-block-body .ascii-diagram {
+  direction: ltr;
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.5;
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 1.25rem 1.5rem;
+  border-radius: 1rem;
+  overflow-x: auto;
+  border: 1px solid #334155;
+}
+.topic-block-body .schema-table :is(th, td) {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--ws-line);
+  text-align: center;
+}
+.topic-block-body .schema-table th { background: #0f172a; color: #f8fafc; }
+
 .workspace-page {
   max-width: 1320px;
   margin: 0 auto;
