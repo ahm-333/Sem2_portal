@@ -553,3 +553,71 @@ interface ManualCompleteResult {
 2. **Manual Complete Control:** Interactive button `<button type="button" class="btn-study-manual-complete" aria-pressed="true|false">` meets touch target size (minimum 44px height/width) and provides clear accessible labels.
 3. **Progress Summary:** Rendered in `#portal-study-progress-card` with `role="region"`, `aria-label="ملخص تقدم المذاكرة"`, and a live progress bar (`role="progressbar"`, `aria-valuenow`, `aria-valuemin="0"`, `aria-valuemax="100"`).
 4. **Reactive Updates:** Listens to `portal:progress-changed`, `portal:profile-changed`, and `portal:study-save-status` to re-render counts and badges dynamically without requiring a page refresh.
+
+
+---
+
+## 8. Study 07 — Search Ranking, Deterministic Tie-Breaking, and Progress Filtering
+
+**Owner:** Issue #11 (`[Study 07] Add ranking and progress filters to the existing Studio resource search`)
+
+### Browser Singleton & Node Factory
+
+- **Browser Global:** `window.PortalContentSearch`
+- **Node Factory:** `createContentSearch({ catalog, progress, studentProfile })` exported from `js/shared/content-search.js`.
+
+### Interface Contract
+
+```typescript
+type SearchStatusFilter = 'all' | 'completed' | 'in-progress' | 'not-started';
+
+interface SearchCriteria {
+  query?: string;
+  courseId?: string;       // Course ID or 'all'
+  kind?: string;           // 'all' | 'lectures' | 'sections' | 'videos' | 'assignments' | 'resources' | 'interactive'
+  status?: SearchStatusFilter;
+  allTas?: boolean;        // If false, filter sections by student's active TA
+  explicitProfile?: StudentProfileData | null;
+}
+
+interface ContentSearchService {
+  normalize(value: unknown): string;
+  isProgressEligible(entry: CatalogEntry): boolean;
+  getItemStatus(key: string, entry?: CatalogEntry): ItemCompletionStatus | null;
+  computeRank(queryNorm: string, tokens: string[], entry: CatalogEntry): number;
+  search(criteria?: SearchCriteria): CatalogEntry[];
+  createContentSearch(options?: object): ContentSearchService;
+}
+```
+
+### Public Methods
+
+- `normalize(value: unknown): string`: Normalizes Arabic and English search tokens. Decomposes Unicode (NFKD), strips diacritics/tashkeel (`[\u0300-\u036f\u064b-\u065f\u0670]`), strips tatweel (`\u0640`), unifies alef variants (`[إأآٱ]` -> `ا`), maps `ى` -> `ي` and `ة` -> `ه`, converts to lowercase, and trims.
+- `isProgressEligible(entry: CatalogEntry): boolean`: Identifies eligible published lectures and sections (`type: 'lecture' | 'section'`). Videos, assignments, drive/practical resources, external explanation sites, and OS standalone theory units return `false`.
+- `getItemStatus(key: string, entry?: CatalogEntry): ItemCompletionStatus | null`: Retrieves current completion status (`'not-started' | 'in-progress' | 'completed'`) via `PortalStudyProgress.getStatus(key)` for eligible entries. Ineligible items return `null`.
+- `computeRank(queryNorm: string, tokens: string[], entry: CatalogEntry): number`: Returns integer ranking tier (1 to 7) for matched items.
+- `search(criteria: SearchCriteria): CatalogEntry[]`: Executes multi-facet search, filtering by course, kind, TA scope, and progress status, ranking matching items by relevancy tier with deterministic tie-breaking.
+
+### Ranking Tiers & Relevancy Precedence
+
+1. **Tier 1 (Exact code or title):** Exact match on course code (`normCode === queryNorm`) or title (`normTitle === queryNorm || normArabicTitle === queryNorm`).
+2. **Tier 2 (Prefix match):** Code or title begins with the normalized query (`startsWith(queryNorm)`).
+3. **Tier 3 (Contiguous title phrase):** Full normalized query string appears as a contiguous substring in the title or Arabic title (`includes(queryNorm)`).
+4. **Tier 4 (Title terms):** All query tokens appear within title, Arabic title, course code, course name, or presentation display name.
+5. **Tier 5 (Topic match):** Query matches any topic or all query tokens appear in topics.
+6. **Tier 6 (Description match):** All query tokens appear in the item description.
+7. **Tier 7 (General token match):** Query tokens match across combined metadata fields.
+
+### Deterministic Tie-Breaking
+
+- When query is empty, results retain stable catalog order (`catalogIndex`).
+- When matching items belong to the same rank tier, original catalog order (`catalogIndex`) breaks ties deterministically. Stable keys, including numerical ID `0` (`["data-structure","lecture","0"]`), are preserved.
+- No random, unstable, or locale-variant sorting is applied.
+
+### Progress Status Filtering & Preservation Guarantees
+
+1. **Eligible Items Only:** Progress status filtering (`'completed'`, `'in-progress'`, `'not-started'`) evaluates exclusively against published lecture and section items.
+2. **No Fabricated Completion:** Ineligible items (videos, assignments, resources) are excluded when a specific progress status filter is active, preventing fabricated completion badges or false "not-started" indicators.
+3. **Compound Filtering:** Filters for course, resource kind (including `interactive` for the 25 local lessons), progress status, and TA scope combine conjunctively (`AND`).
+4. **Lazy First Render:** Library rows remain 0 on initial home page load until the library section is actively revealed, ensuring zero overhead for students solely browsing course cards or timetables.
+5. **Accessibility & Reactivity:** The search interface provides accessible form labels, `role="status"` with `aria-live="polite"` result announcements, and reacts dynamically to `portal:progress-changed` and `studentProfileChanged` events without full-page reloads.

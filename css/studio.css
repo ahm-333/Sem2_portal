@@ -110,6 +110,10 @@ body.studio .studio-all-tas input{min-height:20px;width:16px;height:16px;accent-
 .studio-library-row svg{width:21px;height:21px}.studio-library-row h3{font:600 16px/1.5 'Segoe UI',Alexandria,sans-serif;overflow-wrap:anywhere}
 .studio-library-row p{font-size:11px;line-height:1.9;color:var(--muted);margin-top:4px}.studio-library-row>span:last-child{font-size:11px;color:var(--accent);display:flex;gap:8px;align-items:center;white-space:nowrap}
 .studio-library-row>span:last-child svg{width:15px;height:15px}
+.studio-status-badge{display:inline-block;padding:2px 8px;font-size:10px;font-weight:600;border-radius:6px;margin-inline-start:8px;vertical-align:middle;line-height:1.5}
+.studio-status-badge.status-completed{background:var(--course-mint);color:var(--positive)}
+.studio-status-badge.status-in-progress{background:var(--course-peach);color:var(--warning)}
+.studio-status-badge.status-not-started{background:var(--soft);color:var(--muted)}
 .studio-empty{padding:50px 20px;text-align:center;background:var(--paper);border-radius:13px}.studio-empty>svg{width:35px;height:35px;margin:0 auto 14px;color:var(--accent)}.studio-empty h3{font-size:19px;margin:0 0 9px}.studio-empty p{font-size:12px;color:var(--muted);margin-bottom:20px}
 .studio-resume-link{display:flex;align-items:center;gap:15px;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:17px 20px;margin-top:20px}.studio-resume-link>svg{width:28px;height:28px;color:var(--accent)}.studio-resume-link div{flex:1}.studio-resume-link strong{font-size:12px;font-weight:500}.studio-resume-link p{font-size:11px;color:var(--muted);margin-top:3px}.studio-resume-link>span{font-size:11px;color:var(--accent)}
 body.studio #schedule-section{padding:0;max-width:none}.studio .a1-schedule-shell{padding:26px;border-radius:15px}.studio .a1-schedule-title{font-size:24px}.studio .a1-schedule-day{border-radius:10px}

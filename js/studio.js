@@ -58,12 +58,17 @@
       article.append(quick); window.PortalUI.icons(quick);
     }
   }
-  function normalize(value) {
-    return String(value).toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f\u064b-\u065f\u0670\u0640]/g, '').replace(/[إأآٱ]/g, 'ا').replace(/ى/g, 'ي').replace(/ة/g, 'ه');
+  function statusBadge(entry) {
+    if (!window.PortalContentSearch || !window.PortalContentSearch.isProgressEligible(entry)) return '';
+    const status = window.PortalContentSearch.getItemStatus(entry.key, entry);
+    if (!status) return '';
+    const text = status === 'completed' ? 'مكتمل' : status === 'in-progress' ? 'قيد المذاكرة' : 'لم تبدأ';
+    return ` <span class="studio-status-badge status-${escape(status)}" role="status">${escape(text)}</span>`;
   }
   function resourceRow(entry, options = {}) {
     const url = window.PortalContentLinks.href(entry.key, options);
-    return `<a class="studio-library-row" href="${escape(url)}" style="${palette(entry.courseId)}"><span><i data-lucide="${icons[entry.kind] || 'file-text'}" aria-hidden="true"></i></span><div><h3 dir="auto">${escape(entry.title)}</h3><p><bdi lang="en">${escape(entry.displayCourseName)}</bdi> / ${escape(labels[entry.kind] || 'مصدر')}${entry.arabicTitle ? ' / ' + escape(entry.arabicTitle) : ''}${entry.ta ? ' / ' + escape(entry.ta) : ''}</p></div><span>${entry.study || entry.module ? 'افتح الشرح' : 'افتح المصدر'}<i data-lucide="arrow-up-left" aria-hidden="true"></i></span></a>`;
+    const badge = statusBadge(entry);
+    return `<a class="studio-library-row" href="${escape(url)}" style="${palette(entry.courseId)}"><span><i data-lucide="${icons[entry.kind] || 'file-text'}" aria-hidden="true"></i></span><div><h3 dir="auto">${escape(entry.title)}</h3><p><bdi lang="en">${escape(entry.displayCourseName)}</bdi> / ${escape(labels[entry.kind] || 'مصدر')}${entry.arabicTitle ? ' / ' + escape(entry.arabicTitle) : ''}${entry.ta ? ' / ' + escape(entry.ta) : ''}${badge}</p></div><span>${entry.study || entry.module ? 'افتح الشرح' : 'افتح المصدر'}<i data-lucide="arrow-up-left" aria-hidden="true"></i></span></a>`;
   }
   function resumeOptions(entry, item, last) {
     if (!entry) return {};
@@ -99,34 +104,46 @@
     const query = document.getElementById('library-query');
     const courseSelect = document.getElementById('library-course');
     const kind = document.getElementById('library-kind');
+    const statusSelect = document.getElementById('library-status');
     const allTas = document.getElementById('library-all-tas');
     const clear = document.getElementById('library-clear');
     let dirty = true;
-    // Catalog metadata is immutable for this page; normalize it once, not per keystroke.
-    const catalog = window.PortalCatalog.list().map(entry => ({entry, text:normalize([entry.title, entry.arabicTitle, entry.displayCourseName, entry.courseName, entry.code, entry.description, ...entry.topics].join(' '))}));
     for (const course of window.COURSES_DATA) { const option = document.createElement('option'); option.value = course.id; option.textContent = window.PortalPresentation.course(course).name; courseSelect.append(option); }
     function render() {
       dirty = true;
       if (document.getElementById('studio-library').hidden) return;
       dirty = false;
-      const words = normalize(query.value).trim().split(/\s+/).filter(Boolean);
-      const entries = catalog.filter(({entry,text}) => {
-        if (!entry.actions.length) return false;
-        if (courseSelect.value !== 'all' && entry.courseId !== courseSelect.value) return false;
-        if (kind.value !== 'all' && (kind.value === 'interactive' ? !entry.study && !entry.module : kind.value !== entry.kind)) return false;
-        if (!allTas.checked && entry.ta) { const staff = window.StudentProfile.getCourseStaff(entry.courseId); if (!window.StudentProfile.isTaMatch(entry.ta, staff.ta)) return false; }
-        return words.every(word => text.includes(word));
-      }).map(({entry}) => entry);
+      const searchEngine = window.PortalContentSearch;
+      const entries = searchEngine ? searchEngine.search({
+        query: query.value,
+        courseId: courseSelect.value,
+        kind: kind.value,
+        status: statusSelect ? statusSelect.value : 'all',
+        allTas: allTas.checked
+      }) : [];
       const results = document.getElementById('library-results');
       document.getElementById('library-result-count').textContent = `${entries.length} مصدر متاح${query.value.trim() ? ' لبحثك' : ''}`;
       clear.hidden = !query.value;
-      results.innerHTML = entries.length ? entries.map(entry => resourceRow(entry, entry.study ? {actionId: 'internal-study'} : entry.module ? {actionId: 'standalone-study'} : {})).join('') : '<div class="studio-empty"><i data-lucide="search-x" aria-hidden="true"></i><h3>مفيش مصادر مطابقة</h3><p>جرّب كلمة أقل، غيّر المادة أو نوع المصدر، أو اعرض مصادر كل المعيدين.</p><button class="studio-button" id="library-reset">مسح البحث والفلاتر</button></div>';
-      document.getElementById('library-reset')?.addEventListener('click', () => { query.value = ''; courseSelect.value = 'all'; kind.value = 'all'; allTas.checked = false; render(); query.focus(); });
+      results.innerHTML = entries.length ? entries.map(entry => resourceRow(entry, entry.study ? {actionId: 'internal-study'} : entry.module ? {actionId: 'standalone-study'} : {})).join('') : '<div class="studio-empty"><i data-lucide="search-x" aria-hidden="true"></i><h3>مفيش مصادر مطابقة</h3><p>جرّب كلمة أقل، غيّر المادة أو نوع المصدر أو حالة المذاكرة، أو اعرض مصادر كل المعيدين.</p><button class="studio-button" id="library-reset">مسح البحث والفلاتر</button></div>';
+      document.getElementById('library-reset')?.addEventListener('click', () => {
+        query.value = '';
+        courseSelect.value = 'all';
+        kind.value = 'all';
+        if (statusSelect) statusSelect.value = 'all';
+        allTas.checked = false;
+        render();
+        query.focus();
+      });
       window.PortalUI.icons(results);
     }
-    query.addEventListener('input', render); courseSelect.addEventListener('change', render); kind.addEventListener('change', render); allTas.addEventListener('change', render);
+    query.addEventListener('input', render);
+    courseSelect.addEventListener('change', render);
+    kind.addEventListener('change', render);
+    if (statusSelect) statusSelect.addEventListener('change', render);
+    allTas.addEventListener('change', render);
     clear.addEventListener('click', () => { query.value = ''; render(); query.focus(); });
     window.addEventListener('studentProfileChanged', render);
+    window.addEventListener('portal:progress-changed', render);
     window.addEventListener('portal:view-changed', () => { if (dirty) render(); });
     render();
   }
