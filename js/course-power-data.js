@@ -9,9 +9,42 @@
   // قائمة آخر الإضافات والتحديثات في المنصة (تظهر في جرس التنبيهات 🔔)
   const PORTAL_NOTIFICATIONS = [
     {
-      id: 'notif-ds-sec4-stack',
+      id: 'notif-db-lesson-workspace',
       isNew: true,
       dateLabel: 'أحدث إضافة 🔥',
+      courseId: 'database-systems',
+      courseName: 'نظم قواعد البيانات (Database Systems)',
+      typeLabel: 'بيئة دروس موحدة + 166 سؤال تدريبي',
+      title: 'بيئة الدروس التفاعلية (المحاضرات 2 و 3) وبنك التدريبات الشامل',
+      desc: 'إطلاق مساحة المذاكرة الموحدة لمحاضرات قواعد البيانات بالشرح التفاعلي للسلايدات وتفكيك الرسوم، مع 166 سؤالاً تدريبياً موثقاً وكويزات رسمية ومحاكاة للامتحانات.',
+      url: 'study/db/lesson.html?lecture=2'
+    },
+    {
+      id: 'notif-study-progress-tracker',
+      isNew: true,
+      dateLabel: 'ميزة جديدة ⚡',
+      courseId: 'database-systems',
+      courseName: 'نظم قواعد البيانات (Database Systems)',
+      typeLabel: 'تتبع الإنجاز الشخصي',
+      title: 'نظام تتبع تقدم المذاكرة والإنجاز حسب سكشنك ومعيدك',
+      desc: 'شريط تقدم مئوي يوضح إنجازك الفعلي في المنهج المتاح مع إمكانية تعليم المحاضرات والسكاشن المكتملة يدوياً بضغطة زر واحدة ومزامنتها فورياً.',
+      url: 'subject.html?id=database-systems'
+    },
+    {
+      id: 'notif-studio-search-ranking',
+      isNew: true,
+      dateLabel: 'تحديث المكتبة ✨',
+      courseId: 'data-structure',
+      courseName: 'هياكل البيانات (Data Structures)',
+      typeLabel: 'بحث ذكي + فلتر إنجاز',
+      title: 'ترتيب ذكي لنتائج البحث وفلترة المحاضرات بحالة المذاكرة',
+      desc: 'تطوير محرك البحث في مكتبة المصادر لترتيب النتائج حسب الأهمية، ودعم فائق للهمزات والكلمات العربية، مع إمكانية فرز المصادر بالمكتمل وقيد المذاكرة.',
+      url: 'index.html#studio'
+    },
+    {
+      id: 'notif-ds-sec4-stack',
+      isNew: false,
+      dateLabel: 'مضاف حديثاً 📌',
       courseId: 'data-structure',
       courseName: 'هياكل البيانات (Data Structures)',
       typeLabel: 'سكشن عملي + 3 فيديوهات + كود C++',
@@ -21,8 +54,8 @@
     },
     {
       id: 'notif-ds-lec5-queue',
-      isNew: true,
-      dateLabel: 'جديد ✨',
+      isNew: false,
+      dateLabel: 'مضاف حديثاً 📌',
       courseId: 'data-structure',
       courseName: 'هياكل البيانات (Data Structures)',
       typeLabel: 'محاضرة 5 + سكشن 5',
@@ -32,8 +65,8 @@
     },
     {
       id: 'notif-ds-interactive',
-      isNew: true,
-      dateLabel: 'شرح تفاعلي ⚡',
+      isNew: false,
+      dateLabel: 'مضاف حديثاً 📌',
       courseId: 'data-structure',
       courseName: 'هياكل البيانات (Data Structures)',
       typeLabel: 'بوابة الشرح التفاعلي',
@@ -43,8 +76,8 @@
     },
     {
       id: 'notif-db-lec45-er',
-      isNew: true,
-      dateLabel: 'جديد ✨',
+      isNew: false,
+      dateLabel: 'مضاف حديثاً 📌',
       courseId: 'database-systems',
       courseName: 'نظم قواعد البيانات (Database Systems)',
       typeLabel: 'محاضرة 4 و 5 + شرح تفاعلي',
