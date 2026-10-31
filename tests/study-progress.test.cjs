@@ -96,6 +96,34 @@ test('study-progress: getStatus distinguishes not-started, in-progress, and comp
   assert.equal(progress.getStatus(fullQuizKey), 'in-progress');
 });
 
+test('study-progress: stored answers must cover authored questions with valid choices', () => {
+  const { context } = setup();
+  const progress = context.PortalStudyProgress;
+  const state = context.PortalStudyState;
+  const key = '["database-systems","lecture","2"]';
+  const study = context.PortalCatalog.get(key).study;
+  const validAnswers = Object.fromEntries(study.questionIds.map((id, i) => [id, study.optionCounts[i] - 1]));
+  const missingAnswer = { ...validAnswers };
+  delete missingAnswer[study.questionIds[0]];
+
+  const cases = [
+    ['out-of-range choices', Object.fromEntries(study.questionIds.map(id => [id, 999])), study.quizVersion, false],
+    ['alien IDs replacing a missing answer', { ...missingAnswer, alien: 0, other: 0 }, study.quizVersion, false],
+    ['one out-of-range choice', { ...validAnswers, [study.questionIds[0]]: study.optionCounts[0] }, study.quizVersion, false],
+    ['valid answers from an old version', validAnswers, 'older-quiz-version', false],
+    ['all authored answers without completion history', validAnswers, study.quizVersion, true],
+    ['valid answers with an extra alien ID', { ...validAnswers, alien: 999 }, study.quizVersion, true]
+  ];
+
+  for (const [label, answers, version, complete] of cases) {
+    assert.equal(state.updateItem(key, { quiz: { version, answers } }).saved, true, label);
+    assert.equal(progress.getStatus(key), complete ? 'completed' : 'in-progress', label);
+    const summary = progress.getCourseSummary('database-systems', { group: 'B1', section: 1 });
+    assert.equal(summary.lectures.completed, complete ? 1 : 0, label);
+    assert.equal(summary.total.completed, complete ? 1 : 0, label);
+  }
+});
+
 test('study-progress: count canonical published lecture/section keys once; exclude videos, resources, OS units', () => {
   const { context } = setup();
   const progress = context.PortalStudyProgress;

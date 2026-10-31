@@ -61,12 +61,22 @@
         const quizVersion = entry?.study?.quizVersion;
         const quiz = item?.quiz;
         const questionCount = entry?.study?.questionCount || 0;
+        const questionIds = entry?.study?.questionIds;
+        const optionCounts = entry?.study?.optionCounts;
+        // Count only authored questions, using the same choice bounds as quiz hydration.
+        const hasAllAnswers = quiz?.version === quizVersion && quiz?.answers &&
+          questionCount > 0 && Array.isArray(questionIds) && Array.isArray(optionCounts) &&
+          questionIds.length === questionCount && optionCounts.length === questionCount &&
+          questionIds.every((id, i) => {
+            const choice = quiz.answers[String(id)];
+            return Number.isInteger(choice) && choice >= 0 && choice < optionCounts[i];
+          });
 
         const isCompletedVersion = Boolean(
           quizVersion && (
             (Array.isArray(quiz?.completedVersions) && quiz.completedVersions.includes(quizVersion)) ||
             (quiz?.lastCompleted && quiz.lastCompleted.version === quizVersion) ||
-            (quiz?.version === quizVersion && quiz?.answers && questionCount > 0 && Object.keys(quiz.answers).length >= questionCount)
+            hasAllAnswers
           )
         );
 
