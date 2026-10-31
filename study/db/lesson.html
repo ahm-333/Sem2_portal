@@ -1,0 +1,151 @@
+<!doctype html>
+<html data-study-shell lang="ar" dir="rtl">
+<head>
+  <script src="../../js/shared/storage.js"></script>
+  <script src="../../js/theme.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="مساحة المذاكرة الموحدة لمقرر نظم قواعد البيانات — تجمع شرح الموضوعات، تفكيك السلايدات والرسوم، وأسئلة الامتحان.">
+  <title>مساحة المذاكرة الموحدة | Database Systems</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../css/fonts/fonts.css">
+  <link rel="stylesheet" href="../../css/fonts/study/86c695552f55.css">
+  <link rel="stylesheet" href="../../css/tailwind.css">
+  <script type="application/json" data-study-tailwind>{"darkMode":"class","theme":{"extend":{"fontFamily":{"cairo":["Cairo","sans-serif"],"tajawal":["Tajawal","sans-serif"],"mono":["JetBrains Mono","monospace"]}}}}</script>
+  <link rel="stylesheet" href="../../css/study/db-lesson.css">
+  <link rel="stylesheet" href="../../css/style.css">
+  <link rel="stylesheet" href="../../css/study-shell.css">
+  <link rel="stylesheet" href="../../css/lesson-workspace.css">
+
+  <script defer src="../../js/vendor/lucide.min.js"></script>
+  <script defer src="../../js/shared/ui.js"></script>
+  <script defer src="../../js/shared/dialog.js"></script>
+  <script defer src="../../js/shared/content-catalog.js"></script>
+  <script defer src="../../js/shared/content-links.js"></script>
+  <script defer src="../../js/shared/study-state.js"></script>
+  <script defer src="../../js/study-catalog.js"></script>
+  <script defer src="../../js/study-modules.js"></script>
+  <script defer src="../../js/study-loader.js"></script>
+  <script defer src="../../js/shared/quiz-choices.js"></script>
+  <script defer src="../../js/shared/db-lesson-map.js"></script>
+  <script defer src="../../js/shared/lesson-source.js"></script>
+  <script defer src="../../js/lesson-slide-view.js"></script>
+  <script defer src="../../js/lesson-workspace.js"></script>
+  <script defer src="../../js/study-shell.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">تخطّى للمحتوى</a>
+
+  <main id="main" class="workspace-page" tabindex="-1">
+    <!-- Intro Header based on OS visual reference -->
+    <div id="lesson-intro" class="lesson-intro">
+      <div class="lesson-badge">
+        <bdi id="lesson-badge-code">DB-01</bdi>
+        <span id="lesson-badge-text">قواعد البيانات</span>
+      </div>
+      <h1 id="lesson-title">شرح المحاضرة ومساحة المذاكرة</h1>
+      <p id="lesson-lead" class="lesson-lead">
+        مساحة مذاكرة تفاعلية موحدة تجمع بين شرح الموضوعات بالتفصيل، السلايدات الأصلية، وتفكيك الرسوم وأسئلة الامتحان.
+      </p>
+      <p id="lesson-scope" class="lesson-scope">
+        تحميل الشرح والسلايدات الأصلية بناءً على المحاضرة المحددة.
+      </p>
+      <div class="workspace-actions">
+        <a href="#topic-reading-view" class="workspace-btn-primary">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>ابدأ قراءة الموضوعات</span>
+        </a>
+        <button type="button" id="btn-show-all-slides" class="workspace-btn-secondary" onclick="window.LessonWorkspace.switchView('slides'); window.LessonWorkspace.showSlide(1);">
+          <i data-lucide="presentation" class="w-4 h-4"></i>
+          <span>استعراض السلايدات الأصلية</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Toolbar: View Switcher and Reading Settings -->
+    <div class="workspace-toolbar">
+      <div class="workspace-views-tabs">
+        <button type="button" id="view-btn-topics" class="workspace-view-btn is-active" aria-pressed="true">
+          <i data-lucide="book-open" class="w-4 h-4"></i>
+          <span>شرح الموضوعات</span>
+        </button>
+        <button type="button" id="view-btn-slides" class="workspace-view-btn" aria-pressed="false">
+          <i data-lucide="presentation" class="w-4 h-4"></i>
+          <span>السلايدات والشرح التفصيلي</span>
+        </button>
+      </div>
+
+      <div class="workspace-settings-group">
+        <div class="workspace-font-ctrl" role="group" aria-label="التحكم في حجم الخط">
+          <button type="button" id="workspace-font-zoom-out" aria-label="تصغير حجم الخط">A-</button>
+          <span aria-hidden="true">حجم الخط</span>
+          <button type="button" id="workspace-font-zoom-in" aria-label="تكبير حجم الخط">A+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace Layout: Outline + Reading Surface -->
+    <div id="workspace-container" class="lesson-layout">
+      <!-- Unified Outline -->
+      <aside id="workspace-outline" class="lesson-index" aria-label="خريطة الدرس"></aside>
+
+      <!-- Reading Paper -->
+      <article id="workspace-paper" class="lesson-paper" aria-label="محتوى الدرس والسلايدات">
+        <!-- Honest Recovery View for unsupported / file:// / network errors -->
+        <div id="recovery-view" hidden></div>
+
+        <!-- Topic Reading View -->
+        <div id="topic-reading-view">
+          <div id="lesson-topics-feed"></div>
+        </div>
+
+        <!-- Slide Detail View -->
+        <div id="slide-detail-view" hidden>
+          <div class="slide-detail-toolbar">
+            <button type="button" class="return-to-topic-btn" data-return-to-topic hidden>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              <span>العودة لموضع الشرح</span>
+            </button>
+            <div class="slide-stepper-controls">
+              <button type="button" class="slide-stepper-btn" data-slide-nav="prev">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                <span>السابق</span>
+              </button>
+              <span id="slide-stepper-counter" class="text-xs font-mono font-bold px-2" role="status"></span>
+              <button type="button" class="slide-stepper-btn" data-slide-nav="next">
+                <span>التالي</span>
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+          <div id="slide-viewer-feed"></div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <!-- Full-size Image Zoom Modal -->
+  <div id="slide-zoom-modal" class="image-zoom-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="slide-zoom-title">
+    <div class="image-zoom-container">
+      <div class="image-zoom-header">
+        <span id="slide-zoom-title" class="image-zoom-title"></span>
+        <button type="button" id="slide-zoom-close" class="image-zoom-close" aria-label="إغلاق تكبير الصورة">✕</button>
+      </div>
+      <img id="slide-zoom-img" class="image-zoom-img" src="" alt="صورة السلايد بالحجم الكامل">
+    </div>
+  </div>
+
+  <footer>
+    <p>مساحة المذاكرة الموحدة · مقرر نظم قواعد البيانات (Database Systems)</p>
+    <p>مراجعة المحتوى وحفظ البيانات العلمية مطابقة للمصادر المعتمدة.</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.LessonWorkspace && typeof window.LessonWorkspace.init === 'function') {
+        window.LessonWorkspace.init();
+      }
+    });
+  </script>
+</body>
+</html>
