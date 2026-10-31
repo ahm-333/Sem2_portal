@@ -230,11 +230,140 @@
     };
   }
 
+
+  function loadScript(src, checkFn) {
+    if (typeof window === 'undefined') return Promise.resolve();
+    if (checkFn && checkFn()) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const existing = document.querySelector(`script[src*="${src}"]`);
+      if (existing) {
+        if (checkFn && checkFn()) return resolve();
+        existing.addEventListener('load', () => resolve());
+        existing.addEventListener('error', () => reject(new Error(`Failed to load ${src}`)));
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = src;
+      script.defer = true;
+      script.onload = () => {
+        if (checkFn && !checkFn()) {
+          reject(new Error(`Script loaded but check failed for ${src}`));
+        } else {
+          resolve();
+        }
+      };
+      script.onerror = () => reject(new Error(`Could not load script ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function loadPracticeResources(options = {}) {
+    if (typeof window === 'undefined') return { ok: true };
+    const prefix = options.scriptPrefix || '../../js/';
+    try {
+      await Promise.all([
+        loadScript(`${prefix}shared/quiz-attempt.js`, () => typeof window.PortalQuizAttempt !== 'undefined'),
+        loadScript(`${prefix}course-question-bank.js`, () => typeof window.COURSE_QUESTION_BANK !== 'undefined'),
+        loadScript(`${prefix}study-quiz.js`, () => typeof window.PortalStudyQuiz !== 'undefined'),
+        loadScript(`${prefix}lesson-practice.js`, () => typeof window.PortalLessonPractice !== 'undefined')
+      ]);
+      return { ok: true };
+    } catch (err) {
+      return {
+        ok: false,
+        error: 'PRACTICE_RESOURCE_LOAD_FAILED',
+        message: 'تعذر تحميل ملفات بنك الأسئلة والتدريب: ' + err.message
+      };
+    }
+  }
+
+  function mapBankUidToAuthoredId(bankUid) {
+    if (!bankUid) return null;
+    const str = String(bankUid);
+    const lastColon = str.lastIndexOf(':');
+    if (lastColon >= 0) {
+      const num = Number(str.slice(lastColon + 1));
+      return Number.isNaN(num) ? str.slice(lastColon + 1) : num;
+    }
+    return bankUid;
+  }
+
+  function mapAuthoredIdToBankUid(courseId, lectureKey, authoredId) {
+    return `subject.html?id=${courseId}&lecture=${lectureKey}:${authoredId}`;
+  }
+
+  function getPracticeBanks(lectureKey, allExplanations) {
+    const k = normalizeKey(lectureKey);
+    if (!k || !ALLOWED_LECTURES[k]) return null;
+    const spec = ALLOWED_LECTURES[k];
+
+    // 1. Topic Practice Questions from COURSE_QUESTION_BANK
+    const allDbQuestions = (typeof window !== 'undefined' && window.COURSE_QUESTION_BANK)
+      ? window.COURSE_QUESTION_BANK['database-systems'] || []
+      : [];
+    
+    const topicQuestions = allDbQuestions.filter(q => q.sourceUrl === spec.fullUrl).map(q => {
+      const idParts = q.id.split(':');
+      const originalId = idParts.length > 1 ? Number(idParts[1]) : q.id;
+      return Object.assign({}, q, {
+        originalId,
+        provenanceId: q.id
+      });
+    });
+
+    // 2. Full Lecture Quiz Questions from LECTURE_EXPLANATIONS
+    const lecData = allExplanations?.['database-systems']?.[k] || (typeof window !== 'undefined' && window.LECTURE_EXPLANATIONS?.['database-systems']?.[k]);
+    const fullQuizSource = lecData?.fullQuiz || [];
+    const fullQuizQuestions = fullQuizSource.map(q => {
+      const bankUid = `subject.html?id=database-systems&lecture=${k}:${q.id}`;
+      return Object.assign({}, q, {
+        authoredId: q.id,
+        bankUid
+      });
+    });
+
+    // 3. Slide-Local Micro Questions from LECTURE_EXPLANATIONS.slides
+    const slides = lecData?.slides || [];
+    const slideQuestions = [];
+    for (const s of slides) {
+      if (s.quiz) {
+        slideQuestions.push({
+          id: `db:lec${k}:s${s.num}:quiz`,
+          slideNum: s.num,
+          slideTitle: s.title,
+          slideArabicTitle: s.arabicTitle,
+          question: s.quiz.question,
+          options: [...s.quiz.options],
+          correct: s.quiz.correct,
+          explanation: s.quiz.explanation
+        });
+      }
+    }
+
+    return {
+      lectureKey: k,
+      spec,
+      topicQuestions,
+      fullQuizQuestions,
+      slideQuestions,
+      counts: {
+        topic: topicQuestions.length,
+        full: fullQuizQuestions.length,
+        slides: slideQuestions.length,
+        total: topicQuestions.length + fullQuizQuestions.length + slideQuestions.length
+      }
+    };
+  }
+
   return {
     normalizeKey,
     isSupported,
     getLectureSpec,
     loadLessonSource,
+    loadPracticeResources,
+    getPracticeBanks,
+    mapBankUidToAuthoredId,
+    mapAuthoredIdToBankUid,
     sanitizeNode
   };
 });
