@@ -213,6 +213,57 @@ Question banks remain independent and immutable. No question is renumbered or de
      - Lecture 3: `db:lec3:s1:quiz` to `db:lec3:s32:quiz`
    - Preserve authored stem, options, correct answer index, and explanation.
 
+### 7.1 Combined Practice Architecture & Bank Isolation (Implemented under Issue #33)
+
+To ensure student access to all 166 preserved questions ($84$ in Lecture 2, $82$ in Lecture 3) without grade distortion or bank collision, the unified workspace implements three strictly isolated practice groups via `PortalLessonPractice` (`js/lesson-practice.js`):
+
+```mermaid
+flowchart TD
+    HUB["DB Practice Hub<br/>(js/lesson-practice.js)"]
+    
+    subgraph Group 1: Topic Practice
+        TP["Topic Practice<br/>(34 Lec 2 / 20 Lec 3)"]
+        TP_SRC["COURSE_QUESTION_BANK<br/>(sourceUrl: chapter-*.html)"]
+        TP_MEM["In-Memory Session State<br/>(Filters & Instant Feedback)"]
+        TP --> TP_SRC
+        TP --> TP_MEM
+    end
+
+    subgraph Group 2: Full Lecture Quiz
+        FQ["Full Lecture Quiz<br/>(20 Lec 2 / 30 Lec 3)"]
+        FQ_HOST["PortalStudyQuiz Host<br/>(Issue #8 Contract)"]
+        FQ_STATE["PortalStudyState.quiz<br/>(Canonical Key & Attempt History)"]
+        FQ --> FQ_HOST
+        FQ_HOST --> FQ_STATE
+    end
+
+    subgraph Group 3: Slide-Local Questions
+        SQ["Slide-Local Questions<br/>(30 Lec 2 / 32 Lec 3)"]
+        SQ_SRC["LECTURE_EXPLANATIONS.slides[].quiz<br/>(IDs: db:lecX:sY:quiz)"]
+        SQ_NAV["Slide Jump Links<br/>(In-Memory Session Only)"]
+        SQ --> SQ_SRC
+        SQ --> SQ_NAV
+    end
+
+    HUB --> TP
+    HUB --> FQ
+    HUB --> SQ
+```
+
+1. **Topic Practice (تدريب موضوعات الشرح)**:
+   - **Scope & Sources**: 34 questions for Lecture 2 / Chapter 1, and 20 questions for Lecture 3 / Chapter 2, loaded from `COURSE_QUESTION_BANK` with matching `sourceUrl`.
+   - **State Isolation**: Operates with an in-memory session state. It provides block filtering, instant feedback, and attempt resets without writing to `PortalStudyState.quiz` or affecting course completion.
+   - **Presentation**: Shuffles choices via `PortalQuizChoices.present` with seed `topic:${id}:${question}` for stable randomization.
+2. **Full Lecture Quiz (كويز المحاضرة الشامل)**:
+   - **Scope & Sources**: 20 questions for Lecture 2, and 30 questions for Lecture 3, hosted by instantiating `PortalStudyQuiz.create(host)` adhering to the Issue #8 contract.
+   - **Persistence & Keying**: Stored under the canonical content key (`PortalCatalog.key('database-systems', 'lecture', lectureKey)`) with the canonical `quizVersion` (`0f77d6ceae5a` for Lec 2, `48a62c7c8272` for Lec 3).
+   - **Completion Rule**: Satisfies the canonical completion rule (#8/#10) when all questions are answered, even with incorrect answers.
+3. **Slide-Local Questions (أسئلة السلايدات الفردية)**:
+   - **Scope & Sources**: 30 questions for Lecture 2, and 32 questions for Lecture 3, extracted directly from `LECTURE_EXPLANATIONS.slides[].quiz` with deterministic namespaced IDs `db:lecX:sY:quiz`.
+   - **Slide Navigation**: Each card includes a direct link to the corresponding slide in the workspace (`data-jump-slide`) without touching the full lecture quiz state.
+4. **Lazy Resource Loading**:
+   - `js/course-question-bank.js`, `js/study-quiz.js`, `js/shared/quiz-attempt.js`, and `js/lesson-practice.js` are dynamically deferred via `PortalLessonSource.loadPracticeResources()` and loaded only when the student switches to the practice view (`#view-btn-practice`), preserving initial page load performance.
+
 ---
 
 ## 8. State Compatibility & The `reader.slideId` Ambiguity

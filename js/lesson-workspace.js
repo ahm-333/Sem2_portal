@@ -24,6 +24,42 @@
   let currentSlideIndex = 0;
   let lastTopicAnchor = null;
   let currentFontZoom = 0; // 0: normal, 1: lg, 2: xl
+  let currentLectureKey = null;
+  let practiceInstance = null;
+  let practiceMountPromise = null;
+
+  async function mountPractice(practiceView) {
+    practiceView.setAttribute('aria-busy', 'true');
+    const loading = document.createElement('p');
+    loading.setAttribute('role', 'status');
+    loading.textContent = 'جارٍ تحميل التدريب…';
+    practiceView.replaceChildren(loading);
+    try {
+      const resources = await window.PortalLessonSource.loadPracticeResources();
+      if (!resources.ok) throw new Error(resources.message);
+      const instance = window.PortalLessonPractice.create(practiceView, {
+        onJumpSlide: showSlide
+      });
+      await instance.mount(currentLectureKey, {
+        'database-systems': { [currentLectureKey]: currentLectureData }
+      });
+      practiceInstance = instance;
+    } catch {
+      const alert = document.createElement('div');
+      alert.setAttribute('role', 'alert');
+      const message = document.createElement('p');
+      message.textContent = 'تعذر تحميل التدريب. تحقق من اتصالك بالإنترنت ثم أعد المحاولة.';
+      const retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'workspace-btn-secondary';
+      retry.textContent = 'إعادة المحاولة';
+      retry.addEventListener('click', () => switchView('practice'));
+      alert.append(message, retry);
+      practiceView.replaceChildren(alert);
+    } finally {
+      practiceView.removeAttribute('aria-busy');
+    }
+  }
 
   function getQueryParam(name) {
     if (typeof window === 'undefined' || !window.location) return null;
@@ -61,15 +97,18 @@
     window.PortalDialog.close(modal);
   }
 
-  function switchView(view) {
+  async function switchView(view) {
     const topicView = document.getElementById('topic-reading-view');
     const slideView = document.getElementById('slide-detail-view');
+    const practiceView = document.getElementById('practice-hub');
     const topicBtn = document.getElementById('view-btn-topics');
     const slideBtn = document.getElementById('view-btn-slides');
+    const practiceBtn = document.getElementById('view-btn-practice');
 
     if (view === 'topics') {
       if (topicView) topicView.hidden = false;
       if (slideView) slideView.hidden = true;
+      if (practiceView) practiceView.hidden = true;
       if (topicBtn) {
         topicBtn.classList.add('is-active');
         topicBtn.setAttribute('aria-pressed', 'true');
@@ -78,9 +117,14 @@
         slideBtn.classList.remove('is-active');
         slideBtn.setAttribute('aria-pressed', 'false');
       }
-    } else {
+      if (practiceBtn) {
+        practiceBtn.classList.remove('is-active');
+        practiceBtn.setAttribute('aria-pressed', 'false');
+      }
+    } else if (view === 'slides') {
       if (topicView) topicView.hidden = true;
       if (slideView) slideView.hidden = false;
+      if (practiceView) practiceView.hidden = true;
       if (topicBtn) {
         topicBtn.classList.remove('is-active');
         topicBtn.setAttribute('aria-pressed', 'false');
@@ -88,6 +132,36 @@
       if (slideBtn) {
         slideBtn.classList.add('is-active');
         slideBtn.setAttribute('aria-pressed', 'true');
+      }
+      if (practiceBtn) {
+        practiceBtn.classList.remove('is-active');
+        practiceBtn.setAttribute('aria-pressed', 'false');
+      }
+    } else if (view === 'practice') {
+      if (topicView) topicView.hidden = true;
+      if (slideView) slideView.hidden = true;
+      if (practiceView) practiceView.hidden = false;
+      if (topicBtn) {
+        topicBtn.classList.remove('is-active');
+        topicBtn.setAttribute('aria-pressed', 'false');
+      }
+      if (slideBtn) {
+        slideBtn.classList.remove('is-active');
+        slideBtn.setAttribute('aria-pressed', 'false');
+      }
+      if (practiceBtn) {
+        practiceBtn.classList.add('is-active');
+        practiceBtn.setAttribute('aria-pressed', 'true');
+      }
+
+      // Lazily mount practice instance
+      if (!practiceInstance && practiceView && currentLectureKey) {
+        if (!practiceMountPromise) {
+          practiceMountPromise = mountPractice(practiceView).finally(() => {
+            practiceMountPromise = null;
+          });
+        }
+        await practiceMountPromise;
       }
     }
   }
@@ -305,6 +379,18 @@
       });
     });
 
+    const practiceOutlineLink = outlineEl.querySelector('a[href="#practice-hub"]');
+    if (practiceOutlineLink) {
+      practiceOutlineLink.addEventListener('click', e => {
+        e.preventDefault();
+        switchView('practice');
+        const hub = document.getElementById('practice-hub');
+        if (hub) {
+          hub.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+        }
+      });
+    }
+
     outlineEl.querySelectorAll('[data-slide-link]').forEach(link => {
       link.addEventListener('click', e => {
         e.preventDefault();
@@ -452,8 +538,38 @@
       return;
     }
 
+    currentLectureKey = lectureKey;
     currentBlocks = sourceResult.blocks;
     currentLectureData = lecData;
+
+    // Ensure #practice-hub container exists in #workspace-paper
+    let practiceHub = document.getElementById('practice-hub');
+    if (!practiceHub && paper) {
+      practiceHub = document.createElement('div');
+      practiceHub.id = 'practice-hub';
+      practiceHub.className = 'practice-hub-container';
+      practiceHub.hidden = true;
+      paper.appendChild(practiceHub);
+    }
+
+    // Ensure #view-btn-practice exists in .workspace-views-tabs
+    const viewsTabs = document.querySelector('.workspace-views-tabs');
+    let btnPractice = document.getElementById('view-btn-practice');
+    if (!btnPractice && viewsTabs) {
+      btnPractice = document.createElement('button');
+      btnPractice.type = 'button';
+      btnPractice.id = 'view-btn-practice';
+      btnPractice.className = 'workspace-view-btn';
+      btnPractice.setAttribute('aria-pressed', 'false');
+      btnPractice.innerHTML = `
+        <i data-lucide="award" class="w-4 h-4"></i>
+        <span>التدريب والأسئلة</span>
+      `;
+      viewsTabs.appendChild(btnPractice);
+    }
+    if (btnPractice) {
+      btnPractice.addEventListener('click', () => switchView('practice'));
+    }
 
     if (paper) paper.removeAttribute('aria-busy');
 
@@ -527,8 +643,11 @@
 
     // Handle deep link if slide requested
     const requestedSlide = getQueryParam('slide');
+    const requestedView = getQueryParam('view');
     if (requestedSlide) {
       showSlide(requestedSlide);
+    } else if (requestedView === 'practice' || (typeof window !== 'undefined' && window.location.hash === '#practice-hub')) {
+      switchView('practice');
     } else {
       switchView('topics');
     }
