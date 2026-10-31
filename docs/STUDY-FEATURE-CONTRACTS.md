@@ -459,3 +459,97 @@ interface ResumeOptions {
   - `saved.updatedAt === item.reader.updatedAt`
   A mismatched or invalid standalone marker is discarded safely and never overrides validated reader state.
 
+
+
+---
+
+## 7. Study 06 — Published-Item Completion and Profile-Aware Course Progress
+
+**Owner:** Issue #10 (`[Study 06] Add published-item completion and profile-aware counts around existing lesson checks`)
+
+### Browser Singletons & Factories
+
+- **Progress Engine:** `window.PortalStudyProgress` (Node.js CommonJS & browser global) created via `createStudyProgress({ catalog, state, courses, studentProfile, scheduleConfig })` from `js/shared/study-progress.js`.
+- **UI Integration Module:** `window.PortalStudyProgressUI` in `js/study-progress-ui.js`.
+- **Course Studio Integration:** Studio progress overview card rendered in `js/studio-course.js`.
+
+### Interface Contract
+
+```typescript
+type ItemCompletionStatus = 'not-started' | 'in-progress' | 'completed';
+
+interface ItemProgress {
+  key: string;
+  status: ItemCompletionStatus;
+  isComplete: boolean;
+  isInProgress: boolean;
+  hasFullQuiz: boolean;
+  canManualComplete: boolean;
+  score?: number;
+  total?: number;
+  completedAt?: string;
+}
+
+interface TrackSummary {
+  total: number;
+  completed: number;
+  remaining: number;
+  inProgress: number;
+}
+
+interface CourseSummary {
+  courseId: string;
+  scope: string; // "المحتوى المنشور على المنصة، ولا يشمل كامل المنهج الجامعي أو إتقان المادة"
+  lectures: TrackSummary;
+  sections: TrackSummary;
+  total: TrackSummary;
+  percent: number; // 0 - 100
+}
+
+interface ManualCompleteResult {
+  saved: boolean;
+  reason?: 'invalid_key' | 'has_full_quiz' | 'no_state' | 'session' | 'quota' | 'corrupt' | 'unsupported-version';
+}
+```
+
+### Public Methods (`PortalStudyProgress`)
+
+- `getStatus(key: string): ItemCompletionStatus`
+  Returns `'not-started'`, `'in-progress'`, or `'completed'`.
+- `getItemProgress(key: string): ItemProgress`
+  Returns detailed progress metadata for a canonical content item.
+- `setManualComplete(key: string, value: boolean): ManualCompleteResult`
+  Toggles manual completion for items without a full quiz. Disallows manual completion on items with `hasFullQuiz: true`. Dispatches `portal:progress-changed` event.
+- `getCourseSummary(courseId: string, explicitProfile?: StudentProfileData): CourseSummary`
+  Computes published-item completion counts and percentage tailored to the student's TA.
+- `subscribe(listener: Function): Function`
+  Subscribes to underlying storage changes and returns an unsubscribe callback.
+
+### Denominator and Counting Invariants
+
+1. **Published Items Only:** Denominators count solely published items:
+   - All published lectures (`track: 'lecture'`, `type: 'lecture'`) for the course.
+   - Published sections (`track: 'section'`, `type: 'section'`) filtered to the student's active TA (via `StudentProfile.filterItemsForTa(sections, 'my-ta', studentTa)`).
+2. **Strict Exclusions:** Videos, assignments, drive resources, practical resources, external explanation sites, and Operating Systems standalone theory-resource units (the 19 OS units) are strictly excluded from denominators.
+3. **Deduplication:** Canonical keys are deduplicated with `Set` so identical items are never counted twice.
+4. **Numeric ID 0:** Items with numerical ID `0` (e.g. `["data-structure","lecture","0"]`) are valid published catalog items and are counted in denominators.
+5. **Orphan Storage Safety:** Storage records belonging to unpublished items, retired keys, or sections belonging to other TAs do not inflate or distort progress totals.
+6. **Academic Scope Disclaimer:** Every summary explicitly exposes `scope: 'المحتوى المنشور على المنصة، ولا يشمل كامل المنهج الجامعي أو إتقان المادة'` to prevent students from mistaking published platform coverage for university curriculum mastery.
+
+### Completion Policies & Separation of Concerns
+
+1. **Activity Threshold:** Interacting with an item (opening the reader, recording activity, answering questions) sets `startedAt` and transitions status to `'in-progress'`. It never automatically awards `'completed'`.
+2. **Full-Quiz Items:**
+   - When `entry.study.hasFullQuiz === true`, completion is earned exclusively by answering all questions of the current `quizVersion`.
+   - Manual completion is strictly rejected with `reason: 'has_full_quiz'`.
+3. **Non-Quiz Items:**
+   - When an item has no full quiz, students can toggle manual completion via `setManualComplete(key, boolean)`.
+   - If an item was not started, setting manual complete automatically populates `startedAt`.
+4. **Standalone DS2 Check Isolation:** Sub-section local checks in DS2 (`sem2_standalone_check_v1`) remain completely independent and do not mutate or satisfy course-level lesson completion.
+
+### Accessibility (WCAG 2.2 AA) & UI Contracts
+
+1. **Status Badges:** Display clear Arabic visual states (`لم تبدأ`, `قيد المذاكرة`, `مكتمل`) with high contrast text in all themes (Light, Dark, Reading).
+2. **Manual Complete Control:** Interactive button `<button type="button" class="btn-study-manual-complete" aria-pressed="true|false">` meets touch target size (minimum 44px height/width) and provides clear accessible labels.
+3. **Progress Summary:** Rendered in `#portal-study-progress-card` with `role="region"`, `aria-label="ملخص تقدم المذاكرة"`, and a live progress bar (`role="progressbar"`, `aria-valuenow`, `aria-valuemin="0"`, `aria-valuemax="100"`).
+4. **Reactive Updates:** Listens to `portal:progress-changed`, `portal:profile-changed`, and `portal:study-save-status` to re-render counts and badges dynamically without requiring a page refresh.

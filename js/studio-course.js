@@ -38,12 +38,16 @@
     const info = document.createElement('section'); info.className = 'atlas-info';
     info.setAttribute('aria-label','معلومات المادة ومواعيدها');
     const overview = copy.querySelector('.a1-course-overview');
-    info.append(overview,context); heading.after(info);
-    for (const disclosure of [overview,context]) {
+    const progressPanel = document.createElement('details');
+    progressPanel.className = 'atlas-progress-disclosure a1-course-progress';
+    progressPanel.id = 'atlas-course-progress-panel';
+    progressPanel.innerHTML = '<summary class="atlas-progress-summary-toggle"><span class="atlas-progress-heading-title">متابعة المذاكرة والتقدم</span><span class="atlas-progress-percent-chip" id="atlas-progress-percent-chip">0%</span></summary><div class="atlas-progress-body"><p class="atlas-progress-scope" id="atlas-progress-scope">المحتوى المنشور على المنصة، ولا يشمل كامل المنهج الجامعي أو إتقان المادة.</p><div class="atlas-progress-bar-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="atlas-progress-percent-chip"><div class="atlas-progress-bar-fill" style="width:0%"></div></div><div class="atlas-progress-cards"><div class="atlas-progress-card" id="atlas-progress-lectures-card"></div><div class="atlas-progress-card" id="atlas-progress-sections-card"></div></div></div>';
+    info.append(overview,context,progressPanel); heading.after(info);
+    for (const disclosure of [overview,context,progressPanel]) {
       disclosure.open = false;
       disclosure.setAttribute('name','atlas-course-information');
       disclosure.addEventListener('toggle',() => {
-        if (disclosure.open) [overview,context].filter(value => value !== disclosure).forEach(value => {value.open = false;});
+        if (disclosure.open) [overview,context,progressPanel].filter(value => value !== disclosure).forEach(value => {value.open = false;});
       });
     }
     const controls = document.createElement('div'); controls.className = 'atlas-course-controls';
@@ -60,6 +64,16 @@
       trigger.append(currentName,currentCode,chevron);
       const label = document.createElement('span'); label.className = 'atlas-picker-label'; label.textContent = 'تغيير المادة';
       picker.append(label,trigger,switcher); controls.append(picker);
+      const progressBadge = document.createElement('button');
+      progressBadge.type = 'button'; progressBadge.id = 'atlas-course-progress-badge';
+      progressBadge.className = 'atlas-progress-quick-badge';
+      progressBadge.setAttribute('aria-label', 'عرض ملخص التقدم');
+      progressBadge.innerHTML = '<span class="atlas-progress-quick-label">التقدم:</span><strong class="atlas-progress-quick-val">0%</strong>';
+      progressBadge.addEventListener('click', () => {
+        progressPanel.open = true;
+        progressPanel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      });
+      controls.append(progressBadge);
       switcher.classList.add('atlas-native-course-select'); switcher.tabIndex = -1; switcher.setAttribute('aria-hidden','true');
       const menu = document.createElement('div'); menu.id = 'atlas-course-menu'; menu.className = 'atlas-course-menu'; menu.hidden = true;
       menu.setAttribute('role','menu'); menu.setAttribute('aria-label','الانتقال إلى مادة أخرى');
@@ -160,10 +174,15 @@
     function decorateRows() {
       for (const list of materials.querySelectorAll('#lectures-list,#sections-list,#assignments-list,#video-explanations-list,#theory-resources-list,#practical-resources-list')) {
         [...list.querySelectorAll(':scope>.a1-source-row')].forEach((row,index) => {
-          if (row.querySelector('.atlas-source-marker')) return;
-          const marker = document.createElement('span'); marker.className = 'atlas-source-marker'; marker.setAttribute('aria-hidden','true'); marker.textContent = String(index+1).padStart(2,'0');
-          row.prepend(marker);
-          if (row.querySelector('[data-open-study-lecture],[data-os-course-link]')) row.classList.add('atlas-has-explanation');
+          if (!row.querySelector('.atlas-source-marker')) {
+            const marker = document.createElement('span'); marker.className = 'atlas-source-marker'; marker.setAttribute('aria-hidden','true'); marker.textContent = String(index+1).padStart(2,'0');
+            row.prepend(marker);
+            if (row.querySelector('[data-open-study-lecture],[data-os-course-link]')) row.classList.add('atlas-has-explanation');
+          }
+          if (window.PortalStudyProgressUI && !row.dataset.studyProgressDecorated) {
+            row.dataset.studyProgressDecorated = 'true';
+            window.PortalStudyProgressUI.decorateRow(row);
+          }
         });
       }
     }
@@ -181,6 +200,7 @@
       decorateRows();
     }
     updateCounts(); selected(); drawConnections();
+    window.PortalStudyProgressUI?.init({ courseId });
     const resize = new window.ResizeObserver(drawConnections); resize.observe(map);
     const rows = new window.MutationObserver(() => { decorateRows(); updateCounts(); }); rows.observe(materials,{childList:true,subtree:true});
     window.addEventListener('portal:family-changed',selected);

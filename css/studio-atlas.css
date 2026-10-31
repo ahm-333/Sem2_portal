@@ -127,3 +127,28 @@ body.studio[data-motion="on"] .atlas-workspace .a1-source-actions>.a1-action-pri
 @media(prefers-reduced-motion:reduce){body.studio .studio-book,.atlas-connections path,.atlas-core-ring{animation:none!important}body.studio .atlas-branches button{transition:background .15s,border-color .15s}.studio-energy{opacity:.5}}
 @media(max-width:760px){.atlas-info .atlas-context-columns{grid-template-columns:1fr;gap:8px}.atlas-info{padding-inline:15px}.a1-course-breadcrumb>div:first-child>span:nth-of-type(2),.a1-course-breadcrumb>div:first-child>span:nth-of-type(3){display:none}}
 @media(max-width:540px){.atlas-course-controls{margin-top:10px}.atlas-map{height:180px}.atlas-branches [data-resource-kind="assignments"]{top:63px}.atlas-info{margin-top:-5px;margin-bottom:18px}.atlas-collection-heading{padding-bottom:10px}body.studio .atlas-collection-heading h2{font-size:19px;line-height:1.5}.atlas-collection-heading p{line-height:1.7}body.studio .atlas-workspace .a1-source-row{padding-block:17px}}
+
+/* Scoped study progress and course summary styles */
+.atlas-progress-disclosure{display:inline-block;margin:0 12px;font-size:12px}
+.atlas-progress-disclosure summary{cursor:pointer;color:var(--ink);list-style:none;display:inline-flex;align-items:center;gap:8px;font-weight:600;min-height:44px}
+.atlas-progress-disclosure summary::-webkit-details-marker{display:none}
+.atlas-progress-percent-chip{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;font-family:ui-monospace,monospace;background:var(--soft);color:var(--ink);border:1px solid var(--line)}
+.atlas-progress-body{margin-top:10px;padding:12px;background:var(--paper);border:1px solid var(--line);border-radius:12px;max-width:480px}
+.atlas-progress-scope{font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.5}
+.atlas-progress-bar-container{height:6px;background:var(--soft);border-radius:999px;overflow:hidden;margin-bottom:12px}
+.atlas-progress-bar-fill{height:100%;background:linear-gradient(90deg,#6366f1,#06b6d4);border-radius:999px;transition:width .3s ease}
+.atlas-progress-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.atlas-progress-card{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.atlas-progress-card h4{font-size:11px;font-weight:600;color:var(--ink);margin:0 0 4px}
+.atlas-card-stats{font-size:12px;color:var(--muted);margin:0}
+.atlas-card-completed{font-size:14px;font-weight:700;color:var(--ink)}
+.atlas-card-remaining{font-size:10px;color:var(--muted);display:block;margin-top:2px}
+.atlas-progress-quick-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;font-size:11px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.atlas-progress-quick-badge:hover{background:var(--soft)}
+.atlas-progress-badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-bottom:4px}
+.atlas-progress-badge.status-completed{background:var(--soft);color:var(--positive);border:1px solid var(--line)}
+.atlas-progress-badge.status-in-progress{background:var(--soft);color:var(--warning);border:1px solid var(--line)}
+.atlas-progress-badge.status-not-started{background:var(--soft);color:var(--muted);border:1px solid var(--line)}
+.atlas-manual-complete-btn{display:inline-flex;align-items:center;gap:4px;padding:9px 13px;min-height:42px;border-radius:8px;font-size:11px;font-weight:500;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .15s}
+.atlas-manual-complete-btn:hover{color:var(--accent);background:var(--soft)}
+.atlas-manual-complete-btn.is-complete{background:var(--soft);color:var(--positive);border-color:var(--line)}
