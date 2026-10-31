@@ -182,6 +182,143 @@
   <link rel="stylesheet" href="../../css/study/db-chapter-1.css">
   <link rel="stylesheet" href="../../css/fonts/fonts.css">
   <link rel="stylesheet" href="../../css/study-shell.css">
+
+  <!-- Lecture 2 Presentation Hooks & Contrast Styling (Issue #31) -->
+  <style>
+    /* Catalog Table Surface & Tokens across themes */
+    .catalog-table-surface,
+    #block-2 div.rounded-xl.border {
+      background-color: var(--study-paper, #0f172a);
+      border-color: var(--study-line, #1e293b);
+      color: var(--study-ink, #f1f5f9);
+    }
+    body.theme-light .catalog-table-surface,
+    body.theme-light #block-2 div.rounded-xl.border {
+      background-color: #ffffff !important;
+      border-color: #e2e8f0 !important;
+      color: #1e293b !important;
+    }
+    body.theme-sepia .catalog-table-surface,
+    body.theme-sepia #block-2 div.rounded-xl.border {
+      background-color: #fdf9ee !important;
+      border-color: #e3d5b8 !important;
+      color: #3d3122 !important;
+    }
+    body.theme-dark .catalog-table-surface,
+    body.theme-dark #block-2 div.rounded-xl.border {
+      background-color: #0f172a !important;
+      border-color: #1e293b !important;
+      color: #f1f5f9 !important;
+    }
+
+    .catalog-table-header-relations,
+    #block-2 .border-amber-500\/30 > div:first-child {
+      background-color: rgba(245, 158, 11, 0.15) !important;
+      color: #b45309 !important;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.3) !important;
+    }
+    body.theme-dark .catalog-table-header-relations,
+    body.theme-dark #block-2 .border-amber-500\/30 > div:first-child {
+      background-color: rgba(245, 158, 11, 0.2) !important;
+      color: #fcd34d !important;
+    }
+    body.theme-sepia .catalog-table-header-relations,
+    body.theme-sepia #block-2 .border-amber-500\/30 > div:first-child {
+      background-color: rgba(180, 83, 9, 0.15) !important;
+      color: #92400e !important;
+    }
+
+    .catalog-table-header-columns,
+    #block-2 .border-sky-500\/30 > div:first-child {
+      background-color: rgba(14, 165, 233, 0.15) !important;
+      color: #0369a1 !important;
+      border-bottom: 1px solid rgba(14, 165, 233, 0.3) !important;
+    }
+    body.theme-dark .catalog-table-header-columns,
+    body.theme-dark #block-2 .border-sky-500\/30 > div:first-child {
+      background-color: rgba(14, 165, 233, 0.2) !important;
+      color: #7dd3fc !important;
+    }
+    body.theme-sepia .catalog-table-header-columns,
+    body.theme-sepia #block-2 .border-sky-500\/30 > div:first-child {
+      background-color: rgba(2, 132, 199, 0.15) !important;
+      color: #0c4a6e !important;
+    }
+
+    .catalog-table thead,
+    #block-2 table thead {
+      background-color: var(--study-soft, #1e293b);
+      color: var(--study-ink, #7dd3fc);
+      border-bottom: 1px solid var(--study-line, #334155);
+    }
+    body.theme-light .catalog-table thead,
+    body.theme-light #block-2 table thead {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border-bottom-color: #cbd5e1 !important;
+    }
+    body.theme-sepia .catalog-table thead,
+    body.theme-sepia #block-2 table thead {
+      background-color: #f2e9d2 !important;
+      color: #451a03 !important;
+      border-bottom-color: #decb9e !important;
+    }
+    body.theme-dark .catalog-table thead,
+    body.theme-dark #block-2 table thead {
+      background-color: #1e293b !important;
+      color: #7dd3fc !important;
+      border-bottom-color: #334155 !important;
+    }
+
+    .catalog-table tbody td, .catalog-table th,
+    #block-2 table tbody td, #block-2 table th {
+      color: var(--study-ink, inherit);
+    }
+    body.theme-light .catalog-table tbody td, body.theme-light .catalog-table th,
+    body.theme-light #block-2 table tbody td, body.theme-light #block-2 table th {
+      color: #1e293b !important;
+    }
+    body.theme-sepia .catalog-table tbody td, body.theme-sepia .catalog-table th,
+    body.theme-sepia #block-2 table tbody td, body.theme-sepia #block-2 table th {
+      color: #3d3122 !important;
+    }
+    body.theme-dark .catalog-table tbody td, body.theme-dark .catalog-table th,
+    body.theme-dark #block-2 table tbody td, body.theme-dark #block-2 table th {
+      color: #f1f5f9 !important;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fix stale UI filter count from (30) to actual (34)
+      const qBtn = document.querySelector('[data-qfilter="all"]');
+      if (qBtn) {
+        qBtn.textContent = 'كل الأسئلة (34)';
+      }
+      // Presentation hooks for catalog tables
+      const b2 = document.getElementById('block-2');
+      if (b2) {
+        const t1 = b2.querySelector('.border-amber-500\\/30');
+        if (t1) {
+          t1.classList.add('catalog-table-surface', 'catalog-table-relations');
+          const h1 = t1.firstElementChild;
+          if (h1) h1.classList.add('catalog-table-header-relations');
+        }
+        const t2 = b2.querySelector('.border-sky-500\\/30');
+        if (t2) {
+          t2.classList.add('catalog-table-surface', 'catalog-table-columns');
+          const h2 = t2.firstElementChild;
+          if (h2) h2.classList.add('catalog-table-header-columns');
+        }
+        b2.querySelectorAll('table').forEach(t => {
+          t.classList.add('catalog-table');
+          const th = t.querySelector('thead');
+          if (th) th.classList.add('catalog-table-thead');
+          const tb = t.querySelector('tbody');
+          if (tb) tb.classList.add('catalog-table-tbody');
+        });
+      }
+    });
+  </script>
 </head>
 <body class="theme-dark min-h-screen pb-24 selection:bg-sky-500 selection:text-white">
 

@@ -78,6 +78,57 @@
     }
   }
 
+  /**
+   * Lecture 2 reading adapter: styles Catalog Table 1 & 2 and RELATIONS/COLUMNS surfaces
+   * using shared tokens and ensures full WCAG contrast across light, dark, and reading modes.
+   */
+  function adaptLecture2Block(blockId, element) {
+    if (!element) return element;
+    if (blockId === 'block-2') {
+      const tables = element.querySelectorAll('table');
+      tables.forEach(table => {
+        table.classList.add('catalog-table');
+        table.style.setProperty('color', 'var(--study-ink, inherit)', 'important');
+        const thead = table.querySelector('thead');
+        if (thead) {
+          thead.classList.remove('bg-slate-800/60', 'text-sky-300');
+          thead.classList.add('catalog-table-thead');
+          thead.style.setProperty('background-color', 'var(--study-soft, #1e293b)', 'important');
+          thead.style.setProperty('color', 'var(--study-ink, #7dd3fc)', 'important');
+          thead.style.borderBottom = '1px solid var(--study-line, #334155)';
+        }
+        const ths = table.querySelectorAll('th');
+        ths.forEach(th => {
+          th.classList.remove('text-sky-300');
+          th.style.setProperty('color', 'var(--study-ink, inherit)', 'important');
+        });
+        const tds = table.querySelectorAll('td');
+        tds.forEach(td => {
+          td.style.setProperty('color', 'var(--study-ink, inherit)', 'important');
+        });
+      });
+
+      const cards = element.querySelectorAll('.catalog-table-surface, .catalog-table-card, .rounded-xl');
+      cards.forEach(card => {
+        if (card.querySelector('table')) {
+          card.classList.remove('bg-slate-900/40');
+          card.classList.add('catalog-table-card', 'catalog-table-surface');
+          card.style.setProperty('background-color', 'var(--study-paper, #0f172a)', 'important');
+          card.style.borderColor = 'var(--study-line, #1e293b)';
+          card.style.setProperty('color', 'var(--study-ink, #f1f5f9)', 'important');
+
+          const header = card.firstElementChild;
+          if (header && !header.matches('table')) {
+            header.style.setProperty('background-color', 'var(--study-soft, rgba(245, 158, 11, 0.2))', 'important');
+            header.style.setProperty('color', 'var(--study-ink, #fcd34d)', 'important');
+            header.style.borderBottom = '1px solid var(--study-line, rgba(245, 158, 11, 0.3))';
+          }
+        }
+      });
+    }
+    return element;
+  }
+
   function extractTopicBlocks(doc, spec) {
     const foundMap = new Map();
     const duplicates = [];
@@ -116,7 +167,10 @@
 
     // Build structured block records in authored order
     const blocks = spec.expectedBlocks.map((id, index) => {
-      const el = foundMap.get(id);
+      let el = foundMap.get(id);
+      if (spec.lectureKey === '2') {
+        el = adaptLecture2Block(id, el);
+      }
       let title = '';
       const h = el.querySelector('h1, h2, h3, h4');
       if (h) {
