@@ -231,30 +231,36 @@
   }
 
 
+  const pendingScripts = new Map();
+
   function loadScript(src, checkFn) {
     if (typeof window === 'undefined') return Promise.resolve();
     if (checkFn && checkFn()) return Promise.resolve();
-    return new Promise((resolve, reject) => {
-      const existing = document.querySelector(`script[src*="${src}"]`);
-      if (existing) {
-        if (checkFn && checkFn()) return resolve();
-        existing.addEventListener('load', () => resolve());
-        existing.addEventListener('error', () => reject(new Error(`Failed to load ${src}`)));
-        return;
-      }
+    const url = new URL(src, document.baseURI).href;
+    if (pendingScripts.has(url)) return pendingScripts.get(url);
+    const pending = new Promise((resolve, reject) => {
+      // Only an in-flight promise can be reused. A settled tag without its
+      // expected global is stale (network or execution failure).
+      Array.from(document.scripts).find(script => script.src === url)?.remove();
       const script = document.createElement('script');
-      script.src = src;
+      script.src = url;
       script.defer = true;
+      const fail = message => {
+        script.remove();
+        reject(new Error(message));
+      };
       script.onload = () => {
         if (checkFn && !checkFn()) {
-          reject(new Error(`Script loaded but check failed for ${src}`));
+          fail(`Script loaded but check failed for ${src}`);
         } else {
           resolve();
         }
       };
-      script.onerror = () => reject(new Error(`Could not load script ${src}`));
+      script.onerror = () => fail(`Could not load script ${src}`);
       document.head.appendChild(script);
-    });
+    }).finally(() => pendingScripts.delete(url));
+    pendingScripts.set(url, pending);
+    return pending;
   }
 
   async function loadPracticeResources(options = {}) {

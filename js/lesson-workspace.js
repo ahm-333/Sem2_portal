@@ -26,6 +26,40 @@
   let currentFontZoom = 0; // 0: normal, 1: lg, 2: xl
   let currentLectureKey = null;
   let practiceInstance = null;
+  let practiceMountPromise = null;
+
+  async function mountPractice(practiceView) {
+    practiceView.setAttribute('aria-busy', 'true');
+    const loading = document.createElement('p');
+    loading.setAttribute('role', 'status');
+    loading.textContent = 'جارٍ تحميل التدريب…';
+    practiceView.replaceChildren(loading);
+    try {
+      const resources = await window.PortalLessonSource.loadPracticeResources();
+      if (!resources.ok) throw new Error(resources.message);
+      const instance = window.PortalLessonPractice.create(practiceView, {
+        onJumpSlide: showSlide
+      });
+      await instance.mount(currentLectureKey, {
+        'database-systems': { [currentLectureKey]: currentLectureData }
+      });
+      practiceInstance = instance;
+    } catch {
+      const alert = document.createElement('div');
+      alert.setAttribute('role', 'alert');
+      const message = document.createElement('p');
+      message.textContent = 'تعذر تحميل التدريب. تحقق من اتصالك بالإنترنت ثم أعد المحاولة.';
+      const retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'workspace-btn-secondary';
+      retry.textContent = 'إعادة المحاولة';
+      retry.addEventListener('click', () => switchView('practice'));
+      alert.append(message, retry);
+      practiceView.replaceChildren(alert);
+    } finally {
+      practiceView.removeAttribute('aria-busy');
+    }
+  }
 
   function getQueryParam(name) {
     if (typeof window === 'undefined' || !window.location) return null;
@@ -122,20 +156,12 @@
 
       // Lazily mount practice instance
       if (!practiceInstance && practiceView && currentLectureKey) {
-        if (window.PortalLessonSource && typeof window.PortalLessonSource.loadPracticeResources === 'function') {
-          await window.PortalLessonSource.loadPracticeResources();
-        }
-        if (window.PortalLessonPractice && typeof window.PortalLessonPractice.create === 'function') {
-          practiceInstance = window.PortalLessonPractice.create(practiceView, {
-            onJumpSlide: showSlide
+        if (!practiceMountPromise) {
+          practiceMountPromise = mountPractice(practiceView).finally(() => {
+            practiceMountPromise = null;
           });
-          const allExplanations = {
-            'database-systems': {
-              [currentLectureKey]: currentLectureData
-            }
-          };
-          await practiceInstance.mount(currentLectureKey, allExplanations);
         }
+        await practiceMountPromise;
       }
     }
   }

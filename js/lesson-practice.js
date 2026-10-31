@@ -71,7 +71,7 @@
         background: rgba(0, 0, 0, 0.08);
       }
       .practice-group-tab.is-active .tab-badge {
-        background: rgba(255, 255, 255, 0.25) !important;
+        background: rgba(255, 255, 255, 0.12) !important;
         color: #ffffff !important;
       }
       .practice-filter-pill {
@@ -246,6 +246,13 @@
       return ['A', 'B', 'C', 'D', 'E', 'F'];
     }
 
+    function presentQuestion(question, group) {
+      if (window.PortalQuizChoices && typeof window.PortalQuizChoices.present === 'function') {
+        return window.PortalQuizChoices.present(question, group + ':' + question.id + ':' + question.question);
+      }
+      return question;
+    }
+
     function renderGroupTabs(banks) {
       return `
         <div class="practice-hub-header mb-6 pb-4 border-b border-[var(--border-subtle)]">
@@ -331,12 +338,8 @@
       return filteredQuestions.map((q, idx) => {
         const selected = topicSessionState.answers[q.originalId];
         const isAnswered = selected !== undefined;
-        const isCorrect = isAnswered && selected === q.correct;
-
-        let presented = q;
-        if (typeof window !== 'undefined' && window.PortalQuizChoices && typeof window.PortalQuizChoices.present === 'function') {
-          presented = window.PortalQuizChoices.present(q, 'topic:' + q.id + ':' + q.question);
-        }
+        const presented = presentQuestion(q, 'topic');
+        const isCorrect = isAnswered && selected === presented.correct;
 
         let optionsHtml = '';
         presented.options.forEach((optText, optIdx) => {
@@ -400,7 +403,7 @@
         const ans = topicSessionState.answers[q.originalId];
         if (ans !== undefined) {
           answeredCount++;
-          if (ans === q.correct) scoreCount++;
+          if (ans === presentQuestion(q, 'topic').correct) scoreCount++;
         }
       });
 
@@ -439,12 +442,8 @@
       return slideQuestions.map((s) => {
         const selected = slideSessionState.answers[s.id];
         const isAnswered = selected !== undefined;
-        const isCorrect = isAnswered && selected === s.correct;
-
-        let presented = s;
-        if (typeof window !== 'undefined' && window.PortalQuizChoices && typeof window.PortalQuizChoices.present === 'function') {
-          presented = window.PortalQuizChoices.present(s, 'slide:' + s.id + ':' + s.question);
-        }
+        const presented = presentQuestion(s, 'slide');
+        const isCorrect = isAnswered && selected === presented.correct;
 
         let optionsHtml = '';
         presented.options.forEach((optText, optIdx) => {
@@ -589,7 +588,7 @@
         const ans = topicSessionState.answers[q.originalId];
         if (ans !== undefined) {
           answeredCount++;
-          if (ans === q.correct) scoreCount++;
+          if (ans === presentQuestion(q, 'topic').correct) scoreCount++;
         }
       });
       const scoreEl = document.getElementById('topic-practice-score');
@@ -724,7 +723,8 @@
       }
 
       // Load resources if not present
-      await window.PortalLessonSource.loadPracticeResources();
+      const resources = await window.PortalLessonSource.loadPracticeResources();
+      if (!resources.ok) throw new Error(resources.message);
 
       const banks = window.PortalLessonSource.getPracticeBanks(lectureKey, allExplanations);
       if (!banks) {
@@ -752,8 +752,6 @@
         </div>
       `;
 
-      bindDelegatedEvents();
-
       if (activeGroup === 'full') {
         initFullQuizHost(lectureKey, banks);
       }
@@ -762,6 +760,8 @@
         window.PortalUI.icons(container);
       }
     }
+
+    bindDelegatedEvents();
 
     return {
       mount,

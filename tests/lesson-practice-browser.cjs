@@ -31,7 +31,6 @@ async function scenario(name, fn, options = {}) {
   page.setDefaultTimeout(9000);
   const errors = [];
   page.on('pageerror', e => errors.push(e.message));
-  page.on('console', msg => console.log('PAGE LOG:', msg.text()));
 
   const go = async route => {
     await page.goto(base + route, { waitUntil: 'load' });
@@ -119,7 +118,10 @@ async function register({ scenario: testScenario }) {
   });
 
   // Test 2: Topic practice interaction, feedback, score tally, block filtering, and reset
-  await testScenario('topic-practice-interaction-and-reset', async ({ page, go, errors }) => {
+  await testScenario('topic-practice-interaction-and-reset', async ({ page, context, go, errors }) => {
+    await context.addInitScript(() => {
+      sessionStorage.setItem('sem2_quiz_choices_v1:' + location.pathname + location.search, '0');
+    });
     await go('study/db/lesson.html?lecture=2');
     await page.locator('.topic-block-wrapper').first().waitFor();
     await page.locator('#view-btn-practice').click();
@@ -130,8 +132,13 @@ async function register({ scenario: testScenario }) {
     const options = firstCard.locator('.topic-opt-btn');
     assert.equal(await options.count(), 4);
 
-    // Click an option (e.g. option 2: Data)
-    const optToClick = firstCard.locator('[data-opt="2"]');
+    // Authored answer 2 moves to displayed position 3 with seed 0.
+    // A wrong answer must not earn credit just because it occupies position 2.
+    await firstCard.locator('.topic-opt-btn').filter({ hasText: /\)\s*Database\s*$/ }).click();
+    assert.equal(await page.locator('#topic-practice-score strong').innerText(), '0');
+    assert.doesNotMatch(await firstCard.locator('.topic-feedback strong').innerText(), /إجابة صحيحة/);
+    await page.locator('#btn-reset-topic-practice').click();
+    const optToClick = firstCard.locator('.topic-opt-btn').filter({ hasText: /\)\s*Data(?:\s|$)/ });
     await optToClick.click();
 
     // Feedback is shown and buttons disabled
@@ -140,8 +147,9 @@ async function register({ scenario: testScenario }) {
     assert.equal(await firstCard.locator('.topic-opt-btn').first().getAttribute('disabled'), '');
 
     // Score counter is updated
-    const scoreText = await page.locator('#topic-practice-score').innerText();
-    assert.match(scoreText, /1/);
+    assert.equal(await page.locator('#topic-practice-score strong').innerText(), '1');
+    assert.equal(await page.locator('#topic-practice-score > span').innerText(), '1');
+    assert.match(await firstCard.locator('.topic-feedback strong').innerText(), /إجابة صحيحة/);
 
     // Filter by block
     const blockBtn = page.locator('[data-topic-filter="b1"]');
@@ -156,7 +164,7 @@ async function register({ scenario: testScenario }) {
     await page.locator('#btn-reset-topic-practice').click();
     assert.equal(await firstCard.locator('.topic-feedback').count(), 0);
     assert.equal(await optToClick.getAttribute('disabled'), null);
-    assert.match(await page.locator('#topic-practice-score').innerText(), /0/);
+    assert.equal(await page.locator('#topic-practice-score strong').innerText(), '0');
 
     assert.equal(errors.length, 0);
   });
@@ -169,7 +177,7 @@ async function register({ scenario: testScenario }) {
 
     // Answer question 1
     const card = page.locator('.topic-practice-card').first();
-    await card.locator('[data-opt="2"]').click();
+    await card.locator('.topic-opt-btn').filter({ hasText: /\)\s*Data\s*$/ }).click();
     await card.locator('.topic-feedback').waitFor({ state: 'visible' });
 
     // Switch to Topic reading view
@@ -188,11 +196,30 @@ async function register({ scenario: testScenario }) {
     // Verify answered question remains answered with feedback
     const restoredCard = page.locator('.topic-practice-card').first();
     assert.equal(await restoredCard.locator('.topic-feedback').isVisible(), true);
-    assert.equal(await restoredCard.locator('[data-opt="2"]').getAttribute('disabled'), '');
-    assert.match(await page.locator('#topic-practice-score').innerText(), /1/);
+    assert.equal(await restoredCard.locator('.topic-opt-btn').first().getAttribute('disabled'), '');
+    assert.equal(await page.locator('#topic-practice-score strong').innerText(), '1');
   });
 
   // Test 4: Full lecture quiz hosts PortalStudyQuiz, persists to PortalStudyState, and satisfies completion
+  await testScenario('full-quiz-layout-and-controls', async ({ page, go }) => {
+    await go('study/db/lesson.html?lecture=2');
+    await page.locator('.topic-block-wrapper').first().waitFor();
+    await page.locator('#view-btn-practice').click();
+    await page.locator('[data-practice-group-tab="full"]').click();
+    const host = page.locator('#full-quiz-host');
+    assert.equal(await host.locator('.a1-quiz-layout').evaluate(el => getComputedStyle(el).display), 'grid');
+    assert.equal(await host.locator('.a1-quiz-pagination').evaluate(el => getComputedStyle(el).display), 'flex');
+    const map = host.locator('.a1-quiz-map');
+    if (!await map.evaluate(el => el.open)) await map.locator('summary').click();
+    assert.equal(await host.locator('.a1-question-map').evaluate(el => getComputedStyle(el).display), 'grid');
+    assert.equal(await host.locator('.q-map-pill').first().evaluate(el => el.getBoundingClientRect().height >= 44), true);
+    await host.locator('[data-jump-q="full-q-20"]').click();
+    assert.equal(await host.locator('#full-q-20').isVisible(), true);
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.equal(await host.locator('.a1-quiz-layout').evaluate(el => getComputedStyle(el).flexDirection), 'column');
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), true);
+  });
+
   await testScenario('full-quiz-hosting-state-and-completion', async ({ page, go, errors }) => {
     await go('study/db/lesson.html?lecture=2');
     await page.locator('.topic-block-wrapper').first().waitFor();
@@ -277,6 +304,27 @@ async function register({ scenario: testScenario }) {
   });
 
   // Test 5: Slide questions isolation: answering does NOT complete full quiz or touch item.quiz
+  await testScenario('slide-feedback-matches-shuffled-answer', async ({ page, context, go }) => {
+    await context.addInitScript(() => {
+      sessionStorage.setItem('sem2_quiz_choices_v1:' + location.pathname + location.search, '0');
+    });
+    await go('study/db/lesson.html?lecture=2');
+    await page.locator('.topic-block-wrapper').first().waitFor();
+    await page.locator('#view-btn-practice').click();
+    await page.locator('[data-practice-group-tab="slides"]').click();
+    const card = page.locator('.slide-micro-card').first();
+    await card.locator('.slide-micro-opt-btn').filter({ hasText: 'Introduction to Computer Architecture' }).click();
+    assert.doesNotMatch(await card.locator('.slide-micro-feedback strong').innerText(), /إجابة صحيحة/);
+    await page.locator('#btn-reset-slide-questions').click();
+    await card.locator('.slide-micro-opt-btn').filter({ hasText: 'Databases and Database Users - Dr. Mohamed Maher' }).click();
+    assert.match(await card.locator('.slide-micro-feedback strong').innerText(), /إجابة صحيحة/);
+    await page.locator('[data-practice-group-tab="topic"]').click();
+    await page.locator('[data-practice-group-tab="slides"]').click();
+    assert.match(await card.locator('.slide-micro-feedback strong').innerText(), /إجابة صحيحة/);
+    await page.locator('#btn-reset-slide-questions').click();
+    assert.equal(await card.locator('.slide-micro-feedback').count(), 0);
+  });
+
   await testScenario('slide-questions-isolation-from-full-quiz', async ({ page, go }) => {
     await go('study/db/lesson.html?lecture=2');
     await page.locator('.topic-block-wrapper').first().waitFor();
@@ -314,6 +362,63 @@ async function register({ scenario: testScenario }) {
   });
 
   // Test 6: Lazy loading of question bank until practice view is activated
+  await testScenario('practice-generated-assets', async ({ page, go }) => {
+    await go('study/db/lesson.html?lecture=2');
+    await page.locator('.topic-block-wrapper').first().waitFor();
+    await page.locator('#view-btn-practice').click();
+    await page.locator('.topic-practice-card').first().waitFor();
+    assert.equal(await page.locator('[data-practice-group-tab="full"] svg').count(), 1);
+    assert.equal(await page.locator('#btn-reset-topic-practice svg').count(), 1);
+    assert.equal(await page.locator('#full-quiz-view svg.lucide-shield-check').count(), 1);
+    assert.equal(await page.locator('.practice-hub-header .rounded-full').evaluate(el => getComputedStyle(el).width), '10px');
+  });
+
+  await testScenario('practice-loading-failure-can-retry', async ({ page, context, go, errors }) => {
+    const failures = ['course-question-bank.js', 'lesson-practice.js', 'study-quiz.js', 'shared/quiz-attempt.js']
+      .map(resource => ({ resource }));
+    failures.push({ resource: 'lesson-practice.js', invalidScript: true });
+    for (const { resource, invalidScript } of failures) {
+      let requests = 0;
+      await context.route('**/js/' + resource, route => {
+        requests++;
+        if (requests !== 1) return route.continue();
+        return invalidScript ? route.fulfill({ contentType: 'text/javascript', body: '/* incomplete response */' }) : route.abort();
+      });
+      await go('study/db/lesson.html?lecture=2');
+      await page.locator('.topic-block-wrapper').first().waitFor();
+      await page.locator('#view-btn-practice').click();
+      await page.locator('#practice-hub [role="alert"]').waitFor();
+      assert.equal(await page.locator('.topic-practice-card').count(), 0, 'Do not mount partial banks');
+      await page.getByRole('button', { name: 'إعادة المحاولة', exact: true }).click();
+      await page.locator('.topic-practice-card').first().waitFor();
+      assert.equal(await page.locator('.topic-practice-card').count(), 34);
+      assert.equal(requests, 2, resource + ' must be requested again after failure');
+      await page.locator('[data-practice-group-tab="full"]').click();
+      assert.equal(await page.locator('#full-quiz-host .a1-quiz-main > [data-qid]').count(), 20);
+      await context.unroute('**/js/' + resource);
+    }
+    assert.deepEqual(errors, []);
+  });
+
+  await testScenario('practice-concurrent-opens-share-loading', async ({ page, go, errors }) => {
+    const requests = [];
+    page.on('request', request => requests.push(request.url()));
+    await go('study/db/lesson.html?lecture=2');
+    await page.locator('.topic-block-wrapper').first().waitFor();
+    await page.evaluate(() => Promise.all([
+      window.LessonWorkspace.switchView('practice'),
+      window.LessonWorkspace.switchView('topics'),
+      window.LessonWorkspace.switchView('practice')
+    ]));
+    assert.equal(await page.locator('.practice-hub-wrapper').count(), 1);
+    assert.equal(await page.locator('.topic-practice-card').count(), 34);
+    for (const resource of ['course-question-bank.js', 'lesson-practice.js', 'study-quiz.js', 'quiz-attempt.js']) {
+      assert.equal(requests.filter(url => url.endsWith('/' + resource)).length, 1, resource + ' must load once');
+    }
+    assert.equal(await page.locator('#practice-hub').getAttribute('aria-busy'), null);
+    assert.deepEqual(errors, []);
+  });
+
   await testScenario('lazy-loading-question-bank-deferred', async ({ page, go }) => {
     await go('study/db/lesson.html?lecture=2');
     await page.locator('.topic-block-wrapper').first().waitFor();
@@ -324,7 +429,7 @@ async function register({ scenario: testScenario }) {
 
     // Now switch to practice
     await page.locator('#view-btn-practice').click();
-    await page.locator('#practice-hub').waitFor({ state: 'visible' });
+    await page.locator('.topic-practice-card').first().waitFor();
 
     // Verify it is now loaded
     const afterPracticeLoaded = await page.evaluate(() => typeof window.COURSE_QUESTION_BANK !== 'undefined');
@@ -348,15 +453,11 @@ async function register({ scenario: testScenario }) {
       }, theme);
 
       await page.locator('#view-btn-practice').click();
-      await page.locator('#practice-hub').waitFor({ state: 'visible' });
+      await page.locator('.topic-practice-card').first().waitFor();
 
       // Run contrast audit on practice hub
       const issues = await page.evaluate(auditActionContrast, '#practice-hub');
-      const criticalIssues = issues.filter(i => i.contrast < 3.0);
-      if (criticalIssues.length > 0) {
-        console.log(`CONTRAST ISSUES in ${theme}:`, JSON.stringify(criticalIssues, null, 2));
-      }
-      assert.deepEqual(criticalIssues, [], `No contrast violations < 3.0 in ${theme} theme`);
+      assert.deepEqual(issues, [], `Action contrast meets WCAG AA in ${theme} theme`);
 
       // Keyboard tab cycle through group tabs
       const topicTab = page.locator('[data-practice-group-tab="topic"]');
@@ -366,6 +467,9 @@ async function register({ scenario: testScenario }) {
       await page.keyboard.press('Tab');
       const fullTab = page.locator('[data-practice-group-tab="full"]');
       assert.equal(await fullTab.evaluate(el => el === document.activeElement), true);
+      await page.keyboard.press('Enter');
+      assert.equal(await page.locator('#full-quiz-view').isVisible(), true);
+      assert.deepEqual(await page.evaluate(auditActionContrast, '#full-quiz-host'), [], `Full quiz contrast meets WCAG AA in ${theme} theme`);
     }
   });
 }
