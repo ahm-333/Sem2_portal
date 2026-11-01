@@ -637,82 +637,55 @@ interface ContentSearchService {
 
 ```typescript
 interface PortalStudioService {
-  resumeOptions(last: LastUsedItem | null | undefined): ResumeOptionResult;
-  readingHistory(): ReadingHistoryResult;
-  renderResume(): void;
+  resumeOptions(
+    entry: CatalogEntry | null | undefined,
+    item: StudyItemState | null | undefined,
+    last: LastUsedItem | null | undefined
+  ): ResumeOptions;
+  readingHistory(): void;
+  decorateCourses(): void;
   updateCourseSummaries(): void;
-  courseSummaryHtml(summary: CourseSummaryData): string;
 }
 
-interface LastUsedItem {
-  key?: string;
-  source?: string;
-  type?: string;
-  title?: string;
-  courseName?: string;
+type LastUsedItem = NonNullable<StudySnapshot['lastUsed']>;
+
+interface ResumeOptions {
   actionId?: string;
-  target?: string;
-  timestamp?: number;
-  [key: string]: unknown;
-}
-
-interface ResumeOptionResult {
-  source: string;
-  action: ActionDescriptor | null;
-  href: string;
-  label: string;
-  openMode: 'modal' | 'external' | 'link';
-  target: string;
-  key?: string;
-  title?: string;
-  courseName?: string;
-}
-
-interface ReadingHistoryResult {
-  hasItem: boolean;
-  item: LastUsedItem | null;
-  resume: ResumeOptionResult | null;
-  isUnavailable?: boolean;
-}
-
-interface CourseSummaryData {
-  courseId: string;
-  courseName?: string;
-  completedLectures: number;
-  totalLectures: number;
-  completedSections: number;
-  totalSections: number;
-  percent: number;
+  slide?: number | string;
+  tab?: 'explanation' | 'original' | 'quiz';
+  anchor?: string;
 }
 ```
 
 ### Public Methods & Semantics
 
-- `resumeOptions(last: LastUsedItem | null | undefined): ResumeOptionResult`:
-  - Consumes `PortalContentNavigation.resolveAction(key, actionId)`.
-  - Determines action descriptor, href/target, and open mode (`modal` for reader/quiz/standalone study, `external` for Drive/YouTube/external sites, `link` for local anchor).
-  - Preserves specific `actionId` when present and valid in catalog entry actions.
-  - Falls back deterministically within the same catalog entry (prefers `standalone-study` or `internal-study`, otherwise `actions[0]`), strictly preventing drift to unrelated lectures.
-  - Throws `TypeError` if `last` is nullish or has no valid `key` or `source`.
+- `resumeOptions(entry, item, last): ResumeOptions`:
+  - Accepts the catalog entry, its saved `StudyItemState`, and the last-used record for that same entry (or `null` for another history entry).
+  - Returns options for `PortalContentLinks.href(entry.key, options)`. It does not construct a URL or an action descriptor.
+  - Returns `{}` when `entry` is nullish; `item` and `last` may also be nullish.
+  - Preserves `last.actionId` when `PortalContentNavigation.resolveAction(entry.key, last.actionId)` returns a valid result. If that resolver is unavailable, checks membership in `entry.actions` instead.
+  - Otherwise selects `standalone-study` when the entry has a module and either no internal study or a valid standalone bridge marker; then `internal-study` when internal study exists; otherwise the first entry action, if any.
+  - Copies saved reader `slideId` and `tab` into `slide` and `tab`. A version-1 standalone marker may add an `anchor` only when it matches `/^[\w.-]+$/` and its timestamp matches `item.reader.updatedAt`; malformed markers are ignored.
 
-- `readingHistory(): ReadingHistoryResult`:
-  - Retrieves last-used item from `PortalStudyState.getStorage('lastUsed')` or legacy fallback.
-  - Verifies presence in catalog via `PortalCatalog.get(key)`.
-  - Fresh state (empty storage): returns `{ hasItem: false, item: null, resume: null }`. No invented item or fallback progress.
-  - Deleted or unavailable item: returns `{ hasItem: false, item: null, resume: null, isUnavailable: true }`.
-  - **Orphan Preservation**: Does NOT delete or overwrite orphan entries in storage; preserves user history bytes intact.
-  - Available item: resolves valid action descriptor via `resumeOptions` and returns `{ hasItem: true, item, resume }`.
+- `readingHistory(): void`:
+  - Reads `lastUsed` and `items` from `PortalStudyState.getSnapshot()` and updates the DOM. Returns `undefined`, including when the state service is unavailable.
+  - Resolves the last-used catalog entry via `PortalCatalog.get(last.key)`. An available entry renders its resume link in `#studio-resume`, using `resumeOptions` and `PortalContentLinks.href`.
+  - Fresh state: hides and clears `#studio-resume`; `#continue-results` shows an empty state with a link to `#library`.
+  - Deleted or unavailable last-used entry: renders `.studio-resume-recovery` with a link to `#library`.
+  - Builds `#continue-results` from saved items with `startedAt`, `reader`, or `quiz`, sorted newest first by reader timestamp or start timestamp. Items absent from the current catalog are omitted from the rendered list.
+  - **Orphan Preservation:** Does not delete or overwrite stored entries; unavailable records remain in study history storage.
+
+- `decorateCourses(): void`:
+  - Applies course palettes and adds lecture/section quick links to `#courses-grid [data-course-id]`, then calls `updateCourseSummaries()`.
 
 - `updateCourseSummaries(): void`:
-  - Iterates over all rendered course cards with `[data-course-id]`.
-  - Queries `PortalStudyProgress.getSummary(courseId)` for real-time counts.
+  - Iterates over `#courses-grid [data-course-id]`.
+  - Uses the internal `courseSummaryHtml(courseId)` helper, which queries `PortalStudyProgress.getCourseSummary(courseId)` for the `CourseSummary` defined in Section 7. If the progress service or summary is unavailable, the helper returns an empty string and that card is skipped.
   - Inserts or updates container `.studio-course-summary` without touching parent card headers or timetable sections.
-  - Displays separate metrics for lectures and sections (`محاضرات: X / Y`, `سكاشن: A / B`).
-  - Displays published-content scope explanation (`المحتوى المنشور فقط`) and explicit grade disclaimer (`التقدم لا يعكس درجات المادة أو التقييم الرسمي`).
+  - Displays completed and remaining counts separately for lectures and sections, the summary's published-content scope, and a disclaimer that progress does not represent grades or mastery.
+  - Includes a progress bar (`role="progressbar"`, `aria-valuenow`, `aria-valuemin="0"`, `aria-valuemax="100"`).
 
-- `courseSummaryHtml(summary: CourseSummaryData): string`:
-  - Pure function generating accessible HTML markup for course progress.
-  - Includes progressbar (`role="progressbar"`, `aria-valuenow`, `aria-valuemin="0"`, `aria-valuemax="100"`).
+`courseSummaryHtml(courseId: string): string` is an internal helper, not a `PortalStudio` export. There is no `renderResume` export; `readingHistory()` renders both resume and Continue content.
 
 ### Reactive Subscriptions & Scope Isolation
 
@@ -720,12 +693,13 @@ interface CourseSummaryData {
    - Subscribes to `PortalStudyState.subscribe()` for storage changes.
    - Listens to `window.addEventListener('portal:progress-changed', ...)`.
    - Listens to `window.addEventListener('studentProfileChanged', ...)`.
-   - On event: dynamically updates `#studio-resume` and `.studio-course-summary` elements without resetting search input focus or wiping unrelated views.
+   - State subscriptions and progress events refresh resume/Continue content and course summaries. Profile changes refresh course summaries; the library has its own profile-change listener.
+   - These updates do not reset search input focus or wipe unrelated views.
 
 2. **Schedule & Timetable Isolation:**
-   - Course cards and progress calculations are strictly bounded to `#courses` / `#studio-courses-grid`.
+   - Dashboard course-card updates are bounded to `#courses-grid [data-course-id]`.
    - Timetable view (`#schedule-section`) is completely untouched and isolated from study progress state.
 
 3. **Fresh State & Recovery UI:**
-   - In a fresh browser session (empty localStorage), `#studio-resume` displays an informative empty card (`لم تسجل أي نشاط مذاكرة بعد`) without fabricated metrics or fake "last used" lectures.
+   - With empty study storage, `#studio-resume` is hidden and `#continue-results` displays an empty state with a library link, without fabricated metrics or a fake last-used item.
    - For unavailable or deleted items, `#studio-resume` renders an explicit recovery notice (`.studio-resume-recovery`) with a safe link to `#library`, preserving the underlying stored item.
