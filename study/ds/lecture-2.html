@@ -324,6 +324,16 @@
     }
 
     /* Quiz controls & options styling with accessible contrast (>= 4.5:1) in all modes */
+    html[data-study-shell] #quizScoreDisplay {
+      background-color: var(--study-paper) !important;
+      color: var(--study-good-ink) !important;
+      border-color: var(--study-line) !important;
+    }
+    html[data-study-shell] .quiz-explanation {
+      background-color: var(--study-soft) !important;
+      color: var(--study-ink) !important;
+      border-color: var(--study-line) !important;
+    }
     .quiz-filter-btn {
       background-color: #f1f5f9;
       color: #0f172a !important;
@@ -479,7 +489,7 @@
                 </p>
               </div>
               <div class="flex items-center gap-3">
-                <div id="quizScoreDisplay" class="px-4 py-2 rounded-2xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-black text-sm text-emerald-700 dark:text-emerald-400">
+                <div id="quizScoreDisplay" class="px-4 py-2 rounded-2xl border font-black text-sm">
                   النتيجة: 0 / 24
                 </div>
                 <button id="btnResetQuiz" class="px-4 py-2 rounded-2xl font-bold text-xs transition">
@@ -572,7 +582,7 @@
 
               if (answeredState[q.id] !== undefined) {
                 const expBox = document.createElement('div');
-                expBox.className = 'p-3.5 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs sm:text-sm text-slate-700 dark:text-slate-300';
+                expBox.className = 'quiz-explanation p-3.5 rounded-xl border text-xs sm:text-sm';
                 expBox.textContent = q.explanation;
                 article.appendChild(expBox);
               }

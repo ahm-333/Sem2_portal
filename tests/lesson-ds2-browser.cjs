@@ -214,6 +214,38 @@ async function register({ scenario: testScenario }) {
     assert(sepiaHeadingContrast >= 4.5, `Sepia mode Exam MCQs heading contrast must be >= 4.5:1, got ${sepiaHeadingContrast.toFixed(2)}:1`);
   });
 
+  // Portal themes must control quiz feedback independently of the OS color scheme.
+  for (const colorScheme of ['light', 'dark']) {
+    for (const theme of ['light', 'dark', 'reading']) {
+      await testScenario(`ds2-quiz-feedback-contrast-${colorScheme}-os-${theme}-portal`, async ({ page, go }) => {
+        await go('study/ds/lecture-2.html');
+        await page.evaluate(value => window.PortalTheme.setTheme(value), theme);
+        const contrasts = [['initial score', await measureElementContrast(page, '#quizScoreDisplay')]];
+
+        await page.locator('#quizQuestionsContainer article').first()
+          .locator('.quiz-option:has-text("A structure containing a pointer")').click();
+        assert.match(await page.locator('#quizScoreDisplay').innerText(), /1\s*\/\s*24/);
+        contrasts.push(['updated score', await measureElementContrast(page, '#quizScoreDisplay')]);
+        const correctExplanation = '#quizQuestionsContainer article:first-child > div:last-child';
+        assert.match(await page.locator(correctExplanation).innerText(), /Node\* next/);
+        contrasts.push(['correct explanation', await measureElementContrast(page, correctExplanation)]);
+
+        await page.locator('#quizQuestionsContainer article').nth(1)
+          .locator('.quiz-option:has-text("The second node is deleted")').click();
+        assert.equal(await page.locator('#quizQuestionsContainer article').nth(1).locator('.wrong').count(), 1);
+        const wrongExplanation = '#quizQuestionsContainer article:nth-child(2) > div:last-child';
+        contrasts.push(['wrong explanation', await measureElementContrast(page, wrongExplanation)]);
+
+        await page.locator('#btnResetQuiz').click();
+        assert.match(await page.locator('#quizScoreDisplay').innerText(), /0\s*\/\s*24/);
+        contrasts.push(['reset score', await measureElementContrast(page, '#quizScoreDisplay')]);
+        assert(contrasts.every(([, ratio]) => ratio >= 4.5),
+          `${colorScheme} OS / ${theme} portal feedback contrast must be >= 4.5:1: ` +
+          contrasts.map(([label, ratio]) => `${label} ${ratio.toFixed(2)}:1`).join(', '));
+      }, { colorScheme });
+    }
+  }
+
   // 4. Acceptance 4: Step controls operable by keyboard/touch/reduced motion (5000-address example)
   await testScenario('ds2-simulator-step-controls-5000-address-and-accessibility', async ({ page, go }) => {
     await go('study/ds/lecture-2.html');
