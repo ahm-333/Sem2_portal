@@ -9,9 +9,42 @@
   // قائمة آخر الإضافات والتحديثات في المنصة (تظهر في جرس التنبيهات 🔔)
   const PORTAL_NOTIFICATIONS = [
     {
-      id: 'notif-db-lesson-workspace',
+      id: 'notif-ds-interactive-redesign',
       isNew: true,
       dateLabel: 'أحدث إضافة 🔥',
+      courseId: 'data-structure',
+      courseName: 'هياكل البيانات (Data Structures)',
+      typeLabel: 'تحديث شامل للمحاضرات 1 و 2 و 3',
+      title: 'واجهة قراءة موحدة ومطورة لمحاضرات هياكل البيانات (Arrays, Linked Lists, Recursion)',
+      desc: 'تحديث شامل يشمل فهرساً جانبياً للتنقل، محاكي تفاعلي للذاكرة والمؤشرات للـ Linked Lists، كويزات تدريبية، وضبطاً كاملاً لتباين القراءة في الوضع الليلي.',
+      url: 'study/ds/index.html'
+    },
+    {
+      id: 'notif-db-chapter-2-lesson',
+      isNew: true,
+      dateLabel: 'جديد ✨',
+      courseId: 'database-systems',
+      courseName: 'نظم قواعد البيانات (Database Systems)',
+      typeLabel: 'المحاضرة 3 + 82 سؤال تدريبي',
+      title: 'المحاضرة الثالثة (Database Architecture & Concepts) في بيئة الدروس الموحدة',
+      desc: 'دمج كامل للمحاضرة 3 بـ 32 سلايداً تفاعلياً، ومخططات ASCII الرسمية، وأمثلة الـ COMPANY Schema، مع 82 سؤالاً تدريبياً موثقاً.',
+      url: 'study/db/lesson.html?lecture=3'
+    },
+    {
+      id: 'notif-studio-continue-summaries',
+      isNew: true,
+      dateLabel: 'ميزة جديدة ⚡',
+      courseId: 'database-systems',
+      courseName: 'نظم قواعد البيانات (Database Systems)',
+      typeLabel: 'إحصائيات إنجاز + استئناف ذكي',
+      title: 'ملخصات إنجاز المقررات وزر استئناف المذاكرة التلقائي في الاستوديو',
+      desc: 'عرض نسب الإنجاز والمحاضرات المتبقية مباشرة على كروت المواد، مع استئناف ذكي لآخر مصدر تمت مذاكرته وحفظ كامل لتاريخ التعلم.',
+      url: 'index.html#studio'
+    },
+    {
+      id: 'notif-db-lesson-workspace',
+      isNew: false,
+      dateLabel: 'مضاف حديثاً 📌',
       courseId: 'database-systems',
       courseName: 'نظم قواعد البيانات (Database Systems)',
       typeLabel: 'بيئة دروس موحدة + 166 سؤال تدريبي',
@@ -21,8 +54,8 @@
     },
     {
       id: 'notif-study-progress-tracker',
-      isNew: true,
-      dateLabel: 'ميزة جديدة ⚡',
+      isNew: false,
+      dateLabel: 'مضاف حديثاً 📌',
       courseId: 'database-systems',
       courseName: 'نظم قواعد البيانات (Database Systems)',
       typeLabel: 'تتبع الإنجاز الشخصي',
@@ -32,8 +65,8 @@
     },
     {
       id: 'notif-studio-search-ranking',
-      isNew: true,
-      dateLabel: 'تحديث المكتبة ✨',
+      isNew: false,
+      dateLabel: 'مضاف حديثاً 📌',
       courseId: 'data-structure',
       courseName: 'هياكل البيانات (Data Structures)',
       typeLabel: 'بحث ذكي + فلتر إنجاز',
