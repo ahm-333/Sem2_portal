@@ -213,6 +213,77 @@
   <link rel="stylesheet" href="../../css/study/db-chapter-2.css">
   <link rel="stylesheet" href="../../css/fonts/fonts.css">
   <link rel="stylesheet" href="../../css/study-shell.css">
+  <!-- Lecture 3 Presentation Hooks & Contrast Styling (Issue #32) -->
+  <style>
+    /* Schema Diagram Island & Legibility across themes */
+    .dark-island-surface,
+    #block-2 .bg-slate-900 {
+      background-color: #0f172a !important;
+      border-color: #334155 !important;
+      color: #f1f5f9 !important;
+    }
+    body.theme-light #block-2 .bg-slate-900,
+    body.theme-sepia #block-2 .bg-slate-900,
+    body.theme-dark #block-2 .bg-slate-900 {
+      background-color: #0f172a !important;
+      border-color: #334155 !important;
+      color: #f1f5f9 !important;
+    }
+
+    body.theme-light #block-2 .bg-slate-900 strong,
+    body.theme-sepia #block-2 .bg-slate-900 strong,
+    body.theme-dark #block-2 .bg-slate-900 strong {
+      color: #fcd34d !important;
+    }
+
+    /* Headings contrast in light and reading modes inside reader cards */
+    body.theme-light .reader-card :is(h1, h2, h3, h4).text-white {
+      color: #0f172a !important;
+    }
+    body.theme-sepia .reader-card :is(h1, h2, h3, h4).text-white {
+      color: #3d3122 !important;
+    }
+
+    /* Ensure text in comparison table is legible across themes */
+    body.theme-light table thead.bg-slate-900 {
+      background-color: #f1f5f9 !important;
+      color: #0f172a !important;
+      border-bottom: 1px solid #cbd5e1 !important;
+    }
+    body.theme-sepia table thead.bg-slate-900 {
+      background-color: #f2e9d2 !important;
+      color: #451a03 !important;
+      border-bottom: 1px solid #decb9e !important;
+    }
+    body.theme-light table thead.bg-slate-900 th,
+    body.theme-light table thead.bg-slate-900 th span {
+      color: #0f172a !important;
+    }
+    body.theme-sepia table thead.bg-slate-900 th,
+    body.theme-sepia table thead.bg-slate-900 th span {
+      color: #451a03 !important;
+    }
+
+    /* Preserve local scrolling and formatting on diagrams */
+    .ascii-diagram {
+      overflow-x: auto;
+      white-space: pre;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Presentation hooks for dark island surfaces
+      const b2 = document.getElementById('block-2');
+      if (b2) {
+        b2.querySelectorAll('.bg-slate-900').forEach(box => {
+          box.classList.add('dark-island-surface');
+          box.style.setProperty('color', '#f1f5f9', 'important');
+          const s = box.querySelector('strong');
+          if (s) s.style.setProperty('color', '#fcd34d', 'important');
+        });
+      }
+    });
+  </script>
 </head>
 <body class="theme-dark min-h-screen pb-24 selection:bg-emerald-500 selection:text-white">
 

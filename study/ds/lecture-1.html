@@ -311,10 +311,259 @@
     .compact-header.nav-hidden {
       transform: translateY(-100%);
     }
-  </style>
+  
+    /* High contrast paired surfaces and semantic tokens */
+    html:not([data-theme="dark"]) .text-teal-600,
+    body:not(.theme-dark) .text-teal-600 {
+      color: #115e59 !important;
+    }
+    html:not([data-theme="dark"]) .text-amber-600,
+    body:not(.theme-dark) .text-amber-600 {
+      color: #92400e !important;
+    }
+    html:not([data-theme="dark"]) .text-amber-700,
+    body:not(.theme-dark) .text-amber-700 {
+      color: #78350f !important;
+    }
+    html:not([data-theme="dark"]) .text-rose-600,
+    body:not(.theme-dark) .text-rose-600 {
+      color: #be123c !important;
+    }
+    body.theme-dark code.inline-code,
+    body.theme-dark .ltr-token,
+    html[data-theme="dark"] code.inline-code,
+    html[data-theme="dark"] .ltr-token {
+      color: #fecdd3 !important;
+      background-color: rgba(225, 29, 72, 0.18) !important;
+      border-color: rgba(244, 63, 94, 0.35) !important;
+    }
+
+    /* Local figure and diagram scrolling on mobile viewports */
+    .diagram-frame {
+      overflow-x: auto;
+      max-width: 100%;
+      -webkit-overflow-scrolling: touch;
+    }
+    .diagram-frame svg {
+      min-width: 680px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* Slide-over Table of Contents Drawer */
+    #toc-backdrop {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #toc-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #sidebar-toc {
+      transform: translateX(105%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #sidebar-toc.open {
+      transform: translateX(0);
+    }
+    body.theme-dark #sidebar-toc,
+    html[data-theme="dark"] #sidebar-toc {
+      background-color: #131c31;
+      border-color: #26354d;
+      color: #f1f5f9;
+    }
+    body.theme-dark #sidebar-toc h2,
+    body.theme-dark #sidebar-toc p,
+    body.theme-dark #sidebar-toc a,
+    html[data-theme="dark"] #sidebar-toc h2,
+    html[data-theme="dark"] #sidebar-toc p,
+    html[data-theme="dark"] #sidebar-toc a {
+      color: #f1f5f9;
+    }
+    body.theme-dark #sidebar-toc .bg-\[\#ebe2ce\],
+    html[data-theme="dark"] #sidebar-toc .bg-\[\#ebe2ce\] {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    body.theme-dark #sidebar-toc .bg-\[\#f7f3e8\],
+    html[data-theme="dark"] #sidebar-toc .bg-\[\#f7f3e8\] {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+      #sidebar-toc {
+        transition: none !important;
+      }
+    }
+</style>
   <link rel="stylesheet" href="../../css/study/ds-lecture-1.css">
   <link rel="stylesheet" href="../../css/fonts/fonts.css">
   <link rel="stylesheet" href="../../css/study-shell.css">
+
+  <script type="application/json" data-study-tailwind>{"theme":{"extend":{"fontFamily":{"sans":["Tajawal","Cairo","sans-serif"],"heading":["Cairo","sans-serif"],"mono":["JetBrains Mono","monospace"]}}}}</script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // 1. Create and inject TOC backdrop and drawer
+      let backdrop = document.getElementById("toc-backdrop");
+      let drawer = document.getElementById("sidebar-toc");
+      if (!drawer) {
+        backdrop = document.createElement("div");
+        backdrop.id = "toc-backdrop";
+        backdrop.className = "fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50";
+
+        drawer = document.createElement("aside");
+        drawer.id = "sidebar-toc";
+        drawer.className = "fixed top-0 right-0 bottom-0 w-80 sm:w-[26rem] max-w-[92vw] z-50 bg-[#fffdf8] border-l-4 border-[#a39374] shadow-2xl flex flex-col";
+        drawer.setAttribute("role", "dialog");
+        drawer.setAttribute("aria-modal", "true");
+        drawer.setAttribute("aria-label", "فهرس المحاضرة الأولى");
+        drawer.innerHTML = '<div class="p-5 bg-[#ebe2ce] border-b-2 border-[#c8bba1] flex items-center justify-between">' +
+          '<div class="flex items-center gap-2.5"><span class="text-2xl">📑</span><div>' +
+          '<h2 class="font-black text-base text-slate-950">فهرس المحاضرة الأولى الشامل</h2>' +
+          '<p class="text-xs font-extrabold text-slate-800">اضغط على أي جزء أو عنوان للانتقال الفوري</p>' +
+          '</div></div>' +
+          '<button id="btn-close-toc" type="button" class="px-3.5 py-1.5 rounded-xl bg-rose-800 text-white font-extrabold text-xs hover:bg-rose-900 transition-all">✕ إغلاق الفهرس</button>' +
+          '</div>' +
+          '<div class="px-5 py-3 bg-amber-200/80 border-b-2 border-amber-400 flex items-center justify-between text-xs font-extrabold text-slate-950">' +
+          '<span>أقسام المحاضرة:</span>' +
+          '<span class="px-3 py-0.5 rounded-full bg-blue-800 text-white font-mono">4 أجزاء + ملخص وكويز</span>' +
+          '</div>' +
+          '<nav class="p-4 overflow-y-auto flex-1 space-y-3 text-sm">' +
+          '<div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">' +
+          '<a href="#section-part1" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">الجزء الأول: التأسيس، الـ ADTs، وأنواع البيانات</a>' +
+          '</div>' +
+          '<div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">' +
+          '<a href="#section-part2" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">الجزء الثاني: المصفوفات في C++ والعمليات الأساسية</a>' +
+          '</div>' +
+          '<div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">' +
+          '<a href="#section-part3" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">الجزء الثالث: تمثيل المصفوفة كـ ADT والعمليات المتقدمة</a>' +
+          '</div>' +
+          '<div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">' +
+          '<a href="#section-part4" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">الجزء الرابع: البرمجة العامة والقوالب (Templates)</a>' +
+          '</div>' +
+          '<div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">' +
+          '<a href="#section-summary" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">الملخص الذهبي ومقارنة التعقيد الزمني</a>' +
+          '</div>' +
+          '<div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">' +
+          '<a href="#section-quiz" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">بنك الأسئلة الشامل (16 سؤالاً)</a>' +
+          '</div>' +
+          '</nav>';
+        document.body.appendChild(backdrop);
+        document.body.appendChild(drawer);
+      }
+
+      function openToc() {
+        if (!drawer || !backdrop) return;
+        drawer.classList.add("open");
+        backdrop.classList.add("open");
+      }
+      function closeToc() {
+        if (!drawer || !backdrop) return;
+        drawer.classList.remove("open");
+        backdrop.classList.remove("open");
+      }
+
+      // 2. Inject #btn-open-toc into header
+      const indexLink = document.querySelector('a[href="index.html"]');
+      let btnOpen = document.getElementById("btn-open-toc");
+      if (indexLink && !btnOpen) {
+        btnOpen = document.createElement("button");
+        btnOpen.id = "btn-open-toc";
+        btnOpen.type = "button";
+        btnOpen.title = "فتح فهرس أجزاء المحاضرة";
+        btnOpen.className = "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-100 font-bold text-xs shadow-sm transition";
+        btnOpen.setAttribute("aria-controls", "sidebar-toc");
+        btnOpen.setAttribute("aria-expanded", "false");
+        btnOpen.innerHTML = "<span>📑 الأجزاء (4)</span>";
+        indexLink.insertAdjacentElement("afterend", btnOpen);
+      }
+      if (btnOpen) {
+        btnOpen.addEventListener("click", openToc);
+      }
+      document.getElementById("btn-close-toc")?.addEventListener("click", closeToc);
+      backdrop?.addEventListener("click", closeToc);
+      drawer?.querySelectorAll(".toc-link").forEach(link => {
+        link.addEventListener("click", closeToc);
+      });
+
+      // 3. Inject chapter pills at top of main
+      const main = document.querySelector("main");
+      if (main && !document.getElementById("chapterPillsBar")) {
+        const pillsContainer = document.createElement("div");
+        pillsContainer.id = "chapterPillsBar";
+        pillsContainer.className = "mb-6 flex flex-wrap items-center gap-2 pb-3 border-b border-[var(--border-color)]";
+        pillsContainer.innerHTML = '<button type="button" data-target="all" class="chapter-pill active px-3.5 py-1.5 rounded-xl font-heading font-bold text-xs transition border border-transparent bg-blue-600 text-white shadow-xs">جميع الأجزاء</button>' +
+          '<button type="button" data-target="p1" class="chapter-pill px-3.5 py-1.5 rounded-xl font-heading font-bold text-xs transition border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] hover:bg-[var(--bg-soft)]">الجزء 1: التأسيس والـ ADTs</button>' +
+          '<button type="button" data-target="p2" class="chapter-pill px-3.5 py-1.5 rounded-xl font-heading font-bold text-xs transition border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] hover:bg-[var(--bg-soft)]">الجزء 2: المصفوفات في C++</button>' +
+          '<button type="button" data-target="p3" class="chapter-pill px-3.5 py-1.5 rounded-xl font-heading font-bold text-xs transition border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] hover:bg-[var(--bg-soft)]">الجزء 3: المصفوفات كـ ADTs</button>' +
+          '<button type="button" data-target="p4" class="chapter-pill px-3.5 py-1.5 rounded-xl font-heading font-bold text-xs transition border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] hover:bg-[var(--bg-soft)]">الجزء 4: القوالب (Templates)</button>' +
+          '<button type="button" data-target="summary" class="chapter-pill px-3.5 py-1.5 rounded-xl font-heading font-bold text-xs transition border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] hover:bg-[var(--bg-soft)]">الملخص</button>' +
+          '<button type="button" data-target="quiz" class="chapter-pill px-3.5 py-1.5 rounded-xl font-heading font-bold text-xs transition border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] hover:bg-[var(--bg-soft)]">الكويز (16)</button>';
+        main.insertBefore(pillsContainer, main.firstChild);
+
+        pillsContainer.querySelectorAll(".chapter-pill").forEach(pill => {
+          pill.addEventListener("click", () => {
+            pillsContainer.querySelectorAll(".chapter-pill").forEach(p => {
+              p.classList.remove("active", "bg-blue-600", "text-white");
+              p.classList.add("bg-[var(--bg-card)]");
+            });
+            pill.classList.add("active", "bg-blue-600", "text-white");
+            pill.classList.remove("bg-[var(--bg-card)]");
+
+            const target = pill.getAttribute("data-target");
+            const map = {
+              all: null,
+              p1: document.getElementById("section-part1"),
+              p2: document.getElementById("section-part2"),
+              p3: document.getElementById("section-part3"),
+              p4: document.getElementById("section-part4"),
+              summary: document.getElementById("section-summary"),
+              quiz: document.getElementById("section-quiz")
+            };
+            if (target === "all" || !map[target]) {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            } else {
+              map[target].scrollIntoView({ block: "start", behavior: "smooth" });
+            }
+          });
+        });
+      }
+
+      // 4. Synchronize deep links and hash navigation
+      function syncHash() {
+        const hash = window.location.hash.replace(/^#/, "");
+        if (!hash) return;
+        const targetSec = document.getElementById(hash);
+        if (!targetSec) return;
+        if (hash.startsWith("section-")) {
+          const suffix = hash.slice("section-".length);
+          const pillTarget = suffix === "part1" ? "p1" : suffix === "part2" ? "p2" : suffix === "part3" ? "p3" : suffix === "part4" ? "p4" : suffix;
+          const matchingPill = document.querySelector('.chapter-pill[data-target="' + pillTarget + '"]');
+          if (matchingPill) {
+            document.querySelectorAll(".chapter-pill").forEach(p => {
+              p.classList.remove("active", "bg-blue-600", "text-white");
+              p.classList.add("bg-[var(--bg-card)]");
+            });
+            matchingPill.classList.add("active", "bg-blue-600", "text-white");
+            matchingPill.classList.remove("bg-[var(--bg-card)]");
+          }
+        }
+        targetSec.scrollIntoView({ block: "start", behavior: "instant" });
+      }
+      window.addEventListener("hashchange", syncHash);
+      if (window.location.hash) {
+        setTimeout(syncHash, 60);
+      }
+    });
+  </script>
+
 </head>
 <body class="min-h-screen pb-20">
 
