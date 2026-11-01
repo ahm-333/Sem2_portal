@@ -129,6 +129,50 @@
     return element;
   }
 
+  /**
+   * Lecture 3 reading adapter: styles dark island schema surfaces (Student_number / Course_number)
+   * and tables/diagrams using shared tokens to ensure full WCAG contrast and local scrolling across modes.
+   */
+  function adaptLecture3Block(blockId, element) {
+    if (!element) return element;
+    if (blockId === 'block-2') {
+      const darkIslands = element.querySelectorAll('.bg-slate-900');
+      darkIslands.forEach(island => {
+        island.classList.add('dark-island-surface');
+        island.style.setProperty('background-color', '#0f172a', 'important');
+        island.style.setProperty('color', '#f1f5f9', 'important');
+        island.style.setProperty('border-color', '#334155', 'important');
+        const strongs = island.querySelectorAll('strong');
+        strongs.forEach(s => {
+          s.style.setProperty('color', '#fcd34d', 'important');
+        });
+      });
+
+      const tables = element.querySelectorAll('table');
+      tables.forEach(table => {
+        const thead = table.querySelector('thead');
+        if (thead && !table.classList.contains('schema-table')) {
+          thead.style.setProperty('background-color', 'var(--study-soft, #1e293b)', 'important');
+          thead.style.setProperty('color', 'var(--study-ink, #f1f5f9)', 'important');
+          thead.style.borderBottom = '1px solid var(--study-line, #334155)';
+        }
+      });
+    }
+
+    if (blockId === 'block-4' || blockId === 'block-5') {
+      const asciiDiagrams = element.querySelectorAll('.ascii-diagram');
+      asciiDiagrams.forEach(pre => {
+        pre.style.setProperty('background-color', '#0f172a', 'important');
+        pre.style.setProperty('color', '#38bdf8', 'important');
+        pre.style.setProperty('border-color', '#334155', 'important');
+        pre.style.setProperty('overflow-x', 'auto', 'important');
+        pre.style.setProperty('white-space', 'pre', 'important');
+      });
+    }
+
+    return element;
+  }
+
   function extractTopicBlocks(doc, spec) {
     const foundMap = new Map();
     const duplicates = [];
@@ -170,6 +214,9 @@
       let el = foundMap.get(id);
       if (spec.lectureKey === '2') {
         el = adaptLecture2Block(id, el);
+      }
+      if (spec.lectureKey === '3') {
+        el = adaptLecture3Block(id, el);
       }
       let title = '';
       const h = el.querySelector('h1, h2, h3, h4');
