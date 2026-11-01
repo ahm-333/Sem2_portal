@@ -318,10 +318,248 @@
     .comparison-table tr:last-child td {
       border-bottom: none;
     }
+
+    /* Issue #37: High contrast tokens and accessible typography across all reading modes */
+    :root {
+      --teal-heading: #0f766e;
+      --amber-accent: #92400e;
+      --rose-token: #9f1239;
+    }
+
+    body.theme-white, body.theme-light {
+      --teal-heading: #0f766e;
+      --amber-accent: #92400e;
+      --rose-token: #9f1239;
+    }
+
+    body.theme-sepia {
+      --teal-heading: #115e59;
+      --amber-accent: #78350f;
+      --rose-token: #9f1239;
+    }
+
+    body.theme-dark {
+      --teal-heading: #2dd4bf;
+      --amber-accent: #fcd34d;
+      --rose-token: #fda4af;
+    }
+
+    .text-teal-600, .text-teal-700, .text-teal-800,
+    h3.text-teal-600, h4.text-teal-600,
+    h3.text-teal-800, h4.text-teal-800,
+    .walkthrough-teal-title {
+      color: var(--teal-heading) !important;
+    }
+
+    .text-amber-600, .text-amber-700, .text-amber-800,
+    .word-chip span.text-amber-600, .exam-note-amber {
+      color: var(--amber-accent) !important;
+    }
+
+    code.inline-code, .ltr-token {
+      color: var(--rose-token) !important;
+      direction: ltr !important;
+      unicode-bidi: isolate !important;
+    }
+
+    body.theme-dark code.inline-code,
+    body.theme-dark .ltr-token {
+      color: var(--rose-token) !important;
+      background-color: #292f4c !important;
+      border-color: #3e4870 !important;
+    }
+
+    .diagram-frame {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+    }
+
+    pre.code-block {
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch !important;
+      direction: ltr !important;
+    }
+
+    @media (max-width: 640px) {
+      #mainReadingHeader a[href="lecture-2.html"] span {
+        display: none !important;
+      }
+      #mainReadingHeader a[href="lecture-2.html"]::after {
+        content: "L2";
+      }
+    }
+
+    #sidebar-toc {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+      transform: translateX(100%);
+      visibility: hidden;
+    }
+    #sidebar-toc.open {
+      transform: translateX(0);
+      visibility: visible;
+    }
+    #toc-backdrop {
+      transition: opacity 0.25s ease, visibility 0.25s;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    #toc-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    body.theme-dark #sidebar-toc {
+      background-color: #131c31 !important;
+      border-left-color: #26354d !important;
+      color: #f1f5f9 !important;
+    }
+    body.theme-dark #sidebar-toc > div:first-child {
+      background-color: #1e293b !important;
+      border-bottom-color: #26354d !important;
+      color: #f1f5f9 !important;
+    }
+    body.theme-dark #sidebar-toc h2,
+    body.theme-dark #sidebar-toc p,
+    body.theme-dark #sidebar-toc a {
+      color: #f1f5f9 !important;
+    }
+    body.theme-dark #sidebar-toc .bg-\[\#f7f3e8\],
+    body.theme-dark #sidebar-toc .bg-\[\#ebe2ce\] {
+      background-color: #1e293b !important;
+      border-color: #26354d !important;
+    }
+    body.theme-dark #sidebar-toc .text-slate-950,
+    body.theme-dark #sidebar-toc .text-slate-900,
+    body.theme-dark #sidebar-toc .text-slate-800 {
+      color: #f1f5f9 !important;
+    }
   </style>
   <link rel="stylesheet" href="../../css/study/ds-lecture-3.css">
   <link rel="stylesheet" href="../../css/fonts/fonts.css">
   <link rel="stylesheet" href="../../css/study-shell.css">
+  <script type="application/json" data-study-tailwind>{"theme":{"extend":{"fontFamily":{"sans":["Tajawal","Cairo","sans-serif"],"heading":["Cairo","sans-serif"],"mono":["JetBrains Mono","monospace"]}}}}</script>
+
+  <script>
+  (function() {
+    function setupReadingEnhancements() {
+      // 1. Inject Table of Contents Button in Header
+      const indexLink = document.querySelector('#mainReadingHeader a[href="index.html"]');
+      if (indexLink && !document.getElementById('btn-open-toc')) {
+        const btn = document.createElement('button');
+        btn.id = 'btn-open-toc';
+        btn.type = 'button';
+        btn.title = 'فتح فهرس أجزاء المحاضرة الخمسة';
+        btn.className = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-100 font-bold text-xs shadow-sm transition';
+        btn.setAttribute('aria-expanded', 'false');
+        btn.innerHTML = '<span>📑 الأجزاء (5)</span>';
+        indexLink.insertAdjacentElement('afterend', btn);
+      }
+
+      // 2. Inject TOC Backdrop and Sidebar Drawer
+      if (!document.getElementById('sidebar-toc')) {
+        const backdrop = document.createElement('div');
+        backdrop.id = 'toc-backdrop';
+        backdrop.className = 'fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50';
+        document.body.appendChild(backdrop);
+
+        const aside = document.createElement('aside');
+        aside.id = 'sidebar-toc';
+        aside.className = 'fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white border-l border-slate-200 z-50 overflow-y-auto shadow-2xl flex flex-col';
+        aside.setAttribute('aria-label', 'فهرس المحاضرة');
+        aside.innerHTML = `
+  <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 sticky top-0 z-10">
+    <div>
+      <h2 class="font-heading font-extrabold text-sm text-slate-800">فهرس المحاضرة الثالثة</h2>
+      <p class="text-xs text-slate-500">الاستدعاء الذاتي (Recursion)</p>
+    </div>
+    <button id="btn-close-toc" type="button" aria-label="إغلاق الفهرس" class="p-1 rounded-lg hover:bg-slate-200 text-slate-600 transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <nav class="p-3 space-y-1.5 flex-1">
+    <a href="#section-part1" class="toc-link block p-2 rounded-lg text-xs font-bold hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition">
+      <span class="w-5 h-5 rounded bg-blue-100 text-blue-700 inline-flex items-center justify-center text-[10px] ml-1">1</span>
+      <span>الجزء الأول: التأسيس، دالة fact، ومكدس النظام</span>
+    </a>
+    <a href="#section-part2" class="toc-link block p-2 rounded-lg text-xs font-bold hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition">
+      <span class="w-5 h-5 rounded bg-indigo-100 text-indigo-700 inline-flex items-center justify-center text-[10px] ml-1">2</span>
+      <span>الجزء الثاني: متتالية فيبوناتشي rFibNum وشجرة الاستدعاء</span>
+    </a>
+    <a href="#section-part3" class="toc-link block p-2 rounded-lg text-xs font-bold hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition">
+      <span class="w-5 h-5 rounded bg-teal-100 text-teal-700 inline-flex items-center justify-center text-[10px] ml-1">3</span>
+      <span>الجزء الثالث: خوارزميات إضافية (largest و reversePrint)</span>
+    </a>
+    <a href="#section-summary" class="toc-link block p-2 rounded-lg text-xs font-bold hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition">
+      <span class="w-5 h-5 rounded bg-purple-100 text-purple-700 inline-flex items-center justify-center text-[10px] ml-1">📌</span>
+      <span>الخلاصة والزتونة الشاملة</span>
+    </a>
+    <a href="#section-quiz" class="toc-link block p-2 rounded-lg text-xs font-bold hover:bg-blue-50 text-slate-700 hover:text-blue-700 transition">
+      <span class="w-5 h-5 rounded bg-emerald-100 text-emerald-700 inline-flex items-center justify-center text-[10px] ml-1">🎯</span>
+      <span>كويز الفهم والتثبيت (12 سؤالاً)</span>
+    </a>
+  </nav>
+        `;
+        document.body.appendChild(aside);
+      }
+
+      // 3. Open/Close Drawer Handlers
+      const btnOpenToc = document.getElementById('btn-open-toc');
+      const btnCloseToc = document.getElementById('btn-close-toc');
+      const tocBackdrop = document.getElementById('toc-backdrop');
+      const sidebarToc = document.getElementById('sidebar-toc');
+
+      function openDrawer() {
+        if (sidebarToc) sidebarToc.classList.add('open');
+        if (tocBackdrop) tocBackdrop.classList.add('open');
+        if (btnOpenToc) btnOpenToc.setAttribute('aria-expanded', 'true');
+      }
+      function closeDrawer() {
+        if (sidebarToc) sidebarToc.classList.remove('open');
+        if (tocBackdrop) tocBackdrop.classList.remove('open');
+        if (btnOpenToc) btnOpenToc.setAttribute('aria-expanded', 'false');
+      }
+
+      if (btnOpenToc) btnOpenToc.addEventListener('click', openDrawer);
+      if (btnCloseToc) btnCloseToc.addEventListener('click', closeDrawer);
+      if (tocBackdrop) tocBackdrop.addEventListener('click', closeDrawer);
+
+      document.querySelectorAll('.toc-link').forEach(link => {
+        link.addEventListener('click', closeDrawer);
+      });
+
+      // 4. Synchronize theme button clicks
+      const btnThemeWhite = document.getElementById('btnThemeWhite');
+      const btnThemeSepia = document.getElementById('btnThemeSepia');
+      const btnThemeDark = document.getElementById('btnThemeDark');
+
+      if (btnThemeWhite) {
+        btnThemeWhite.addEventListener('click', () => {
+          document.body.classList.remove('theme-sepia', 'theme-dark');
+          document.body.classList.add('theme-light');
+        });
+      }
+      if (btnThemeSepia) {
+        btnThemeSepia.addEventListener('click', () => {
+          document.body.classList.remove('theme-light', 'theme-dark', 'theme-white');
+          document.body.classList.add('theme-sepia');
+        });
+      }
+      if (btnThemeDark) {
+        btnThemeDark.addEventListener('click', () => {
+          document.body.classList.remove('theme-light', 'theme-sepia', 'theme-white');
+          document.body.classList.add('theme-dark');
+        });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupReadingEnhancements);
+    } else {
+      setupReadingEnhancements();
+    }
+  })();
+  </script>
 </head>
 <body class="min-h-screen pb-20">
 
