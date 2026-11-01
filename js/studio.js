@@ -48,15 +48,78 @@
       else window.location.href = 'index.html#library';
     });
   }
+  function courseSummaryHtml(courseId) {
+    if (!window.PortalStudyProgress) return '';
+    const summary = window.PortalStudyProgress.getCourseSummary(courseId);
+    if (!summary) return '';
+    const course = window.COURSES_DATA?.find(c => c.id === courseId);
+    const courseName = course ? (window.PortalPresentation?.course(course)?.name || course.name) : courseId;
+    return `<div class="studio-course-summary" data-course-summary="${escape(courseId)}" aria-label="ملخص إنجاز المحتوى المنشور لمادة ${escape(courseName)}">
+      <div class="studio-summary-header">
+        <span class="studio-summary-title">إنجاز المحتوى المنشور</span>
+        <span class="studio-summary-percent">${summary.percent}%</span>
+      </div>
+      <div class="studio-summary-bar" role="progressbar" aria-valuenow="${summary.percent}" aria-valuemin="0" aria-valuemax="100" aria-label="نسبة إنجاز ${escape(courseName)}">
+        <div class="studio-summary-bar-fill" style="width:${summary.percent}%"></div>
+      </div>
+      <div class="studio-summary-metrics">
+        <div class="studio-summary-metric metric-lectures">
+          <span class="metric-label"><i data-lucide="book-open" aria-hidden="true"></i>المحاضرات</span>
+          <span class="metric-counts"><strong class="count-done">${summary.lectures.completed}</strong> مكتمل <span class="count-divider">•</span> <span class="count-left">${summary.lectures.remaining} متبقٍ</span></span>
+        </div>
+        <div class="studio-summary-metric metric-sections">
+          <span class="metric-label"><i data-lucide="notebook-pen" aria-hidden="true"></i>السكاشن</span>
+          <span class="metric-counts"><strong class="count-done">${summary.sections.completed}</strong> مكتمل <span class="count-divider">•</span> <span class="count-left">${summary.sections.remaining} متبقٍ</span></span>
+        </div>
+      </div>
+      <p class="studio-summary-scope"><small><span class="scope-text">${escape(summary.scope)}</span> <span class="grade-disclaimer">(مؤشر إنجاز للمحتوى المنشور ولا يعبر عن الدرجات أو إتقان المادة).</span></small></p>
+    </div>`;
+  }
+  function updateCourseSummaries() {
+    for (const article of document.querySelectorAll('#courses-grid [data-course-id]')) {
+      const courseId = article.dataset.courseId;
+      if (!courseId) continue;
+      let summaryEl = article.querySelector('.studio-course-summary');
+      const html = courseSummaryHtml(courseId);
+      if (!html) continue;
+      if (!summaryEl) {
+        const quick = article.querySelector('.studio-quick-actions');
+        if (quick) {
+          quick.insertAdjacentHTML('beforebegin', html);
+        } else {
+          article.insertAdjacentHTML('beforeend', html);
+        }
+        summaryEl = article.querySelector('.studio-course-summary');
+        if (summaryEl && window.PortalUI && typeof window.PortalUI.icons === 'function') {
+          window.PortalUI.icons(summaryEl);
+        }
+      } else {
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        const newSummary = temp.firstElementChild;
+        if (newSummary) {
+          summaryEl.replaceWith(newSummary);
+          if (window.PortalUI && typeof window.PortalUI.icons === 'function') {
+            window.PortalUI.icons(newSummary);
+          }
+        }
+      }
+    }
+  }
   function decorateCourses() {
     for (const article of document.querySelectorAll('#courses-grid [data-course-id]')) {
       article.style.cssText = palette(article.dataset.courseId);
-      if (article.querySelector('.studio-quick-actions')) continue;
-      const quick = document.createElement('div'); quick.className = 'studio-quick-actions';
-      const id = encodeURIComponent(article.dataset.courseId);
-      quick.innerHTML = `<a href="subject.html?id=${id}&kind=lectures" aria-label="محاضرات ${escape(window.PortalPresentation.course(window.COURSES_DATA.find(c => c.id === article.dataset.courseId)).name)}"><i data-lucide="book-open" aria-hidden="true"></i>محاضرات</a><a href="subject.html?id=${id}&track=section&kind=sections" aria-label="سكاشن ${escape(window.PortalPresentation.course(window.COURSES_DATA.find(c => c.id === article.dataset.courseId)).name)}"><i data-lucide="notebook-pen" aria-hidden="true"></i>سكاشن</a>`;
-      article.append(quick); window.PortalUI.icons(quick);
+      if (!article.querySelector('.studio-quick-actions')) {
+        const quick = document.createElement('div'); quick.className = 'studio-quick-actions';
+        const id = encodeURIComponent(article.dataset.courseId);
+        quick.innerHTML = `<a href="subject.html?id=${id}&kind=lectures" aria-label="محاضرات ${escape(window.PortalPresentation.course(window.COURSES_DATA.find(c => c.id === article.dataset.courseId)).name)}"><i data-lucide="book-open" aria-hidden="true"></i>محاضرات</a><a href="subject.html?id=${id}&track=section&kind=sections" aria-label="سكاشن ${escape(window.PortalPresentation.course(window.COURSES_DATA.find(c => c.id === article.dataset.courseId)).name)}"><i data-lucide="notebook-pen" aria-hidden="true"></i>سكاشن</a>`;
+        article.append(quick);
+        if (window.PortalUI && typeof window.PortalUI.icons === 'function') {
+          window.PortalUI.icons(quick);
+        }
+      }
     }
+    updateCourseSummaries();
   }
   function statusBadge(entry) {
     if (!window.PortalContentSearch || !window.PortalContentSearch.isProgressEligible(entry)) return '';
@@ -77,28 +140,68 @@
       const saved = JSON.parse(window.PortalStorage.getItem('sem2_standalone_v1:' + encodeURIComponent(entry.key)));
       if (saved?.version === 1 && typeof saved.anchor === 'string' && /^[\w.-]+$/.test(saved.anchor) && saved.updatedAt === item?.reader?.updatedAt) bridge = saved;
     } catch { /* A malformed standalone marker cannot override the validated reader. */ }
-    const lastAction = last?.actionId && entry.actions?.find(a => a.id === last.actionId);
-    let actionId = lastAction ? lastAction.id : null;
+    let actionId = null;
+    if (last?.actionId) {
+      if (window.PortalContentNavigation && typeof window.PortalContentNavigation.resolveAction === 'function') {
+        const resolved = window.PortalContentNavigation.resolveAction(entry.key, last.actionId);
+        if (resolved?.valid) actionId = last.actionId;
+      } else if (entry.actions?.some(a => a.id === last.actionId)) {
+        actionId = last.actionId;
+      }
+    }
     if (!actionId) {
       if (entry.module && (!entry.study || bridge)) actionId = 'standalone-study';
       else if (entry.study) actionId = 'internal-study';
       else if (entry.actions?.[0]) actionId = entry.actions[0].id;
     }
     const options = actionId ? {actionId} : {};
-    if (item?.reader) { options.slide = item.reader.slideId; options.tab = item.reader.tab; }
-    if (bridge) options.anchor = bridge.anchor;
+    if (item?.reader) {
+      if (item.reader.slideId !== undefined && item.reader.slideId !== null) {
+        options.slide = item.reader.slideId;
+      }
+      if (item.reader.tab) {
+        options.tab = item.reader.tab;
+      }
+    }
+    if (bridge?.anchor) options.anchor = bridge.anchor;
     return options;
   }
   function readingHistory() {
-    const snapshot = window.PortalStudyState.getSnapshot();
+    const state = window.PortalStudyState;
+    if (!state) return;
+    const snapshot = state.getSnapshot();
     const last = snapshot.lastUsed;
-    const entry = last && window.PortalCatalog.get(last.key);
+    const entry = last?.key && window.PortalCatalog ? window.PortalCatalog.get(last.key) : null;
     const resume = document.getElementById('studio-resume');
-    resume.hidden = !entry;
-    resume.innerHTML = entry ? `<a class="studio-resume-link" href="${escape(window.PortalContentLinks.href(entry.key, resumeOptions(entry, snapshot.items[entry.key], last)))}"><i data-lucide="history" aria-hidden="true"></i><div><strong>كمّل من آخر مرة</strong><p dir="auto">${escape(entry.title)}</p></div><span>كمّل المذاكرة</span><i data-lucide="arrow-left" aria-hidden="true"></i></a>` : '';
-    const history = Object.entries(snapshot.items).filter(([, item]) => item.startedAt || item.reader || item.quiz).sort((a, b) => String(b[1].reader?.updatedAt || b[1].startedAt || '').localeCompare(String(a[1].reader?.updatedAt || a[1].startedAt || ''))).map(([key, item]) => ({entry: window.PortalCatalog.get(key), item})).filter(value => value.entry);
-    document.getElementById('continue-results').innerHTML = history.length ? history.map(({entry: value, item}) => resourceRow(value, resumeOptions(value, item, last?.key === value.key ? last : null))).join('') : `<div class="studio-empty"><i data-lucide="book-open" aria-hidden="true"></i><h3>أول خطوة لسه قدّامك</h3><p>لما تبدأ شرح أو تدريب، هتلاقيه هنا عشان ترجع له بسهولة.</p><a href="#library" class="studio-button">استكشف المصادر</a></div>`;
-    window.PortalUI.icons(resume); window.PortalUI.icons(document.getElementById('continue-results'));
+    if (resume) {
+      if (entry) {
+        resume.hidden = false;
+        resume.innerHTML = `<a class="studio-resume-link" href="${escape(window.PortalContentLinks.href(entry.key, resumeOptions(entry, snapshot.items[entry.key], last)))}"><i data-lucide="history" aria-hidden="true"></i><div><strong>كمّل من آخر مرة</strong><p dir="auto">${escape(entry.title)}</p></div><span>كمّل المذاكرة</span><i data-lucide="arrow-left" aria-hidden="true"></i></a>`;
+      } else if (last) {
+        resume.hidden = false;
+        resume.innerHTML = `<div class="studio-resume-recovery" role="status"><i data-lucide="alert-circle" aria-hidden="true"></i><div><strong>المصدر السابق لم يعد متاحاً</strong><p>تم تحديث خطة المواد أو إزالة هذا المحتوى. يمكنك استكشاف المصادر الحالية أو متابعة مادة أخرى.</p></div><a href="#library" class="studio-button">استكشف المصادر</a></div>`;
+      } else {
+        resume.hidden = true;
+        resume.innerHTML = '';
+      }
+      if (window.PortalUI && typeof window.PortalUI.icons === 'function') {
+        window.PortalUI.icons(resume);
+      }
+    }
+    const continueResults = document.getElementById('continue-results');
+    if (continueResults) {
+      const history = Object.entries(snapshot.items || {})
+        .filter(([, item]) => item.startedAt || item.reader || item.quiz)
+        .sort((a, b) => String(b[1].reader?.updatedAt || b[1].startedAt || '').localeCompare(String(a[1].reader?.updatedAt || a[1].startedAt || '')))
+        .map(([key, item]) => ({entry: window.PortalCatalog ? window.PortalCatalog.get(key) : null, item}))
+        .filter(value => Boolean(value.entry));
+      continueResults.innerHTML = history.length
+        ? history.map(({entry: value, item}) => resourceRow(value, resumeOptions(value, item, last?.key === value.key ? last : null))).join('')
+        : `<div class="studio-empty"><i data-lucide="book-open" aria-hidden="true"></i><h3>أول خطوة لسه قدّامك</h3><p>لما تبدأ شرح أو تدريب، هتلاقيه هنا عشان ترجع له بسهولة.</p><a href="#library" class="studio-button">استكشف المصادر</a></div>`;
+      if (window.PortalUI && typeof window.PortalUI.icons === 'function') {
+        window.PortalUI.icons(continueResults);
+      }
+    }
   }
   function library() {
     const query = document.getElementById('library-query');
@@ -176,7 +279,19 @@
     window.addEventListener('pagehide', () => observer.disconnect());
     window.addEventListener('pageshow', () => { observer.observe(grid, {childList: true}); decorateCourses(); });
     readingHistory();
-    window.PortalStudyState.subscribe(readingHistory);
+    if (window.PortalStudyState && typeof window.PortalStudyState.subscribe === 'function') {
+      window.PortalStudyState.subscribe(() => {
+        readingHistory();
+        updateCourseSummaries();
+      });
+    }
+    window.addEventListener('portal:progress-changed', () => {
+      updateCourseSummaries();
+      readingHistory();
+    });
+    window.addEventListener('studentProfileChanged', () => {
+      updateCourseSummaries();
+    });
     library();
   }
   function subjectView() {
@@ -199,5 +314,8 @@
       document.querySelector(`[data-open-study-lecture="${Number(entry.id)}"]`)?.click();
     }
   }
+  const api = { resumeOptions, readingHistory, decorateCourses, updateCourseSummaries };
+  window.PortalStudio = api;
+  if (typeof module === 'object' && module.exports) module.exports = api;
   document.addEventListener('DOMContentLoaded', () => { shell(); if (home) homeViews(); else subjectView(); });
 })();

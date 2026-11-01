@@ -621,3 +621,111 @@ interface ContentSearchService {
 3. **Compound Filtering:** Filters for course, resource kind (including `interactive` for the 25 local lessons), progress status, and TA scope combine conjunctively (`AND`).
 4. **Lazy First Render:** Library rows remain 0 on initial home page load until the library section is actively revealed, ensuring zero overhead for students solely browsing course cards or timetables.
 5. **Accessibility & Reactivity:** The search interface provides accessible form labels, `role="status"` with `aria-live="polite"` result announcements, and reacts dynamically to `portal:progress-changed` and `studentProfileChanged` events without full-page reloads.
+
+
+---
+
+## 9. Study 08 — Complete Existing Continue and Accurate Published-Content Summaries
+
+**Owner:** Issue #12 (`[Study 08] Complete existing Continue and add accurate published-content summaries`)
+
+### Browser Singleton & Exports
+
+- **Browser Global:** `window.PortalStudio` (defined in `js/studio.js`)
+
+### Interface Contract
+
+```typescript
+interface PortalStudioService {
+  resumeOptions(last: LastUsedItem | null | undefined): ResumeOptionResult;
+  readingHistory(): ReadingHistoryResult;
+  renderResume(): void;
+  updateCourseSummaries(): void;
+  courseSummaryHtml(summary: CourseSummaryData): string;
+}
+
+interface LastUsedItem {
+  key?: string;
+  source?: string;
+  type?: string;
+  title?: string;
+  courseName?: string;
+  actionId?: string;
+  target?: string;
+  timestamp?: number;
+  [key: string]: unknown;
+}
+
+interface ResumeOptionResult {
+  source: string;
+  action: ActionDescriptor | null;
+  href: string;
+  label: string;
+  openMode: 'modal' | 'external' | 'link';
+  target: string;
+  key?: string;
+  title?: string;
+  courseName?: string;
+}
+
+interface ReadingHistoryResult {
+  hasItem: boolean;
+  item: LastUsedItem | null;
+  resume: ResumeOptionResult | null;
+  isUnavailable?: boolean;
+}
+
+interface CourseSummaryData {
+  courseId: string;
+  courseName?: string;
+  completedLectures: number;
+  totalLectures: number;
+  completedSections: number;
+  totalSections: number;
+  percent: number;
+}
+```
+
+### Public Methods & Semantics
+
+- `resumeOptions(last: LastUsedItem | null | undefined): ResumeOptionResult`:
+  - Consumes `PortalContentNavigation.resolveAction(key, actionId)`.
+  - Determines action descriptor, href/target, and open mode (`modal` for reader/quiz/standalone study, `external` for Drive/YouTube/external sites, `link` for local anchor).
+  - Preserves specific `actionId` when present and valid in catalog entry actions.
+  - Falls back deterministically within the same catalog entry (prefers `standalone-study` or `internal-study`, otherwise `actions[0]`), strictly preventing drift to unrelated lectures.
+  - Throws `TypeError` if `last` is nullish or has no valid `key` or `source`.
+
+- `readingHistory(): ReadingHistoryResult`:
+  - Retrieves last-used item from `PortalStudyState.getStorage('lastUsed')` or legacy fallback.
+  - Verifies presence in catalog via `PortalCatalog.get(key)`.
+  - Fresh state (empty storage): returns `{ hasItem: false, item: null, resume: null }`. No invented item or fallback progress.
+  - Deleted or unavailable item: returns `{ hasItem: false, item: null, resume: null, isUnavailable: true }`.
+  - **Orphan Preservation**: Does NOT delete or overwrite orphan entries in storage; preserves user history bytes intact.
+  - Available item: resolves valid action descriptor via `resumeOptions` and returns `{ hasItem: true, item, resume }`.
+
+- `updateCourseSummaries(): void`:
+  - Iterates over all rendered course cards with `[data-course-id]`.
+  - Queries `PortalStudyProgress.getSummary(courseId)` for real-time counts.
+  - Inserts or updates container `.studio-course-summary` without touching parent card headers or timetable sections.
+  - Displays separate metrics for lectures and sections (`محاضرات: X / Y`, `سكاشن: A / B`).
+  - Displays published-content scope explanation (`المحتوى المنشور فقط`) and explicit grade disclaimer (`التقدم لا يعكس درجات المادة أو التقييم الرسمي`).
+
+- `courseSummaryHtml(summary: CourseSummaryData): string`:
+  - Pure function generating accessible HTML markup for course progress.
+  - Includes progressbar (`role="progressbar"`, `aria-valuenow`, `aria-valuemin="0"`, `aria-valuemax="100"`).
+
+### Reactive Subscriptions & Scope Isolation
+
+1. **Storage & State Subscriptions:**
+   - Subscribes to `PortalStudyState.subscribe()` for storage changes.
+   - Listens to `window.addEventListener('portal:progress-changed', ...)`.
+   - Listens to `window.addEventListener('studentProfileChanged', ...)`.
+   - On event: dynamically updates `#studio-resume` and `.studio-course-summary` elements without resetting search input focus or wiping unrelated views.
+
+2. **Schedule & Timetable Isolation:**
+   - Course cards and progress calculations are strictly bounded to `#courses` / `#studio-courses-grid`.
+   - Timetable view (`#schedule-section`) is completely untouched and isolated from study progress state.
+
+3. **Fresh State & Recovery UI:**
+   - In a fresh browser session (empty localStorage), `#studio-resume` displays an informative empty card (`لم تسجل أي نشاط مذاكرة بعد`) without fabricated metrics or fake "last used" lectures.
+   - For unavailable or deleted items, `#studio-resume` renders an explicit recovery notice (`.studio-resume-recovery`) with a safe link to `#library`, preserving the underlying stored item.
