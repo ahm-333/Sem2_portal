@@ -129,8 +129,9 @@
       const isInternal = options.actionId === 'internal-study';
       const isStandalone = options.actionId === 'standalone-study';
       if (isInternal || isStandalone) {
-        const hasStudy = Boolean(entry.study);
-        const hasModule = Boolean(entry.module || (entry.actions || []).some(a => a.id === 'standalone-study'));
+        const isDb = entry.courseId === 'database-systems' && (String(entry.id) === '2' || String(entry.id) === '3');
+        const hasStudy = Boolean(entry.study || isDb);
+        const hasModule = Boolean(entry.module || isDb || (entry.actions || []).some(a => a.id === 'standalone-study'));
         const isActionAvailable = isInternal ? hasStudy : hasModule;
         if (!isActionAvailable) {
           showUnavailableNotice(key, { actionId: options.actionId });
@@ -220,7 +221,17 @@
     if (!entry) return { valid: false, reason: 'not_found' };
 
     if (!actionId || typeof actionId !== 'string') return { valid: false, reason: 'action_required' };
-    const action = Array.isArray(entry.actions) && entry.actions.find(a => a.id === actionId);
+    let action = Array.isArray(entry.actions) && entry.actions.find(a => a.id === actionId);
+    if (!action && actionId === 'standalone-study') {
+      const isDb = entry.courseId === 'database-systems' && (String(entry.id) === '2' || String(entry.id) === '3');
+      if (isDb || entry.module) {
+        action = {
+          id: 'standalone-study',
+          type: 'internal',
+          label: 'المذاكرة التفاعلية'
+        };
+      }
+    }
     if (!action) return { valid: false, reason: 'action_unavailable' };
 
     if (action.type === 'internal') {
@@ -252,6 +263,19 @@
         }
       }
       return resolved;
+    }
+
+    const isDb = resolved.entry.courseId === 'database-systems' && (String(resolved.entry.id) === '2' || String(resolved.entry.id) === '3');
+    if (isDb && actionId === 'standalone-study') {
+      const loc = (typeof window !== 'undefined' && window.PortalLessonLocation) ||
+        (typeof require !== 'undefined' ? (() => { try { return require('./shared/lesson-location.js').PortalLessonLocation; } catch (_) { return null; } })() : null);
+      const targetUrl = loc
+        ? loc.toWorkspaceUrl(resolved.entry.id, parsed)
+        : `study/db/lesson.html?lecture=${resolved.entry.id}`;
+      if (typeof window !== 'undefined' && window.location) {
+        window.location.href = targetUrl;
+      }
+      return { dispatched: true, action: resolved.action, url: targetUrl };
     }
 
     if (actionId === 'internal-study') {

@@ -10,6 +10,24 @@
     function href(key, options = {}) {
       const catalog = getCatalog();
       const entry = catalog ? catalog.get(key) : null;
+
+      const isDbLec = (entry?.courseId === 'database-systems' && (String(entry.id) === '2' || String(entry.id) === '3')) ||
+        (typeof key === 'string' && (key.includes('"database-systems"') && (key.includes('"2"') || key.includes('"3"'))));
+
+      if (isDbLec && options.actionId === 'standalone-study') {
+        const lecId = entry?.id ? String(entry.id) : (key.includes('"3"') ? '3' : '2');
+        const defaultModuleUrl = lecId === '3' ? 'study/db/chapter-2.html' : 'study/db/chapter-1.html';
+        const rawUrl = entry?.module?.url || defaultModuleUrl;
+        const url = new URL(rawUrl, 'http://localhost/');
+        const section = Number(options.slide);
+        if (typeof options.anchor === 'string' && /^[\w.-]+$/.test(options.anchor)) {
+          url.hash = options.anchor;
+        } else if (Number.isSafeInteger(section) && section > 0) {
+          url.searchParams.set('section', section);
+        }
+        return url.pathname.slice(1) + url.search + url.hash;
+      }
+
       if (entry?.module && options.actionId === 'standalone-study') {
         const url = new URL(entry.module.url, 'http://localhost/');
         const section = Number(options.slide);

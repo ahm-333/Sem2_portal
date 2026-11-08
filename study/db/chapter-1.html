@@ -1,6 +1,84 @@
 <!DOCTYPE html>
 <html data-study-shell lang="ar" dir="rtl" class="dark">
 <head>
+  <script>
+    (function () {
+      if (location.protocol === 'file:') return;
+      try { if (window.self !== window.top) return; } catch (_) { return; }
+      const params = new URLSearchParams(location.search);
+      if (params.get('raw') === '1' || params.get('no-redirect') === '1') return;
+
+      const hash = location.hash || '';
+      const hasTarget = Boolean(
+        hash ||
+        params.has('section') ||
+        params.has('slide') ||
+        params.has('view') ||
+        params.has('anchor') ||
+        params.has('redirect') ||
+        params.has('workspace')
+      );
+      if (!hasTarget) return;
+
+      const targetParams = new URLSearchParams();
+      targetParams.set('lecture', '2');
+      for (const [k, v] of params.entries()) {
+        if (k !== 'raw' && k !== 'no-redirect' && k !== 'redirect' && k !== 'workspace') {
+          targetParams.set(k, v);
+        }
+      }
+
+      let targetHash = hash;
+      if (hash === '#quiz-section' || hash === '#quiz' || hash === '#practice-hub' || hash === '#practice') {
+        targetParams.set('view', 'practice');
+        targetHash = '';
+      } else if (hash.startsWith('#block-')) {
+        targetHash = '#topic-' + hash.slice(1);
+      }
+
+      try {
+        const key = JSON.stringify(['database-systems', 'lecture', '2']);
+        const now = new Date().toISOString();
+        const bridgeKey = 'sem2_standalone_v1:' + encodeURIComponent(key);
+        const metaKey = 'sem2_study_v1:meta';
+        const readerKey = 'sem2_study_v1:item:' + encodeURIComponent(key) + ':reader';
+        const baseKey = 'sem2_study_v1:item:' + encodeURIComponent(key) + ':base';
+
+        let meta = { schemaVersion: 1, lastUsed: null };
+        try { meta = JSON.parse(localStorage.getItem(metaKey)) || meta; } catch (_) {}
+        meta.lastUsed = { key, actionId: 'standalone-study', updatedAt: now };
+        localStorage.setItem(metaKey, JSON.stringify(meta));
+
+        let currentBridge = { version: 1, anchor: '', updatedAt: now, checks: [] };
+        try {
+          const parsed = JSON.parse(localStorage.getItem(bridgeKey));
+          if (parsed?.version === 1 && Array.isArray(parsed.checks)) currentBridge = parsed;
+        } catch (_) {}
+        currentBridge.anchor = targetHash ? targetHash.slice(1) : (hash ? hash.slice(1) : 'topic-block-1');
+        currentBridge.updatedAt = now;
+        localStorage.setItem(bridgeKey, JSON.stringify(currentBridge));
+
+        let readerData = { slideId: 0, tab: targetParams.get('view') === 'practice' ? 'quiz' : 'explanation', updatedAt: now };
+        try {
+          const parsedReader = JSON.parse(localStorage.getItem(readerKey));
+          if (parsedReader && typeof parsedReader === 'object') {
+            readerData = Object.assign({}, parsedReader, readerData);
+            if (typeof readerData.slideId !== 'number') readerData.slideId = 0;
+          }
+        } catch (_) {}
+        localStorage.setItem(readerKey, JSON.stringify(readerData));
+
+        let baseData = { startedAt: now };
+        try {
+          const parsedBase = JSON.parse(localStorage.getItem(baseKey));
+          if (parsedBase && typeof parsedBase === 'object') baseData = Object.assign({}, parsedBase, baseData);
+        } catch (_) {}
+        localStorage.setItem(baseKey, JSON.stringify(baseData));
+      } catch (_) {}
+
+      location.replace('lesson.html?' + targetParams.toString() + targetHash);
+    })();
+  </script>
   <script src="../../js/shared/storage.js"></script>
   <script src="../../js/theme.js"></script>
   <meta charset="UTF-8">
