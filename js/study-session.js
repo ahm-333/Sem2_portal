@@ -49,13 +49,25 @@
     for (const section of document.querySelectorAll('section[id]')) ids.add(section.id);
     return [...ids];
   }
+  const isDb = lesson?.courseId === 'database-systems';
   function recordSection(anchor) {
     const sections = anchors();
     const index = sections.indexOf(anchor);
-    if (index < 0) return false;
+    if (index < 0 && !document.getElementById(anchor)) return false;
     const updatedAt = new Date().toISOString();
-    result(state.updateItem(lesson.key, {reader: {slideId: index + 1, tab: 'explanation', updatedAt}}));
-    bridge.anchor = anchor; bridge.updatedAt = updatedAt; saveBridge();
+    const loc = window.PortalLessonLocation;
+    const bridgeAnchor = (isDb && loc ? loc.formatBridgeAnchor('topic', anchor) : anchor);
+    if (isDb) {
+      const currentReader = state.getItem(lesson.key)?.reader;
+      const readerPatch = { tab: 'explanation', updatedAt };
+      if (currentReader?.slideId !== undefined && currentReader?.slideId !== null) {
+        readerPatch.slideId = currentReader.slideId;
+      }
+      result(state.updateItem(lesson.key, { reader: readerPatch }));
+    } else {
+      result(state.updateItem(lesson.key, {reader: {slideId: index + 1, tab: 'explanation', updatedAt}}));
+    }
+    bridge.anchor = bridgeAnchor; bridge.updatedAt = updatedAt; saveBridge();
     result(state.setLastUsed({key: lesson.key, actionId: 'standalone-study', updatedAt}));
     return true;
   }
@@ -64,15 +76,16 @@
     const number = Number(current.searchParams.get('section'));
     const explicitHash = current.hash.slice(1);
     const anchor = explicitHash || (Number.isSafeInteger(number) && number > 0 ? sections[number - 1] : bridge.anchor);
-    const target = anchor && document.getElementById(anchor);
+    const target = anchor && (document.getElementById(anchor) || (isDb && anchor.startsWith('topic-') ? document.getElementById(anchor.slice(6)) : null));
     if (!target) return false;
-    if (anchor.startsWith('section-')) {
-      const suffix = anchor.slice('section-'.length);
+    const effectiveId = target.id;
+    if (effectiveId.startsWith('section-')) {
+      const suffix = effectiveId.slice('section-'.length);
       const control = document.getElementById('tab-' + suffix) || [...document.querySelectorAll('.chapter-pill[data-target]')].find(button => button.dataset.target === suffix);
       if (control && (!target.getClientRects().length || !control.classList.contains('active'))) control.click();
     }
     target.scrollIntoView({block: 'start', behavior: 'instant'});
-    recordSection(anchor);
+    recordSection(effectiveId);
     return true;
   }
   window.PortalStudySession = {module: lesson, recordSection, resume, status: () => warning || state.getStatus()};

@@ -703,3 +703,92 @@ interface ResumeOptions {
 3. **Fresh State & Recovery UI:**
    - With empty study storage, `#studio-resume` is hidden and `#continue-results` displays an empty state with a library link, without fabricated metrics or a fake last-used item.
    - For unavailable or deleted items, `#studio-resume` renders an explicit recovery notice (`.studio-resume-recovery`) with a safe link to `#library`, preserving the underlying stored item.
+
+---
+
+## 10. Learning UI 07 — Preserved Location Resolution, Standalone Bridge Namespacing, and Backup Ownership
+
+**Owner:** Issue #34 (`[Learning UI 07] Preserve resume and old DB links through the unified workspace`)
+
+### Browser Singleton & Node Factory
+
+- **Browser Global:** `window.PortalLessonLocation`
+- **Node Factory:** `createLessonLocation({ catalog })` exported from `js/shared/lesson-location.js`.
+
+### Canonical Location Representation
+
+```typescript
+type LessonView = 'topics' | 'slides' | 'practice';
+
+interface ResolvedLocation {
+  view: LessonView;
+  topicId: string | null;      // e.g. 'block-1', 'block-2'
+  slideNum: number | null;     // 1-based slide number
+  tab: 'explanation' | 'original' | 'quiz' | null;
+  anchor: string;              // Canonical namespaced anchor (e.g. 'topic-block-1', 'slide-5', 'practice')
+  source: 'url' | 'bridge' | 'reader' | 'default';
+  isAmbiguous?: boolean;
+}
+
+interface LocationCandidate {
+  url?: string | URL | Location;
+  lastUsed?: { key: string; actionId: string; updatedAt?: string } | null;
+  studyItem?: {
+    reader?: { slideId?: number | string; tab?: string; updatedAt?: string };
+    quiz?: { answers?: Record<string, number>; completedVersions?: string[] };
+  } | null;
+  bridge?: {
+    version: 1;
+    anchor?: string;
+    updatedAt?: string;
+    checks?: string[];
+  } | null;
+  lectureKey?: string | number;
+}
+```
+
+### Canonical Namespaces and Alias Grammar
+
+All bridge anchors must strictly conform to `/^[\w.-]+$/` (no colons, spaces, slashes, or query delimiters) to maintain byte-level compatibility with the `sem2_standalone_v1` validator.
+
+| Target View | Canonical Anchor | Accepted Old Aliases |
+| :--- | :--- | :--- |
+| Topic Block | `topic-block-<id>` | `#block-<id>`, `block-<id>`, `topic:<id>`, `section-<id>` |
+| Slide Detail | `slide-<num>` | `#slide-<num>`, `slide-<num>`, `slide-card-<num>`, `slide:<num>` |
+| Practice / Quiz | `practice` | `#practice-hub`, `practice-hub`, `#quiz-section`, `quiz-section`, `quiz` |
+| Reading Tab | `explanation`, `original` | `tab-explanation`, `tab-original` |
+
+### Ambiguity Resolution Invariants
+
+1. **Root Ambiguity Cause:**
+   Historically, `js/study-session.js` wrote `1 + sections.indexOf(anchor)` into `reader.slideId` with `actionId: 'standalone-study'`, whereas `js/study-reader.js` wrote actual slide numbers into `reader.slideId` with `actionId: 'internal-study'`. Both wrote to the same canonical key (e.g., `["database-systems","lecture","2"]`). Consequently, a saved `slideId: 7` could denote either the 7th topic block or slide number 7.
+2. **Resolution Precedence:**
+   - **Step 1 (Explicit Valid URL Wins):** Explicit URL query parameters (`slide=N`, `section=N`, `view=practice`) or valid location hashes override any saved state.
+   - **Step 2 (Standalone Study Action Check):** If `lastUsed.actionId === 'standalone-study'`, the write originated from the standalone session:
+     - If `bridge.anchor` is present, valid, and its timestamp aligns with `reader.updatedAt`, the bridge anchor is canonical.
+     - If `bridge.anchor` is missing, `reader.slideId` is treated as a 1-based section/block index, **never** directly as a slide number.
+   - **Step 3 (Internal Study Action Check):** If `lastUsed.actionId === 'internal-study'`, `reader.slideId` represents an authentic slide number.
+   - **Step 4 (Timestamp Disambiguation):** If action metadata is absent or contradictory, the entity with the latest valid ISO timestamp wins.
+   - **Step 5 (Corruption & Default Fallback):** If state is corrupted, malformed, or irreconcilably contradictory, stored raw bytes are preserved untouched without mutation, and navigation safely defaults to `view: 'topics'`.
+
+### Unified Workspace Single Writer Contract
+
+1. In the unified lesson workspace (`study/db/lesson.html`), `LessonWorkspace` is the sole location writer:
+   - Topic navigation records `bridge.anchor = 'topic-block-' + id` and sets `reader.tab = 'explanation'`. It **never** writes section ordinals to `reader.slideId`.
+   - Slide navigation records `reader.slideId = num` and `bridge.anchor = 'slide-' + num`.
+   - Practice navigation records `bridge.anchor = 'practice'` and `reader.tab = 'quiz'`.
+2. Old standalone scroll observers in `study-session.js` must yield to `PortalLessonLocation` and never run concurrently or write competing positions in the unified workspace.
+
+### Backup & Restore Integration (Issue #13 Ownership)
+
+1. **Protected Storage Keys:**
+   - `sem2_standalone_v1:<encoded-key>`: Lesson anchor and sub-section completion index.
+   - `sem2_standalone_check_v1:<encoded-key>:<check-id>`: Independent section check states.
+2. **Preservation Guarantees:**
+   - Backup serialization extracts exact JSON bytes for both keys without modification.
+   - Restore performs defensive shape validation before writing:
+     - `version === 1`
+     - `anchor` conforms to `/^[\w.-]*$/`
+     - `checks` conforms to string array of `/^[\w-]+$/`
+   - Invalid or corrupted backup records are refused atomically without partial overwrite of existing study state.
+

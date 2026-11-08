@@ -27,6 +27,133 @@
   let currentLectureKey = null;
   let practiceInstance = null;
   let practiceMountPromise = null;
+  let isBooting = true;
+  let topicScrollTimer = null;
+
+  function getLocationHelper() {
+    if (typeof window !== 'undefined' && window.PortalLessonLocation) {
+      return window.PortalLessonLocation;
+    }
+    if (typeof require !== 'undefined') {
+      try { return require('./shared/lesson-location.js').PortalLessonLocation; } catch (_) {}
+    }
+    return null;
+  }
+
+  function writeLocation(loc) {
+    if (isBooting || !currentLectureKey) return;
+    const state = typeof window !== 'undefined' ? window.PortalStudyState : null;
+    const storage = typeof window !== 'undefined' ? window.PortalStorage : null;
+    if (!state || !storage) return;
+
+    const contentKey = window.PortalCatalog
+      ? window.PortalCatalog.key('database-systems', 'lecture', currentLectureKey)
+      : JSON.stringify(['database-systems', 'lecture', String(currentLectureKey)]);
+    const updatedAt = new Date().toISOString();
+    const locHelper = getLocationHelper();
+    const bridgeKey = 'sem2_standalone_v1:' + encodeURIComponent(contentKey);
+    let bridgeData = { version: 1, anchor: '', updatedAt: '', checks: [] };
+    let bridgeCorrupt = false;
+    const rawBridge = storage.getItem(bridgeKey);
+    if (rawBridge !== null) {
+      try {
+        const parsed = JSON.parse(rawBridge);
+        if (locHelper && typeof locHelper.validateBridge === 'function') {
+          const res = locHelper.validateBridge(parsed);
+          if (!res.ok) bridgeCorrupt = true;
+          else bridgeData = res.bridge;
+        } else if (parsed?.version === 1 && Array.isArray(parsed.checks)) {
+          bridgeData = parsed;
+        } else {
+          bridgeCorrupt = true;
+        }
+      } catch (_) {
+        bridgeCorrupt = true;
+      }
+    }
+
+    if (loc.view === 'slides') {
+      const slideNum = loc.slideNum || (currentSlideIndex + 1);
+      const anchor = locHelper ? locHelper.formatBridgeAnchor('slide', slideNum) : 'slide-' + slideNum;
+      bridgeData.anchor = anchor;
+      bridgeData.updatedAt = updatedAt;
+      if (!bridgeCorrupt) {
+        storage.setItem(bridgeKey, JSON.stringify(bridgeData));
+      }
+      state.updateItem(contentKey, { reader: { slideId: slideNum, tab: 'explanation', updatedAt } });
+      state.setLastUsed({ key: contentKey, actionId: 'internal-study', updatedAt });
+
+      try {
+        if (typeof history !== 'undefined' && history.replaceState && typeof window !== 'undefined' && window.location) {
+          const u = new URL(window.location.href);
+          u.searchParams.set('slide', String(slideNum));
+          u.searchParams.delete('view');
+          u.searchParams.delete('section');
+          history.replaceState(null, '', u.pathname + u.search);
+        }
+      } catch (_) {}
+    } else if (loc.view === 'practice') {
+      const anchor = locHelper ? locHelper.formatBridgeAnchor('practice') : 'practice';
+      bridgeData.anchor = anchor;
+      bridgeData.updatedAt = updatedAt;
+      if (!bridgeCorrupt) {
+        storage.setItem(bridgeKey, JSON.stringify(bridgeData));
+      }
+      const existingReader = state.getItem(contentKey)?.reader;
+      const sId = existingReader?.slideId !== undefined && existingReader?.slideId !== null ? existingReader.slideId : 0;
+      state.updateItem(contentKey, { reader: { slideId: sId, tab: 'quiz', updatedAt } });
+      state.setLastUsed({ key: contentKey, actionId: 'standalone-study', updatedAt });
+
+      try {
+        if (typeof history !== 'undefined' && history.replaceState && typeof window !== 'undefined' && window.location) {
+          const u = new URL(window.location.href);
+          u.searchParams.set('view', 'practice');
+          u.searchParams.delete('slide');
+          u.searchParams.delete('section');
+          history.replaceState(null, '', u.pathname + u.search);
+        }
+      } catch (_) {}
+    } else if (loc.view === 'topics') {
+      const anchor = loc.anchor || (lastTopicAnchor ? 'topic-' + lastTopicAnchor : 'topic-block-1');
+      bridgeData.anchor = anchor;
+      bridgeData.updatedAt = updatedAt;
+      if (!bridgeCorrupt) {
+        storage.setItem(bridgeKey, JSON.stringify(bridgeData));
+      }
+      const existingReader = state.getItem(contentKey)?.reader;
+      const sId = existingReader?.slideId !== undefined && existingReader?.slideId !== null ? existingReader.slideId : 0;
+      const readerPatch = { slideId: sId, tab: 'explanation', updatedAt };
+      state.updateItem(contentKey, { reader: readerPatch });
+      state.setLastUsed({ key: contentKey, actionId: 'standalone-study', updatedAt });
+
+      try {
+        if (typeof history !== 'undefined' && history.replaceState && typeof window !== 'undefined' && window.location) {
+          const u = new URL(window.location.href);
+          u.searchParams.delete('slide');
+          u.searchParams.delete('view');
+          u.searchParams.delete('section');
+          history.replaceState(null, '', u.pathname + u.search + '#' + anchor);
+        }
+      } catch (_) {}
+    }
+  }
+
+  function observeTopicScroll() {
+    if (isBooting || !currentBlocks || currentBlocks.length === 0) return;
+    const topicView = document.getElementById('topic-reading-view');
+    if (!topicView || topicView.hidden) return;
+
+    const visible = currentBlocks.map(b => {
+      const el = document.getElementById('topic-' + b.id) || document.getElementById(b.id);
+      return el ? { id: b.id, rect: el.getBoundingClientRect() } : null;
+    }).filter(v => v && v.rect.height > 0 && v.rect.top < window.innerHeight * 0.6 && v.rect.bottom > 100)
+      .sort((a, b) => b.rect.top - a.rect.top)[0];
+
+    if (visible && visible.id !== lastTopicAnchor) {
+      lastTopicAnchor = visible.id;
+      writeLocation({ view: 'topics', anchor: 'topic-' + visible.id });
+    }
+  }
 
   async function mountPractice(practiceView) {
     practiceView.setAttribute('aria-busy', 'true');
@@ -121,6 +248,7 @@
         practiceBtn.classList.remove('is-active');
         practiceBtn.setAttribute('aria-pressed', 'false');
       }
+      writeLocation({ view: 'topics', anchor: lastTopicAnchor ? 'topic-' + lastTopicAnchor : 'topic-block-1' });
     } else if (view === 'slides') {
       if (topicView) topicView.hidden = true;
       if (slideView) slideView.hidden = false;
@@ -137,6 +265,8 @@
         practiceBtn.classList.remove('is-active');
         practiceBtn.setAttribute('aria-pressed', 'false');
       }
+      const sNum = currentLectureData?.slides?.[currentSlideIndex]?.num || 1;
+      writeLocation({ view: 'slides', slideNum: sNum });
     } else if (view === 'practice') {
       if (topicView) topicView.hidden = true;
       if (slideView) slideView.hidden = true;
@@ -163,6 +293,7 @@
         }
         await practiceMountPromise;
       }
+      writeLocation({ view: 'practice' });
     }
   }
 
@@ -215,6 +346,8 @@
       targetCard.tabIndex = -1;
       targetCard.focus({ preventScroll: true });
     }
+
+    writeLocation({ view: 'slides', slideNum: num });
   }
 
   function returnToTopic() {
@@ -370,12 +503,14 @@
       link.addEventListener('click', e => {
         e.preventDefault();
         const blockId = link.getAttribute('data-topic-link');
+        lastTopicAnchor = blockId;
         switchView('topics');
         const target = document.getElementById('topic-' + blockId) || document.getElementById(blockId);
         if (target) {
           target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
           target.focus({ preventScroll: true });
         }
+        writeLocation({ view: 'topics', anchor: 'topic-' + blockId });
       });
     });
 
@@ -641,26 +776,164 @@
       });
     }
 
-    // Handle deep link if slide requested
-    const requestedSlide = getQueryParam('slide');
-    const requestedView = getQueryParam('view');
-    if (requestedSlide) {
-      showSlide(requestedSlide);
-    } else if (requestedView === 'practice' || (typeof window !== 'undefined' && window.location.hash === '#practice-hub')) {
-      switchView('practice');
-    } else {
-      switchView('topics');
+    // Ensure PortalLessonLocation is loaded if not already present
+    if (typeof window !== 'undefined' && !window.PortalLessonLocation && typeof document !== 'undefined') {
+      await new Promise(resolve => {
+        const script = document.createElement('script');
+        script.src = '../../js/shared/lesson-location.js';
+        script.onload = () => resolve();
+        script.onerror = () => resolve();
+        document.head.appendChild(script);
+      });
     }
 
-    // Record study activity
-    if (window.PortalCatalog && window.PortalStudyState) {
+    // Handle initial deep link and saved location restoration
+    const locHelper = getLocationHelper();
+    let initialLocation = { view: 'topics', topicId: 'block-1', anchor: 'topic-block-1', source: 'default' };
+
+    const hasExplicitTarget = Boolean(
+      getQueryParam('slide') ||
+      getQueryParam('section') ||
+      getQueryParam('view') ||
+      (typeof window !== 'undefined' && window.location.hash && window.location.hash !== '#' && window.location.hash !== '')
+    );
+
+    if (locHelper && hasExplicitTarget) {
+      const state = typeof window !== 'undefined' ? window.PortalStudyState : null;
+      const storage = typeof window !== 'undefined' ? window.PortalStorage : null;
+      const contentKey = window.PortalCatalog
+        ? window.PortalCatalog.key('database-systems', 'lecture', lectureKey)
+        : JSON.stringify(['database-systems', 'lecture', String(lectureKey)]);
+      const studyItem = state ? state.getItem(contentKey) : null;
+      const snapshotLastUsed = state ? state.getSnapshot()?.lastUsed : null;
+      const lastUsed = snapshotLastUsed?.key === contentKey ? snapshotLastUsed : null;
+      let bridge = null;
+      if (storage) {
+        try {
+          bridge = JSON.parse(storage.getItem('sem2_standalone_v1:' + encodeURIComponent(contentKey)));
+        } catch (_) {}
+      }
+
+      initialLocation = locHelper.resolveLocation({
+        url: typeof window !== 'undefined' ? window.location : null,
+        lastUsed,
+        studyItem,
+        bridge,
+        lectureKey
+      });
+    } else if (!locHelper && hasExplicitTarget) {
+      const requestedSlide = getQueryParam('slide');
+      const requestedView = getQueryParam('view');
+      if (requestedSlide) initialLocation = { view: 'slides', slideNum: Number(requestedSlide), anchor: 'slide-' + requestedSlide };
+      else if (requestedView === 'practice' || (typeof window !== 'undefined' && window.location.hash === '#practice-hub')) initialLocation = { view: 'practice', anchor: 'practice' };
+    }
+
+    if (initialLocation.view === 'practice') {
+      await switchView('practice');
+    } else if (initialLocation.view === 'slides') {
+      await switchView('slides');
+      showSlide(initialLocation.slideNum || 1);
+    } else {
+      await switchView('topics');
+      if (initialLocation.anchor || initialLocation.topicId) {
+        const targetAnchor = initialLocation.anchor || ('topic-' + initialLocation.topicId);
+        const targetEl = document.getElementById(targetAnchor) ||
+                         (initialLocation.topicId ? document.getElementById(initialLocation.topicId) : null) ||
+                         document.querySelector(`[data-block-id="${initialLocation.topicId}"]`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: 'instant', block: 'start' });
+          targetEl.tabIndex = -1;
+          targetEl.focus({ preventScroll: true });
+        }
+        if (initialLocation.topicId) lastTopicAnchor = initialLocation.topicId;
+      }
+    }
+
+    // Scroll listener for reading position tracking
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', () => {
+        clearTimeout(topicScrollTimer);
+        topicScrollTimer = setTimeout(observeTopicScroll, 180);
+      }, { passive: true });
+
+      window.addEventListener('hashchange', () => {
+        if (isBooting) return;
+        const hash = window.location.hash.slice(1);
+        if (!hash) return;
+        const norm = locHelper ? locHelper.normalizeAnchor(hash) : hash;
+        if (!norm) return;
+        if (norm === 'practice') {
+          switchView('practice');
+        } else if (norm.startsWith('slide-')) {
+          const num = Number(norm.slice(6));
+          if (Number.isSafeInteger(num)) showSlide(num);
+        } else if (norm.startsWith('topic-')) {
+          const blockId = norm.slice(6);
+          lastTopicAnchor = blockId;
+          switchView('topics');
+          const target = document.getElementById(norm) || document.getElementById(blockId);
+          if (target) {
+            target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
+            target.tabIndex = -1;
+            target.focus({ preventScroll: true });
+          }
+        }
+      });
+    }
+
+    // Record study activity and sync bridge state
+    if (window.PortalCatalog && window.PortalStudyState && window.PortalStorage) {
       try {
         const contentKey = window.PortalCatalog.key('database-systems', 'lecture', lectureKey);
-        window.PortalStudyState.setLastUsed({ key: contentKey, actionId: 'internal-study' });
+        const item = window.PortalStudyState.getItem(contentKey);
+        const now = new Date().toISOString();
+        if (!item?.startedAt) {
+          window.PortalStudyState.updateItem(contentKey, { startedAt: now });
+        }
+
+        const currentAnchor = initialLocation.anchor || (initialLocation.topicId ? 'topic-' + initialLocation.topicId : 'topic-block-1');
+        const bridgeKey = 'sem2_standalone_v1:' + encodeURIComponent(contentKey);
+        let bridgeData = { version: 1, anchor: currentAnchor, updatedAt: now, checks: [] };
+        let bridgeCorrupt = false;
+        const rawBridge = window.PortalStorage.getItem(bridgeKey);
+        if (rawBridge !== null) {
+          try {
+            const parsed = JSON.parse(rawBridge);
+            if (locHelper && typeof locHelper.validateBridge === 'function') {
+              const res = locHelper.validateBridge(parsed);
+              if (!res.ok) bridgeCorrupt = true;
+              else if (Array.isArray(res.bridge.checks)) bridgeData.checks = res.bridge.checks;
+            } else if (parsed?.version === 1 && Array.isArray(parsed.checks)) {
+              bridgeData.checks = parsed.checks;
+            } else {
+              bridgeCorrupt = true;
+            }
+          } catch (_) {
+            bridgeCorrupt = true;
+          }
+        }
+        if (!bridgeCorrupt) {
+          window.PortalStorage.setItem(bridgeKey, JSON.stringify(bridgeData));
+        }
+
+        const sId = initialLocation.slideNum !== undefined && initialLocation.slideNum !== null
+          ? initialLocation.slideNum
+          : (item?.reader?.slideId !== undefined && item?.reader?.slideId !== null ? item.reader.slideId : 0);
+        const readerPatch = {
+          slideId: sId,
+          tab: initialLocation.tab || (initialLocation.view === 'practice' ? 'quiz' : 'explanation'),
+          updatedAt: now
+        };
+        window.PortalStudyState.updateItem(contentKey, { reader: readerPatch });
+        window.PortalStudyState.setLastUsed({ key: contentKey, actionId: 'standalone-study', updatedAt: now });
       } catch {
         // Safe ignoring if state storage fails
       }
     }
+
+    setTimeout(() => {
+      isBooting = false;
+    }, 250);
 
     // Refresh icons
     if (window.PortalUI && typeof window.PortalUI.icons === 'function') {
