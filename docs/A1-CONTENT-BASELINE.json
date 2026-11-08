@@ -1,7 +1,7 @@
 {
   "head": "729f29150f95f580f4f12678223fdbfc62a338a6",
   "files": {
-    "js/courses-data.js": "d6c58ac2ba92275f469ea6b882a39221f2a341bbcf9e2271bbc634913ea0ee42",
+    "js/courses-data.js": "45d6db5029f99603677720809eaf65a8cb628948e0fdbccd42f20e7196d1a095",
     "js/schedule-data.js": "47448803fa0f545c33e927f29bcdadf46f84f80da8d408db772b079ec847a619",
     "js/lecture-explanations-data.js": "34faac751e92214171ab5529633922a43b7c90feb2918daa98625a740aec5bb8",
     "tools/pending-schedule.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",

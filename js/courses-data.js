@@ -1604,6 +1604,18 @@ const COURSES_DATA = [
         "fileUrl": "https://drive.google.com/file/d/13UfB_WbVKRPdsfFYXjM0iDDLN_RveU_q/view",
         "notes": "سلايدات تمهيدية تعريفية بمقرر قواعد البيانات ومفاهيم الـ DBMS الأساسية",
         "badge": "مقدمة المقرر"
+      },
+      {
+        "id": 2,
+        "title": "سلايدات المحاضرة السادسة: الفصل الرابع (lec 6 ch 4 - Relational Data Model)",
+        "type": "سلايدات المحاضرات",
+        "year": "أ.د. نبيل مصطفى / د. أحمد سامي",
+        "fileType": "pptx",
+        "size": "PowerPoint PPTX",
+        "driveId": "1krSIB-I5pekmH7gPsWFKquworBSEJsNX",
+        "fileUrl": "https://drive.google.com/file/d/1krSIB-I5pekmH7gPsWFKquworBSEJsNX/view",
+        "notes": "سلايدات الفصل الرابع لشرح النموذج العلائقي والقيود الهيكلية Relational Model & Constraints",
+        "badge": "سلايدات المحاضرة 6"
       }
     ],
     "sectionsDriveFolderUrl": "https://drive.google.com/drive/folders/1IwpZYardMgLGH1itFzxL3cAJgEXqxpTv",
@@ -1640,6 +1652,18 @@ const COURSES_DATA = [
         "fileUrl": "https://drive.google.com/file/d/1q49Eu73P7JtxoeVHFozHoTdGSty0QPOm/view",
         "folderUrl": "https://drive.google.com/file/d/1q49Eu73P7JtxoeVHFozHoTdGSty0QPOm/view",
         "badge": "أكواد DDL"
+      },
+      {
+        "id": 3,
+        "title": "مجلد تدريبات وسكاشن عملي قواعد البيانات (السكاشن 1 إلى 10)",
+        "type": "سكاشن وشيتات العملي",
+        "year": "م.م. ميرنا مجدي",
+        "ta": "م.م. ميرنا مجدي",
+        "size": "Google Drive Folder",
+        "notes": "مجلد درايف يحتوي على شيتات وسكاشن العملي العشرة لمقرر قواعد البيانات",
+        "fileUrl": "https://drive.google.com/drive/folders/1K4f2JouS21VnbB2LIPxKhP_TUWyrYvtd",
+        "folderUrl": "https://drive.google.com/drive/folders/1K4f2JouS21VnbB2LIPxKhP_TUWyrYvtd",
+        "badge": "شيتات وسكاشن العملي"
       }
     ]
   },
@@ -2221,7 +2245,44 @@ const COURSES_DATA = [
         ]
       }
     ],
-    "resources": [],
+    "resources": [
+      {
+        "id": 1,
+        "title": "سلايدات المحاضرة السابعة: الأشجار (Lecture 7: Tree)",
+        "type": "سلايدات المحاضرات",
+        "year": "سلايدات موحدة للدفعة",
+        "fileType": "pdf",
+        "size": "Google Drive PDF",
+        "driveId": "1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH",
+        "fileUrl": "https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/view",
+        "notes": "سلايدات المحاضرة السابعة الرسمية لشرح هيكل بيانات الشجرة (Tree Data Structure) والمفاهيم الأساسية",
+        "badge": "سلايدات المحاضرة 7"
+      },
+      {
+        "id": 2,
+        "title": "سلايدات المحاضرة الثامنة: أشجار البحث الثنائية (Lecture 8: Binary Search Trees - BST)",
+        "type": "سلايدات المحاضرات",
+        "year": "سلايدات موحدة للدفعة",
+        "fileType": "pdf",
+        "size": "Google Drive PDF",
+        "driveId": "1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR",
+        "fileUrl": "https://drive.google.com/file/d/1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR/view",
+        "notes": "سلايدات المحاضرة الثامنة الرسمية لشرح أشجار البحث الثنائية (BST) والعمليات عليها (Insert, Search, Delete)",
+        "badge": "سلايدات المحاضرة 8"
+      },
+      {
+        "id": 3,
+        "title": "سلايدات المحاضرة الثامنة (الجزء الثاني): الرسوم البيانية (Lecture 8: Graphs)",
+        "type": "سلايدات المحاضرات",
+        "year": "سلايدات موحدة للدفعة",
+        "fileType": "pdf",
+        "size": "Google Drive PDF",
+        "driveId": "1RXyOzF3VDGQYRS4Un-losVPcxk2QpDO0",
+        "fileUrl": "https://drive.google.com/file/d/1RXyOzF3VDGQYRS4Un-losVPcxk2QpDO0/view",
+        "notes": "سلايدات الرسوم البيانية (Graphs) وطرق التمثيل (Adjacency Matrix & List) وخوارزميات المسح (BFS & DFS)",
+        "badge": "سلايدات الجراف"
+      }
+    ],
     "practicalResources": [
       {
         "id": 1,
@@ -2258,6 +2319,18 @@ const COURSES_DATA = [
         "fileUrl": "https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit",
         "folderUrl": "https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0",
         "badge": "كود سكشن الاستاك"
+      },
+      {
+        "id": 4,
+        "title": "مجلد تدريبات وسكاشن م. فاطمة محمود (السكاشن 1 إلى 5)",
+        "type": "سكاشن وشيتات العملي",
+        "year": "م. فاطمة محمود",
+        "ta": "م. فاطمة محمود",
+        "size": "Google Drive Folder",
+        "notes": "مجلد درايف يحتوي على شيتات وسكاشن العملي الخمسة للمصفوفات والقوائم المترابطة والاستاك والطوابير",
+        "fileUrl": "https://drive.google.com/drive/folders/1UlW-FZzAmRVXQS_BZST1b2StD2AShXeV",
+        "folderUrl": "https://drive.google.com/drive/folders/1UlW-FZzAmRVXQS_BZST1b2StD2AShXeV",
+        "badge": "شيتات وسكاشن العملي"
       }
     ]
   },
@@ -2501,7 +2574,32 @@ const COURSES_DATA = [
       }
     ],
     "assignments": [],
-    "resources": [],
+    "resources": [
+      {
+        "id": 1,
+        "title": "سلايدات الفصل السادس: تزامن العمليات (Chapter 6 - Process Synchronization)",
+        "type": "سلايدات المحاضرات",
+        "year": "سلايدات موحدة للدفعة",
+        "fileType": "pptx",
+        "size": "PowerPoint PPTX",
+        "driveId": "1zhOZM2MlYhlWEDFNEeEhEQ2dABa4ku6D",
+        "fileUrl": "https://drive.google.com/file/d/1zhOZM2MlYhlWEDFNEeEhEQ2dABa4ku6D/view",
+        "notes": "سلايدات الفصل السادس لشرح مشكلة القسم الحرج Critical Section والسيمافورات Semaphores والمزامنة",
+        "badge": "سلايدات الفصل 6"
+      },
+      {
+        "id": 2,
+        "title": "سلايدات الفصل السابع: الجمود والمأزق (Chapter 7 - Deadlocks)",
+        "type": "سلايدات المحاضرات",
+        "year": "سلايدات موحدة للدفعة",
+        "fileType": "pptx",
+        "size": "PowerPoint PPTX",
+        "driveId": "1qCrArchFP8jcx3gud-EPxJZUcDN67IsC",
+        "fileUrl": "https://drive.google.com/file/d/1qCrArchFP8jcx3gud-EPxJZUcDN67IsC/view",
+        "notes": "سلايدات الفصل السابع لشرح شروط الجمود الأربعة وخوارزميات تجنب ومنع وكشف Deadlocks وخوارزمية المصرفي Banker's Algorithm",
+        "badge": "سلايدات الفصل 7"
+      }
+    ],
     "sectionsDriveFolderUrl": "https://drive.google.com/drive/folders/1qtibtXJpCzYSR1-lqzVqzeE5oLqm7bFF",
     "sectionsDriveFolderTitle": "مجلد درايف سكاشن ومعامل أنظمة التشغيل (م. أحمد شكري)",
     "sectionsDriveFolders": [
@@ -2687,7 +2785,42 @@ const COURSES_DATA = [
     ],
     "sections": [],
     "assignments": [],
-    "resources": []
+    "resources": [
+      {
+        "id": 1,
+        "title": "سلايدات الفصل الخامس: كتابة التقرير النهائي (Chapter 5 Report Writing)",
+        "type": "سلايدات المحاضرات",
+        "year": "سلايدات موحدة للدفعة",
+        "fileType": "pptx",
+        "size": "PowerPoint PPTX",
+        "driveId": "1jdC-2E9lqXp10yXYS3Sy7mPUbO6WzcN_",
+        "fileUrl": "https://drive.google.com/file/d/1jdC-2E9lqXp10yXYS3Sy7mPUbO6WzcN_/view",
+        "notes": "سلايدات الفصل الخامس لشرح عناصر ومكونات التقرير الأكاديمي والمهني الكامل وهيكلته",
+        "badge": "سلايدات الفصل 5"
+      },
+      {
+        "id": 2,
+        "title": "سلايدات الفصل السادس: المقترحات الفنية (Chapter 6 Proposal Writing)",
+        "type": "سلايدات المحاضرات",
+        "year": "سلايدات موحدة للدفعة",
+        "fileType": "pptx",
+        "size": "PowerPoint PPTX",
+        "driveId": "1pEnDgl9kOxM5kObTIXbs4btwPpYAr56R",
+        "fileUrl": "https://drive.google.com/file/d/1pEnDgl9kOxM5kObTIXbs4btwPpYAr56R/view",
+        "notes": "سلايدات الفصل السادس لصياغة وكتابة مقترحات المشاريع Proposal وكيفية إقناع الجهات المعنية",
+        "badge": "سلايدات الفصل 6"
+      },
+      {
+        "id": 3,
+        "title": "مجلد بنوك الأسئلة وملخصات م. رامز هاني لمقرر كتابة التقارير",
+        "type": "ملخصات وبنوك أسئلة",
+        "year": "م. رامز هاني",
+        "size": "Google Drive Folder",
+        "fileUrl": "https://drive.google.com/drive/folders/1vi0pkbgBN1vgxhqTHCDfuqAripiiv8jp",
+        "notes": "مجلد درايف يحتوي على ملخصات م. رامز هاني وبنوك أسئلة واختبارات سابقة لمقرر كتابة التقارير",
+        "badge": "بنوك أسئلة وملخصات"
+      }
+    ]
   }
 ];
 
