@@ -1,6 +1,44 @@
 <!DOCTYPE html>
 <html data-study-shell lang="ar" dir="rtl" class="dark">
 <head>
+  <script>
+    (function () {
+      if (location.protocol === 'file:') return;
+      try { if (window.self !== window.top) return; } catch (_) { return; }
+      const params = new URLSearchParams(location.search);
+      if (params.get('raw') === '1' || params.get('no-redirect') === '1') return;
+
+      const hash = location.hash || '';
+      const hasTarget = Boolean(
+        hash ||
+        params.has('section') ||
+        params.has('slide') ||
+        params.has('view') ||
+        params.has('anchor') ||
+        params.has('redirect') ||
+        params.has('workspace')
+      );
+      if (!hasTarget) return;
+
+      const targetParams = new URLSearchParams();
+      targetParams.set('lecture', '2');
+      for (const [k, v] of params.entries()) {
+        if (k !== 'raw' && k !== 'no-redirect' && k !== 'redirect' && k !== 'workspace') {
+          targetParams.set(k, v);
+        }
+      }
+
+      let targetHash = hash;
+      if (hash === '#quiz-section' || hash === '#quiz' || hash === '#practice-hub' || hash === '#practice') {
+        targetParams.set('view', 'practice');
+        targetHash = '';
+      } else if (hash.startsWith('#block-')) {
+        targetHash = '#topic-' + hash.slice(1);
+      }
+
+      location.replace('lesson.html?' + targetParams.toString() + targetHash);
+    })();
+  </script>
   <script src="../../js/shared/storage.js"></script>
   <script src="../../js/theme.js"></script>
   <meta charset="UTF-8">
