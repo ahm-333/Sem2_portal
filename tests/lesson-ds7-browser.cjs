@@ -174,7 +174,7 @@ async function register({ scenario: testScenario }) {
     await page.setViewportSize({ width: 320, height: 800 });
     for (let i = 0; i < 4; i++) await page.locator('#btnFontInc').press('Enter');
     assert.equal(await fontLabel.textContent(), '140%');
-    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Maximum text size must fit the narrow viewport');
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'Maximum text size must fit the narrow viewport');
 
     assert.deepEqual(errors, []);
   });
