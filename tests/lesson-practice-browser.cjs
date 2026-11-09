@@ -439,7 +439,8 @@ async function register({ scenario: testScenario }) {
   // Test 7: WCAG color contrast and keyboard navigation audit across themes
   await testScenario('wcag-contrast-and-keyboard-navigation', async ({ page, go }) => {
     for (const theme of ['light', 'dark', 'reading']) {
-      await go('study/db/lesson.html?lecture=2');
+      // Open the first topic explicitly because the previous theme can save Practice as the resume view.
+      await go('study/db/lesson.html?lecture=2&section=2');
       await page.locator('.topic-block-wrapper').first().waitFor();
 
       await page.evaluate(t => {
