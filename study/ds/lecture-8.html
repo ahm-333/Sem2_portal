@@ -1518,10 +1518,10 @@ DFS: A B D C E</pre>
         if (isAnswered) {
           if (idx === q.correct) {
             btnClass = "border-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold";
-            badge = '<span class="text-emerald-500 font-bold ml-2">✓ الإجابة الصحيحة</span>';
+            badge = '<span class="font-bold ml-2">✓ الإجابة الصحيحة</span>';
           } else if (idx === userAnswer) {
             btnClass = "border-2 border-rose-500 bg-rose-500/10 text-rose-700 dark:text-rose-300 font-bold";
-            badge = '<span class="text-rose-500 font-bold ml-2">✗ إجابتك</span>';
+            badge = '<span class="font-bold ml-2">✗ إجابتك</span>';
           } else {
             btnClass = "border border-[var(--border-color)] opacity-60 text-[var(--text-muted)]";
           }

@@ -42,6 +42,11 @@ async function register({ scenario }) {
       const quizPill = page.locator('button[data-target="section-quiz"]');
       await quizPill.press('Space');
       assert.equal(await quizPill.getAttribute('aria-pressed'), 'true');
+      const savedAnchor = await page.evaluate(() => {
+        const key = 'sem2_standalone_v1:' + encodeURIComponent(window.PortalStudySession.module.key);
+        return JSON.parse(localStorage.getItem(key))?.anchor;
+      });
+      assert.equal(savedAnchor, 'section-quiz');
       assert.equal(await page.locator('#' + target).isVisible(), false);
 
       const opener = page.locator('#btn-open-toc');
@@ -74,6 +79,9 @@ async function register({ scenario }) {
       await chosen.press('Enter');
       assert(await focused(chosen));
       assert.equal(await chosen.getAttribute('aria-disabled'), 'true');
+      if (number === 8) {
+        assert(await chosen.evaluate(el => getComputedStyle(el.lastElementChild).color === getComputedStyle(el).color));
+      }
       assert.equal(await page.locator('.quiz-feedback').count(), 1);
       assert.match(await page.locator('#quizStatus').textContent(), /إجابة صحيحة.*1 من 16/);
       assert.deepEqual(await page.locator('.quiz-option[data-qid="1"]').evaluateAll(options => options.map(el => el.dataset.opt)), firstOrder);
