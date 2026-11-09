@@ -12,24 +12,5 @@
     "study/ds/lecture-3.html": "70e163b3b45e7a88f4a4d4528ad0144d1d16f9b26ec6c938e72190c030835bd2"
   },
   "normalization": "CRLF is normalized to LF; teaching bodies were first verified against the original byte hashes before this platform normalization.",
-  "navigationFixes": {
-    "study/ds/index.html": [
-      {
-        "before": "",
-        "after": "        <article class=\"glass-card p-5 rounded-2xl border flex flex-col justify-between gap-4\">\n          <div class=\"space-y-2\">\n            <span class=\"text-xs font-mono text-slate-400\">Lecture 7</span>\n            <h4 class=\"text-base sm:text-lg font-black text-white\">المحاضرة السابعة: الأشجار</h4>\n            <p class=\"text-xs text-slate-400 font-mono\" dir=\"ltr\">Trees & Tree Traversals</p>\n            <p class=\"text-xs text-slate-300 leading-relaxed\">مصطلحات الأشجار، تمثيل العقد في الذاكرة، وأنواع المرور مع معمل برمجي وكويز.</p>\n          </div>\n          <a href=\"lecture-7.html\" class=\"btn-gradient w-full py-3 px-4 rounded-2xl text-white font-black text-xs text-center\">\n            فتح الشرح التفاعلي (L7)\n          </a>\n        </article>\n\n        <article class=\"glass-card p-5 rounded-2xl border flex flex-col justify-between gap-4\">\n          <div class=\"space-y-2\">\n            <span class=\"text-xs font-mono text-slate-400\">Lecture 8</span>\n            <h4 class=\"text-base sm:text-lg font-black text-white\">المحاضرة الثامنة: أشجار البحث والرسوم البيانية</h4>\n            <p class=\"text-xs text-slate-400 font-mono\" dir=\"ltr\">BST & Graphs</p>\n            <p class=\"text-xs text-slate-300 leading-relaxed\">بناء شجرة البحث وعملياتها، تمثيل الجراف، وتتبع البحث بالعرض والعمق مع كويز.</p>\n          </div>\n          <a href=\"lecture-8.html\" class=\"btn-gradient w-full py-3 px-4 rounded-2xl text-white font-black text-xs text-center\">\n            فتح الشرح التفاعلي (L8)\n          </a>\n        </article>\n\n"
-      },
-      {
-        "before": "font-mono\">3</span>",
-        "after": "font-mono\">5</span>"
-      },
-      {
-        "before": "3 Chapters Available",
-        "after": "5 Lectures Available"
-      },
-      {
-        "before": "font-mono\">40+</span>",
-        "after": "font-mono\">72+</span>"
-      }
-    ]
-  }
+  "navigationFixes": {}
 }

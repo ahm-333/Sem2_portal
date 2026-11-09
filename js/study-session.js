@@ -125,10 +125,7 @@
       const link = event.target.closest('a[href^="#"]');
       if (link) recordSection(link.getAttribute('href').slice(1));
       const tab = event.target.closest('.nav-tab[id^="tab-"],.chapter-pill[data-target]');
-      if (tab) {
-        const target = tab.dataset.target || tab.id.slice(4);
-        recordSection(document.getElementById(target) ? target : 'section-' + target);
-      }
+      if (tab) recordSection('section-' + (tab.dataset.target || tab.id.slice(4)));
     });
     window.addEventListener('hashchange', () => recordSection(window.location.hash.slice(1)));
     let scrollTimer;

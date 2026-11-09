@@ -19,16 +19,14 @@ async function register({scenario}) {
   await scenario('integration-library-discovers-standalone-lessons', async ({page, go}) => {
     await ready(page); await go('index.html#library');
     await page.locator('#library-kind').selectOption('interactive');
-    for (const [course, count, paths] of [
-      ['data-structure', 5, ['study/ds/lecture-2.html', 'study/ds/lecture-7.html', 'study/ds/lecture-8.html']],
-      ['computer-architecture', 1, ['study/arch/chapter-7.html']],
-      ['operating-system', 19, ['education-preview/os/index.html?unit=os-19']]
+    for (const [course, count, path] of [
+      ['data-structure', 3, 'study/ds/lecture-2.html'],
+      ['computer-architecture', 1, 'study/arch/chapter-7.html'],
+      ['operating-system', 19, 'education-preview/os/index.html?unit=os-19']
     ]) {
       await page.locator('#library-course').selectOption(course);
       assert.equal(await page.locator('#library-results .studio-library-row').count(), count);
-      for (const path of paths) {
-        assert(await page.locator(`#library-results a[href="${path}"]`).count(), `interactive library opens ${path}`);
-      }
+      assert(await page.locator(`#library-results a[href="${path}"]`).count(), `interactive library opens ${path}`);
     }
     await page.locator('#library-course').selectOption('computer-graphics');
     assert.equal(await page.locator('#library-results .studio-library-row').count(), 0);

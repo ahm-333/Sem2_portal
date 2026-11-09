@@ -5,7 +5,7 @@ async function register({ scenario }) {
     // 1. Inventory all six courses
     const inventoryExpectations = {
       'data-structure': {
-        available: [1, 2, 3, 7, 8],
+        available: [1, 2, 3],
         unavailable: [0, 4, 5]
       },
       'computer-architecture': {
@@ -71,13 +71,13 @@ async function register({ scenario }) {
       }
     }
 
-    // 2. Interactive library includes exactly the 27 catalogued modules
+    // 2. Interactive library retains exactly the 25 catalogued modules
     await go('index.html#library');
     await page.locator('#library-kind').selectOption('interactive');
     const libraryCount = await page.evaluate(() => {
       return document.querySelectorAll('#library-results .studio-library-row').length;
     });
-    assert.equal(libraryCount, 27, 'Interactive library includes 27 catalogued lessons');
+    assert.equal(libraryCount, 25, 'Interactive library retains 25 catalogued lessons');
   });
 
   await scenario('availability-compaction-profile-rerender-preserves-id0-and-disabled-labels', async ({ page, go }) => {

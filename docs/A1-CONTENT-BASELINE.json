@@ -1966,34 +1966,6 @@
             "Priority Queue ADT & C++ STL std::queue / std::priority_queue"
           ],
           "notes": "سلايدات المحاضرة الخامسة الرسمية المعتمدة لمادة هياكل البيانات على Google Drive"
-        },
-        {
-          "id": 7,
-          "chapter": "Lecture 7",
-          "title": "Lecture 7: Trees",
-          "arabicTitle": "المحاضرة السابعة — الأشجار",
-          "studyManualUrl": "study/ds/lecture-7.html",
-          "fileType": "pdf",
-          "driveId": "1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH",
-          "driveViewUrl": "https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/view",
-          "drivePreviewUrl": "https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/preview",
-          "driveDownloadUrl": "https://drive.google.com/uc?export=download&id=1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH",
-          "pdfUrl": "https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/preview",
-          "topics": ["Tree Terminology", "Binary Nodes in Memory", "Tree Traversals"]
-        },
-        {
-          "id": 8,
-          "chapter": "Lecture 8",
-          "title": "Lecture 8: Binary Search Trees & Graphs",
-          "arabicTitle": "المحاضرة الثامنة — أشجار البحث الثنائية والرسوم البيانية",
-          "studyManualUrl": "study/ds/lecture-8.html",
-          "fileType": "pdf",
-          "driveId": "1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR",
-          "driveViewUrl": "https://drive.google.com/file/d/1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR/view",
-          "drivePreviewUrl": "https://drive.google.com/file/d/1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR/preview",
-          "driveDownloadUrl": "https://drive.google.com/uc?export=download&id=1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR",
-          "pdfUrl": "https://drive.google.com/file/d/1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR/preview",
-          "topics": ["BST Search, Insertion & Deletion", "Adjacency Matrix & List", "BFS & DFS"]
         }
       ],
       "sections": [
@@ -2784,11 +2756,6 @@
   "coursesDataSha256": "daa0a0aee064af88084598556c3f8407a023f33b565401638cc31f918d96507e",
   "approvedSourceFixes": {
     "js/courses-data.js": [
-      {
-        "before": "      }",
-        "after": "      },\n      {\n        \"id\": 7,\n        \"chapter\": \"Lecture 7\",\n        \"title\": \"Lecture 7: Trees\",\n        \"arabicTitle\": \"المحاضرة السابعة — الأشجار\",\n        \"studyManualUrl\": \"study/ds/lecture-7.html\",\n        \"fileType\": \"pdf\",\n        \"driveId\": \"1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH\",\n        \"driveViewUrl\": \"https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/view\",\n        \"drivePreviewUrl\": \"https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/preview\",\n        \"driveDownloadUrl\": \"https://drive.google.com/uc?export=download&id=1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH\",\n        \"pdfUrl\": \"https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/preview\",\n        \"topics\": [\"Tree Terminology\", \"Binary Nodes in Memory\", \"Tree Traversals\"]\n      },\n      {\n        \"id\": 8,\n        \"chapter\": \"Lecture 8\",\n        \"title\": \"Lecture 8: Binary Search Trees & Graphs\",\n        \"arabicTitle\": \"المحاضرة الثامنة — أشجار البحث الثنائية والرسوم البيانية\",\n        \"studyManualUrl\": \"study/ds/lecture-8.html\",\n        \"fileType\": \"pdf\",\n        \"driveId\": \"1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR\",\n        \"driveViewUrl\": \"https://drive.google.com/file/d/1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR/view\",\n        \"drivePreviewUrl\": \"https://drive.google.com/file/d/1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR/preview\",\n        \"driveDownloadUrl\": \"https://drive.google.com/uc?export=download&id=1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR\",\n        \"pdfUrl\": \"https://drive.google.com/file/d/1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR/preview\",\n        \"topics\": [\"BST Search, Insertion & Deletion\", \"Adjacency Matrix & List\", \"BFS & DFS\"]\n      }",
-        "reason": "Add the two reviewed Data Structures lessons and preserve the existing lecture and resource records"
-      },
       {
         "before": "        \"driveDownloadUrl\": \"https://drive.google.com/uc?export=download&id=179XgT0-xgDM2_qyBbxjaORAQmVh11uVx\",\n        \"sheetUrl\": \"https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0\",\n        \"codeUrl\": \"https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit\",\n        \"localFile\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"videoUrl\": \"https://drive.google.com/file/d/179XgT0-xgDM2_qyBbxjaORAQmVh11uVx/view\",",
         "after": "        \"driveDownloadUrl\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"sheetUrl\": \"https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0\",\n        \"codeUrl\": \"https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit\",\n        \"localFile\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"videoUrl\": \"https://drive.google.com/file/d/179XgT0-xgDM2_qyBbxjaORAQmVh11uVx/view\",",

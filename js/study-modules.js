@@ -8,8 +8,6 @@
   add('data-structure', 'lecture', 1, 'Data Structures · Lecture 1', 'study/ds/lecture-1.html');
   add('data-structure', 'lecture', 2, 'Data Structures · Lecture 2', 'study/ds/lecture-2.html');
   add('data-structure', 'lecture', 3, 'Data Structures · Lecture 3', 'study/ds/lecture-3.html');
-  add('data-structure', 'lecture', 7, 'Data Structures · Lecture 7: Trees', 'study/ds/lecture-7.html');
-  add('data-structure', 'lecture', 8, 'Data Structures · Lecture 8: BST & Graphs', 'study/ds/lecture-8.html');
   add('database-systems', 'lecture', 2, 'Database · Chapter 1', 'study/db/chapter-1.html');
   add('database-systems', 'lecture', 3, 'Database · Chapter 2', 'study/db/chapter-2.html');
   add('computer-architecture', 'lecture', 5, 'Input / Output & DMA', 'study/arch/chapter-7.html');

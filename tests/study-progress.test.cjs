@@ -171,7 +171,7 @@ test('study-progress: handles ID 0, duplicate links, and ignores orphan records 
 
   // Data structure has Lecture 0: ID 0 must be counted and handled correctly
   const dsInitial = progress.getCourseSummary('data-structure', { group: 'B1', section: 1 });
-  assert.equal(dsInitial.lectures.total, 8);
+  assert.equal(dsInitial.lectures.total, 6);
   assert.equal(dsInitial.lectures.completed, 0);
 
   const ds0Key = '["data-structure","lecture","0"]';

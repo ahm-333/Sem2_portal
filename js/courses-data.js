@@ -1927,34 +1927,6 @@ const COURSES_DATA = [
           "Priority Queue ADT & C++ STL std::queue / std::priority_queue"
         ],
         "notes": "سلايدات المحاضرة الخامسة الرسمية المعتمدة لمادة هياكل البيانات على Google Drive"
-      },
-      {
-        "id": 7,
-        "chapter": "Lecture 7",
-        "title": "Lecture 7: Trees",
-        "arabicTitle": "المحاضرة السابعة — الأشجار",
-        "studyManualUrl": "study/ds/lecture-7.html",
-        "fileType": "pdf",
-        "driveId": "1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH",
-        "driveViewUrl": "https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/view",
-        "drivePreviewUrl": "https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/preview",
-        "driveDownloadUrl": "https://drive.google.com/uc?export=download&id=1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH",
-        "pdfUrl": "https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/preview",
-        "topics": ["Tree Terminology", "Binary Nodes in Memory", "Tree Traversals"]
-      },
-      {
-        "id": 8,
-        "chapter": "Lecture 8",
-        "title": "Lecture 8: Binary Search Trees & Graphs",
-        "arabicTitle": "المحاضرة الثامنة — أشجار البحث الثنائية والرسوم البيانية",
-        "studyManualUrl": "study/ds/lecture-8.html",
-        "fileType": "pdf",
-        "driveId": "1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR",
-        "driveViewUrl": "https://drive.google.com/file/d/1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR/view",
-        "drivePreviewUrl": "https://drive.google.com/file/d/1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR/preview",
-        "driveDownloadUrl": "https://drive.google.com/uc?export=download&id=1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR",
-        "pdfUrl": "https://drive.google.com/file/d/1Cv2IsVabCYOVXkjNun0gtFPCS1Vc-ngR/preview",
-        "topics": ["BST Search, Insertion & Deletion", "Adjacency Matrix & List", "BFS & DFS"]
       }
     ],
     "sections": [

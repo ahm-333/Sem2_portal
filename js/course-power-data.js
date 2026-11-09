@@ -152,9 +152,7 @@
         items: [
           { title: 'المحاضرة 1: Arrays, Templates & ADTs', sub: 'شرح تفاعلي + تتبع الذاكرة + كويز 16 سؤال', url: 'study/ds/lecture-1.html' },
           { title: 'المحاضرة 2: Linked Lists (الأجزاء الـ 6 كاملة)', sub: 'تشريح العقد SLL / DLL / CLL بالإضافة والحذف', url: 'study/ds/lecture-2.html' },
-          { title: 'المحاضرة 3: Recursion & Memory Tracing', sub: 'تتبع الـ Call Stack، المضروب، فيبوناتشي، و 8-Queens', url: 'study/ds/lecture-3.html' },
-          { title: 'المحاضرة 7: Trees', sub: 'مصطلحات الأشجار وتمثيل العقد وتتبع المرور', url: 'study/ds/lecture-7.html' },
-          { title: 'المحاضرة 8: BST & Graphs', sub: 'البحث في الأشجار وتمثيل الجراف وتتبع المسح', url: 'study/ds/lecture-8.html' }
+          { title: 'المحاضرة 3: Recursion & Memory Tracing', sub: 'تتبع الـ Call Stack، المضروب، فيبوناتشي، و 8-Queens', url: 'study/ds/lecture-3.html' }
         ]
       },
       midtermQuestions: [
