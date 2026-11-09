@@ -89,6 +89,7 @@
           u.searchParams.set('slide', String(slideNum));
           u.searchParams.delete('view');
           u.searchParams.delete('section');
+          u.searchParams.delete('tab');
           history.replaceState(null, '', u.pathname + u.search);
         }
       } catch (_) {}
@@ -110,6 +111,7 @@
           u.searchParams.set('view', 'practice');
           u.searchParams.delete('slide');
           u.searchParams.delete('section');
+          u.searchParams.delete('tab');
           history.replaceState(null, '', u.pathname + u.search);
         }
       } catch (_) {}
@@ -117,14 +119,11 @@
       const anchor = loc.anchor || (lastTopicAnchor ? 'topic-' + lastTopicAnchor : 'topic-block-1');
       bridgeData.anchor = anchor;
       bridgeData.updatedAt = updatedAt;
-      if (!bridgeCorrupt) {
-        storage.setItem(bridgeKey, JSON.stringify(bridgeData));
+      if (!bridgeCorrupt && storage.setItem(bridgeKey, JSON.stringify(bridgeData))) {
+        const slideId = state.getItem(contentKey)?.reader?.slideId ?? 0;
+        state.updateItem(contentKey, { reader: { slideId, tab: 'explanation', updatedAt } });
+        state.setLastUsed({ key: contentKey, actionId: 'standalone-study', updatedAt });
       }
-      const existingReader = state.getItem(contentKey)?.reader;
-      const sId = existingReader?.slideId !== undefined && existingReader?.slideId !== null ? existingReader.slideId : 0;
-      const readerPatch = { slideId: sId, tab: 'explanation', updatedAt };
-      state.updateItem(contentKey, { reader: readerPatch });
-      state.setLastUsed({ key: contentKey, actionId: 'standalone-study', updatedAt });
 
       try {
         if (typeof history !== 'undefined' && history.replaceState && typeof window !== 'undefined' && window.location) {
@@ -132,6 +131,7 @@
           u.searchParams.delete('slide');
           u.searchParams.delete('view');
           u.searchParams.delete('section');
+          u.searchParams.delete('tab');
           history.replaceState(null, '', u.pathname + u.search + '#' + anchor);
         }
       } catch (_) {}
@@ -798,7 +798,7 @@
       (typeof window !== 'undefined' && window.location.hash && window.location.hash !== '#' && window.location.hash !== '')
     );
 
-    if (locHelper && hasExplicitTarget) {
+    if (locHelper) {
       const state = typeof window !== 'undefined' ? window.PortalStudyState : null;
       const storage = typeof window !== 'undefined' ? window.PortalStorage : null;
       const contentKey = window.PortalCatalog
@@ -912,20 +912,21 @@
             bridgeCorrupt = true;
           }
         }
-        if (!bridgeCorrupt) {
-          window.PortalStorage.setItem(bridgeKey, JSON.stringify(bridgeData));
+        const bridgeSaved = !bridgeCorrupt && window.PortalStorage.setItem(bridgeKey, JSON.stringify(bridgeData));
+        // Without a saved bridge, the reader can represent slides and practice only.
+        if (bridgeSaved || initialLocation.view !== 'topics') {
+          const resumedLegacySection = initialLocation.source === 'reader' &&
+            initialLocation.slideNum === null && item?.reader?.tab === 'explanation';
+          const slideId = resumedLegacySection ? 0 : (initialLocation.slideNum ?? item?.reader?.slideId ?? 0);
+          const readerPatch = {
+            slideId,
+            tab: initialLocation.tab || (initialLocation.view === 'practice' ? 'quiz' : 'explanation'),
+            updatedAt: now
+          };
+          const actionId = !bridgeSaved && initialLocation.view === 'slides' ? 'internal-study' : 'standalone-study';
+          window.PortalStudyState.updateItem(contentKey, { reader: readerPatch });
+          window.PortalStudyState.setLastUsed({ key: contentKey, actionId, updatedAt: now });
         }
-
-        const sId = initialLocation.slideNum !== undefined && initialLocation.slideNum !== null
-          ? initialLocation.slideNum
-          : (item?.reader?.slideId !== undefined && item?.reader?.slideId !== null ? item.reader.slideId : 0);
-        const readerPatch = {
-          slideId: sId,
-          tab: initialLocation.tab || (initialLocation.view === 'practice' ? 'quiz' : 'explanation'),
-          updatedAt: now
-        };
-        window.PortalStudyState.updateItem(contentKey, { reader: readerPatch });
-        window.PortalStudyState.setLastUsed({ key: contentKey, actionId: 'standalone-study', updatedAt: now });
       } catch {
         // Safe ignoring if state storage fails
       }

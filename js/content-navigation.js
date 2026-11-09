@@ -269,9 +269,20 @@
     if (isDb && actionId === 'standalone-study') {
       const loc = (typeof window !== 'undefined' && window.PortalLessonLocation) ||
         (typeof require !== 'undefined' ? (() => { try { return require('./shared/lesson-location.js').PortalLessonLocation; } catch (_) { return null; } })() : null);
-      const targetUrl = loc
-        ? loc.toWorkspaceUrl(resolved.entry.id, parsed)
-        : `study/db/lesson.html?lecture=${resolved.entry.id}`;
+      let targetUrl;
+      if (loc) {
+        targetUrl = loc.toWorkspaceUrl(resolved.entry.id, parsed);
+      } else {
+        // subject.html has already validated these fields in PortalContentLinks.parse.
+        const params = new URLSearchParams({ lecture: resolved.entry.id });
+        if (parsed.tab === 'quiz') {
+          params.set('view', 'practice');
+        } else {
+          if (parsed.slide != null) params.set('slide', parsed.slide);
+          if (parsed.tab === 'original') params.set('tab', 'original');
+        }
+        targetUrl = 'study/db/lesson.html?' + params;
+      }
       if (typeof window !== 'undefined' && window.location) {
         window.location.href = targetUrl;
       }

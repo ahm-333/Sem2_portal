@@ -761,12 +761,12 @@ All bridge anchors must strictly conform to `/^[\w.-]+$/` (no colons, spaces, sl
 ### Ambiguity Resolution Invariants
 
 1. **Root Ambiguity Cause:**
-   Historically, `js/study-session.js` wrote `1 + sections.indexOf(anchor)` into `reader.slideId` with `actionId: 'standalone-study'`, whereas `js/study-reader.js` wrote actual slide numbers into `reader.slideId` with `actionId: 'internal-study'`. Both wrote to the same canonical key (e.g., `["database-systems","lecture","2"]`). Consequently, a saved `slideId: 7` could denote either the 7th topic block or slide number 7.
+   Historically, `js/study-session.js` wrote `1 + sections.indexOf(anchor)` into `reader.slideId` with `actionId: 'standalone-study'`, whereas `js/study-reader.js` wrote actual slide numbers into `reader.slideId` with `actionId: 'internal-study'`. Both wrote to the same canonical key (e.g., `["database-systems","lecture","2"]`). The old session numbered fragment targets first, starting with the shell's skip link, then `section[id]` elements. Chapter 1 ordinals 2–7 point to `block-1` through `block-6`, ordinal 8 points to `block-add`, and ordinal 9 points to `quiz-section`. Chapter 2 had only ordinal 1 because its topics and quiz used articles. Ordinal 1 in either chapter points to the start of the lesson.
 2. **Resolution Precedence:**
    - **Step 1 (Explicit Valid URL Wins):** Explicit URL query parameters (`slide=N`, `section=N`, `view=practice`) or valid location hashes override any saved state.
    - **Step 2 (Standalone Study Action Check):** If `lastUsed.actionId === 'standalone-study'`, the write originated from the standalone session:
      - If `bridge.anchor` is present, valid, and its timestamp aligns with `reader.updatedAt`, the bridge anchor is canonical.
-     - If `bridge.anchor` is missing, `reader.slideId` is treated as a 1-based section/block index, **never** directly as a slide number.
+     - If `bridge.anchor` is missing and the reader tab is `explanation`, resolve the saved ordinal using the old chapter order. A `quiz` or `original` reader tab identifies the corresponding reader view.
    - **Step 3 (Internal Study Action Check):** If `lastUsed.actionId === 'internal-study'`, `reader.slideId` represents an authentic slide number.
    - **Step 4 (Timestamp Disambiguation):** If action metadata is absent or contradictory, the entity with the latest valid ISO timestamp wins.
    - **Step 5 (Corruption & Default Fallback):** If state is corrupted, malformed, or irreconcilably contradictory, stored raw bytes are preserved untouched without mutation, and navigation safely defaults to `view: 'topics'`.
@@ -777,7 +777,8 @@ All bridge anchors must strictly conform to `/^[\w.-]+$/` (no colons, spaces, sl
    - Topic navigation records `bridge.anchor = 'topic-block-' + id` and sets `reader.tab = 'explanation'`. It **never** writes section ordinals to `reader.slideId`.
    - Slide navigation records `reader.slideId = num` and `bridge.anchor = 'slide-' + num`.
    - Practice navigation records `bridge.anchor = 'practice'` and `reader.tab = 'quiz'`.
-2. Old standalone scroll observers in `study-session.js` must yield to `PortalLessonLocation` and never run concurrently or write competing positions in the unified workspace.
+2. The old chapter redirect hooks only forward the URL. The unified workspace resolves explicit and saved locations before recording a visit and validates any existing bridge before writing it.
+3. Standalone DB pages save topic position in the bridge and use reader slide ID `0` when there is no saved slide. The standalone scroll observers run only on the standalone pages.
 
 ### Backup & Restore Integration (Issue #13 Ownership)
 

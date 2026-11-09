@@ -58,12 +58,9 @@
     const loc = window.PortalLessonLocation;
     const bridgeAnchor = (isDb && loc ? loc.formatBridgeAnchor('topic', anchor) : anchor);
     if (isDb) {
-      const currentReader = state.getItem(lesson.key)?.reader;
-      const readerPatch = { tab: 'explanation', updatedAt };
-      if (currentReader?.slideId !== undefined && currentReader?.slideId !== null) {
-        readerPatch.slideId = currentReader.slideId;
-      }
-      result(state.updateItem(lesson.key, { reader: readerPatch }));
+      // Zero means no saved slide. The topic position belongs to the bridge.
+      const slideId = state.getItem(lesson.key)?.reader?.slideId ?? 0;
+      result(state.updateItem(lesson.key, { reader: { slideId, tab: 'explanation', updatedAt } }));
     } else {
       result(state.updateItem(lesson.key, {reader: {slideId: index + 1, tab: 'explanation', updatedAt}}));
     }

@@ -18,6 +18,31 @@
   const BRIDGE_REGEX = /^[\w.-]+$/;
   const CHECK_REGEX = /^[\w-]+$/;
 
+  // The old session numbered fragment targets first (including the shell's skip
+  // link), then section[id] elements. Chapter 2 used articles for its topics.
+  const LEGACY_SECTION_ANCHORS = {
+    '2': ['topic-block-1', 'topic-block-1', 'topic-block-2', 'topic-block-3', 'topic-block-4', 'topic-block-5', 'topic-block-6', 'topic-block-add', 'practice'],
+    '3': ['topic-block-1']
+  };
+
+  function legacySectionAnchor(lectureKey, sectionNumber) {
+    const number = Number(sectionNumber);
+    if (!Number.isSafeInteger(number) || number < 1) return null;
+    return LEGACY_SECTION_ANCHORS[resolveLectureKey(lectureKey)]?.[number - 1] ?? null;
+  }
+
+  function legacySectionLocation(anchor, source) {
+    const isPractice = anchor === 'practice';
+    return {
+      view: isPractice ? 'practice' : 'topics',
+      topicId: isPractice ? null : anchor.slice('topic-'.length),
+      slideNum: null,
+      tab: isPractice ? 'quiz' : 'explanation',
+      anchor,
+      source
+    };
+  }
+
   function normalizeAnchor(raw) {
     if (typeof raw !== 'string') return null;
     let trimmed = raw.trim();
@@ -45,10 +70,13 @@
     }
 
     // Topic block aliases
-    const topicMatch = trimmed.match(/^(?:topic[:\-_]?block[:\-_]?|topic[:\-_]|block[:\-_]|section[:\-_]|sec[:\-_])(\d+|[\w-]+)$/i);
+    if (trimmed === 'mainContainer' || trimmed === 'topic-mainContainer') return 'topic-block-1';
+    // Earlier workspace builds could save this alias after opening #block-add.
+    if (trimmed === 'topic-add') return 'topic-block-add';
+    const topicMatch = trimmed.match(/^(topic[:\-_]?block[:\-_]?|topic[:\-_]|block[:\-_]|section[:\-_]|sec[:\-_])(\d+|[\w-]+)$/i);
     if (topicMatch) {
-      let id = topicMatch[1];
-      if (/^\d+$/.test(id)) id = 'block-' + id;
+      let id = topicMatch[2];
+      if (/block/i.test(topicMatch[1]) || /^\d+$/.test(id)) id = 'block-' + id;
       if (id.startsWith('topic-')) id = id.slice(6);
       return 'topic-' + id;
     }
@@ -116,7 +144,7 @@
   }
 
   function resolveLocation(options = {}) {
-    const { url, lastUsed, studyItem, bridge, lectureKey: _lectureKey } = options;
+    const { url, lastUsed, studyItem, bridge, lectureKey } = options;
 
     // 1. Explicit URL check (URL wins)
     if (url) {
@@ -132,17 +160,18 @@
       if (urlObj) {
         const hash = urlObj.hash ? urlObj.hash.slice(1) : '';
         const params = urlObj.searchParams;
+        const tabParam = params.get('tab');
 
         // Slide parameter
         const slideParam = params.get('slide');
-        if (slideParam) {
+        if (slideParam && tabParam !== 'quiz') {
           const num = Number(slideParam);
           if (Number.isSafeInteger(num) && num > 0) {
             return {
               view: 'slides',
               topicId: null,
               slideNum: num,
-              tab: 'explanation',
+              tab: tabParam === 'original' ? 'original' : 'explanation',
               anchor: 'slide-' + num,
               source: 'url'
             };
@@ -151,7 +180,7 @@
 
         // View parameter
         const viewParam = params.get('view');
-        if (viewParam === 'practice' || hash === 'practice' || hash === 'practice-hub' || hash === 'quiz' || hash === 'quiz-section') {
+        if (tabParam === 'quiz' || viewParam === 'practice' || hash === 'practice' || hash === 'practice-hub' || hash === 'quiz' || hash === 'quiz-section') {
           return {
             view: 'practice',
             topicId: null,
@@ -166,27 +195,16 @@
             view: 'slides',
             topicId: null,
             slideNum: 1,
-            tab: 'explanation',
+            tab: tabParam === 'original' ? 'original' : 'explanation',
             anchor: 'slide-1',
             source: 'url'
           };
         }
 
         // Section parameter
-        const sectionParam = params.get('section');
-        if (sectionParam) {
-          const secNum = Number(sectionParam);
-          if (Number.isSafeInteger(secNum) && secNum > 0) {
-            return {
-              view: 'topics',
-              topicId: 'block-' + secNum,
-              slideNum: null,
-              tab: 'explanation',
-              anchor: 'topic-block-' + secNum,
-              source: 'url'
-            };
-          }
-        }
+        const key = lectureKey || resolveLectureKey(params.get('lecture')) || resolveLectureKey(urlObj.pathname);
+        const sectionAnchor = legacySectionAnchor(key, params.get('section'));
+        if (sectionAnchor) return legacySectionLocation(sectionAnchor, 'url');
 
         // Hash check
         if (hash) {
@@ -208,7 +226,7 @@
                 view: 'slides',
                 topicId: null,
                 slideNum: Number.isSafeInteger(num) ? num : 1,
-                tab: 'explanation',
+                tab: tabParam === 'original' ? 'original' : 'explanation',
                 anchor: normHash,
                 source: 'url'
               };
@@ -233,6 +251,16 @@
               source: 'url'
             };
           }
+        }
+        if (tabParam === 'original') {
+          return {
+            view: 'slides',
+            topicId: null,
+            slideNum: 1,
+            tab: 'original',
+            anchor: 'slide-1',
+            source: 'url'
+          };
         }
       }
     }
@@ -268,7 +296,7 @@
             view: 'slides',
             topicId: null,
             slideNum: Number.isSafeInteger(num) ? num : 1,
-            tab: 'explanation',
+            tab: Number(reader?.slideId) === num && reader.tab === 'original' ? 'original' : 'explanation',
             anchor: bridgeAnchor,
             source: 'bridge'
           };
@@ -295,19 +323,9 @@
       }
 
       // Standalone wrote section index + 1 to reader.slideId
-      if (reader && reader.slideId !== undefined && reader.slideId !== null) {
-        const secIndex = Number(reader.slideId);
-        if (Number.isSafeInteger(secIndex) && secIndex > 0) {
-          const blockId = 'block-' + secIndex;
-          return {
-            view: 'topics',
-            topicId: blockId,
-            slideNum: null,
-            tab: 'explanation',
-            anchor: 'topic-' + blockId,
-            source: 'reader'
-          };
-        }
+      if (reader?.tab === 'explanation') {
+        const sectionAnchor = legacySectionAnchor(lectureKey || lastUsed?.key, reader.slideId);
+        if (sectionAnchor) return legacySectionLocation(sectionAnchor, 'reader');
       }
     }
 
@@ -355,7 +373,7 @@
           view: 'slides',
           topicId: null,
           slideNum: Number.isSafeInteger(num) ? num : 1,
-          tab: 'explanation',
+          tab: Number(reader?.slideId) === num && reader.tab === 'original' ? 'original' : 'explanation',
           anchor: bridgeAnchor,
           source: 'bridge'
         };
@@ -384,7 +402,7 @@
         };
       }
       const num = Number(reader.slideId);
-      if (Number.isSafeInteger(num) && num > 0) {
+      if ((actionId !== 'standalone-study' || reader.tab === 'original') && Number.isSafeInteger(num) && num > 0) {
         return {
           view: 'slides',
           topicId: null,
@@ -422,7 +440,8 @@
           anchor: hash || undefined,
           slide: params.get('slide') || undefined,
           section: params.get('section') || undefined,
-          view: params.get('view') || undefined
+          view: params.get('view') || undefined,
+          tab: params.get('tab') || undefined
         };
         if (hash === 'quiz-section' || hash === 'quiz' || hash === 'practice') {
           options.view = 'practice';
@@ -446,10 +465,9 @@
         params.set('slide', String(num));
       }
     } else if (options.section !== undefined && options.section !== null) {
-      const secNum = Number(options.section);
-      if (Number.isSafeInteger(secNum) && secNum > 0) {
-        hash = '#topic-block-' + secNum;
-      }
+      const anchor = legacySectionAnchor(key, options.section);
+      if (anchor === 'practice') params.set('view', 'practice');
+      else if (anchor) hash = '#' + anchor;
     } else if (options.anchor) {
       const norm = normalizeAnchor(options.anchor);
       if (norm) {
@@ -460,6 +478,7 @@
         }
       }
     }
+    if (options.tab === 'original' && params.get('view') !== 'practice') params.set('tab', 'original');
 
     let basePath = 'study/db/lesson.html';
     if (baseUrl) {

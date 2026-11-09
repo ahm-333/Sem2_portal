@@ -21,6 +21,9 @@ test('PortalLessonLocation: normalizeAnchor normalizes old aliases to canonical 
   assert.equal(norm('#block-1'), 'topic-block-1');
   assert.equal(norm('topic-block-1'), 'topic-block-1');
   assert.equal(norm('#topic-block-1'), 'topic-block-1');
+  assert.equal(norm('block-add'), 'topic-block-add');
+  assert.equal(norm('topic-block-add'), 'topic-block-add');
+  assert.equal(norm('topic-add'), 'topic-block-add');
   assert.equal(norm('topic:block-1'), 'topic-block-1');
   assert.equal(norm('section-1'), 'topic-block-1');
   assert.equal(norm('#section-1'), 'topic-block-1');
@@ -84,7 +87,7 @@ test('PortalLessonLocation: resolveLocation resolves study-session section ordin
   const { PortalLessonLocation } = require('../js/shared/lesson-location.js');
 
   // Ambiguity Case 1: study-session wrote section index + 1 to reader.slideId with actionId: standalone-study
-  // Number 7 here means section index 7 (e.g. block-7), NOT slide 7!
+  // Section ordinal 8 was the additional topic, after the skip link and six blocks.
   const legacyStandalone = PortalLessonLocation.resolveLocation({
     lectureKey: '2',
     lastUsed: {
@@ -94,23 +97,23 @@ test('PortalLessonLocation: resolveLocation resolves study-session section ordin
     },
     studyItem: {
       reader: {
-        slideId: 7,
+        slideId: 8,
         tab: 'explanation',
         updatedAt: '2026-11-08T10:00:00Z'
       }
     },
     bridge: {
       version: 1,
-      anchor: 'block-7',
+      anchor: 'block-add',
       updatedAt: '2026-11-08T10:00:00Z',
       checks: []
     }
   });
 
   assert.equal(legacyStandalone.view, 'topics');
-  assert.equal(legacyStandalone.topicId, 'block-7');
-  assert.equal(legacyStandalone.anchor, 'topic-block-7');
-  assert.equal(legacyStandalone.slideNum, null, 'Must NOT interpret section ordinal 7 as slide 7');
+  assert.equal(legacyStandalone.topicId, 'block-add');
+  assert.equal(legacyStandalone.anchor, 'topic-block-add');
+  assert.equal(legacyStandalone.slideNum, null, 'Must NOT interpret section ordinal 8 as slide 8');
   assert.equal(legacyStandalone.source, 'bridge');
 
   // Ambiguity Case 2: Standalone session wrote section index 4, but bridge anchor was lost/empty
@@ -132,9 +135,9 @@ test('PortalLessonLocation: resolveLocation resolves study-session section ordin
   });
 
   assert.equal(standaloneNoBridge.view, 'topics');
-  assert.equal(standaloneNoBridge.topicId, 'block-4');
-  assert.equal(standaloneNoBridge.anchor, 'topic-block-4');
-  assert.equal(standaloneNoBridge.slideNum, null, '1-based section index 4 must map to topic block 4, not slide 4');
+  assert.equal(standaloneNoBridge.topicId, 'block-3');
+  assert.equal(standaloneNoBridge.anchor, 'topic-block-3');
+  assert.equal(standaloneNoBridge.slideNum, null, 'Section ordinal 4 corresponds to block-3');
 
   // Ambiguity Case 3: Modal study-reader wrote actual slide 7 with actionId: internal-study
   const modalReader = PortalLessonLocation.resolveLocation({
@@ -257,14 +260,21 @@ test('PortalLessonLocation: resolveLocation prioritizes explicit valid URL over 
   assert.equal(resSlide.anchor, 'slide-3');
   assert.equal(resSlide.source, 'url');
 
+  const originalHash = PortalLessonLocation.resolveLocation({
+    ...savedState,
+    url: 'http://localhost/study/db/lesson.html?lecture=2&tab=original#slide-4'
+  });
+  assert.equal(originalHash.slideNum, 4);
+  assert.equal(originalHash.tab, 'original');
+
   // 3. Explicit param ?section=5 overrides saved state
   const resSection = PortalLessonLocation.resolveLocation({
     ...savedState,
     url: 'http://localhost/study/db/lesson.html?lecture=2&section=5'
   });
   assert.equal(resSection.view, 'topics');
-  assert.equal(resSection.topicId, 'block-5');
-  assert.equal(resSection.anchor, 'topic-block-5');
+  assert.equal(resSection.topicId, 'block-4');
+  assert.equal(resSection.anchor, 'topic-block-4');
   assert.equal(resSection.source, 'url');
 
   // 4. Explicit hash #quiz-section or ?view=practice overrides saved state
@@ -289,12 +299,15 @@ test('PortalLessonLocation: toWorkspaceUrl converts legacy DB links into canonic
 
   // Converting old chapter-1.html URL string
   assert.equal(toUrl(null, 'study/db/chapter-1.html#block-2'), 'study/db/lesson.html?lecture=2#topic-block-2');
-  assert.equal(toUrl(null, 'study/db/chapter-1.html?section=4'), 'study/db/lesson.html?lecture=2#topic-block-4');
+  assert.equal(toUrl(null, 'study/db/chapter-1.html?section=4'), 'study/db/lesson.html?lecture=2#topic-block-3');
+  assert.equal(toUrl(null, 'study/db/chapter-1.html?section=8'), 'study/db/lesson.html?lecture=2#topic-block-add');
+  assert.equal(toUrl(null, 'study/db/chapter-1.html?section=9'), 'study/db/lesson.html?lecture=2&view=practice');
   assert.equal(toUrl(null, 'study/db/chapter-1.html#quiz-section'), 'study/db/lesson.html?lecture=2&view=practice');
 
   // Chapter 2 -> lecture 3
   assert.equal(toUrl(null, 'study/db/chapter-2.html#block-5'), 'study/db/lesson.html?lecture=3#topic-block-5');
   assert.equal(toUrl(null, 'study/db/chapter-2.html?section=1'), 'study/db/lesson.html?lecture=3#topic-block-1');
+  assert.equal(toUrl(null, 'study/db/chapter-2.html?section=2'), 'study/db/lesson.html?lecture=3');
 
   // Preserves base path if baseUrl provided
   assert.equal(toUrl('2', { anchor: 'block-1' }, 'http://localhost/Sem2_portal/study/db/chapter-1.html'), 'lesson.html?lecture=2#topic-block-1');
