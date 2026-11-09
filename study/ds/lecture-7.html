@@ -106,7 +106,7 @@
       padding: 1.35rem 1.5rem;
       margin: 1.5rem 0;
       font-family: 'Inter', system-ui, sans-serif;
-      line-height: 1.85;
+      line-height: var(--reading-lh);
     }
 
     .colloquial-box {
@@ -262,7 +262,7 @@
     #sidebar-toc.open {
       right: 0;
     }
-    #toc-overlay {
+    #toc-backdrop {
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.5);
@@ -270,14 +270,15 @@
       z-index: 999;
       display: none;
     }
-    #toc-overlay.show {
+    #toc-backdrop.open {
       display: block;
     }
   </style>
+  <link rel="stylesheet" href="../../css/ds-tree-lessons.css">
 </head>
 <body class="p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen">
 
-  <div id="toc-overlay"></div>
+  <div id="toc-backdrop" aria-hidden="true"></div>
 
   <!-- Sidebar Table of Contents -->
   <aside id="sidebar-toc" aria-label="فهرس محتويات المحاضرة">
@@ -286,7 +287,7 @@
         <span>📑</span>
         <span>فهرس موضوعات الشجرة</span>
       </h3>
-      <button id="btn-close-toc" class="p-1 rounded-lg hover:bg-black/10 text-xl font-bold">✕</button>
+      <button type="button" id="btn-close-toc" aria-label="إغلاق الفهرس" class="p-1 rounded-lg hover:bg-black/10 text-xl font-bold">✕</button>
     </div>
     <nav class="space-y-2 text-sm font-semibold">
       <a href="#part1" class="block p-2.5 rounded-xl hover:bg-[var(--bg-soft)] text-sky-600 dark:text-sky-400">1. المقارنة: خطي vs غير خطي</a>
@@ -300,7 +301,7 @@
   </aside>
 
   <!-- Main Container -->
-  <div class="reading-container w-full space-y-6">
+  <main class="reading-container w-full space-y-6">
 
     <!-- Top Navigation Bar -->
     <nav class="flex flex-wrap items-center justify-between gap-3 py-3 px-5 rounded-2xl reading-card !mb-4 border">
@@ -361,18 +362,19 @@
       <h1 class="text-2xl sm:text-4xl font-black font-heading text-[var(--text-main)]">
         هيكل بيانات الشجرة (Tree Data Structure)
       </h1>
-      <p class="text-sm sm:text-base text-[var(--text-muted)] max-w-2xl mx-auto leading-relaxed">
+      <p class="text-sm sm:text-base text-[var(--text-muted)] max-w-2xl mx-auto">
         شرح تفاعلي معماري كامل بالعامية المصرية المبسطة وبالمصطلحات الأكاديمية الدقيقة؛ يتناول الفروق الجوهرية مع الهياكل الخطية، تشريح العقد في الذاكرة، خوارزميات المرور وتتبع الـ Call Stack، والتطبيق العملي الكامل بلغة C++.
       </p>
 
       <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
-        <span class="chapter-pill active px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="all">عرض الدرس كاملاً</span>
-        <span class="chapter-pill px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part1">1. الخطي وغير الخطي</span>
-        <span class="chapter-pill px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part2">2. مصطلحات الشجرة</span>
-        <span class="chapter-pill px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part3">3. تمثيل الذاكرة</span>
-        <span class="chapter-pill px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part4">4. خوارزميات المرور</span>
-        <span class="chapter-pill px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part5">5. العمليات</span>
-        <span class="chapter-pill px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="quiz">الكويز التفاعلي</span>
+        <button type="button" class="chapter-pill bg-[var(--bg-card)] active px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="all">عرض الدرس كاملاً</button>
+        <button type="button" class="chapter-pill bg-[var(--bg-card)] px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part1">1. الخطي وغير الخطي</button>
+        <button type="button" class="chapter-pill bg-[var(--bg-card)] px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part2">2. مصطلحات الشجرة</button>
+        <button type="button" class="chapter-pill bg-[var(--bg-card)] px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part3">3. تمثيل الذاكرة</button>
+        <button type="button" class="chapter-pill bg-[var(--bg-card)] px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part4">4. خوارزميات المرور</button>
+        <button type="button" class="chapter-pill bg-[var(--bg-card)] px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part5">5. العمليات</button>
+        <button type="button" class="chapter-pill bg-[var(--bg-card)] px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="part6">6. معمل الشجرة</button>
+        <button type="button" class="chapter-pill bg-[var(--bg-card)] px-3 py-1.5 rounded-xl border text-xs font-bold" data-target="section-quiz">الكويز التفاعلي</button>
       </div>
     </div>
 
@@ -408,43 +410,43 @@
         </div>
 
         <!-- VISUAL COMPARISON DIAGRAM -->
-        <div class="diagram-frame">
+        <div class="diagram-frame lesson-diagram">
           <div class="text-xs sm:text-sm font-black text-sky-950 dark:text-sky-200 mb-4 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2">
             <span>🎨</span>
             <span>مقارنة شكل البيانات في الذاكرة: الخطي (Linear) مقابل الشجري (Tree)</span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-center" dir="ltr">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 text-center" dir="ltr">
             <!-- Linear Box -->
-            <div class="p-4 rounded-xl bg-white dark:bg-slate-900 border-2 border-blue-500/40 shadow-xs space-y-3">
-              <span class="text-xs font-black px-2.5 py-1 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">Linear (Array / Linked List)</span>
-              <p class="text-xs text-[var(--text-muted)]" dir="rtl">علاقة تتابعية 1 إلى 1 (كل عنصر وراه عنصر واحد فقط)</p>
-              <div class="flex items-center justify-center gap-1.5 py-2">
-                <div class="p-2.5 rounded-lg border-2 border-blue-600 bg-blue-50 dark:bg-slate-800 font-mono font-bold text-sm">A</div>
-                <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                <div class="p-2.5 rounded-lg border-2 border-blue-600 bg-blue-50 dark:bg-slate-800 font-mono font-bold text-sm">B</div>
-                <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                <div class="p-2.5 rounded-lg border-2 border-blue-600 bg-blue-50 dark:bg-slate-800 font-mono font-bold text-sm">C</div>
-                <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
-                <div class="p-2.5 rounded-lg border-2 border-rose-500 bg-rose-50 dark:bg-slate-800 font-mono font-bold text-xs">NULL</div>
+            <div class="p-3 rounded-xl diagram-node border-2 border-blue-500/40 shadow-xs space-y-3">
+              <span class="inline-block text-xs font-black px-2.5 py-1 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">Linear (Linked List)</span>
+              <p class="text-xs text-[var(--text-muted)]" dir="rtl">علاقة تتابعية. كل عقدة بتشاور على اللي بعدها، والأخيرة على مؤشر فارغ.</p>
+              <div class="flex items-center justify-center gap-1 py-2" role="img" aria-label="القائمة تبدأ من A، ثم B، ثم C، ثم مؤشر فارغ">
+                <div class="px-2 py-1 rounded-lg border-2 border-blue-600 diagram-node font-mono font-bold text-sm">A</div>
+                <svg class="w-4 h-4 shrink-0 text-blue-600" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                <div class="px-2 py-1 rounded-lg border-2 border-blue-600 diagram-node font-mono font-bold text-sm">B</div>
+                <svg class="w-4 h-4 shrink-0 text-blue-600" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                <div class="px-2 py-1 rounded-lg border-2 border-blue-600 diagram-node font-mono font-bold text-sm">C</div>
+                <svg class="w-4 h-4 shrink-0 text-blue-600" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+                <div class="px-2 py-1 rounded-lg border-2 border-rose-500 diagram-node font-mono font-bold text-xs">NULL</div>
               </div>
             </div>
 
             <!-- Non-Linear Box -->
-            <div class="p-4 rounded-xl bg-white dark:bg-slate-900 border-2 border-emerald-500/40 shadow-xs space-y-3">
-              <span class="text-xs font-black px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300">Non-linear (Tree Hierarchy)</span>
+            <div class="p-3 rounded-xl diagram-node border-2 border-emerald-500/40 shadow-xs space-y-3">
+              <span class="inline-block text-xs font-black px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300">Non-linear (Tree Hierarchy)</span>
               <p class="text-xs text-[var(--text-muted)]" dir="rtl">علاقة هرمية 1 إلى متعدد (العنصر الواحد يتفرع لعدة أبناء)</p>
               
               <!-- Mini Tree Structure in HTML/SVG -->
-              <div class="flex flex-col items-center gap-2 py-1">
-                <div class="px-3 py-1 rounded-lg border-2 border-emerald-600 bg-emerald-50 dark:bg-slate-800 font-mono font-bold text-sm">Root: A</div>
+              <div class="flex flex-col items-center gap-2 py-1" role="img" aria-label="الجذر A، ابنه الأيسر B وابنه الأيمن C">
+                <div class="px-3 py-1 rounded-lg border-2 border-emerald-600 diagram-node font-mono font-bold text-sm">Root: A</div>
                 <div class="flex items-center justify-center gap-8 w-full">
-                  <svg class="w-8 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" transform="rotate(35 12 12)"/></svg>
-                  <svg class="w-8 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" transform="rotate(-35 12 12)"/></svg>
+                  <svg class="w-8 h-6 text-emerald-700" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" transform="rotate(35 12 12)"/></svg>
+                  <svg class="w-8 h-6 text-emerald-700" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" transform="rotate(-35 12 12)"/></svg>
                 </div>
-                <div class="flex items-center justify-center gap-10">
-                  <div class="px-2.5 py-1 rounded-lg border-2 border-emerald-600 bg-emerald-50 dark:bg-slate-800 font-mono font-bold text-xs">Left: B</div>
-                  <div class="px-2.5 py-1 rounded-lg border-2 border-emerald-600 bg-emerald-50 dark:bg-slate-800 font-mono font-bold text-xs">Right: C</div>
+                <div class="flex items-center justify-center gap-4">
+                  <div class="px-2.5 py-1 rounded-lg border-2 border-emerald-600 diagram-node font-mono font-bold text-xs">Left: B</div>
+                  <div class="px-2.5 py-1 rounded-lg border-2 border-emerald-600 diagram-node font-mono font-bold text-xs">Right: C</div>
                 </div>
               </div>
             </div>
@@ -504,91 +506,87 @@
         </div>
 
         <div class="reading-block">
-          <p class="font-medium text-sm sm:text-base leading-relaxed">
+          <p class="font-medium text-sm sm:text-base">
             علماء الحاسب لما جم يصمموا الـ Tree، اتخيلوا شجرة طبيعية مقلوبة: <strong>الجذر (Root) فوق في قمة الشجرة</strong>، والفروع والأوراق بتنزل لتحت! وفي مصطلحات محددة بتيجي دايماً في أسئلة الامتحان والـ MCQs لازم تكون حافظ معناها وفاهم حساباتها بالملي:
           </p>
         </div>
 
         <!-- HIGH RESOLUTION SVG TREE DIAGRAM WITH LABELS -->
-        <div class="my-6 p-4 sm:p-6 rounded-2xl bg-[#faf5e8] dark:bg-slate-900 border-2 border-[#b8a98e] shadow-inner text-center">
+        <div class="diagram-frame lesson-diagram my-6 text-center">
           <div class="text-xs sm:text-sm font-black text-emerald-950 dark:text-emerald-300 mb-3 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2">
             <span>🌲</span>
             <span>الخريطة البصرية الشاملة لمصطلحات الشجرة (Root, Leaves, Height, Depth, Siblings)</span>
           </div>
 
-          <!-- Interactive Tree SVG Schema -->
-          <div class="w-full overflow-x-auto py-4 flex justify-center" dir="ltr">
-            <svg class="w-[520px] h-[340px] text-slate-800 dark:text-slate-100" viewBox="0 0 520 340">
-              <!-- Level Guidelines -->
-              <line x1="20" y1="40" x2="500" y2="40" stroke="#cbd5e1" stroke-dasharray="4" stroke-width="1.5" />
-              <text x="30" y="32" font-size="11" fill="#64748b" font-family="monospace">Level 0 (Depth=0)</text>
-
-              <line x1="20" y1="130" x2="500" y2="130" stroke="#cbd5e1" stroke-dasharray="4" stroke-width="1.5" />
-              <text x="30" y="122" font-size="11" fill="#64748b" font-family="monospace">Level 1 (Depth=1)</text>
-
-              <line x1="20" y1="220" x2="500" y2="220" stroke="#cbd5e1" stroke-dasharray="4" stroke-width="1.5" />
-              <text x="30" y="212" font-size="11" fill="#64748b" font-family="monospace">Level 2 (Depth=2)</text>
-
-              <line x1="20" y1="300" x2="500" y2="300" stroke="#cbd5e1" stroke-dasharray="4" stroke-width="1.5" />
-              <text x="30" y="292" font-size="11" fill="#64748b" font-family="monospace">Level 3 (Depth=3)</text>
+          <!-- Tree terminology diagram -->
+          <div class="py-4" dir="ltr">
+            <svg class="w-full" viewBox="0 0 455 330" role="img" aria-labelledby="terms-title terms-desc">
+              <title id="terms-title">شجرة من تسع عقد وأربعة مستويات</title>
+              <desc id="terms-desc">الجذر A. ابناه B و C. أبناء B هما D و E، وأبناء C هما F و G. أبناء D هما H و I. ارتفاع الشجرة ثلاث حواف.</desc>
+              <g class="diagram-guide" fill="none" stroke-dasharray="4">
+                <path d="M45 45 H448 M45 135 H448 M45 225 H448 M45 305 H448"/>
+              </g>
+              <g class="diagram-note" font-size="20" text-anchor="middle">
+                <text x="30" y="17">Level</text>
+                <text x="30" y="52">0</text>
+                <text x="30" y="142">1</text>
+                <text x="30" y="232">2</text>
+                <text x="30" y="312">3</text>
+              </g>
 
               <!-- Connecting Edges -->
-              <line x1="260" y1="45" x2="160" y2="135" stroke="#059669" stroke-width="2.5" />
-              <line x1="260" y1="45" x2="360" y2="135" stroke="#059669" stroke-width="2.5" />
+              <line x1="260" y1="45" x2="160" y2="135" class="diagram-edge" />
+              <line x1="260" y1="45" x2="360" y2="135" class="diagram-edge" />
 
-              <line x1="160" y1="135" x2="100" y2="225" stroke="#059669" stroke-width="2.5" />
-              <line x1="160" y1="135" x2="210" y2="225" stroke="#059669" stroke-width="2.5" />
+              <line x1="160" y1="135" x2="100" y2="225" class="diagram-edge" />
+              <line x1="160" y1="135" x2="210" y2="225" class="diagram-edge" />
 
-              <line x1="360" y1="135" x2="310" y2="225" stroke="#059669" stroke-width="2.5" />
-              <line x1="360" y1="135" x2="420" y2="225" stroke="#059669" stroke-width="2.5" />
+              <line x1="360" y1="135" x2="310" y2="225" class="diagram-edge" />
+              <line x1="360" y1="135" x2="420" y2="225" class="diagram-edge" />
 
-              <line x1="100" y1="225" x2="70" y2="305" stroke="#059669" stroke-width="2.5" />
-              <line x1="100" y1="225" x2="130" y2="305" stroke="#059669" stroke-width="2.5" />
+              <line x1="100" y1="225" x2="70" y2="305" class="diagram-edge" />
+              <line x1="100" y1="225" x2="130" y2="305" class="diagram-edge" />
 
               <!-- Nodes (Circles with Badges) -->
               <!-- Root (A) -->
-              <circle cx="260" cy="45" r="22" fill="#d97706" stroke="#92400e" stroke-width="3" />
-              <text x="260" y="52" font-size="16" font-weight="900" text-anchor="middle" fill="#ffffff">A</text>
-              <rect x="295" y="32" width="75" height="22" rx="6" fill="#fef3c7" stroke="#d97706" />
-              <text x="332" y="47" font-size="11" font-weight="bold" fill="#92400e" text-anchor="middle">Root (الجذر)</text>
+              <circle cx="260" cy="45" r="22" fill="#92400e" stroke="#d97706" stroke-width="3" />
+              <text x="260" y="52" font-size="23" font-weight="900" text-anchor="middle" fill="#ffffff">A</text>
+              <text x="294" y="52" font-size="20" class="diagram-note">Root</text>
 
               <!-- Level 1: B & C -->
               <circle cx="160" cy="135" r="20" fill="#2563eb" stroke="#1e40af" stroke-width="2.5" />
-              <text x="160" y="141" font-size="15" font-weight="900" text-anchor="middle" fill="#ffffff">B</text>
+              <text x="160" y="141" font-size="23" font-weight="900" text-anchor="middle" fill="#ffffff">B</text>
 
               <circle cx="360" cy="135" r="20" fill="#2563eb" stroke="#1e40af" stroke-width="2.5" />
-              <text x="360" y="141" font-size="15" font-weight="900" text-anchor="middle" fill="#ffffff">C</text>
+              <text x="360" y="141" font-size="23" font-weight="900" text-anchor="middle" fill="#ffffff">C</text>
 
               <!-- Siblings indicator between B and C -->
               <path d="M 185 125 Q 260 110 335 125" fill="none" stroke="#6366f1" stroke-width="1.5" stroke-dasharray="3" />
-              <text x="260" y="115" font-size="11" font-weight="bold" fill="#4f46e5" text-anchor="middle">Siblings (إخوة)</text>
+              <text x="260" y="107" font-size="20" font-weight="bold" class="diagram-note" text-anchor="middle">Siblings</text>
 
               <!-- Level 2: D, E, F, G -->
-              <circle cx="100" cy="225" r="18" fill="#0d9488" stroke="#115e59" stroke-width="2" />
-              <text x="100" y="231" font-size="14" font-weight="900" text-anchor="middle" fill="#ffffff">D</text>
+              <circle cx="100" cy="225" r="18" fill="#115e59" stroke="#0d9488" stroke-width="2" />
+              <text x="100" y="231" font-size="21" font-weight="900" text-anchor="middle" fill="#ffffff">D</text>
 
-              <circle cx="210" cy="225" r="18" fill="#10b981" stroke="#047857" stroke-width="2" />
-              <text x="210" y="231" font-size="14" font-weight="900" text-anchor="middle" fill="#ffffff">E</text>
+              <circle cx="210" cy="225" r="18" fill="#047857" stroke="#10b981" stroke-width="2" />
+              <text x="210" y="231" font-size="21" font-weight="900" text-anchor="middle" fill="#ffffff">E</text>
 
-              <circle cx="310" cy="225" r="18" fill="#10b981" stroke="#047857" stroke-width="2" />
-              <text x="310" y="231" font-size="14" font-weight="900" text-anchor="middle" fill="#ffffff">F</text>
+              <circle cx="310" cy="225" r="18" fill="#047857" stroke="#10b981" stroke-width="2" />
+              <text x="310" y="231" font-size="21" font-weight="900" text-anchor="middle" fill="#ffffff">F</text>
 
-              <circle cx="420" cy="225" r="18" fill="#10b981" stroke="#047857" stroke-width="2" />
-              <text x="420" y="231" font-size="14" font-weight="900" text-anchor="middle" fill="#ffffff">G</text>
+              <circle cx="420" cy="225" r="18" fill="#047857" stroke="#10b981" stroke-width="2" />
+              <text x="420" y="231" font-size="21" font-weight="900" text-anchor="middle" fill="#ffffff">G</text>
 
               <!-- Level 3: H, I (Leaves of D) -->
-              <circle cx="70" cy="305" r="16" fill="#10b981" stroke="#047857" stroke-width="2" />
-              <text x="70" y="310" font-size="12" font-weight="900" text-anchor="middle" fill="#ffffff">H</text>
+              <circle cx="70" cy="305" r="16" fill="#047857" stroke="#10b981" stroke-width="2" />
+              <text x="70" y="310" font-size="21" font-weight="900" text-anchor="middle" fill="#ffffff">H</text>
 
-              <circle cx="130" cy="305" r="16" fill="#10b981" stroke="#047857" stroke-width="2" />
-              <text x="130" y="310" font-size="12" font-weight="900" text-anchor="middle" fill="#ffffff">I</text>
+              <circle cx="130" cy="305" r="16" fill="#047857" stroke="#10b981" stroke-width="2" />
+              <text x="130" y="310" font-size="21" font-weight="900" text-anchor="middle" fill="#ffffff">I</text>
 
-              <!-- Leaf Node Annotations -->
-              <rect x="235" y="300" width="130" height="24" rx="6" fill="#d1fae5" stroke="#059669" />
-              <text x="300" y="316" font-size="11" font-weight="bold" fill="#065f46" text-anchor="middle">Leaves (E, F, G, H, I)</text>
             </svg>
           </div>
-          <p class="text-xs text-[var(--text-muted)] mt-1 font-mono">شجرة بمقاس Height = 3 (أطول مسار A -> B -> D -> H = 3 حواف) وعدد العقد Size = 9</p>
+          <p class="text-xs text-[var(--text-muted)] mt-1">الأوراق <bdi dir="ltr">E, F, G, H, I</bdi>. ارتفاع الشجرة 3 (أطول مسار <bdi dir="ltr">A → B → D → H</bdi> طوله 3 حواف) وعدد العقد Size = 9</p>
         </div>
 
         <div class="space-y-4 pt-3">
@@ -671,14 +669,14 @@ struct Node {
 };</code></pre>
 
         <!-- VISUAL MEMORY LAYOUT DIAGRAM (RAM DISASSEMBLY) -->
-        <div class="my-6 p-4 sm:p-6 rounded-2xl bg-[#faf5e8] dark:bg-slate-900 border-2 border-[#b8a98e] shadow-inner">
+        <div class="diagram-frame lesson-diagram my-6">
           <div class="text-xs sm:text-sm font-black text-sky-950 dark:text-sky-300 mb-4 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2">
             <span>🔍</span>
             <span>تشريح خانات العقدة في الذاكرة الحقيقية RAM (توزيع المؤشرات والعناوين)</span>
           </div>
 
           <!-- Root Node Box -->
-          <div class="flex flex-col items-center justify-center gap-4 py-2" dir="ltr">
+          <div class="ram-tree flex flex-col items-center gap-3 mx-auto py-2" dir="ltr">
             <!-- Pointer Root -->
             <div class="px-3.5 py-1.5 rounded-xl border-2 bg-amber-100 border-amber-600 text-amber-950 font-mono font-black text-xs shadow-xs">
               Root Pointer: 0x1000
@@ -687,17 +685,17 @@ struct Node {
             <!-- Root Node Structure -->
             <div class="flex flex-col items-center">
               <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-amber-700 text-white mb-1">Root Node (العقدة الجذر)</span>
-              <div class="rounded-xl border-2 border-amber-700 bg-white dark:bg-slate-800 shadow-md overflow-hidden min-w-[210px]">
+              <div class="rounded-xl border-2 border-amber-700 diagram-node shadow-md overflow-hidden w-full">
                 <div class="grid grid-cols-3 divide-x divide-slate-300 dark:divide-slate-700 text-center text-xs font-mono font-bold">
-                  <div class="p-2 bg-indigo-50 dark:bg-slate-900 text-indigo-700 dark:text-indigo-400">
-                    <span class="text-[9px] block text-slate-500 uppercase">left</span>
-                    <span>0x2400</span>
-                  </div>
-                  <div class="p-2 bg-amber-50 dark:bg-slate-800 text-amber-950 dark:text-amber-200 font-black text-base">
+                  <div class="p-2 bg-amber-50 text-amber-950 dark:text-amber-200 font-black text-base">
                     <span class="text-[9px] block text-slate-500 uppercase">data</span>
                     <span>50</span>
                   </div>
-                  <div class="p-2 bg-emerald-50 dark:bg-slate-900 text-emerald-700 dark:text-emerald-400">
+                  <div class="p-2 bg-indigo-50 text-indigo-700 dark:text-indigo-400">
+                    <span class="text-[9px] block text-slate-500 uppercase">left</span>
+                    <span>0x2400</span>
+                  </div>
+                  <div class="p-2 bg-emerald-50 text-emerald-700 dark:text-emerald-400">
                     <span class="text-[9px] block text-slate-500 uppercase">right</span>
                     <span>0x3800</span>
                   </div>
@@ -706,22 +704,21 @@ struct Node {
               <span class="text-[10px] font-mono font-bold text-amber-900 bg-amber-100 px-2 py-0.5 rounded mt-1">Address: 0x1000</span>
             </div>
 
-            <!-- Branching Arrows -->
-            <div class="flex justify-between w-full max-w-sm px-8">
-              <svg class="w-8 h-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" transform="rotate(35 12 12)"/></svg>
-              <svg class="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" transform="rotate(-35 12 12)"/></svg>
-            </div>
+            <!-- Pointers run from the root to the center of each child panel. -->
+            <svg viewBox="0 0 360 46" class="w-full" aria-hidden="true">
+              <path d="M180 2 L90 42 M91 34 L90 42 L98 43 M180 2 L270 42 M262 43 L270 42 L269 34" fill="none" class="diagram-edge"/>
+            </svg>
 
             <!-- Children Nodes -->
-            <div class="flex flex-wrap items-center justify-around w-full gap-4">
+            <div class="grid grid-cols-2 w-full gap-2">
               <!-- Left Child Node -->
               <div class="flex flex-col items-center">
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-700 text-white mb-1">Left Child</span>
-                <div class="rounded-xl border-2 border-indigo-700 bg-white dark:bg-slate-800 shadow-md overflow-hidden min-w-[170px]">
+                <div class="rounded-xl border-2 border-indigo-700 diagram-node shadow-md overflow-hidden w-full">
                   <div class="grid grid-cols-3 divide-x divide-slate-300 dark:divide-slate-700 text-center text-xs font-mono font-bold">
-                    <div class="p-1.5 bg-rose-50 text-rose-600 font-bold">NULL</div>
-                    <div class="p-1.5 bg-indigo-50 dark:bg-slate-800 text-indigo-900 dark:text-indigo-200 font-black text-sm">30</div>
-                    <div class="p-1.5 bg-rose-50 text-rose-600 font-bold">NULL</div>
+                    <div class="ram-cell bg-indigo-50 text-indigo-900 dark:text-indigo-200 font-black text-sm">30</div>
+                    <div class="ram-cell bg-rose-50 text-rose-700 font-bold">NULL</div>
+                    <div class="ram-cell bg-rose-50 text-rose-700 font-bold">NULL</div>
                   </div>
                 </div>
                 <span class="text-[10px] font-mono text-slate-500 mt-1">Address: 0x2400</span>
@@ -730,17 +727,18 @@ struct Node {
               <!-- Right Child Node -->
               <div class="flex flex-col items-center">
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-700 text-white mb-1">Right Child</span>
-                <div class="rounded-xl border-2 border-emerald-700 bg-white dark:bg-slate-800 shadow-md overflow-hidden min-w-[170px]">
+                <div class="rounded-xl border-2 border-emerald-700 diagram-node shadow-md overflow-hidden w-full">
                   <div class="grid grid-cols-3 divide-x divide-slate-300 dark:divide-slate-700 text-center text-xs font-mono font-bold">
-                    <div class="p-1.5 bg-rose-50 text-rose-600 font-bold">NULL</div>
-                    <div class="p-1.5 bg-emerald-50 dark:bg-slate-800 text-emerald-900 dark:text-emerald-200 font-black text-sm">70</div>
-                    <div class="p-1.5 bg-rose-50 text-rose-600 font-bold">NULL</div>
+                    <div class="ram-cell bg-emerald-50 text-emerald-900 dark:text-emerald-200 font-black text-sm">70</div>
+                    <div class="ram-cell bg-rose-50 text-rose-700 font-bold">NULL</div>
+                    <div class="ram-cell bg-rose-50 text-rose-700 font-bold">NULL</div>
                   </div>
                 </div>
                 <span class="text-[10px] font-mono text-slate-500 mt-1">Address: 0x3800</span>
               </div>
             </div>
           </div>
+          <p class="mt-3 text-xs text-right">ترتيب الحقول من اليسار لليمين <bdi dir="ltr">data, left, right</bdi>. الجذر عند <bdi dir="ltr">0x1000</bdi> وقيمته 50، والمؤشران بيشاوروا على العقدتين 30 و70. كل مؤشرات الأبناء في العقدتين دول فاضية.</p>
         </div>
 
         <div class="reading-block pt-2">
@@ -784,54 +782,56 @@ struct Node {
               دائماً وأبداً: <strong>الشمال بيجي قبل اليمين (Left always before Right)</strong>! التغيير الوحيد هو مكان الـ Root:
             </p>
             <ul class="spaced-list mt-2 font-mono text-sm">
-              <li>• <strong>Pre-order (من البداية):</strong> <span class="inline-code-amber">Root</span> ➔ Left ➔ Right (الجذر في الأول).</li>
-              <li>• <strong>In-order (في الوسط):</strong> Left ➔ <span class="inline-code-amber">Root</span> ➔ Right (الجذر في النص).</li>
-              <li>• <strong>Post-order (في النهاية):</strong> Left ➔ Right ➔ <span class="inline-code-amber">Root</span> (الجذر في الآخر).</li>
+              <li>• <strong>Pre-order (من البداية):</strong> <bdi dir="ltr"><span class="inline-code-amber">Root</span> → Left → Right</bdi> (الجذر في الأول).</li>
+              <li>• <strong>In-order (في الوسط):</strong> <bdi dir="ltr">Left → <span class="inline-code-amber">Root</span> → Right</bdi> (الجذر في النص).</li>
+              <li>• <strong>Post-order (في النهاية):</strong> <bdi dir="ltr">Left → Right → <span class="inline-code-amber">Root</span></bdi> (الجذر في الآخر).</li>
             </ul>
           </div>
         </div>
 
         <!-- EXAMPLE TREE FOR TRACING -->
-        <div class="diagram-frame">
+        <div class="diagram-frame lesson-diagram">
           <div class="text-xs sm:text-sm font-black text-slate-800 dark:text-slate-200 mb-2">
             🌳 شجرة المثال المعتمدة في السلايدات للتتبع (Slide 39, 42, 45)
           </div>
-          <p class="text-xs text-[var(--text-muted)] mb-3">شجرة مكونة من 7 عقد: الجذر A، فرعه الأيسر B (وتحته D و E)، وفرعه الأيمن C (وتحته G و F)</p>
+          <p class="text-xs text-[var(--text-muted)] mb-3">شجرة مكونة من 7 عقد: الجذر A، فرعه الأيسر B (وتحته <bdi dir="ltr">D, E</bdi>)، وفرعه الأيمن C (وتحته <bdi dir="ltr">G, F</bdi>)</p>
 
           <div class="w-full flex justify-center py-2" dir="ltr">
-            <svg class="w-[360px] h-[220px]" viewBox="0 0 360 220">
-              <line x1="180" y1="35" x2="100" y2="105" stroke="#475569" stroke-width="2.5" />
-              <line x1="180" y1="35" x2="260" y2="105" stroke="#475569" stroke-width="2.5" />
+            <svg class="w-full max-w-sm" viewBox="25 8 310 188" role="img" aria-labelledby="traversal-title traversal-desc">
+              <title id="traversal-title">شجرة مثال المرور على العقد</title>
+              <desc id="traversal-desc">الجذر A، يساره B بأبناء D و E من اليسار لليمين، ويمينه C بأبناء G و F من اليسار لليمين.</desc>
+              <line x1="180" y1="35" x2="100" y2="105" class="diagram-edge" />
+              <line x1="180" y1="35" x2="260" y2="105" class="diagram-edge" />
 
-              <line x1="100" y1="105" x2="60" y2="175" stroke="#475569" stroke-width="2.5" />
-              <line x1="100" y1="105" x2="140" y2="175" stroke="#475569" stroke-width="2.5" />
+              <line x1="100" y1="105" x2="60" y2="175" class="diagram-edge" />
+              <line x1="100" y1="105" x2="140" y2="175" class="diagram-edge" />
 
-              <line x1="260" y1="105" x2="220" y2="175" stroke="#475569" stroke-width="2.5" />
-              <line x1="260" y1="105" x2="300" y2="175" stroke="#475569" stroke-width="2.5" />
+              <line x1="260" y1="105" x2="220" y2="175" class="diagram-edge" />
+              <line x1="260" y1="105" x2="300" y2="175" class="diagram-edge" />
 
               <!-- A -->
-              <circle cx="180" cy="35" r="18" fill="#d97706" />
-              <text x="180" y="41" fill="#fff" font-weight="bold" font-size="14" text-anchor="middle">A</text>
+              <circle cx="180" cy="35" r="18" fill="#92400e" />
+              <text x="180" y="41" fill="#fff" font-weight="bold" font-size="16" text-anchor="middle">A</text>
 
               <!-- B, C -->
               <circle cx="100" cy="105" r="16" fill="#2563eb" />
-              <text x="100" y="110" fill="#fff" font-weight="bold" font-size="13" text-anchor="middle">B</text>
+              <text x="100" y="110" fill="#fff" font-weight="bold" font-size="16" text-anchor="middle">B</text>
 
               <circle cx="260" cy="105" r="16" fill="#2563eb" />
-              <text x="260" y="110" fill="#fff" font-weight="bold" font-size="13" text-anchor="middle">C</text>
+              <text x="260" y="110" fill="#fff" font-weight="bold" font-size="16" text-anchor="middle">C</text>
 
               <!-- Leaves: D, E, G, F -->
-              <circle cx="60" cy="175" r="15" fill="#059669" />
-              <text x="60" y="180" fill="#fff" font-weight="bold" font-size="12" text-anchor="middle">D</text>
+              <circle cx="60" cy="175" r="15" fill="#047857" />
+              <text x="60" y="180" fill="#fff" font-weight="bold" font-size="16" text-anchor="middle">D</text>
 
-              <circle cx="140" cy="175" r="15" fill="#059669" />
-              <text x="140" y="180" fill="#fff" font-weight="bold" font-size="12" text-anchor="middle">E</text>
+              <circle cx="140" cy="175" r="15" fill="#047857" />
+              <text x="140" y="180" fill="#fff" font-weight="bold" font-size="16" text-anchor="middle">E</text>
 
-              <circle cx="220" cy="175" r="15" fill="#059669" />
-              <text x="220" y="180" fill="#fff" font-weight="bold" font-size="12" text-anchor="middle">G</text>
+              <circle cx="220" cy="175" r="15" fill="#047857" />
+              <text x="220" y="180" fill="#fff" font-weight="bold" font-size="16" text-anchor="middle">G</text>
 
-              <circle cx="300" cy="175" r="15" fill="#059669" />
-              <text x="300" y="180" fill="#fff" font-weight="bold" font-size="12" text-anchor="middle">F</text>
+              <circle cx="300" cy="175" r="15" fill="#047857" />
+              <text x="300" y="180" fill="#fff" font-weight="bold" font-size="16" text-anchor="middle">F</text>
             </svg>
           </div>
         </div>
@@ -906,7 +906,7 @@ struct Node {
             <h3 class="font-heading font-black text-lg text-purple-600 dark:text-purple-400">Breadth-First / Level-Order (المرور بالمستويات باستخدام الطابور Queue)</h3>
           </div>
           <p class="text-sm">
-            نزور الشجرة مستوى بمستوى من فوق لتحت ومن الشمال لليمين. بما إن الـ Recursion بيغوص لتحت (Depth-First)، فالمستوى الأفقي مستحيل يتعمل بيه! الحل العبقري هو استخدام <strong>طابور (Queue)</strong>: نطرد العقدة من الطابور ونطبعها، ونضيف أولادها في آخر الطابور!
+            نزور الشجرة مستوى بمستوى من فوق لتحت ومن الشمال لليمين. عشان نحافظ على ترتيب المستويات بنستخدم <strong>طابور (Queue)</strong>: نطرد العقدة من الطابور ونطبعها، ونضيف أولادها في آخر الطابور!
           </p>
           <div class="p-3.5 rounded-xl bg-slate-900 text-white font-mono text-xs sm:text-sm" dir="ltr">
             <span class="text-purple-400 font-bold">Level-Order Output:</span> A, B, C, D, E, G, F
@@ -991,7 +991,7 @@ void print_level_order(Node* root) {
           <span class="text-xs font-mono text-[var(--text-muted)]">Lab & Practice</span>
         </div>
 
-        <p class="text-sm text-[var(--text-muted)] leading-relaxed mb-3">
+        <p class="text-sm text-[var(--text-muted)] mb-3">
           برنامج متكامل يجمع إنشاء العقد يدوياً، التوصيل، وحساب العمليات، وطباعة نواتج المرور الأربعة لاختبار فهمك على بيئة Code::Blocks أو VS Code:
         </p>
 
@@ -1051,6 +1051,13 @@ int countNodes(Node* root) {
     return 1 + countNodes(root-&gt;left) + countNodes(root-&gt;right);
 }
 
+void deleteTree(Node* root) {
+    if (!root) return;
+    deleteTree(root-&gt;left);
+    deleteTree(root-&gt;right);
+    delete root;
+}
+
 int main() {
     /* بناء الشجرة المعمارية:
              1
@@ -1070,9 +1077,10 @@ int main() {
     cout &lt;&lt; "Preorder:   "; printPreorder(root);   cout &lt;&lt; "\n";
     cout &lt;&lt; "Inorder:    "; printInorder(root);    cout &lt;&lt; "\n";
     cout &lt;&lt; "Postorder:  "; printPostorder(root);  cout &lt;&lt; "\n";
-    cout &lt;&lt; "Level-Order:"; printLevelOrder(root); cout &lt;&lt; "\n";
+    cout &lt;&lt; "Level-Order: "; printLevelOrder(root); cout &lt;&lt; "\n";
     cout &lt;&lt; "Total Nodes: " &lt;&lt; countNodes(root) &lt;&lt; "\n";
 
+    deleteTree(root);
     return 0;
 }</code></pre>
       </article>
@@ -1090,17 +1098,17 @@ int main() {
           </div>
           <div class="text-center font-mono p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
             <span class="text-xs text-[var(--text-muted)] block">النتيجة</span>
-            <span id="quizScoreDisplay" class="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400">0 / 16</span>
+            <span id="quizScoreDisplay" dir="ltr" class="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400">0 / 16</span>
           </div>
         </div>
 
         <div class="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 rounded-xl bg-[var(--bg-soft)] text-xs">
           <div class="flex flex-wrap items-center gap-1.5">
             <span>تصفية الأسئلة:</span>
-            <button class="quiz-filter-btn px-2.5 py-1 rounded-lg bg-blue-600 text-white font-bold" data-quiz-filter="all">الكل (16)</button>
-            <button class="quiz-filter-btn px-2.5 py-1 rounded-lg bg-[var(--bg-card)] border" data-quiz-filter="basic">المصطلحات (6)</button>
-            <button class="quiz-filter-btn px-2.5 py-1 rounded-lg bg-[var(--bg-card)] border" data-quiz-filter="traversal">المرور (6)</button>
-            <button class="quiz-filter-btn px-2.5 py-1 rounded-lg bg-[var(--bg-card)] border" data-quiz-filter="operations">العمليات (4)</button>
+            <button class="quiz-filter-btn px-2.5 py-1 rounded-lg bg-blue-600 text-white font-bold" data-quiz-filter="all" aria-pressed="true">الكل (16)</button>
+            <button class="quiz-filter-btn px-2.5 py-1 rounded-lg bg-[var(--bg-card)] border" data-quiz-filter="basic" aria-pressed="false">المصطلحات (6)</button>
+            <button class="quiz-filter-btn px-2.5 py-1 rounded-lg bg-[var(--bg-card)] border" data-quiz-filter="traversal" aria-pressed="false">المرور (6)</button>
+            <button class="quiz-filter-btn px-2.5 py-1 rounded-lg bg-[var(--bg-card)] border" data-quiz-filter="operations" aria-pressed="false">العمليات (4)</button>
           </div>
           <button id="btnResetQuiz" class="px-3 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 font-bold border border-rose-500/30 transition">
             إعادة تعيين الإجابات
@@ -1108,13 +1116,15 @@ int main() {
         </div>
 
         <!-- Quiz Questions Container -->
+        <p id="quizStatus" class="sr-only" role="status" aria-atomic="true"></p>
         <div id="quizContainer" class="space-y-6"></div>
       </article>
     </section>
 
-  </div>
+  </main>
 
   <footer class="mt-12 py-6 text-center text-xs text-[var(--text-muted)] border-t border-[var(--border-color)] max-w-5xl mx-auto w-full">
+    <a href="lecture-8.html" class="block mb-3 font-bold text-[var(--brand-primary)]">المحاضرة التالية 8 • أشجار البحث الثنائية والرسوم البيانية</a>
     <p>بوابة الفصل الدراسي الثاني — كلية الحاسبات والمعلومات • شرح تفاعلي معتمد لمقرر هياكل البيانات والخوارزميات 2026</p>
   </footer>
 
@@ -1295,74 +1305,81 @@ int main() {
         ? quizQuestions 
         : quizQuestions.filter(q => q.category === currentQuizFilter);
 
-      container.innerHTML = filtered.map((q) => {
-        const answered = userAnswers[q.id];
-        const isAnswered = answered !== undefined;
+      container.innerHTML = filtered.map(renderQuestion).join("");
+    }
 
-        const optionsHtml = q.options.map((opt, idx) => {
-          let btnStyle = "bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-main)] hover:border-amber-500";
-          if (isAnswered) {
-            if (idx === q.correct) {
-              btnStyle = "bg-emerald-500/15 border-emerald-600 text-emerald-800 dark:text-emerald-300 font-bold";
-            } else if (idx === answered) {
-              btnStyle = "bg-rose-500/15 border-rose-600 text-rose-800 dark:text-rose-300 font-bold";
-            } else {
-              btnStyle = "opacity-50 bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-muted)]";
-            }
+    function renderQuestion(q) {
+      const answered = userAnswers[q.id];
+      const isAnswered = answered !== undefined;
+
+      const optionsHtml = q.options.map((opt, idx) => {
+        let btnStyle = "bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-main)] hover:border-amber-500";
+        if (isAnswered) {
+          if (idx === q.correct) {
+            btnStyle = "bg-emerald-500/15 border-emerald-600 text-emerald-800 dark:text-emerald-300 font-bold";
+          } else if (idx === answered) {
+            btnStyle = "bg-rose-500/15 border-rose-600 text-rose-800 dark:text-rose-300 font-bold";
+          } else {
+            btnStyle = "opacity-50 bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-muted)]";
           }
-
-          return `
-            <button 
-              type="button" 
-              class="quiz-option w-full text-right p-3.5 rounded-xl border transition flex items-center justify-between gap-3 text-sm sm:text-base ${btnStyle}"
-              data-qid="${q.id}" 
-              data-opt="${idx}"
-              ${isAnswered ? "disabled" : ""}
-            >
-              <span>${opt}</span>
-              <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-mono shrink-0">
-                ${String.fromCharCode(65 + idx)}
-              </span>
-            </button>
-          `;
-        }).join("");
-
-        const feedbackHtml = isAnswered ? `
-          <div class="mt-4 p-4 rounded-xl ${answered === q.correct ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-rose-500/10 border border-rose-500/30'}">
-            <div class="font-heading font-bold text-base mb-1 ${answered === q.correct ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}">
-              ${answered === q.correct ? '✅ إجابة صحيحة وممتازة!' : '❌ إجابة غير صحيحة — راجع التفسير العلمي:'}
-            </div>
-            <p class="text-sm sm:text-base">${q.explanation}</p>
-          </div>
-        ` : "";
+        }
 
         return `
-          <article class="reading-card !mb-0 border border-[var(--border-color)]">
-            <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="rule-badge">${q.partLabel}</span>
-              <span class="text-xs font-mono text-[var(--text-muted)]" dir="ltr">Question #${q.id}</span>
-            </div>
-            <h3 class="text-base sm:text-lg font-bold mb-4 text-left font-sans" dir="ltr">${q.question}</h3>
-            <div class="space-y-2.5">
-              ${optionsHtml}
-            </div>
-            ${feedbackHtml}
-          </article>
+          <button
+            type="button"
+            class="quiz-option w-full text-right p-3.5 rounded-xl border transition flex items-center justify-between gap-3 text-sm sm:text-base ${btnStyle}"
+            data-qid="${q.id}"
+            data-opt="${idx}"
+            ${isAnswered ? `aria-disabled="true" tabindex="${idx === answered ? 0 : -1}"` : ""}
+          >
+            <span>${opt}</span>
+            ${isAnswered && idx === q.correct ? '<span class="sr-only" lang="ar">الإجابة الصحيحة</span>' : ""}
+            <span class="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-mono shrink-0">
+              ${String.fromCharCode(65 + idx)}
+            </span>
+          </button>
         `;
       }).join("");
 
-      container.querySelectorAll(".quiz-option").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const qid = parseInt(btn.getAttribute("data-qid"), 10);
-          const optIdx = parseInt(btn.getAttribute("data-opt"), 10);
-          userAnswers[qid] = optIdx;
-          updateScoreDisplay();
-          renderQuiz();
-        });
-      });
+      const feedbackHtml = isAnswered ? `
+        <div class="quiz-feedback mt-4 p-4 rounded-xl ${answered === q.correct ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-rose-500/10 border border-rose-500/30'}">
+          <div class="font-heading font-bold text-base mb-1 ${answered === q.correct ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}">
+            ${answered === q.correct ? '✅ إجابة صحيحة وممتازة!' : '❌ إجابة غير صحيحة — راجع التفسير العلمي:'}
+          </div>
+          <p class="text-sm sm:text-base">${q.explanation}</p>
+        </div>
+      ` : "";
+
+      return `
+        <article class="reading-card !mb-0 border border-[var(--border-color)]">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="rule-badge">${q.partLabel}</span>
+            <span class="text-xs font-mono text-[var(--text-muted)]" dir="ltr">Question #${q.id}</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-bold mb-4 text-left font-sans" dir="ltr">${q.question}</h3>
+          <div class="space-y-2.5">
+            ${optionsHtml}
+          </div>
+          ${feedbackHtml}
+        </article>
+      `;
     }
 
-    function updateScoreDisplay() {
+    document.getElementById("quizContainer").addEventListener("click", event => {
+      const option = event.target.closest(".quiz-option");
+      if (!option) return;
+      const id = Number(option.dataset.qid);
+      if (userAnswers[id] !== undefined) return;
+
+      const question = quizQuestions.find(q => q.id === id);
+      userAnswers[id] = Number(option.dataset.opt);
+      window.updateDsQuizCard(option.closest("article"), renderQuestion(question), option);
+      const correct = userAnswers[id] === question.correct;
+      const result = correct ? "إجابة صحيحة." : "إجابة غير صحيحة.";
+      updateScoreDisplay(`السؤال ${id}. ${result}`);
+    });
+
+    function updateScoreDisplay(message) {
       let score = 0;
       quizQuestions.forEach(q => {
         if (userAnswers[q.id] === q.correct) score++;
@@ -1371,6 +1388,7 @@ int main() {
       if (scoreEl) {
         scoreEl.textContent = `${score} / ${quizQuestions.length}`;
       }
+      document.getElementById("quizStatus").textContent = `${message} الدرجة ${score} من ${quizQuestions.length}.`;
     }
 
     function applyReadingTypography() {
@@ -1423,66 +1441,17 @@ int main() {
       document.body.classList.add("theme-dark");
     });
 
-    // TOC Drawer handling
-    const sidebarToc = document.getElementById("sidebar-toc");
-    const tocOverlay = document.getElementById("toc-overlay");
-    document.getElementById("btn-open-toc").addEventListener("click", () => {
-      sidebarToc.classList.add("open");
-      tocOverlay.classList.add("show");
-    });
-    document.getElementById("btn-close-toc").addEventListener("click", () => {
-      sidebarToc.classList.remove("open");
-      tocOverlay.classList.remove("show");
-    });
-    tocOverlay.addEventListener("click", () => {
-      sidebarToc.classList.remove("open");
-      tocOverlay.classList.remove("show");
-    });
-    sidebarToc.querySelectorAll("a").forEach(a => {
-      a.addEventListener("click", () => {
-        sidebarToc.classList.remove("open");
-        tocOverlay.classList.remove("show");
-      });
-    });
-
-    // Filter pills for parts
-    document.querySelectorAll(".chapter-pill").forEach(pill => {
-      pill.addEventListener("click", () => {
-        document.querySelectorAll(".chapter-pill").forEach(p => p.classList.remove("active"));
-        pill.classList.add("active");
-
-        const target = pill.getAttribute("data-target");
-        const sections = {
-          part1: document.getElementById("part1"),
-          part2: document.getElementById("part2"),
-          part3: document.getElementById("part3"),
-          part4: document.getElementById("part4"),
-          part5: document.getElementById("part5"),
-          quiz: document.getElementById("section-quiz")
-        };
-
-        if (target === "all") {
-          Object.values(sections).forEach(sec => sec && sec.classList.remove("hidden"));
-        } else {
-          Object.entries(sections).forEach(([key, sec]) => {
-            if (!sec) return;
-            if (key === target) sec.classList.remove("hidden");
-            else sec.classList.add("hidden");
-          });
-        }
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-    });
-
     // Quiz category filters
     document.querySelectorAll(".quiz-filter-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".quiz-filter-btn").forEach(b => {
           b.classList.remove("bg-blue-600", "text-white", "font-bold");
           b.classList.add("bg-[var(--bg-card)]");
+          b.setAttribute("aria-pressed", "false");
         });
         btn.classList.add("bg-blue-600", "text-white", "font-bold");
         btn.classList.remove("bg-[var(--bg-card)]");
+        btn.setAttribute("aria-pressed", "true");
         currentQuizFilter = btn.getAttribute("data-quiz-filter");
         renderQuiz();
       });
@@ -1490,7 +1459,7 @@ int main() {
 
     document.getElementById("btnResetQuiz").addEventListener("click", () => {
       userAnswers = {};
-      updateScoreDisplay();
+      updateScoreDisplay("تمت إعادة الكويز.");
       renderQuiz();
     });
 
@@ -1508,6 +1477,7 @@ int main() {
   <script src="../../js/shared/study-state.js"></script>
   <script src="../../js/study-modules.js"></script>
   <script src="../../js/study-session.js"></script>
+  <script src="../../js/ds-lesson-controls.js"></script>
   <script src="../../js/study-shell.js"></script>
   <script src="../../js/shared/quiz-choices.js"></script>
 </body>

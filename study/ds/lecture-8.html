@@ -204,7 +204,7 @@
       right: 0;
     }
 
-    #toc-overlay {
+    #toc-backdrop {
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.5);
@@ -214,7 +214,7 @@
       transition: opacity 0.3s ease;
     }
 
-    #toc-overlay.show {
+    #toc-backdrop.open {
       opacity: 1;
       pointer-events: auto;
     }
@@ -233,21 +233,22 @@
     .quiz-option {
       transition: all 0.2s ease;
     }
-    .quiz-option:hover {
+    .quiz-option:not([aria-disabled="true"]):hover {
       background-color: var(--bg-soft);
     }
   </style>
+  <link rel="stylesheet" href="../../css/ds-tree-lessons.css">
 </head>
 <body class="selection:bg-blue-500/20">
 
   <div id="readingProgressBar"></div>
 
   <!-- Sidebar Drawer for TOC -->
-  <div id="toc-overlay"></div>
+  <div id="toc-backdrop" aria-hidden="true"></div>
   <aside id="sidebar-toc" aria-label="فهرس المحتويات">
     <div class="flex items-center justify-between pb-4 border-b border-[var(--border-color)] mb-4">
       <h3 class="font-bold text-lg text-[var(--text-main)]">📑 فهرس المحاضرة 8</h3>
-      <button id="btn-close-toc" class="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition" aria-label="إغلاق الفهرس">
+      <button id="btn-close-toc" class="p-1 rounded-lg text-[var(--text-main)] hover:bg-[var(--bg-soft)] transition" aria-label="إغلاق الفهرس">
         ✕
       </button>
     </div>
@@ -270,21 +271,21 @@
     <div class="reading-container flex flex-wrap items-center justify-between gap-3">
       
       <div class="flex items-center gap-2">
-        <a href="../../subject.html?id=data-structure" class="p-2 rounded-xl bg-[var(--bg-soft)] hover:bg-[var(--bg-accent)] text-[var(--text-main)] transition text-xs font-bold flex items-center gap-1.5" title="الرجوع لصفحة مادة هياكل البيانات">
+        <a href="../../subject.html?id=data-structure" class="p-2 rounded-xl bg-[var(--bg-soft)] hover:bg-[var(--bg-accent)] text-[var(--text-main)] transition text-xs font-bold flex items-center gap-1.5" aria-label="مقرر هياكل البيانات">
           <span>←</span>
           <span class="hidden sm:inline">مقرر هياكل البيانات</span>
         </a>
-        <a href="index.html" class="p-2 rounded-xl bg-[var(--bg-soft)] hover:bg-[var(--bg-accent)] text-[var(--text-main)] transition text-xs font-bold flex items-center gap-1.5">
+        <a href="index.html" aria-label="فهرس الشروحات" class="p-2 rounded-xl bg-[var(--bg-soft)] hover:bg-[var(--bg-accent)] text-[var(--text-main)] transition text-xs font-bold flex items-center gap-1.5">
           <span>📚</span>
           <span class="hidden sm:inline">فهرس الشروحات</span>
         </a>
-        <a href="lecture-7.html" class="p-2 rounded-xl bg-[var(--bg-soft)] hover:bg-[var(--bg-accent)] text-[var(--text-main)] transition text-xs font-bold flex items-center gap-1.5">
+        <a href="lecture-7.html" aria-label="المحاضرة السابقة، الأشجار" class="p-2 rounded-xl bg-[var(--bg-soft)] hover:bg-[var(--bg-accent)] text-[var(--text-main)] transition text-xs font-bold flex items-center gap-1.5">
           <span>◀</span>
           <span class="hidden sm:inline">المحاضرة 7 (Trees)</span>
         </a>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <button id="btn-open-toc" class="px-3 py-1.5 rounded-xl bg-[var(--bg-soft)] hover:bg-[var(--bg-accent)] text-[var(--text-main)] text-xs font-bold flex items-center gap-1 border border-[var(--border-color)]">
           <span>📑</span>
           <span>الفهرس</span>
@@ -298,11 +299,11 @@
         </div>
 
         <!-- Typography Sizing -->
-        <div class="hidden md:flex items-center gap-1 bg-[var(--bg-soft)] p-0.5 rounded-xl border border-[var(--border-color)] text-xs">
+        <div class="flex flex-wrap items-center gap-1 bg-[var(--bg-soft)] p-0.5 rounded-xl border border-[var(--border-color)] text-xs">
           <button id="btnFontDec" class="px-2 py-1 font-mono font-bold" title="تصغير الخط">A-</button>
           <span id="fontSizeLabel" class="px-1 font-mono font-bold text-[11px]">100%</span>
           <button id="btnFontInc" class="px-2 py-1 font-mono font-bold" title="تكبير الخط">A+</button>
-          <button id="btnLineSpacing" class="px-2 py-1 border-r border-[var(--border-color)] text-[11px] font-bold">تباعد</button>
+          <button id="btnLineSpacing" class="px-2 py-1 border-r border-[var(--border-color)] text-[11px] font-bold">تباعد: مريح جداً</button>
         </div>
       </div>
 
@@ -385,7 +386,7 @@
       <button class="chapter-pill px-3.5 py-1.5 rounded-full text-xs font-bold border border-[var(--border-color)] bg-[var(--bg-card)]" data-target="part9">
         9. كود C++ المتكامل
       </button>
-      <button class="chapter-pill px-3.5 py-1.5 rounded-full text-xs font-bold border border-[var(--border-color)] bg-[var(--bg-card)]" data-target="quiz">
+      <button class="chapter-pill px-3.5 py-1.5 rounded-full text-xs font-bold border border-[var(--border-color)] bg-[var(--bg-card)]" data-target="section-quiz">
         10. الكويز التفاعلي
       </button>
     </div>
@@ -399,16 +400,16 @@
         1. ما هي شجرة البحث الثنائية (Binary Search Tree)؟
       </h2>
 
-      <div class="reading-block text-justify leading-relaxed">
+      <div class="reading-block text-justify">
         <p class="mb-3">
           يا شباب، بعد ما فهمنا في المحاضرة السابعة إزاي الـ Binary Tree العادية بتشتغل، واكتشفنا إن أي عقدة مسموح لها بطفلين كحد أقصى (Left &amp; Right)، بيظهر عندنا سؤال محوري: 
           <strong>هل شجرة ثنائية عشوائية بتساعدنا في البحث السريع؟</strong>
         </p>
         <p class="mb-3">
-          الإجابة الصادمة: <strong>لأ طبعاً!</strong> لو الشجرة مترتبة عشوائياً، وعايزين ندور على رقم، هنضطر نزور كل العقد عقدة عقدة وده بياخد وقت $O(n)$ بالظبط زي الـ Unsorted Array أو الـ Linked List!
+          الإجابة الصادمة: <strong>لأ طبعاً!</strong> لو الشجرة مترتبة عشوائياً، وعايزين ندور على رقم، هنضطر نزور كل العقد عقدة عقدة وده بياخد وقت <bdi dir="ltr">O(n)</bdi> بالظبط زي الـ Unsorted Array أو الـ Linked List!
         </p>
         <p>
-          من هنا ابتكر علماء الحاسب فكرة عبقرية اسمها <strong>شجرة البحث الثنائية (BST)</strong>. الفكرة ببساطة إننا بنفرض <strong>قانون ترتيب صارم (Ordering Property)</strong> بيحوّل الشجرة لآلة بحث خارقة تقسم البيانات نصين في كل خطوة!
+          من هنا ابتكر علماء الحاسب فكرة عبقرية اسمها <strong>شجرة البحث الثنائية (BST)</strong>. الفكرة ببساطة إننا بنفرض <strong>قانون ترتيب صارم (Ordering Property)</strong> بيخلّينا نكمّل البحث في فرع واحد بس بعد كل مقارنة.
         </p>
       </div>
 
@@ -425,31 +426,31 @@
 
       <!-- Memory Layout Diagram -->
       <div class="diagram-frame text-center">
-        <span class="text-xs font-bold text-slate-500 block mb-2 font-mono">تشريح العقدة (Node Memory Representation) في الذاكرة (RAM)</span>
+        <span class="text-xs font-bold text-slate-500 block mb-2 font-mono">ترتيب حقول العقدة في الذاكرة على نظام بمؤشرات 8 بايت</span>
         
         <div class="inline-block border-2 border-slate-700 rounded-2xl bg-slate-900 text-white p-4 shadow-xl max-w-md w-full">
           <div class="text-[11px] font-mono text-emerald-400 mb-2 border-b border-slate-800 pb-1">
-            عنوان العقدة في الـ Heap: <span class="text-amber-300">0x7ffee0a0</span> (الحجم: 24 Bytes)
+            عنوان العقدة في الـ Heap: <span class="text-amber-300">0x7ffee0a0</span> (حجم شائع: <bdi dir="ltr">24 bytes</bdi>)
           </div>
-          <div class="grid grid-cols-3 gap-2 text-center text-xs font-mono font-bold">
+          <div class="bst-memory-fields grid gap-2 text-center text-xs font-mono font-bold" dir="ltr">
+            <div class="p-3 bg-amber-900/40 rounded-xl border border-amber-500/40">
+              <span class="text-[10px] text-amber-300 block mb-1">البيانات</span>
+              <span class="text-amber-400 text-sm">data (50)</span>
+              <span class="text-[9px] text-slate-400 block mt-1">4 bytes + 4 padding</span>
+            </div>
             <div class="p-3 bg-blue-900/40 rounded-xl border border-blue-500/40">
               <span class="text-[10px] text-blue-300 block mb-1">مؤشر اليسار</span>
               <span class="text-sky-300 text-sm">left</span>
-              <span class="text-[9px] text-slate-400 block mt-1">8 Bytes (Pointer)</span>
-            </div>
-            <div class="p-3 bg-amber-900/40 rounded-xl border border-amber-500/40">
-              <span class="text-[10px] text-amber-300 block mb-1">البيانات</span>
-              <span class="text-amber-400 text-base">data (50)</span>
-              <span class="text-[9px] text-slate-400 block mt-1">4 Bytes (int)</span>
+              <span class="text-[9px] text-slate-400 block mt-1">8 bytes</span>
             </div>
             <div class="p-3 bg-purple-900/40 rounded-xl border border-purple-500/40">
               <span class="text-[10px] text-purple-300 block mb-1">مؤشر اليمين</span>
               <span class="text-purple-300 text-sm">right</span>
-              <span class="text-[9px] text-slate-400 block mt-1">8 Bytes (Pointer)</span>
+              <span class="text-[9px] text-slate-400 block mt-1">8 bytes</span>
             </div>
           </div>
-          <div class="mt-3 text-[11px] text-slate-300 text-right leading-relaxed pt-2 border-t border-slate-800">
-            💡 <strong>قاعدة الذهب في الـ BST:</strong> أي قيمة تشاور عليها <code class="text-sky-400">left</code> لازم تكون أصغر من <code class="text-amber-400">50</code>، وأي قيمة يشاور عليها <code class="text-purple-400">right</code> لازم تكون أكبر من <code class="text-amber-400">50</code> قطيعاً!
+          <div class="mt-3 text-[11px] text-slate-300 text-right pt-2 border-t border-slate-800">
+            💡 <strong>قاعدة الذهب في الـ BST:</strong> أي قيمة تشاور عليها <code class="text-sky-400">left</code> لازم تكون أصغر من <code class="text-amber-400">50</code>، وأي قيمة يشاور عليها <code class="text-purple-400">right</code> لازم تكون أكبر من <code class="text-amber-400">50</code> قطعيًا!
           </div>
         </div>
       </div>
@@ -481,7 +482,7 @@ struct Node {<br>
         2. بناء شجرة BST خطوة بخطوة (Slide 9 &amp; 10)
       </h2>
 
-      <div class="reading-block text-justify leading-relaxed">
+      <div class="reading-block text-justify">
         <p class="mb-3">
           تعالوا نطبق مثال السلايد رقم 9 بالحرف: 
           <strong>"Let's build a BST by inserting the numbers: 50, 30, 70, 20, 40, 60, 80"</strong>.
@@ -496,52 +497,54 @@ struct Node {<br>
       </div>
 
       <!-- SVG Tree Rendering -->
-      <div class="diagram-frame">
-        <span class="text-xs font-bold text-slate-500 block mb-3 font-mono">الشكل النهائي لشجرة الـ BST الناتجة عن إدخال [50, 30, 70, 20, 40, 60, 80]</span>
-        <svg viewBox="0 0 500 240" class="w-full max-w-lg mx-auto" style="overflow: visible;">
+      <div class="diagram-frame lesson-diagram">
+        <p class="text-sm font-bold mb-3">الشكل النهائي بعد إدخال <bdi dir="ltr" class="font-mono">50, 30, 70, 20, 40, 60, 80</bdi></p>
+        <svg viewBox="52 0 396 190" class="w-full max-w-lg mx-auto" role="img" aria-labelledby="bst-title bst-desc">
+          <title id="bst-title">شجرة بحث ثنائية متزنة من سبع عقد</title>
+          <desc id="bst-desc">الجذر 50. يساره 30 بأبناء 20 و40 من اليسار لليمين. يمينه 70 بأبناء 60 و80 من اليسار لليمين.</desc>
           <!-- Connecting Lines -->
           <!-- 50 to 30 -->
-          <line x1="250" y1="35" x2="140" y2="95" stroke="#94a3b8" stroke-width="2.5" />
+          <line x1="250" y1="35" x2="140" y2="95" class="diagram-edge" />
           <!-- 50 to 70 -->
-          <line x1="250" y1="35" x2="360" y2="95" stroke="#94a3b8" stroke-width="2.5" />
+          <line x1="250" y1="35" x2="360" y2="95" class="diagram-edge" />
           <!-- 30 to 20 -->
-          <line x1="140" y1="95" x2="80" y2="165" stroke="#94a3b8" stroke-width="2.5" />
+          <line x1="140" y1="95" x2="80" y2="165" class="diagram-edge" />
           <!-- 30 to 40 -->
-          <line x1="140" y1="95" x2="200" y2="165" stroke="#94a3b8" stroke-width="2.5" />
+          <line x1="140" y1="95" x2="200" y2="165" class="diagram-edge" />
           <!-- 70 to 60 -->
-          <line x1="360" y1="95" x2="300" y2="165" stroke="#94a3b8" stroke-width="2.5" />
+          <line x1="360" y1="95" x2="300" y2="165" class="diagram-edge" />
           <!-- 70 to 80 -->
-          <line x1="360" y1="95" x2="420" y2="165" stroke="#94a3b8" stroke-width="2.5" />
+          <line x1="360" y1="95" x2="420" y2="165" class="diagram-edge" />
 
           <!-- Root Node: 50 -->
-          <circle cx="250" cy="35" r="22" fill="#2563eb" stroke="#1d4ed8" stroke-width="2.5" />
-          <text x="250" y="41" fill="#ffffff" font-size="14" font-weight="bold" font-family="monospace" text-anchor="middle">50</text>
-          <text x="250" y="10" fill="#2563eb" font-size="11" font-weight="bold" text-anchor="middle">Root</text>
+          <circle cx="250" cy="35" r="19" fill="#1d4ed8" stroke="#1d4ed8" stroke-width="2.5" />
+          <text x="250" y="41" fill="#ffffff" font-size="19" font-weight="bold" font-family="monospace" text-anchor="middle">50</text>
+          <text x="250" y="12" class="diagram-note" font-size="14" font-weight="bold" text-anchor="middle">Root</text>
 
           <!-- Level 1 Nodes -->
           <circle cx="140" cy="95" r="20" fill="#0f766e" stroke="#115e59" stroke-width="2" />
-          <text x="140" y="100" fill="#ffffff" font-size="13" font-weight="bold" font-family="monospace" text-anchor="middle">30</text>
+          <text x="140" y="100" fill="#ffffff" font-size="19" font-weight="bold" font-family="monospace" text-anchor="middle">30</text>
 
-          <circle cx="360" cy="95" r="20" fill="#7c3aed" stroke="#6d28d9" stroke-width="2" />
-          <text x="360" y="100" fill="#ffffff" font-size="13" font-weight="bold" font-family="monospace" text-anchor="middle">70</text>
+          <circle cx="360" cy="95" r="20" fill="#6d28d9" stroke="#6d28d9" stroke-width="2" />
+          <text x="360" y="100" fill="#ffffff" font-size="19" font-weight="bold" font-family="monospace" text-anchor="middle">70</text>
 
           <!-- Level 2 Nodes -->
           <circle cx="80" cy="165" r="18" fill="#1e293b" stroke="#334155" stroke-width="2" />
-          <text x="80" y="170" fill="#f8fafc" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">20</text>
+          <text x="80" y="170" fill="#f8fafc" font-size="19" font-weight="bold" font-family="monospace" text-anchor="middle">20</text>
 
           <circle cx="200" cy="165" r="18" fill="#1e293b" stroke="#334155" stroke-width="2" />
-          <text x="200" y="170" fill="#f8fafc" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">40</text>
+          <text x="200" y="170" fill="#f8fafc" font-size="19" font-weight="bold" font-family="monospace" text-anchor="middle">40</text>
 
           <circle cx="300" cy="165" r="18" fill="#1e293b" stroke="#334155" stroke-width="2" />
-          <text x="300" y="170" fill="#f8fafc" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">60</text>
+          <text x="300" y="170" fill="#f8fafc" font-size="19" font-weight="bold" font-family="monospace" text-anchor="middle">60</text>
 
           <circle cx="420" cy="165" r="18" fill="#1e293b" stroke="#334155" stroke-width="2" />
-          <text x="420" y="170" fill="#f8fafc" font-size="12" font-weight="bold" font-family="monospace" text-anchor="middle">80</text>
+          <text x="420" y="170" fill="#f8fafc" font-size="19" font-weight="bold" font-family="monospace" text-anchor="middle">80</text>
         </svg>
 
         <div class="mt-4 text-xs text-[var(--text-muted)] text-right space-y-1">
-          <p>• الشجرة الفرعية اليسرى للـ 50 كاملة (30, 20, 40) جميع قيمها أصغر من 50.</p>
-          <p>• الشجرة الفرعية اليمنى للـ 50 كاملة (70, 60, 80) جميع قيمها أكبر من 50.</p>
+          <p>• الشجرة الفرعية اليسرى للـ 50 كاملة <bdi dir="ltr">(30, 20, 40)</bdi> جميع قيمها أصغر من 50.</p>
+          <p>• الشجرة الفرعية اليمنى للـ 50 كاملة <bdi dir="ltr">(70, 60, 80)</bdi> جميع قيمها أكبر من 50.</p>
           <p>• الخاصية دي متحققة تكرارياً (Recursively) عند كل عقدة! العقدة 30 يسارها 20 ويمينها 40.</p>
         </div>
       </div>
@@ -570,42 +573,42 @@ struct Node {<br>
               </tr>
               <tr>
                 <td class="py-2 px-2 font-mono font-bold">10</td>
-                <td class="py-2 px-2">10 &lt; 43 ← اتجه يسار الـ 43</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="nowrap">10 &lt; 43</bdi> ثم اتجه يسار الـ 43</td>
                 <td class="py-2 px-2">Left child of 43</td>
               </tr>
               <tr>
                 <td class="py-2 px-2 font-mono font-bold">79</td>
-                <td class="py-2 px-2">79 &gt; 43 ← اتجه يمين الـ 43</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="nowrap">79 &gt; 43</bdi> ثم اتجه يمين الـ 43</td>
                 <td class="py-2 px-2">Right child of 43</td>
               </tr>
               <tr>
                 <td class="py-2 px-2 font-mono font-bold">90</td>
-                <td class="py-2 px-2">90 &gt; 43 (يمين) ← 90 &gt; 79 (يمين)</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="nowrap">90 &gt; 43</bdi> (يمين) ثم <bdi dir="ltr" class="nowrap">90 &gt; 79</bdi> (يمين)</td>
                 <td class="py-2 px-2">Right child of 79</td>
               </tr>
               <tr>
                 <td class="py-2 px-2 font-mono font-bold">12</td>
-                <td class="py-2 px-2">12 &lt; 43 (يسار) ← 12 &gt; 10 (يمين)</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="nowrap">12 &lt; 43</bdi> (يسار) ثم <bdi dir="ltr" class="nowrap">12 &gt; 10</bdi> (يمين)</td>
                 <td class="py-2 px-2">Right child of 10</td>
               </tr>
               <tr>
                 <td class="py-2 px-2 font-mono font-bold">54</td>
-                <td class="py-2 px-2">54 &gt; 43 (يمين) ← 54 &lt; 79 (يسار)</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="nowrap">54 &gt; 43</bdi> (يمين) ثم <bdi dir="ltr" class="nowrap">54 &lt; 79</bdi> (يسار)</td>
                 <td class="py-2 px-2">Left child of 79</td>
               </tr>
               <tr>
                 <td class="py-2 px-2 font-mono font-bold">11</td>
-                <td class="py-2 px-2">11 &lt; 43 (يسار) ← 11 &gt; 10 (يمين) ← 11 &lt; 12 (يسار)</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="nowrap">11 &lt; 43</bdi> (يسار) ثم <bdi dir="ltr" class="nowrap">11 &gt; 10</bdi> (يمين) ثم <bdi dir="ltr" class="nowrap">11 &lt; 12</bdi> (يسار)</td>
                 <td class="py-2 px-2">Left child of 12</td>
               </tr>
               <tr>
                 <td class="py-2 px-2 font-mono font-bold">9</td>
-                <td class="py-2 px-2">9 &lt; 43 (يسار) ← 9 &lt; 10 (يسار)</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="nowrap">9 &lt; 43</bdi> (يسار) ثم <bdi dir="ltr" class="nowrap">9 &lt; 10</bdi> (يسار)</td>
                 <td class="py-2 px-2">Left child of 10</td>
               </tr>
               <tr>
                 <td class="py-2 px-2 font-mono font-bold">50</td>
-                <td class="py-2 px-2">50 &gt; 43 (يمين) ← 50 &lt; 79 (يسار) ← 50 &lt; 54 (يسار)</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="nowrap">50 &gt; 43</bdi> (يمين) ثم <bdi dir="ltr" class="nowrap">50 &lt; 79</bdi> (يسار) ثم <bdi dir="ltr" class="nowrap">50 &lt; 54</bdi> (يسار)</td>
                 <td class="py-2 px-2">Left child of 54</td>
               </tr>
             </tbody>
@@ -623,9 +626,9 @@ struct Node {<br>
         3. خوارزمية البحث في الـ BST والتعقيد الزمني (Slide 14)
       </h2>
 
-      <div class="reading-block text-justify leading-relaxed">
+      <div class="reading-block text-justify">
         <p class="mb-3">
-          ليه بنقول إن البحث في الـ BST سريع جداً؟ لأن في كل خطوة مقارنة واحدة، بنستبعد <strong>نصف الشجرة المتبقية تماماً</strong>!
+          في كل مقارنة، لو القيمة مش موجودة عند العقدة الحالية بنكمّل في فرع واحد ونستبعد الفرع التاني كله. عدد العقد اللي بنستبعدها بيتغيّر حسب شكل الشجرة.
         </p>
         <p class="mb-3">
           لو إنت واقف عند عقدة قيمتها 50 وبتدور على 20، بمجرد ما تقارن وتلاقي 20 &lt; 50، إنت متأكد 100% إن الرقم مستحيل يكون موجود في أي مكان على يمين الـ 50، فبتهمل الشجرة اليمنى بالكامل!
@@ -664,16 +667,24 @@ Node* search(Node* root, int key) {<br>
             </thead>
             <tbody class="divide-y divide-[var(--border-color)]">
               <tr>
-                <td class="py-2 px-2 font-bold text-emerald-600">Best / Average Case</td>
-                <td class="py-2 px-2 font-mono font-bold">$O(log n)$</td>
-                <td class="py-2 px-2">لما تكون الشجرة متزنة (Balanced Tree)، ارتفاع الشجرة $h = log_2 n$.</td>
+                <td class="py-2 px-2 font-bold">المطابقة عند الجذر</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="font-mono">O(1)</bdi></td>
+                <td class="py-2 px-2">بنلاقي القيمة بأول مقارنة.</td>
               </tr>
               <tr>
-                <td class="py-2 px-2 font-bold text-rose-600">Worst Case (Degenerate Tree)</td>
-                <td class="py-2 px-2 font-mono font-bold">$O(n)$</td>
-                <td class="py-2 px-2">
-                  لو دخلنا أرقام مرتبة أصلاً زي <code class="font-mono">10, 20, 30, 40</code>، كل رقم هيروح في أقصى اليمين، فالشجرة تتحول لـ <strong>Linked List مايلة (Skewed Tree)</strong> والارتفاع يبقى $n$!
-                </td>
+                <td class="py-2 px-2 font-bold">أسوأ حالة لارتفاع معيّن</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="font-mono">O(h)</bdi></td>
+                <td class="py-2 px-2">بنتتبّع مسار واحد. لو الارتفاع محسوب بالحواف، المسار فيه بحد أقصى <bdi dir="ltr">h + 1</bdi> عقدة.</td>
+              </tr>
+              <tr>
+                <td class="py-2 px-2 font-bold">شجرة متزنة</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="font-mono nowrap">O(log n)</bdi></td>
+                <td class="py-2 px-2">الارتفاع بيكبر لوغاريتميًا مع عدد العقد.</td>
+              </tr>
+              <tr>
+                <td class="py-2 px-2 font-bold">شجرة مائلة بالكامل</td>
+                <td class="py-2 px-2"><bdi dir="ltr" class="font-mono">O(n)</bdi></td>
+                <td class="py-2 px-2">إدخال <bdi dir="ltr">10, 20, 30, 40</bdi> بالترتيب يعمل سلسلة من <bdi dir="ltr">n</bdi> عقد وارتفاعها <bdi dir="ltr">n − 1</bdi> حافة.</td>
               </tr>
             </tbody>
           </table>
@@ -690,7 +701,7 @@ Node* search(Node* root, int key) {<br>
         4. عملية الحذف (Deletion) والحالات الثلاث المعقدة (Slide 13)
       </h2>
 
-      <div class="reading-block text-justify leading-relaxed">
+      <div class="reading-block text-justify">
         <p class="mb-3">
           الحذف في الـ BST هو أصعب وأهم موضوع بيسألوا فيه في الامتحانات والـ Interviews، لأن حذف عقدة ممكن يكسر توازن وروابط الشجرة كلها لو معملناهوش بحرفية.
         </p>
@@ -705,7 +716,7 @@ Node* search(Node* root, int key) {<br>
         <p class="text-xs text-[var(--text-muted)] mb-2">
           <strong>أسهل حالة:</strong> العقدة مش مرتبطة بأي أولاد تحتها (<code class="font-mono">left == nullptr &amp;&amp; right == nullptr</code>).
         </p>
-        <p class="text-xs text-[var(--text-main)] leading-relaxed">
+        <p class="text-xs text-[var(--text-main)]">
           <strong>طريقة الحل:</strong> بنمسح العقدة من الذاكرة بـ <code class="font-mono text-rose-600">delete</code> ونخلي المؤشر اللي في الأب بتاعها يشاور على <code class="font-mono text-blue-600">nullptr</code> وخلاص!
         </p>
       </div>
@@ -716,7 +727,7 @@ Node* search(Node* root, int key) {<br>
         <p class="text-xs text-[var(--text-muted)] mb-2">
           العقدة عندها ابن واحد إما في اليمين أو في الشمال.
         </p>
-        <p class="text-xs text-[var(--text-main)] leading-relaxed">
+        <p class="text-xs text-[var(--text-main)]">
           <strong>طريقة الحل (التجاوز - Bypass):</strong> زي الحذف في الـ Linked List بالظبط، بنخلي الأب بتاع العقدة يشاور مباشرة على حفيدها (ابن العقدة المراد حذفها)، وبعدين نمسح العقدة من الذاكرة.
         </p>
       </div>
@@ -727,7 +738,7 @@ Node* search(Node* root, int key) {<br>
         <p class="text-xs text-[var(--text-muted)] mb-2">
           دي الحالة اللي محتاجة تركيز عالي! العقدة عندها فرع يسار وفرع يمين، مين اللي يقعد على عرشها بعد ما نحذفها من غير ما يكسر قانون الـ BST؟
         </p>
-        <div class="text-xs text-[var(--text-main)] space-y-2 leading-relaxed bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border-color)]">
+        <div class="text-xs text-[var(--text-main)] space-y-2 bg-[var(--bg-soft)] p-3 rounded-xl border border-[var(--border-color)]">
           <p>
             عندنا حلين عبقريين:
           </p>
@@ -794,7 +805,7 @@ Node* deleteNode(Node* root, int key) {<br>
         5. المرور على الشجرة وخاصية الترتيب الصاعد (Slide 21-30)
       </h2>
 
-      <div class="reading-block text-justify leading-relaxed">
+      <div class="reading-block text-justify">
         <p class="mb-3">
           واحدة من أروع خصائص الـ BST على الإطلاق هي: 
           <strong>لما نعمل In-order Traversal (يسار ← جذر ← يمين)، عناصر الشجرة بتطبع مترتبة تصاعدياً من الأصغر للأكبر بنسبة 100%!</strong>
@@ -827,9 +838,11 @@ Node* deleteNode(Node* root, int key) {<br>
         </div>
       </div>
 
+      <p class="mb-4">الناتج على شجرة الأرقام اللي بنيناها في القسم 2 هو <bdi dir="ltr" class="font-mono">20 30 40 50 60 70 80</bdi>.</p>
+
       <!-- Trace of Slide 23/26/29 -->
       <div class="academic-quote text-xs">
-        <h4 class="font-bold text-[var(--brand-primary)] mb-1">تتبع سلايدات المحاضرة (Slide 23, 26, 29) على الشجرة:</h4>
+        <h4 class="font-bold text-[var(--brand-primary)] mb-1">مثال منفصل من السلايدات (Slide 23, 26, 29) على شجرة الحروف في المحاضرة 7:</h4>
         <p class="mb-1">• <strong>Pre-order:</strong> A, B, D, E, C, G, F</p>
         <p class="mb-1">• <strong>In-order:</strong> D, B, E, A, G, C, F</p>
         <p>• <strong>Post-order:</strong> D, E, B, G, F, C, A</p>
@@ -845,7 +858,7 @@ Node* deleteNode(Node* root, int key) {<br>
         6. هيكل بيانات الرسم البياني (Graph Data Structure)
       </h2>
 
-      <div class="reading-block text-justify leading-relaxed">
+      <div class="reading-block text-justify">
         <p class="mb-3">
           وصلنا دلوقتي للجزء الثاني في المحاضرة الثامنة: <strong>الـ Graphs</strong>. 
           الـ Graph هو أعم وأشمل هيكل بيانات غير خطي في علوم الحاسب. كل شبكات التواصل الاجتماعي (Facebook, LinkedIn)، خرائط جوجل (Google Maps)، وشبكات الإنترنت هي في حقيقتها Graphs عملاقة!
@@ -863,7 +876,7 @@ Node* deleteNode(Node* root, int key) {<br>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4 text-xs">
         <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
           <h4 class="font-bold text-sm text-[var(--text-main)] mb-2">الشجرة (Tree)</h4>
-          <p class="text-[var(--text-muted)] leading-relaxed">
+          <p class="text-[var(--text-muted)]">
             الشجرة هي حالة خاصة جداً من الجراف! 
             <strong>A Tree is a connected, undirected graph with NO cycles.</strong>
             عدد حواف الشجرة دائماً <code class="font-mono font-bold">|E| = |V| - 1</code>، وفيه مسار واحد وحيد بين أي نقطتين.
@@ -872,7 +885,7 @@ Node* deleteNode(Node* root, int key) {<br>
 
         <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
           <h4 class="font-bold text-sm text-[var(--text-main)] mb-2">الجراف العام (General Graph)</h4>
-          <p class="text-[var(--text-muted)] leading-relaxed">
+          <p class="text-[var(--text-muted)]">
             يقدر يحتوي على دورات (Cycles)، مسارات متعددة، أو حتى عقد منفصلة (Disconnected Components). مفيش مفهوم Root إجباري، ومفيش اتجاه هرمي مفروض.
           </p>
         </div>
@@ -881,20 +894,19 @@ Node* deleteNode(Node* root, int key) {<br>
       <!-- Types of Edges and Graphs -->
       <div class="academic-quote text-xs">
         <h4 class="font-bold text-[var(--brand-primary)] mb-2">أنواع الحواف والجرافات (من السلايدات الرسمية):</h4>
-        <ul class="spaced-list">
+        <ul class="spaced-list text-right" dir="rtl">
           <li>
-            <strong>1. حواف موجهة (Directed Edges):</strong> الرابط له اتجاه سهمي صريح من $u$ إلى $v$. بنكتبها كزوج مرتب: $langle u, v angle 
-eq langle v, u angle$. زي الـ Follow في تويتر (تقدر تعمل فولو لحد من غير ما هو يعملك فولو).
+            <strong>1. حواف موجهة (Directed Edges):</strong> الرابط له اتجاه سهمي صريح من <bdi dir="ltr">u</bdi> إلى <bdi dir="ltr">v</bdi>. بنكتبها كزوج مرتب <bdi dir="ltr" class="font-mono nowrap">⟨u, v⟩ ≠ ⟨v, u⟩</bdi>. زي الـ Follow في تويتر (تقدر تعمل فولو لحد من غير ما هو يعملك فولو).
           </li>
           <li>
-            <strong>2. حواف غير موجهة (Undirected Edges):</strong> الرابط متبادل وطريق رايح جاي. بنكتبها: $(u, v) = (v, u)$. زي الصداقة في فيسبوك (علاقة ثنائية).
+            <strong>2. حواف غير موجهة (Undirected Edges):</strong> الرابط متبادل وطريق رايح جاي. بنكتبها كمجموعة <bdi dir="ltr" class="font-mono">{u, v} = {v, u}</bdi>. زي الصداقة في فيسبوك (علاقة ثنائية).
           </li>
           <li>
-            <strong>3. الجراف الكامل (Complete Graph):</strong> جراف فيه رابط مباشر بين كل زوج من العقد بدون استثناء!
+            <strong>3. الجراف الكامل (Complete Graph):</strong> في الجراف الكامل البسيط كل عقدتين مختلفتين بينهم حافة، وفي النوع الموجّه فيه سهم في كل اتجاه.
             <br>
-            • في الجراف غير الموجه، عدد الحواف الكلي: <span class="font-mono font-bold text-blue-600">m = n(n - 1) / 2</span>.
+            • في الجراف غير الموجه، عدد الحواف الكلي: <bdi dir="ltr" class="font-mono font-bold text-blue-600 nowrap">m = n(n − 1) / 2</bdi>.
             <br>
-            • في الجراف الموجه، عدد الحواف الكلي: <span class="font-mono font-bold text-blue-600">m = n(n - 1)</span>.
+            • في الجراف الموجه، عدد الحواف الكلي: <bdi dir="ltr" class="font-mono font-bold text-blue-600 nowrap">m = n(n − 1)</bdi>.
           </li>
           <li>
             <strong>4. درجة العقدة (Degree):</strong> عدد الروابط المتصلة بالعقدة. في الموجه، بتتقسم لـ <strong>In-degree</strong> (عدد الأسهم الداخلة) و <strong>Out-degree</strong> (عدد الأسهم الخارجة).
@@ -912,28 +924,53 @@ eq langle v, u angle$. زي الـ Follow في تويتر (تقدر تعمل ف
         7. طرق تمثيل الرسوم البيانية برمجياً (Slide 294 &amp; 484)
       </h2>
 
-      <div class="reading-block text-justify leading-relaxed">
+      <div class="reading-block text-justify">
         <p class="mb-3">
           إزاي الكمبيوتر بيخزن شبكة علاقات معقدة في الذاكرة؟ السلايدات بتركّز على طريقتين هما الأساس في كل لغات البرمجة:
         </p>
       </div>
 
+      <figure class="diagram-frame lesson-diagram">
+        <figcaption class="mb-3 text-sm font-bold">جراف غير موجه هنستخدمه في التمثيل والتتبع</figcaption>
+        <svg viewBox="0 0 300 196" class="w-full max-w-sm mx-auto" role="img" aria-labelledby="graph-title graph-desc">
+          <title id="graph-title">جراف غير موجه من خمس عقد</title>
+          <desc id="graph-desc">العقد A و B و C و D و E. الحواف بين A و B، وبين A و C، وبين B و D، وبين C و D، وبين D و E.</desc>
+          <g class="diagram-edge" fill="none">
+            <path d="M35 98 L105 35 L185 98 L105 161 Z M185 98 H265"/>
+          </g>
+          <g fill="#1e40af">
+            <circle cx="35" cy="98" r="19"/>
+            <circle cx="105" cy="35" r="19"/>
+            <circle cx="105" cy="161" r="19"/>
+            <circle cx="185" cy="98" r="19"/>
+            <circle cx="265" cy="98" r="19"/>
+          </g>
+          <g fill="#fff" font-size="18" font-weight="bold" text-anchor="middle" dominant-baseline="central">
+            <text x="35" y="98">A</text>
+            <text x="105" y="35">B</text>
+            <text x="105" y="161">C</text>
+            <text x="185" y="98">D</text>
+            <text x="265" y="98">E</text>
+          </g>
+        </svg>
+        <p class="mt-3 text-sm">الحواف <bdi dir="ltr" class="font-mono">A–B, A–C, B–D, C–D, D–E</bdi>.</p>
+      </figure>
+
       <!-- Matrix Representation -->
       <div class="walkthrough-card">
         <h3 class="font-bold text-base text-[var(--brand-primary)] mb-2">الطريقة الأولى: مصفوفة التجاور (Adjacency Matrix - 2D Array)</h3>
-        <p class="text-xs text-[var(--text-muted)] mb-3 leading-relaxed">
-          بنحجز مصفوفة ثنائية الأبعاد حجمها <code class="font-mono font-bold">V × V</code>. لو فيه رابط بين العقدة $i$ والعقدة $j$ بنحط <code class="font-mono text-emerald-600 font-bold">1</code> (أو وزن الرابط Weight)، ولو مفيش رابط بنحط <code class="font-mono text-slate-400">0</code>.
+        <p class="text-xs text-[var(--text-muted)] mb-3">
+          بنحجز مصفوفة ثنائية الأبعاد حجمها <code class="font-mono font-bold">V × V</code>. لو فيه رابط بين العقدة <bdi dir="ltr">i</bdi> والعقدة <bdi dir="ltr">j</bdi> بنحط <code class="font-mono text-emerald-600 font-bold">1</code> (أو وزن الرابط Weight)، ولو مفيش رابط بنحط <code class="font-mono text-slate-400">0</code>.
         </p>
 
-        <div class="bg-slate-900 text-white p-3 rounded-xl font-mono text-xs overflow-x-auto mb-3" dir="ltr">
-// Adjacency Matrix for 4 vertices (0, 1, 2, 3)<br>
-int adj[4][4] = {<br>
-&nbsp;&nbsp;{0, 1, 1, 0},&nbsp;&nbsp;// Node 0 is connected to 1 and 2<br>
-&nbsp;&nbsp;{1, 0, 0, 1},&nbsp;&nbsp;// Node 1 is connected to 0 and 3<br>
-&nbsp;&nbsp;{1, 0, 0, 1},&nbsp;&nbsp;// Node 2 is connected to 0 and 3<br>
-&nbsp;&nbsp;{0, 1, 1, 0}&nbsp;&nbsp;&nbsp;// Node 3 is connected to 1 and 2<br>
-};
-        </div>
+        <pre class="walkthrough-line-code" dir="ltr" tabindex="0" role="region" aria-label="مصفوفة التجاور"><code>// Order: A, B, C, D, E
+int adj[5][5] = {
+    {0, 1, 1, 0, 0}, // A
+    {1, 0, 0, 1, 0}, // B
+    {1, 0, 0, 1, 0}, // C
+    {0, 1, 1, 0, 1}, // D
+    {0, 0, 0, 1, 0}  // E
+};</code></pre>
 
         <ul class="spaced-list text-xs text-[var(--text-muted)]">
           <li><strong>الميزة الجبارة:</strong> فحص وجود رابط بين أي نقطتين سريع جداً <code class="font-mono font-bold text-emerald-600">O(1)</code>.</li>
@@ -944,18 +981,18 @@ int adj[4][4] = {<br>
       <!-- List Representation -->
       <div class="walkthrough-card">
         <h3 class="font-bold text-base text-[var(--brand-secondary)] mb-2">الطريقة الثانية: قوائم التجاور (Adjacency List - Linked Lists)</h3>
-        <p class="text-xs text-[var(--text-muted)] mb-3 leading-relaxed">
-          بدل حجز مصفوفة مربعة مهدرة، بنعمل مصفوفة حجمها $V$ فقط، وكل خانة بتحتوي على رأس قائمة متصلة (Linked List أو <code class="font-mono">vector</code>) بتسجل فقط الجيران الحقيقيين للعقدة!
+        <p class="text-xs text-[var(--text-muted)] mb-3">
+          بدل حجز مصفوفة مربعة مهدرة، بنعمل مصفوفة حجمها <bdi dir="ltr">V</bdi> فقط، وكل خانة بتحتوي على رأس قائمة متصلة (Linked List أو <code class="font-mono">vector</code>) بتسجل فقط الجيران الحقيقيين للعقدة!
         </p>
 
-        <div class="bg-slate-900 text-white p-3 rounded-xl font-mono text-xs overflow-x-auto mb-3" dir="ltr">
-// Adjacency List using C++ vector<br>
-vector&lt;int&gt; adjList[4];<br>
-adjList[0] = {1, 2};<br>
-adjList[1] = {0, 3};<br>
-adjList[2] = {0, 3};<br>
-adjList[3] = {1, 2};
-        </div>
+        <pre class="walkthrough-line-code" dir="ltr" tabindex="0" role="region" aria-label="قوائم التجاور"><code>// A=0, B=1, C=2, D=3, E=4
+vector&lt;int&gt; adjList[5] = {
+    {1, 2},    // A: B, C
+    {0, 3},    // B: A, D
+    {0, 3},    // C: A, D
+    {1, 2, 4}, // D: B, C, E
+    {3}        // E: D
+};</code></pre>
 
         <ul class="spaced-list text-xs text-[var(--text-muted)]">
           <li><strong>الميزة الجبارة:</strong> كفاءة مثالية في استهلاك الذاكرة <code class="font-mono font-bold text-emerald-600">O(V + E)</code>؛ بنخزن الحواف الموجودة فعلياً بس.</li>
@@ -973,9 +1010,9 @@ adjList[3] = {1, 2};
         8. خوارزميات مسح الجراف: BFS و DFS بالتفصيل والتتبع
       </h2>
 
-      <div class="reading-block text-justify leading-relaxed">
+      <div class="reading-block text-justify">
         <p class="mb-3">
-          إزاي نزور كل عقد الجراف بدون ما نلف في حلقات مفرغة (Infinite Loops) لو فيه دورات (Cycles)؟ 
+          إزاي نزور كل عقد الجراف اللي ممكن نوصل لها من نقطة البداية بدون ما نلف في حلقات مفرغة (Infinite Loops) لو فيه دورات (Cycles)؟
           الحل السحري: <strong>مصفوفة الزيارة (Visited Array / boolean array)</strong>؛ أي عقدة نزورها بنعلم عليها بـ <code class="font-mono text-emerald-600">true</code>!
         </p>
       </div>
@@ -986,13 +1023,15 @@ adjList[3] = {1, 2};
         <p class="text-xs text-[var(--text-muted)] mb-2">
           <strong>السلاح السري:</strong> بتستخدم طابور <strong>Queue (FIFO)</strong>.
         </p>
-        <p class="text-xs text-[var(--text-main)] leading-relaxed mb-3">
+        <p class="text-xs text-[var(--text-main)] mb-3">
           <strong>الفكرة:</strong> استكشاف الجراف مستوى بمستوى (Level by Level)، زي موجة مياه بتنتشر من المركز للخارج. بنزور كل الجيران المباشرين الأول، بعدين جيران الجيران.
           <br>
           💡 <strong>سؤال امتحانات مضمون:</strong> الـ BFS تضمن إيجاد <strong>أقصر مسار (Shortest Path)</strong> في الجرافات غير الموزونة (Unweighted Graphs)!
         </p>
-        <div class="bg-[var(--bg-soft)] p-2.5 rounded-lg text-xs font-mono text-slate-700 dark:text-slate-300">
-          تتبع السلايد (Slide 575): BFS(A) → A B C D E
+        <div class="bg-[var(--bg-soft)] p-2.5 rounded-lg text-sm text-[var(--text-main)]">
+          <p class="mb-2">بنبدأ من <bdi dir="ltr">A</bdi> ونفحص الجيران بترتيب القوائم اللي فوق. بنعلّم العقدة بمجرد ما تدخل الطابور.</p>
+          <p>ترتيب الزيارة <bdi dir="ltr" class="font-mono">A → B → C → D → E</bdi></p>
+          <p>الطابور بعد كل زيارة <bdi dir="ltr" class="font-mono">[B, C] → [C, D] → [D] → [E] → []</bdi></p>
         </div>
       </div>
 
@@ -1002,11 +1041,12 @@ adjList[3] = {1, 2};
         <p class="text-xs text-[var(--text-muted)] mb-2">
           <strong>السلاح السري:</strong> بتستخدم مكدس <strong>Stack (LIFO)</strong> أو الاستدعاء الذاتي <strong>Recursion</strong>.
         </p>
-        <p class="text-xs text-[var(--text-main)] leading-relaxed mb-3">
+        <p class="text-xs text-[var(--text-main)] mb-3">
           <strong>الفكرة:</strong> بتغوص في أقصى عمق للمسار لحد ما توصل لطريق مسدود، وبعدين ترجع لورا خطوة خطوة (Backtracking) وتجرب مسار تاني.
         </p>
-        <div class="bg-[var(--bg-soft)] p-2.5 rounded-lg text-xs font-mono text-slate-700 dark:text-slate-300">
-          تتبع السلايد (Slide 540): DFS(A) → A B C D E
+        <div class="bg-[var(--bg-soft)] p-2.5 rounded-lg text-sm text-[var(--text-main)]">
+          <p class="mb-2">بنبدأ من <bdi dir="ltr">A</bdi> ونمشي على أول جار لسه ما اتزارش. عند <bdi dir="ltr">C</bdi> كل الجيران اتزاروا، فبنرجع لـ <bdi dir="ltr">D</bdi> ونكمّل لـ <bdi dir="ltr">E</bdi>.</p>
+          <p>ترتيب الزيارة <bdi dir="ltr" class="font-mono">A → B → D → C → E</bdi></p>
         </div>
       </div>
     </section>
@@ -1020,7 +1060,7 @@ adjList[3] = {1, 2};
         9. الكود البرمجي الكامل والمتكامل بلغة C++
       </h2>
 
-      <div class="reading-block text-justify leading-relaxed">
+      <div class="reading-block text-justify">
         <p class="mb-3">
           ده الكود البرمجي الكامل لتطبيق الـ BST والـ Graph (Adjacency List مع BFS و DFS) جاهز للتجربة والتنفيذ المباشر:
         </p>
@@ -1030,73 +1070,120 @@ adjList[3] = {1, 2};
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs font-bold text-slate-500 font-mono">Complete C++ Implementation (BST + Graph BFS/DFS)</span>
         </div>
-        <div class="walkthrough-line-code !text-xs !leading-relaxed">
-#include &lt;iostream&gt;<br>
-#include &lt;vector&gt;<br>
-#include &lt;queue&gt;<br>
-using namespace std;<br>
-<br>
-// ==================== 1. BST CLASS ====================<br>
-struct BSTNode {<br>
-&nbsp;&nbsp;int data;<br>
-&nbsp;&nbsp;BSTNode* left;<br>
-&nbsp;&nbsp;BSTNode* right;<br>
-&nbsp;&nbsp;BSTNode(int val) : data(val), left(nullptr), right(nullptr) {}<br>
-};<br>
-<br>
-class BST {<br>
-public:<br>
-&nbsp;&nbsp;BSTNode* root;<br>
-&nbsp;&nbsp;BST() : root(nullptr) {}<br>
-<br>
-&nbsp;&nbsp;BSTNode* insert(BSTNode* node, int val) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;if (!node) return new BSTNode(val);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;if (val &lt; node-&gt;data) node-&gt;left = insert(node-&gt;left, val);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;else if (val &gt; node-&gt;data) node-&gt;right = insert(node-&gt;right, val);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;return node;<br>
-&nbsp;&nbsp;}<br>
-<br>
-&nbsp;&nbsp;void inOrder(BSTNode* node) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;if (!node) return;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;inOrder(node-&gt;left);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; node-&gt;data &lt;&lt; " ";<br>
-&nbsp;&nbsp;&nbsp;&nbsp;inOrder(node-&gt;right);<br>
-&nbsp;&nbsp;}<br>
-};<br>
-<br>
-// ==================== 2. GRAPH CLASS ====================<br>
-class Graph {<br>
-&nbsp;&nbsp;int V;<br>
-&nbsp;&nbsp;vector&lt;vector&lt;int&gt;&gt; adj;<br>
-public:<br>
-&nbsp;&nbsp;Graph(int vertices) : V(vertices), adj(vertices) {}<br>
-<br>
-&nbsp;&nbsp;void addEdge(int u, int v) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;adj[u].push_back(v);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;adj[v].push_back(u);&nbsp;// Undirected Graph<br>
-&nbsp;&nbsp;}<br>
-<br>
-&nbsp;&nbsp;void BFS(int start) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;vector&lt;bool&gt; visited(V, false);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;queue&lt;int&gt; q;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;visited[start] = true;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;q.push(start);<br>
-<br>
-&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; "BFS Trace: ";<br>
-&nbsp;&nbsp;&nbsp;&nbsp;while (!q.empty()) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int u = q.front(); q.pop();<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; u &lt;&lt; " ";<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (int v : adj[u]) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (!visited[v]) {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;visited[v] = true;<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;q.push(v);<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; "\n";<br>
-&nbsp;&nbsp;}<br>
+        <p class="mb-3 text-sm">المثال بيستخدم <bdi dir="ltr" class="font-mono">unique_ptr</bdi> عشان كل عقدة تملك أبناءها والذاكرة تتحرر تلقائيًا. ترتيب الجيران هو ترتيب إضافة الحواف.</p>
+        <pre id="bst-graph-code" class="walkthrough-line-code" dir="ltr" tabindex="0" role="region" aria-label="مثال سي بلس بلس، قابل للتمرير"><code>#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;queue&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+struct BSTNode {
+    int data;
+    unique_ptr&lt;BSTNode&gt; left;
+    unique_ptr&lt;BSTNode&gt; right;
+
+    explicit BSTNode(int value) : data(value) {}
 };
-        </div>
+
+class BST {
+    unique_ptr&lt;BSTNode&gt; root;
+
+    static void insert(unique_ptr&lt;BSTNode&gt;&amp; node, int value) {
+        if (!node) {
+            node = make_unique&lt;BSTNode&gt;(value);
+        } else if (value &lt; node-&gt;data) {
+            insert(node-&gt;left, value);
+        } else if (value &gt; node-&gt;data) {
+            insert(node-&gt;right, value);
+        }
+    }
+
+    static void inOrder(const BSTNode* node) {
+        if (!node) return;
+        inOrder(node-&gt;left.get());
+        cout &lt;&lt; ' ' &lt;&lt; node-&gt;data;
+        inOrder(node-&gt;right.get());
+    }
+
+public:
+    void insert(int value) { insert(root, value); }
+    void printInOrder() const {
+        cout &lt;&lt; "BST In-order:";
+        inOrder(root.get());
+        cout &lt;&lt; '\n';
+    }
+};
+
+class Graph {
+    vector&lt;vector&lt;int&gt;&gt; adj;
+
+    string labels;
+
+    void dfsVisit(int u, vector&lt;bool&gt;&amp; visited) const {
+        visited[u] = true;
+        cout &lt;&lt; ' ' &lt;&lt; labels[u];
+        for (int v : adj[u]) {
+            if (!visited[v]) dfsVisit(v, visited);
+        }
+    }
+
+public:
+    explicit Graph(const string&amp; names) : adj(names.size()), labels(names) {}
+
+    void addEdge(int u, int v) {
+        adj[u].push_back(v);
+        adj[v].push_back(u); // Undirected edge
+    }
+
+    void BFS(int start) const {
+        vector&lt;bool&gt; visited(adj.size(), false);
+        queue&lt;int&gt; pending;
+        visited[start] = true;
+        pending.push(start);
+
+        cout &lt;&lt; "BFS:";
+        while (!pending.empty()) {
+            int u = pending.front();
+            pending.pop();
+            cout &lt;&lt; ' ' &lt;&lt; labels[u];
+            for (int v : adj[u]) {
+                if (!visited[v]) {
+                    visited[v] = true;
+                    pending.push(v);
+                }
+            }
+        }
+        cout &lt;&lt; '\n';
+    }
+
+    void DFS(int start) const {
+        vector&lt;bool&gt; visited(adj.size(), false);
+        cout &lt;&lt; "DFS:";
+        dfsVisit(start, visited);
+        cout &lt;&lt; '\n';
+    }
+};
+
+int main() {
+    BST tree;
+    for (int value : {50, 30, 70, 20, 40, 60, 80}) tree.insert(value);
+    tree.printInOrder();
+
+    // A = 0, B = 1, C = 2, D = 3, E = 4. Visit neighbors in insertion order.
+    Graph graph("ABCDE");
+    graph.addEdge(0, 1); // A-B
+    graph.addEdge(0, 2); // A-C
+    graph.addEdge(1, 3); // B-D
+    graph.addEdge(2, 3); // C-D
+    graph.addEdge(3, 4); // D-E
+    graph.BFS(0);
+    graph.DFS(0);
+}</code></pre>
+        <h3 class="mt-4 mb-2 text-sm font-bold">ناتج التشغيل</h3>
+        <pre id="bst-graph-output" class="walkthrough-line-code program-output" dir="ltr">BST In-order: 20 30 40 50 60 70 80
+BFS: A B C D E
+DFS: A B D C E</pre>
       </div>
     </section>
 
@@ -1117,30 +1204,31 @@ public:<br>
 
         <div class="text-left font-mono">
           <span class="text-xs text-[var(--text-muted)] block">النتيجة الحالية:</span>
-          <span id="quizScoreDisplay" class="text-xl font-bold text-emerald-600">0 / 16</span>
+          <span id="quizScoreDisplay" dir="ltr" class="text-xl font-bold text-emerald-600">0 / 16</span>
         </div>
       </div>
 
       <!-- Quiz Category Filter Buttons -->
       <div class="flex flex-wrap gap-2 mb-6 text-xs">
-        <button class="quiz-filter-btn px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-blue-600 text-white font-bold" data-quiz-filter="all">
+        <button class="quiz-filter-btn px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-blue-600 text-white font-bold" data-quiz-filter="all" aria-pressed="true">
           جميع الأسئلة (16)
         </button>
-        <button class="quiz-filter-btn px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] font-medium" data-quiz-filter="bst-concepts">
+        <button class="quiz-filter-btn px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] font-medium" data-quiz-filter="bst-concepts" aria-pressed="false">
           مفاهيم BST (4)
         </button>
-        <button class="quiz-filter-btn px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] font-medium" data-quiz-filter="bst-ops">
+        <button class="quiz-filter-btn px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] font-medium" data-quiz-filter="bst-ops" aria-pressed="false">
           عمليات BST والحذف (4)
         </button>
-        <button class="quiz-filter-btn px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] font-medium" data-quiz-filter="graphs-intro">
+        <button class="quiz-filter-btn px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] font-medium" data-quiz-filter="graphs-intro" aria-pressed="false">
           مفاهيم الـ Graphs (4)
         </button>
-        <button class="quiz-filter-btn px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] font-medium" data-quiz-filter="traversals">
+        <button class="quiz-filter-btn px-3 py-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] font-medium" data-quiz-filter="traversals" aria-pressed="false">
           تمثيل ومسح الجراف (4)
         </button>
       </div>
 
       <!-- Quiz Container -->
+      <p id="quizStatus" class="sr-only" role="status" aria-atomic="true"></p>
       <div id="quizContainer" class="space-y-6">
         <!-- Rendered dynamically by JavaScript -->
       </div>
@@ -1203,7 +1291,7 @@ public:<br>
         id: 3,
         category: "bst-concepts",
         partLabel: "التعقيد الزمني للبحث",
-        question: "What is the average time complexity for searching an element in a balanced BST?",
+        question: "What is the worst-case time complexity for searching an element in a balanced BST?",
         options: [
           "O(1)",
           "O(log n)",
@@ -1211,7 +1299,7 @@ public:<br>
           "O(n log n)"
         ],
         correct: 1,
-        explanation: "في الشجرة المتزنة، كل خطوة بحث بتقسم المساحة المتبقية للنصف تماماً، وبالتالي التعقيد الزمني المتوسط هو O(log n)."
+        explanation: "البحث بيتبع مسار واحد وبيستبعد فرع بحجم متغيّر عند كل خطوة. ارتفاع الشجرة المتزنة O(log n)، فده حد أسوأ حالة. لو المفتاح عند الجذر، مقارنة واحدة تكفي O(1)."
       },
       {
         id: 4,
@@ -1416,69 +1504,75 @@ public:<br>
         ? quizQuestions 
         : quizQuestions.filter(q => q.category === currentQuizFilter);
 
-      container.innerHTML = filteredQuestions.map(q => {
-        const userAnswer = userAnswers[q.id];
-        const isAnswered = userAnswer !== undefined;
+      container.innerHTML = filteredQuestions.map(renderQuestion).join("");
+    }
 
-        const optionsHtml = q.options.map((opt, idx) => {
-          let btnClass = "border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)]";
-          let badge = "";
+    function renderQuestion(q) {
+      const userAnswer = userAnswers[q.id];
+      const isAnswered = userAnswer !== undefined;
 
-          if (isAnswered) {
-            if (idx === q.correct) {
-              btnClass = "border-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold";
-              badge = '<span class="text-emerald-500 font-bold ml-2">✓ الإجابة الصحيحة</span>';
-            } else if (idx === userAnswer) {
-              btnClass = "border-2 border-rose-500 bg-rose-500/10 text-rose-700 dark:text-rose-300 font-bold";
-              badge = '<span class="text-rose-500 font-bold ml-2">✗ إجابتك</span>';
-            } else {
-              btnClass = "border border-[var(--border-color)] opacity-60 text-[var(--text-muted)]";
-            }
+      const optionsHtml = q.options.map((opt, idx) => {
+        let btnClass = "border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)]";
+        let badge = "";
+
+        if (isAnswered) {
+          if (idx === q.correct) {
+            btnClass = "border-2 border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold";
+            badge = '<span class="text-emerald-500 font-bold ml-2">✓ الإجابة الصحيحة</span>';
+          } else if (idx === userAnswer) {
+            btnClass = "border-2 border-rose-500 bg-rose-500/10 text-rose-700 dark:text-rose-300 font-bold";
+            badge = '<span class="text-rose-500 font-bold ml-2">✗ إجابتك</span>';
+          } else {
+            btnClass = "border border-[var(--border-color)] opacity-60 text-[var(--text-muted)]";
           }
-
-          return `
-            <button class="quiz-option w-full p-3 rounded-xl text-xs sm:text-sm text-left flex items-center justify-between gap-2 font-mono ${btnClass}" 
-                    data-qid="${q.id}" data-opt="${idx}" dir="ltr" ${isAnswered ? 'disabled' : ''}>
-              <span>${opt}</span>
-              ${badge}
-            </button>
-          `;
-        }).join("");
-
-        const feedbackHtml = isAnswered ? `
-          <div class="mt-3 p-3 rounded-xl text-xs leading-relaxed ${userAnswer === q.correct ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-200' : 'bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-200'}">
-            <strong>${userAnswer === q.correct ? '🎉 إجابة ممتازة وصحيحة!' : '⚠️ إجابة غير دقيقة.'}</strong>
-            <p class="mt-1">${q.explanation}</p>
-          </div>
-        ` : '';
+        }
 
         return `
-          <article class="reading-card !mb-0 border border-[var(--border-color)]">
-            <div class="flex items-center justify-between gap-2 mb-3">
-              <span class="rule-badge">${q.partLabel}</span>
-              <span class="text-xs font-mono text-[var(--text-muted)]" dir="ltr">Question #${q.id}</span>
-            </div>
-            <h3 class="text-base sm:text-lg font-bold mb-4 text-left font-sans" dir="ltr">${q.question}</h3>
-            <div class="space-y-2.5">
-              ${optionsHtml}
-            </div>
-            ${feedbackHtml}
-          </article>
+          <button type="button" class="quiz-option w-full p-3 rounded-xl text-xs sm:text-sm text-left flex items-center justify-between gap-2 font-mono ${btnClass}"
+                  data-qid="${q.id}" data-opt="${idx}" dir="ltr" ${isAnswered ? `aria-disabled="true" tabindex="${idx === userAnswer ? 0 : -1}"` : ""}>
+            <span>${opt}</span>
+            ${badge}
+          </button>
         `;
       }).join("");
 
-      container.querySelectorAll(".quiz-option").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const qid = parseInt(btn.getAttribute("data-qid"), 10);
-          const optIdx = parseInt(btn.getAttribute("data-opt"), 10);
-          userAnswers[qid] = optIdx;
-          updateScoreDisplay();
-          renderQuiz();
-        });
-      });
+      const feedbackHtml = isAnswered ? `
+        <div class="quiz-feedback mt-3 p-3 rounded-xl text-xs ${userAnswer === q.correct ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-200' : 'bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-200'}">
+          <strong>${userAnswer === q.correct ? '🎉 إجابة ممتازة وصحيحة!' : '⚠️ إجابة غير دقيقة.'}</strong>
+          <p class="mt-1">${q.explanation}</p>
+        </div>
+      ` : '';
+
+      return `
+        <article class="reading-card !mb-0 border border-[var(--border-color)]">
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="rule-badge">${q.partLabel}</span>
+            <span class="text-xs font-mono text-[var(--text-muted)]" dir="ltr">Question #${q.id}</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-bold mb-4 text-left font-sans" dir="ltr">${q.question}</h3>
+          <div class="space-y-2.5">
+            ${optionsHtml}
+          </div>
+          ${feedbackHtml}
+        </article>
+      `;
     }
 
-    function updateScoreDisplay() {
+    document.getElementById("quizContainer").addEventListener("click", event => {
+      const option = event.target.closest(".quiz-option");
+      if (!option) return;
+      const id = Number(option.dataset.qid);
+      if (userAnswers[id] !== undefined) return;
+
+      const question = quizQuestions.find(q => q.id === id);
+      userAnswers[id] = Number(option.dataset.opt);
+      window.updateDsQuizCard(option.closest("article"), renderQuestion(question), option);
+      const correct = userAnswers[id] === question.correct;
+      const result = correct ? "إجابة صحيحة." : "إجابة غير صحيحة.";
+      updateScoreDisplay(`السؤال ${id}. ${result}`);
+    });
+
+    function updateScoreDisplay(message) {
       let score = 0;
       quizQuestions.forEach(q => {
         if (userAnswers[q.id] === q.correct) score++;
@@ -1487,6 +1581,7 @@ public:<br>
       if (scoreEl) {
         scoreEl.textContent = `${score} / ${quizQuestions.length}`;
       }
+      document.getElementById("quizStatus").textContent = `${message} الدرجة ${score} من ${quizQuestions.length}.`;
     }
 
     function applyReadingTypography() {
@@ -1540,70 +1635,17 @@ public:<br>
       document.body.classList.add("theme-dark");
     });
 
-    // TOC Drawer handling
-    const sidebarToc = document.getElementById("sidebar-toc");
-    const tocOverlay = document.getElementById("toc-overlay");
-    document.getElementById("btn-open-toc").addEventListener("click", () => {
-      sidebarToc.classList.add("open");
-      tocOverlay.classList.add("show");
-    });
-    document.getElementById("btn-close-toc").addEventListener("click", () => {
-      sidebarToc.classList.remove("open");
-      tocOverlay.classList.remove("show");
-    });
-    tocOverlay.addEventListener("click", () => {
-      sidebarToc.classList.remove("open");
-      tocOverlay.classList.remove("show");
-    });
-    sidebarToc.querySelectorAll("a").forEach(a => {
-      a.addEventListener("click", () => {
-        sidebarToc.classList.remove("open");
-        tocOverlay.classList.remove("show");
-      });
-    });
-
-    // Filter pills for parts
-    document.querySelectorAll(".chapter-pill").forEach(pill => {
-      pill.addEventListener("click", () => {
-        document.querySelectorAll(".chapter-pill").forEach(p => p.classList.remove("active"));
-        pill.classList.add("active");
-
-        const target = pill.getAttribute("data-target");
-        const sections = {
-          part1: document.getElementById("part1"),
-          part2: document.getElementById("part2"),
-          part3: document.getElementById("part3"),
-          part4: document.getElementById("part4"),
-          part5: document.getElementById("part5"),
-          part6: document.getElementById("part6"),
-          part7: document.getElementById("part7"),
-          part8: document.getElementById("part8"),
-          part9: document.getElementById("part9"),
-          quiz: document.getElementById("section-quiz")
-        };
-
-        if (target === "all") {
-          Object.values(sections).forEach(sec => sec && sec.classList.remove("hidden"));
-        } else {
-          Object.entries(sections).forEach(([key, sec]) => {
-            if (!sec) return;
-            if (key === target) sec.classList.remove("hidden");
-            else sec.classList.add("hidden");
-          });
-        }
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-    });
-
     // Quiz category filters
     document.querySelectorAll(".quiz-filter-btn").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".quiz-filter-btn").forEach(b => {
           b.classList.remove("bg-blue-600", "text-white", "font-bold");
           b.classList.add("bg-[var(--bg-card)]");
+          b.setAttribute("aria-pressed", "false");
         });
         btn.classList.add("bg-blue-600", "text-white", "font-bold");
         btn.classList.remove("bg-[var(--bg-card)]");
+        btn.setAttribute("aria-pressed", "true");
         currentQuizFilter = btn.getAttribute("data-quiz-filter");
         renderQuiz();
       });
@@ -1611,7 +1653,7 @@ public:<br>
 
     document.getElementById("btnResetQuiz").addEventListener("click", () => {
       userAnswers = {};
-      updateScoreDisplay();
+      updateScoreDisplay("تمت إعادة الكويز.");
       renderQuiz();
     });
 
@@ -1629,6 +1671,7 @@ public:<br>
   <script src="../../js/shared/study-state.js"></script>
   <script src="../../js/study-modules.js"></script>
   <script src="../../js/study-session.js"></script>
+  <script src="../../js/ds-lesson-controls.js"></script>
   <script src="../../js/study-shell.js"></script>
   <script src="../../js/shared/quiz-choices.js"></script>
 </body>
