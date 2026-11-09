@@ -229,44 +229,51 @@ async function register({ scenario: testScenario }) {
     const simBadge = page.locator('#arr-sim-badge');
     const simReset = page.locator('#arr-sim-reset');
 
-    assert.equal(await simBadge.innerText(), 'خطوة 1/5');
+    assert.equal(await simBadge.innerText(), 'خطوة 1/6');
     assert((await simDisplay.innerText()).includes('top = -1'), 'Stage 1 shows empty stack with top = -1');
 
     // Step forward to Stage 2: push 10, 20, 30
     await simNext.click();
-    assert.equal(await simBadge.innerText(), 'خطوة 2/5');
+    assert.equal(await simBadge.innerText(), 'خطوة 2/6');
     assert((await simDisplay.innerText()).includes('top = 2'), 'Stage 2 shows top = 2');
 
     // Step forward to Stage 3: push 40, 50 -> full
     await simNext.click();
-    assert.equal(await simBadge.innerText(), 'خطوة 3/5');
+    assert.equal(await simBadge.innerText(), 'خطوة 3/6');
     assert((await simDisplay.innerText()).includes('top = 4'), 'Stage 3 shows full stack with top = 4');
 
     // Step forward to Stage 4: push 60 -> overflow
     await simNext.click();
-    assert.equal(await simBadge.innerText(), 'خطوة 4/5');
+    assert.equal(await simBadge.innerText(), 'خطوة 4/6');
     assert((await simDisplay.innerText()).includes('Stack Overflow'), 'Stage 4 shows Stack Overflow!');
 
     // Step forward to Stage 5: pop twice -> top = 2
     await simNext.click();
-    assert.equal(await simBadge.innerText(), 'خطوة 5/5');
+    assert.equal(await simBadge.innerText(), 'خطوة 5/6');
     assert((await simDisplay.innerText()).includes('pop'), 'Stage 5 shows pop operations');
 
     // Step backward with simPrev
     await simPrev.click();
-    assert.equal(await simBadge.innerText(), 'خطوة 4/5');
+    assert.equal(await simBadge.innerText(), 'خطوة 4/6');
+
+    await simNext.click();
+    await simNext.click();
+    assert.equal(await simBadge.innerText(), 'خطوة 6/6');
+    assert.match(await simDisplay.innerText(), /Stack Underflow/);
+    assert.match(await simDisplay.innerText(), /top = -1/);
+    assert.equal(await simDisplay.getByText('(فارغ)', { exact: true }).count(), 5);
 
     // Test direct tab click for stage 1 (index 0)
     const stage1Tab = page.locator('.arr-sim-tab[data-arr-stage="0"]');
     await stage1Tab.click();
-    assert.equal(await simBadge.innerText(), 'خطوة 1/5');
+    assert.equal(await simBadge.innerText(), 'خطوة 1/6');
 
     // Test reset button
     if (await simReset.count()) {
       await simNext.click();
-      assert.equal(await simBadge.innerText(), 'خطوة 2/5');
+      assert.equal(await simBadge.innerText(), 'خطوة 2/6');
       await simReset.click();
-      assert.equal(await simBadge.innerText(), 'خطوة 1/5');
+      assert.equal(await simBadge.innerText(), 'خطوة 1/6');
     }
 
     // Verify touch target sizes for mobile accessibility (WCAG 2.5.8 >= 24px)
@@ -278,11 +285,18 @@ async function register({ scenario: testScenario }) {
     await simNext.focus();
     assert.equal(await page.evaluate(() => document.activeElement.id), 'arr-sim-next');
     await page.keyboard.press('Enter');
-    assert.equal(await simBadge.innerText(), 'خطوة 2/5');
+    assert.equal(await simBadge.innerText(), 'خطوة 2/6');
 
     // Verify static walkthrough alternative exists for screen readers / reduced motion
     const staticWalkthrough = page.locator('#static-stack-walkthrough, .static-walkthrough');
     assert(await staticWalkthrough.count() >= 1, 'Static walkthrough alternative is present in DOM');
+    assert.match(await staticWalkthrough.innerText(), /Stack Underflow/);
+
+    for (const theme of ['light', 'reading', 'dark']) {
+      await page.evaluate(mode => window.PortalTheme.setTheme(mode), theme);
+      const contrast = await measureElementContrast(page, '#arr-sim-display .bg-slate-100 span');
+      assert(contrast >= 4.5, `Empty stack labels meet 4.5:1 in ${theme}, got ${contrast}`);
+    }
   });
 
   // 5. Acceptance 5: Quiz interactive states, reset, check states, responsive 390px / 1440px
@@ -328,7 +342,12 @@ async function register({ scenario: testScenario }) {
     // Answer Question 1 (LIFO is correct)
     const q1Card = allCards.first();
     const correctOpt = q1Card.locator('.quiz-option:has-text("LIFO")');
-    await correctOpt.click();
+    await correctOpt.focus();
+    await page.keyboard.press('Enter');
+    const feedback = q1Card.locator('.quiz-explanation');
+    assert.equal(await feedback.evaluate(el => document.activeElement === el), true, 'Keyboard focus moves to the answer explanation');
+    await page.keyboard.press('Tab');
+    assert.equal(await allCards.nth(1).locator('.quiz-option').first().evaluate(el => document.activeElement === el), true, 'Tab moves to the next question');
 
     // Score display updates
     const scoreDisplay = page.locator('#quizScoreDisplay');
@@ -383,52 +402,27 @@ async function register({ scenario: testScenario }) {
     await page.setViewportSize({ width: 1440, height: 900 });
     await go('study/ds/lecture-4.html');
 
-    // 1. Reading / Sepia Mode (default)
-    await page.screenshot({ path: path.join(output, 'ds4-desktop-reading.png'), fullPage: false });
+    const main = await page.locator('main').boundingBox();
+    assert(main.width <= 860, `Desktop lesson width stays within 860px, got ${main.width}`);
+    assert(Math.abs(main.x - (1440 - main.width) / 2) <= 1, 'Lesson is centered');
 
-    // 2. Light Mode
-    const btnWhite = page.locator('#btnThemeWhite');
-    if (await btnWhite.count()) {
-      await btnWhite.click();
-      await page.waitForTimeout(100);
-      await page.screenshot({ path: path.join(output, 'ds4-desktop-light.png'), fullPage: false });
+    const themeButtons = { reading: '#btnThemeSepia', light: '#btnThemeWhite', dark: '#btnThemeDark' };
+    for (const [device, viewport] of Object.entries({
+      desktop: { width: 1440, height: 900 },
+      mobile: { width: 390, height: 844 }
+    })) {
+      await page.setViewportSize(viewport);
+      await go('study/ds/lecture-4.html');
+
+      for (const [theme, selector] of Object.entries(themeButtons)) {
+        await page.locator(selector).click();
+        assert.equal(await page.locator('html').getAttribute('data-theme'), theme);
+        await page.screenshot({
+          path: path.join(output, `ds4-${device}-${theme}.png`),
+          animations: 'disabled'
+        });
+      }
     }
-
-    // 3. Dark Mode
-    const btnDark = page.locator('#btnThemeDark');
-    if (await btnDark.count()) {
-      await btnDark.click();
-      await page.waitForTimeout(100);
-      await page.screenshot({ path: path.join(output, 'ds4-desktop-dark.png'), fullPage: false });
-    }
-
-    // Mobile Viewport (390px)
-    await page.setViewportSize({ width: 390, height: 844 });
-    await go('study/ds/lecture-4.html');
-
-    // 4. Mobile Reading / Sepia Mode
-    await page.screenshot({ path: path.join(output, 'ds4-mobile-reading.png'), fullPage: false });
-
-    // 5. Mobile Light Mode
-    if (await btnWhite.count()) {
-      await btnWhite.click();
-      await page.waitForTimeout(100);
-      await page.screenshot({ path: path.join(output, 'ds4-mobile-light.png'), fullPage: false });
-    }
-
-    // 6. Mobile Dark Mode
-    if (await btnDark.count()) {
-      await btnDark.click();
-      await page.waitForTimeout(100);
-      await page.screenshot({ path: path.join(output, 'ds4-mobile-dark.png'), fullPage: false });
-    }
-
-    assert(fs.existsSync(path.join(output, 'ds4-desktop-reading.png')), 'Desktop reading screenshot captured');
-    assert(fs.existsSync(path.join(output, 'ds4-desktop-light.png')), 'Desktop light screenshot captured');
-    assert(fs.existsSync(path.join(output, 'ds4-desktop-dark.png')), 'Desktop dark screenshot captured');
-    assert(fs.existsSync(path.join(output, 'ds4-mobile-reading.png')), 'Mobile reading screenshot captured');
-    assert(fs.existsSync(path.join(output, 'ds4-mobile-light.png')), 'Mobile light screenshot captured');
-    assert(fs.existsSync(path.join(output, 'ds4-mobile-dark.png')), 'Mobile dark screenshot captured');
   });
 }
 

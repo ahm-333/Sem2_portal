@@ -438,29 +438,28 @@ async function register({ scenario: testScenario }) {
 
   // Test 7: WCAG color contrast and keyboard navigation audit across themes
   await testScenario('wcag-contrast-and-keyboard-navigation', async ({ page, go }) => {
+    await go('study/db/lesson.html?lecture=2');
+    await page.locator('.topic-block-wrapper').first().waitFor();
+
     for (const theme of ['light', 'dark', 'reading']) {
-      await go('study/db/lesson.html?lecture=2');
+      // Start each pass in the topic view even after the previous pass opened practice.
+      await page.locator('#view-btn-topics').click();
       await page.locator('.topic-block-wrapper').first().waitFor();
 
-      await page.evaluate(t => {
-        if (window.PortalTheme && typeof window.PortalTheme.set === 'function') {
-          window.PortalTheme.set(t);
-        } else {
-          document.documentElement.setAttribute('data-theme', t);
-          if (t === 'dark') document.documentElement.classList.add('dark');
-          else document.documentElement.classList.remove('dark');
-        }
-      }, theme);
+      await page.evaluate(mode => window.PortalTheme.setTheme(mode), theme);
+      assert.equal(await page.locator('html').getAttribute('data-theme'), theme);
 
       await page.locator('#view-btn-practice').click();
+      const topicTab = page.locator('[data-practice-group-tab="topic"]');
+      await topicTab.click();
       await page.locator('.topic-practice-card').first().waitFor();
+      assert.equal(await page.locator('#full-quiz-view').isVisible(), false);
 
       // Run contrast audit on practice hub
       const issues = await page.evaluate(auditActionContrast, '#practice-hub');
       assert.deepEqual(issues, [], `Action contrast meets WCAG AA in ${theme} theme`);
 
       // Keyboard tab cycle through group tabs
-      const topicTab = page.locator('[data-practice-group-tab="topic"]');
       await topicTab.focus();
       assert.equal(await topicTab.evaluate(el => el === document.activeElement), true);
 

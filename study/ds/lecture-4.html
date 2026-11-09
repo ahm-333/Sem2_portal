@@ -10,7 +10,7 @@
   </script>
   <script defer src="../../js/analytics.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>المحاضرة الرابعة الشاملة (Lecture 4) — المكدس (Stack): الأجزاء الستة كاملة (Array & Linked List)</title>
+  <title>المحاضرة الرابعة: المكدّس (Stack)</title>
   <link href="../../css/fonts/study/cb180f1c5ed1.css" rel="stylesheet">
   <link rel="stylesheet" href="../../css/fonts/fonts.css">
   <link rel="stylesheet" href="../../css/study-shell.css">
@@ -94,6 +94,24 @@
     .reading-container {
       max-width: 860px;
       margin: 0 auto;
+    }
+
+    main.reading-container {
+      padding-inline: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .arr-sim-stages {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .arr-sim-cells {
+      max-width: 100%;
+    }
+
+    #arr-sim-display .arr-sim-empty {
+      color: #475569;
     }
 
     .compact-header {
@@ -444,7 +462,8 @@
       touch-action: manipulation;
     }
     #arr-sim-prev:focus-visible, #arr-sim-next:focus-visible, #arr-sim-reset:focus-visible, .arr-sim-tab:focus-visible,
-    #btn-open-toc:focus-visible, #btn-close-toc:focus-visible {
+    #btn-open-toc:focus-visible, #btn-close-toc:focus-visible, .quiz-option:focus-visible,
+    .quiz-explanation:focus {
       outline: 3px solid #2563eb;
       outline-offset: 2px;
     }
@@ -634,23 +653,13 @@
 
   <!-- Main Eye-Friendly Centered Container -->
   <div id="main-container" class="py-6 sm:py-10">
-    <main class="space-y-12 reading-content">
+    <main class="reading-container space-y-12 reading-content">
 
       <!-- Hero Banner Card -->
       <section class="card-surface p-5 sm:p-9 border-t-8 border-t-sky-900 space-y-5">
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-200 text-amber-950 border border-amber-500">📖 وضع القراءة الورقي المريح للعين</span>
-          <span class="px-3 py-1 rounded-full text-xs font-black bg-sky-200 text-sky-950 border border-sky-500">🎨 تغطية 100% لجميع شرائح المحاضرة الـ 36</span>
-          <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-200 text-emerald-950 border border-emerald-500">🔍 تفكيك كل كود سطر بسطر وكلمة بكلمة</span>
-        </div>
-
         <h2 class="text-xl sm:text-3xl font-black text-slate-950 leading-snug">
-          المحاضرة الرابعة الشاملة (Lecture 4) — المكدس (Stack): من الصفر إلى الاحتراف (Array &amp; Linked List)
+          المحاضرة الرابعة: المكدّس (<bdi>Stack</bdi>)
         </h2>
-
-        <p class="font-bold text-slate-900">
-          تم تصميم هذا المرجع التفاعلي بنفس أسلوب وطريقة موقع القوائم المتصلة (<span class="inline-code">Linked Lists</span>) بالمللي، ليشرح كل كلمة وكل رسمة وكل سطر برمجي في شرائح المحاضرة الـ 36 بدون ترك أي تفصيلة، مقسماً إلى <strong>6 أجزاء متكاملة</strong>:
-        </p>
 
         <!-- Agenda Box from Slide 2 -->
         <div class="p-4 sm:p-5 rounded-2xl bg-[#f5efe2] border-2 border-[#b8a98e] space-y-2">
@@ -708,7 +717,7 @@
 
         <!-- Section 1: Classification of Data Structure (Slides 3 & 4) -->
         <section id="sec-1" class="card-surface p-5 sm:p-9 space-y-6 scroll-mt-20">
-          <div class="flex items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
             <div class="flex items-center gap-3">
               <span class="w-9 h-9 rounded-xl bg-sky-900 text-white font-black flex items-center justify-center text-base shrink-0">1</span>
               <h3 class="text-lg sm:text-2xl font-black text-slate-950">
@@ -732,7 +741,7 @@
           <div class="my-6 p-4 sm:p-6 rounded-2xl bg-[#faf5e8] border-2 border-[#b8a98e] shadow-inner">
             <div class="text-xs sm:text-sm font-black text-sky-950 mb-5 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2.5">
               <span>🎨</span>
-              <span>رسمة الشريحة 4 بالمللي: شجرة تصنيف هياكل البيانات (Classification of Data Structure)</span>
+              <span>رسم الشريحة 4: شجرة تصنيف هياكل البيانات (Classification of Data Structure)</span>
             </div>
 
             <div class="flex flex-col items-center space-y-4" dir="ltr">
@@ -775,7 +784,7 @@
 
         <!-- Section 2: Basic Idea & ADT (Slides 5 & 6) -->
         <section id="sec-2" class="card-surface p-5 sm:p-9 space-y-6 scroll-mt-20">
-          <div class="flex items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
             <div class="flex items-center gap-3">
               <span class="w-9 h-9 rounded-xl bg-sky-900 text-white font-black flex items-center justify-center text-base shrink-0">2</span>
               <h3 class="text-lg sm:text-2xl font-black text-slate-950">الفكرة الأساسية للـ Stack ويعني إيه ADT؟ (Slides 5 &amp; 6)</h3>
@@ -809,7 +818,7 @@
 
         <!-- Section 3: 4.1 What is a Stack & LIFO (Slide 7) -->
         <section id="sec-3" class="card-surface p-5 sm:p-9 space-y-6 scroll-mt-20">
-          <div class="flex items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
             <div class="flex items-center gap-3">
               <span class="w-9 h-9 rounded-xl bg-sky-900 text-white font-black flex items-center justify-center text-base shrink-0">3</span>
               <h3 class="text-lg sm:text-2xl font-black text-slate-950">4.1 ما هو الـ Stack؟ ومبدأ LIFO وإدارة استدعاء الدوال (Slide 7)</h3>
@@ -847,7 +856,7 @@
 
         <!-- Section 4: Stack Representation (Slide 8) -->
         <section id="sec-4" class="card-surface p-5 sm:p-9 space-y-6 scroll-mt-20">
-          <div class="flex items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
             <div class="flex items-center gap-3">
               <span class="w-9 h-9 rounded-xl bg-sky-900 text-white font-black flex items-center justify-center text-base shrink-0">4</span>
               <h3 class="text-lg sm:text-2xl font-black text-slate-950">تمثيل الـ Stack في الذاكرة (Stack Representation — Slide 8)</h3>
@@ -916,7 +925,7 @@
 
         <!-- Section 5: Hands-on + Summary + MCQs of Part 1 -->
         <section id="sec-5" class="card-surface p-5 sm:p-9 space-y-6 scroll-mt-20">
-          <div class="flex items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
             <div class="flex items-center gap-3">
               <span class="w-9 h-9 rounded-xl bg-emerald-900 text-white font-black flex items-center justify-center text-base shrink-0">5</span>
               <h3 class="text-lg sm:text-2xl font-black text-emerald-950">تمرين سريع لتثبيت مبدأ LIFO + ملخص وأسئلة الجزء الأول</h3>
@@ -1037,7 +1046,7 @@
           <div class="my-6 p-4 sm:p-6 rounded-2xl bg-[#faf5e8] border-2 border-[#b8a98e] shadow-inner">
             <div class="text-xs sm:text-sm font-black text-sky-950 mb-4 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2.5">
               <span>🎨</span>
-              <span>رسمة الشريحة 9 بالمللي: العمليات الستة التي تُجرى على الـ STACK</span>
+              <span>رسم الشريحة 9: العمليات الستة التي تُجرى على الـ STACK</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
@@ -1089,7 +1098,7 @@
             </h3>
           </div>
 
-          <p class="font-semibold">تعال نقرأ كل سطر في الشريحة 10 (<span class="inline-code">4.2. STACK OPERATIONS (CONT.)</span>) ونفهمه بالمللي:</p>
+          <p class="font-semibold">عمليات المكدّس في الشريحة 10 (<span class="inline-code">4.2. STACK OPERATIONS (CONT.)</span>):</p>
 
           <div class="space-y-3">
             <div class="subcard-surface p-4 border-r-8 border-r-sky-800">
@@ -1215,7 +1224,7 @@
           <div class="my-6 p-4 sm:p-6 rounded-2xl bg-[#faf5e8] border-2 border-[#b8a98e] shadow-inner">
             <div class="text-xs sm:text-sm font-black text-sky-950 mb-4 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2.5">
               <span>🎨</span>
-              <span>رسمة الشريحة 13 بالمللي: المصفوفة الرأسية (حجمها MAX = 5) ومتغير top = 2 يشير للعنصر 30</span>
+              <span>رسم الشريحة 13: المصفوفة الرأسية (حجمها MAX = 5) ومتغير top = 2 يشير للعنصر 30</span>
             </div>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-6 py-3" dir="ltr">
@@ -1412,7 +1421,7 @@ public:
                 <span>ربط الدنيا ببعضها: إزاي الـ Constructor ده مربوط بكل الدوال اللي جاية بعده؟</span>
               </div>
               <div class="space-y-3.5">
-                <div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>الـ Constructor حط <code class="inline-code">top = -1</code> كعلامة رسمية للبداية الفارغة.</span></div><div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>دالة <code class="inline-code">isEmpty()</code> اللي جاية هتبص على نفس المتغير ده: لو لقيته بيساوي <code class="inline-code">-1</code> تعرف فوراً إن الـ Stack فاضي!</span></div><div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>ودالة <code class="inline-code">push()</code> لما تيجي تضيف أول رقم، هتزود الـ <code class="inline-code">-1</code> بواحد (<code class="inline-code">++top</code>) فيتحول إلى <code class="inline-code">0</code> ويسكن أول عنصر في <code class="inline-code">arr[0]</code> بالمللي!</span></div>
+                <div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>الـ Constructor حط <code class="inline-code">top = -1</code> كعلامة رسمية للبداية الفارغة.</span></div><div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>دالة <code class="inline-code">isEmpty()</code> اللي جاية هتبص على نفس المتغير ده: لو لقيته بيساوي <code class="inline-code">-1</code> تعرف فوراً إن الـ Stack فاضي!</span></div><div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>ودالة <code class="inline-code">push()</code> لما تيجي تضيف أول رقم، هتزود الـ <code class="inline-code">-1</code> بواحد (<code class="inline-code">++top</code>) فيتحول إلى <code class="inline-code">0</code> ويتخزّن أول عنصر في <code class="inline-code">arr[0]</code>.</span></div>
               </div>
             </div>
           </div>
@@ -2110,20 +2119,21 @@ Stack elements (top to bottom): 30 20 10 </code></pre>
           <div class="subcard-surface p-4 sm:p-6 border-2 border-emerald-800 space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <h4 class="text-base sm:text-xl font-black text-emerald-950">⚡ محاكي Array Stack التفاعلي (تتبع خطوات main() خطوة بخطوة):</h4>
-              <div class="flex items-center gap-2">
+              <div class="flex flex-wrap items-center gap-2">
                 <button type="button" id="arr-sim-prev" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-extrabold hover:bg-slate-800">السابق</button>
-                <span id="arr-sim-badge" class="px-3 py-1.5 rounded-xl bg-amber-200 text-amber-950 font-mono text-xs font-extrabold border border-amber-500">خطوة 1/5</span>
+                <span id="arr-sim-badge" class="px-3 py-1.5 rounded-xl bg-amber-200 text-amber-950 font-mono text-xs font-extrabold border border-amber-500">خطوة 1/6</span>
                 <button type="button" id="arr-sim-next" class="px-3 py-1.5 rounded-xl bg-emerald-900 text-white text-xs font-extrabold hover:bg-emerald-950">الخطوة التالية ⬅</button>
               
                 <button id="arr-sim-reset" type="button" class="px-3 py-1.5 rounded-xl border-2 border-slate-400 bg-white dark:bg-slate-800 text-slate-950 dark:text-slate-100 text-xs font-extrabold hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="إعادة ضبط المحاكي للبداية">🔄 إعادة ضبط (Reset)</button>
               </div>
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <div class="grid grid-cols-2 gap-2 arr-sim-stages">
               <button type="button" data-arr-stage="0" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-emerald-900 bg-emerald-900 text-white">1. Stack s;</button>
               <button type="button" data-arr-stage="1" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950">2. push(10..30)</button>
               <button type="button" data-arr-stage="2" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950">3. push(40,50)</button>
               <button type="button" data-arr-stage="3" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950">4. push(60)!</button>
               <button type="button" data-arr-stage="4" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950">5. pop() مرتين</button>
+              <button type="button" data-arr-stage="5" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950">6. Stack Underflow</button>
             </div>
             <div id="arr-sim-display" class="p-4 sm:p-6 rounded-2xl bg-[#fffdf9] border-2 border-emerald-700 shadow-md space-y-4"></div>
 
@@ -2147,9 +2157,13 @@ Stack elements (top to bottom): 30 20 10 </code></pre>
                   <div class="text-rose-800 dark:text-rose-400 font-black">المرحلة 4: تجاوز السعة s.push(60)</div>
                   <div>Stack Overflow! لا يمكن الإضافة ومؤشر top يظل ثابتاً عند 4</div>
                 </div>
-                <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 space-y-1 md:col-span-2">
+                <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 space-y-1">
                   <div class="text-sky-800 dark:text-sky-400 font-black">المرحلة 5: الحذف مرتين s.pop() ثم s.peek()</div>
                   <div>خروج 50 ثم 40 | top = 2 | العنصر في القمة هو arr[2] = 30</div>
+                </div>
+                <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 space-y-1">
+                  <div class="text-rose-800 dark:text-rose-400 font-black">المرحلة 6: الحذف بعد تفريغ المكدس</div>
+                  <div>خروج 30 ثم 20 ثم 10 | top = -1 | محاولة pop() مرة أخرى تؤدي إلى Stack Underflow، ويظل top = -1.</div>
                 </div>
               </div>
             </div>
@@ -2389,7 +2403,7 @@ int main() {
           <div class="my-6 p-4 sm:p-6 rounded-2xl bg-[#faf5e8] border-2 border-[#b8a98e] shadow-inner">
             <div class="text-xs sm:text-sm font-black text-sky-950 mb-4 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2.5">
               <span>🎨</span>
-              <span>رسمة الشريحة 26 بالمللي: Top of Stack = Front of Linked-List (العقدة الأولى a1 هي قمة المكدس)</span>
+              <span>رسم الشريحة 26: Top of Stack = Front of Linked-List (العقدة الأولى a1 هي قمة المكدس)</span>
             </div>
 
             <div class="p-4 rounded-xl border-2 border-slate-800 bg-white space-y-3" dir="ltr">
@@ -2582,7 +2596,7 @@ public:
               <span class="text-sky-900 font-black text-xl mt-0.5 shrink-0">🎯</span>
               <div class="flex-1 text-slate-950 font-semibold leading-loose space-y-2">
                 <div class="font-black text-slate-950 text-base sm:text-lg underline decoration-amber-500/70 decoration-2">السطر 20 — Node&lt;T&gt;* top;:</div>
-                <div class="text-slate-900 text-sm sm:text-base leading-loose">بدل ما كنا عاملين مصفوفة <code class="inline-code">arr[MAX]</code> ومتغير <code class="inline-code">int top</code>، هنا الـ Stack كله بيتلخص في <strong>مؤشر واحد فقط</strong> اسمه <code class="inline-code-amber">top</code> من نوع <code class="inline-code">Node&lt;T&gt;*</code> بيشاور على أول عقدة في الـ Linked List (يعني هو نفسه الـ <code class="inline-code">head</code> بالمللي!).</div>
+                <div class="text-slate-900 text-sm sm:text-base leading-loose">بدل ما كنا عاملين مصفوفة <code class="inline-code">arr[MAX]</code> ومتغير <code class="inline-code">int top</code>، هنا الـ Stack كله بيتلخص في <strong>مؤشر واحد فقط</strong> اسمه <code class="inline-code-amber">top</code> من نوع <code class="inline-code">Node&lt;T&gt;*</code> بيشاور على أول عقدة في الـ Linked List (يعني هو نفسه الـ <code class="inline-code">head</code>).</div>
               </div>
             </div>
 
@@ -2615,7 +2629,7 @@ public:
             </h3>
           </div>
 
-          <p class="font-semibold">تذكر: عملية <code class="inline-code">push</code> في الـ Linked List Stack هي بالمللي عملية <strong>الإضافة في بداية القائمة (<span class="inline-code">insertAtBeginning</span>)</strong> اللي شرحناها في المحاضرة التانية!</p>
+          <p class="font-semibold">تذكر: عملية <code class="inline-code">push</code> في الـ Linked List Stack هي عملية <strong>الإضافة في بداية القائمة (<span class="inline-code">insertAtBeginning</span>)</strong> اللي شرحناها في المحاضرة التانية!</p>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
             <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
@@ -2707,7 +2721,7 @@ public:
               <span>4. تفكيك كود pop() ومنع تسريب الذاكرة delete temp (Slide 30 — السطور 35 إلى 46)</span>
             </h3>
           </div>
-          <p class="font-semibold">عملية <code class="inline-code">pop()</code> هنا هي بالمللي عملية <strong>الحذف من بداية القائمة المتصلة (<span class="inline-code">deleteFromBeginning</span>)</strong> التي درسناها في المحاضرة الثانية!</p>
+          <p class="font-semibold">عملية <code class="inline-code">pop()</code> هنا هي عملية <strong>الحذف من بداية القائمة المتصلة (<span class="inline-code">deleteFromBeginning</span>)</strong> التي درسناها في المحاضرة الثانية!</p>
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
             <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 30 — Pop Implementation (Lines 35 to 46)</span>
@@ -3464,8 +3478,8 @@ int main() {
   <script>
     (function () {
       'use strict';
-      const QUIZ_DATA = [{"id":1,"part":"p1","partLabel":"الجزء الأول: مبدأ LIFO وتصنيف هياكل البيانات • سؤال 1","question":"Q1: Which order principle does a Stack data structure follow?","options":["A) FIFO (First In, First Out)","B) LIFO (Last In, First Out)","C) Random Access Order","D) Hierarchical Tree Order"],"correct":1,"explanation":"التفسير: الـ Stack يتبع مبدأ LIFO (Last In, First Out) أي أن آخر عنصر يدخل هو أول عنصر يخرج."},{"id":2,"part":"p1","partLabel":"الجزء الأول: مبدأ LIFO وتصنيف هياكل البيانات • سؤال 2","question":"Q2: According to the classification of data structures, a Stack is classified as:","options":["A) Linear Data Structure","B) Non-linear Data Structure","C) Primitive Hardware Register","D) Graph-based Structure"],"correct":0,"explanation":"التفسير: كما ظهر في شجرة التصنيف بالشريحة 4، ينتمي الـ Stack إلى عائلة هياكل البيانات الخطية (Linear Data Structures) بجانب Array و Queue و Linked-list."},{"id":3,"part":"p1","partLabel":"الجزء الأول: مبدأ LIFO وتصنيف هياكل البيانات • سؤال 3","question":"Q3: Stacks are crucial in almost all programming environments for managing:","options":["A) Database SQL queries and indexing","B) Function calls and subroutine execution stack","C) Hard drive physical sectors and tracks","D) Network routing tables and ARP cache"],"correct":1,"explanation":"التفسير: نص الشريحة 7 يؤكد أن الـ Stack ضروري لإدارة استدعاءات الدوال (Function calls) والحفاظ على ترتيب التنفيذ والعودة بسلاسة."},{"id":4,"part":"p2","partLabel":"الجزء الثاني: عمليات الـ Stack ومؤشر top • سؤال 1","question":"Q1: Which operation returns or displays the top element of the stack WITHOUT removing it?","options":["A) pop()","B) push()","C) peek()","D) isFull()"],"correct":2,"explanation":"التفسير: دالة peek() تطبع أو ترجع قيمة العنصر الموجود في قمة المكدس (top) دون أن تحذفه، بينما pop() تقوم بحذفه."},{"id":5,"part":"p2","partLabel":"الجزء الثاني: عمليات الـ Stack ومؤشر top • سؤال 2","question":"Q2: In a Stack, where do both `push` and `pop` operations take place?","options":["A) At opposite ends (one at head and one at tail)","B) At the same end called the top","C) At random indices decided by the CPU","D) In the middle position (floor(n/2))"],"correct":1,"explanation":"التفسير: نص الشريحة 10 ينص صراحة على أن كلتا العمليتين (push و pop) تحدثان من طرف واحد فقط يُسمى top."},{"id":6,"part":"p3","partLabel":"الجزء الثالث: تنفيذ Stack بالمصفوفة و Overflow • سؤال 1","question":"Q1: In an array implementation of a Stack of size `MAX`, what is the condition for \"Stack Overflow\" (`isFull()`)?","options":["A) top == -1","B) top == MAX","C) top == MAX - 1","D) top == 0"],"correct":2,"explanation":"التفسير: لأن فهارس المصفوفة في C++ تبدأ من 0 إلى MAX - 1، فعندما يصل المؤشر top إلى MAX - 1 تكون المصفوفة قد امتلأت بالكامل."},{"id":7,"part":"p3","partLabel":"الجزء الثالث: تنفيذ Stack بالمصفوفة و Overflow • سؤال 2","question":"Q2: What does the statement `arr[++top] = value;` do during a `push` operation?","options":["A) It stores value at current top, then increments top afterwards.","B) It increments top by 1 first, then stores value at the new top index.","C) It increments value by 1 before inserting into the array.","D) It clears the stack and inserts value at index 0."],"correct":1,"explanation":"التفسير: المعامل `++top` (Pre-increment) يزيد قيمة `top` بمقدار 1 أولاً، ثم يضع القيمة الجديدة في الموضع الجديد."},{"id":8,"part":"p5","partLabel":"الجزء الخامس: تنفيذ Stack بالقائمة المتصلة • سؤال 1","question":"Q1: When implementing a Stack using a Singly Linked List, which end of the linked list serves as the `top` of the stack?","options":["A) The front (head) of the linked list","B) The back (tail) of the linked list","C) The middle node of the linked list","D) Any random node chosen by memory allocator"],"correct":0,"explanation":"التفسير: كما نصت الشريحة 26 (Top of Stack = Front of Linked-List)، لأن الإضافة والحذف من بداية القائمة المتصلة يتم في وقت ثابت O(1)."},{"id":9,"part":"p6","partLabel":"الجزء السادس: المقارنة الشاملة وحالات الـ Underflow • سؤال 1","question":"Q1: Attempting to perform a `pop()` operation on an empty stack results in which condition?","options":["A) Stack Overflow","B) Stack Underflow (Data Underflow)","C) Memory Leak","D) Segmentation Fault automatically prevented by compiler"],"correct":1,"explanation":"التفسير: محاولة الحذف (pop) من مكدس فارغ تسمى Stack Underflow، بينما محاولة الإضافة (push) في مكدس ممتلئ تسمى Stack Overflow."},{"id":10,"part":"p6","partLabel":"الجزء السادس: المقارنة الشاملة وحالات الـ Underflow • سؤال 2","question":"Q2: In the Linked List implementation of Stack, what is the purpose of `template <class T>`?","options":["A) To speed up execution time to O(0.5).","B) To allow the Stack class to store any data type (int, string, double, etc.) generically.","C) To restrict stack elements to integers only.","D) To automatically delete unused nodes from RAM."],"correct":1,"explanation":"التفسير: القوالب (Templates) تتيح كتابة كلاس عام يعمل مع أي نوع بيانات مثل Stack<int> و Stack<string> كما ظهر في الشريحة 34."}];
-      window.quizQuestions = QUIZ_DATA;
+      const quizQuestions = [{"id":1,"part":"p1","partLabel":"الجزء الأول: مبدأ LIFO وتصنيف هياكل البيانات • سؤال 1","question":"Q1: Which order principle does a Stack data structure follow?","options":["A) FIFO (First In, First Out)","B) LIFO (Last In, First Out)","C) Random Access Order","D) Hierarchical Tree Order"],"correct":1,"explanation":"التفسير: الـ Stack يتبع مبدأ LIFO (Last In, First Out) أي أن آخر عنصر يدخل هو أول عنصر يخرج."},{"id":2,"part":"p1","partLabel":"الجزء الأول: مبدأ LIFO وتصنيف هياكل البيانات • سؤال 2","question":"Q2: According to the classification of data structures, a Stack is classified as:","options":["A) Linear Data Structure","B) Non-linear Data Structure","C) Primitive Hardware Register","D) Graph-based Structure"],"correct":0,"explanation":"التفسير: كما ظهر في شجرة التصنيف بالشريحة 4، ينتمي الـ Stack إلى عائلة هياكل البيانات الخطية (Linear Data Structures) بجانب Array و Queue و Linked-list."},{"id":3,"part":"p1","partLabel":"الجزء الأول: مبدأ LIFO وتصنيف هياكل البيانات • سؤال 3","question":"Q3: Stacks are crucial in almost all programming environments for managing:","options":["A) Database SQL queries and indexing","B) Function calls and subroutine execution stack","C) Hard drive physical sectors and tracks","D) Network routing tables and ARP cache"],"correct":1,"explanation":"التفسير: نص الشريحة 7 يؤكد أن الـ Stack ضروري لإدارة استدعاءات الدوال (Function calls) والحفاظ على ترتيب التنفيذ والعودة بسلاسة."},{"id":4,"part":"p2","partLabel":"الجزء الثاني: عمليات الـ Stack ومؤشر top • سؤال 1","question":"Q1: Which operation returns or displays the top element of the stack WITHOUT removing it?","options":["A) pop()","B) push()","C) peek()","D) isFull()"],"correct":2,"explanation":"التفسير: دالة peek() تطبع أو ترجع قيمة العنصر الموجود في قمة المكدس (top) دون أن تحذفه، بينما pop() تقوم بحذفه."},{"id":5,"part":"p2","partLabel":"الجزء الثاني: عمليات الـ Stack ومؤشر top • سؤال 2","question":"Q2: In a Stack, where do both `push` and `pop` operations take place?","options":["A) At opposite ends (one at head and one at tail)","B) At the same end called the top","C) At random indices decided by the CPU","D) In the middle position (floor(n/2))"],"correct":1,"explanation":"التفسير: نص الشريحة 10 ينص صراحة على أن كلتا العمليتين (push و pop) تحدثان من طرف واحد فقط يُسمى top."},{"id":6,"part":"p3","partLabel":"الجزء الثالث: تنفيذ Stack بالمصفوفة و Overflow • سؤال 1","question":"Q1: In an array implementation of a Stack of size `MAX`, what is the condition for \"Stack Overflow\" (`isFull()`)?","options":["A) top == -1","B) top == MAX","C) top == MAX - 1","D) top == 0"],"correct":2,"explanation":"التفسير: لأن فهارس المصفوفة في C++ تبدأ من 0 إلى MAX - 1، فعندما يصل المؤشر top إلى MAX - 1 تكون المصفوفة قد امتلأت بالكامل."},{"id":7,"part":"p3","partLabel":"الجزء الثالث: تنفيذ Stack بالمصفوفة و Overflow • سؤال 2","question":"Q2: What does the statement `arr[++top] = value;` do during a `push` operation?","options":["A) It stores value at current top, then increments top afterwards.","B) It increments top by 1 first, then stores value at the new top index.","C) It increments value by 1 before inserting into the array.","D) It clears the stack and inserts value at index 0."],"correct":1,"explanation":"التفسير: المعامل `++top` (Pre-increment) يزيد قيمة `top` بمقدار 1 أولاً، ثم يضع القيمة الجديدة في الموضع الجديد."},{"id":8,"part":"p5","partLabel":"الجزء الخامس: تنفيذ Stack بالقائمة المتصلة • سؤال 1","question":"Q1: When implementing a Stack using a Singly Linked List, which end of the linked list serves as the `top` of the stack?","options":["A) The front (head) of the linked list","B) The back (tail) of the linked list","C) The middle node of the linked list","D) Any random node chosen by memory allocator"],"correct":0,"explanation":"التفسير: كما نصت الشريحة 26 (Top of Stack = Front of Linked-List)، لأن الإضافة والحذف من بداية القائمة المتصلة يتم في وقت ثابت O(1)."},{"id":9,"part":"p6","partLabel":"الجزء السادس: المقارنة الشاملة وحالات الـ Underflow • سؤال 1","question":"Q1: Attempting to perform a `pop()` operation on an empty stack results in which condition?","options":["A) Stack Overflow","B) Stack Underflow (Data Underflow)","C) Memory Leak","D) Segmentation Fault automatically prevented by compiler"],"correct":1,"explanation":"التفسير: محاولة الحذف (pop) من مكدس فارغ تسمى Stack Underflow، بينما محاولة الإضافة (push) في مكدس ممتلئ تسمى Stack Overflow."},{"id":10,"part":"p6","partLabel":"الجزء السادس: المقارنة الشاملة وحالات الـ Underflow • سؤال 2","question":"Q2: In the Linked List implementation of Stack, what is the purpose of `template <class T>`?","options":["A) To speed up execution time to O(0.5).","B) To allow the Stack class to store any data type (int, string, double, etc.) generically.","C) To restrict stack elements to integers only.","D) To automatically delete unused nodes from RAM."],"correct":1,"explanation":"التفسير: القوالب (Templates) تتيح كتابة كلاس عام يعمل مع أي نوع بيانات مثل Stack<int> و Stack<string> كما ظهر في الشريحة 34."}];
+      window.quizQuestions = quizQuestions;
 
       // 1. Reading Progress Bar
       const progressBar = document.getElementById('reading-progress');
@@ -3508,11 +3522,11 @@ int main() {
       function renderStackCells(values, topIdx) {
         let html = '<div class="flex flex-col sm:flex-row items-center justify-center gap-6 py-2" dir="ltr">';
         html += '<div class="px-5 py-2.5 rounded-xl bg-amber-100 border-2 border-amber-600 text-amber-950 font-mono font-black text-base shadow-xs">top = ' + topIdx + '</div>';
-        html += '<div class="w-56 border-2 border-slate-800 rounded-xl overflow-hidden bg-white shadow-md font-mono">';
+        html += '<div class="arr-sim-cells w-56 border-2 border-slate-800 rounded-xl overflow-hidden bg-white shadow-md font-mono">';
         for (let i = 4; i >= 0; i--) {
           const val = i <= topIdx ? values[i] : '(فارغ)';
           const isTop = i === topIdx;
-          const rowBg = isTop ? 'bg-emerald-100 text-emerald-950 font-black border-l-8 border-l-emerald-700' : (i < topIdx ? 'bg-sky-50 text-slate-900 font-bold' : 'bg-slate-100 text-slate-400');
+          const rowBg = isTop ? 'bg-emerald-100 text-emerald-950 font-black border-l-8 border-l-emerald-700' : (i < topIdx ? 'bg-sky-50 text-slate-900 font-bold' : 'bg-slate-100 arr-sim-empty');
           html += '<div class="p-2.5 border-b border-slate-300 last:border-b-0 flex items-center justify-between text-xs sm:text-sm ' + rowBg + '">' +
             '<span>arr[' + i + ']' + (isTop ? ' ⬅ TOP' : '') + '</span>' +
             '<span>' + val + '</span>' +
@@ -3524,39 +3538,40 @@ int main() {
 
       const arrStages = [
         {
-          badge: 'خطوة 1/5',
           title: 'المرحلة 1: إنشاء المكدس الفارغ (Stack s;)',
           code: 'Stack s; // Constructor sets top = -1',
           desc: 'في البداية المصفوفة فارغة تماماً، والمتغير top يساوي -1 (خارج حدود الفهارس 0..4):',
           html: renderStackCells([], -1)
         },
         {
-          badge: 'خطوة 2/5',
           title: 'المرحلة 2: إضافة 10 ثم 20 ثم 30 (السطور 79–81)',
           code: 's.push(10);  s.push(20);  s.push(30);',
           desc: 'مع كل push، يزيد top بـ 1 أولاً (++top) ثم يدخل الرقم. الآن top = 2 ويشير للرقم 30:',
           html: renderStackCells([10, 20, 30], 2)
         },
         {
-          badge: 'خطوة 3/5',
           title: 'المرحلة 3: إضافة 40 ثم 50 — امتلاء المصفوفة (السطران 82–83)',
           code: 's.push(40);  s.push(50); // top reaches MAX - 1 (4)',
           desc: 'وصل top إلى 4 (وهو MAX - 1)، وبذلك امتلأت الخانات الخمسة بالكامل وأصبحت isFull() ترجع true:',
           html: renderStackCells([10, 20, 30, 40, 50], 4)
         },
         {
-          badge: 'خطوة 4/5',
           title: 'المرحلة 4: محاولة إضافة 60 وحدوث Stack Overflow! (السطر 84)',
           code: 's.push(60); // Output: Stack Overflow! Cannot push 60',
           desc: 'لأن isFull() رجعت true، يرفض البرنامج إدخال الـ 60 ويطبع رسالة Stack Overflow ويظل top = 4 عند 50:',
           html: renderStackCells([10, 20, 30, 40, 50], 4)
         },
         {
-          badge: 'خطوة 5/5',
           title: 'المرحلة 5: تنفيذ s.pop() مرتين ثم s.peek() (السطور 88–91)',
           code: 's.pop(); // 50 popped   s.pop(); // 40 popped   s.peek(); // Top is 30',
           desc: 'خرجت 50 ثم خرجت 40 ونزل المؤشر مرتين ليصبح top = 2 واقفاً عند العنصر 30:',
-          html: renderStackCells([10, 20, 30, 40, 50], 2)
+          html: renderStackCells([10, 20, 30], 2)
+        },
+        {
+          title: 'المرحلة 6: محاولة الحذف بعد تفريغ المكدس (Stack Underflow)',
+          code: 's.pop(); // 30   s.pop(); // 20   s.pop(); // 10<br>s.pop(); // Stack Underflow!',
+          desc: 'خرجت 30 ثم 20 ثم 10 وأصبح top = -1. في المحاولة التالية ترجع isEmpty() القيمة true، فتظهر رسالة Stack Underflow ويفضل top = -1.',
+          html: renderStackCells([], -1)
         }
       ];
 
@@ -3571,7 +3586,7 @@ int main() {
       function renderArrSim() {
         if (!arrSimDisplay || !arrSimBadge) return;
         const st = arrStages[currentArrStage];
-        arrSimBadge.textContent = st.badge;
+        arrSimBadge.textContent = 'خطوة ' + (currentArrStage + 1) + '/' + arrStages.length;
         arrSimDisplay.innerHTML =
           '<div class="font-black text-emerald-950 dark:text-emerald-300 text-base sm:text-lg">' + st.title + '</div>' +
           '<div class="code-surface p-3 rounded-xl border border-slate-700 text-xs sm:text-sm text-emerald-300 font-mono">' + st.code + '</div>' +
@@ -3859,7 +3874,7 @@ int main() {
 
         function renderQuestions(filter) {
           container.innerHTML = '';
-          const filtered = filter === 'all' ? QUIZ_DATA : QUIZ_DATA.filter(q => q.part === filter);
+          const filtered = filter === 'all' ? quizQuestions : quizQuestions.filter(q => q.part === filter);
 
           filtered.forEach(q => {
             const article = document.createElement('article');
@@ -3888,25 +3903,38 @@ int main() {
               ? window.QuizChoices.shuffleChoices(choices, q.id)
               : choices;
 
+            const feedback = document.createElement('div');
+            feedback.className = 'quiz-explanation p-3.5 rounded-xl border text-xs sm:text-sm';
+            feedback.tabIndex = -1;
+            feedback.hidden = true;
+
+            function showAnswer(selectedIndex) {
+              choiceItems.forEach((choice, position) => {
+                const option = optionsGrid.children[position];
+                option.disabled = true;
+                if (choice.index === q.correct) {
+                  option.classList.add('correct');
+                } else if (choice.index === selectedIndex) {
+                  option.classList.add('wrong');
+                }
+              });
+              const outcome = selectedIndex === q.correct ? 'إجابة صحيحة.' : 'إجابة غير صحيحة.';
+              feedback.textContent = outcome + ' ' + q.explanation;
+              feedback.hidden = false;
+            }
+
             choiceItems.forEach(choice => {
               const btn = document.createElement('button');
+              btn.type = 'button';
               btn.className = 'quiz-option w-full p-3.5 rounded-xl text-right text-xs sm:text-sm font-bold transition flex items-center justify-between';
               btn.innerHTML = '<span>' + choice.text + '</span>';
-
-              if (answeredState[q.id] !== undefined) {
-                btn.disabled = true;
-                if (choice.index === q.correct) {
-                  btn.classList.add('correct');
-                } else if (choice.index === answeredState[q.id]) {
-                  btn.classList.add('wrong');
-                }
-              }
 
               btn.addEventListener('click', () => {
                 if (answeredState[q.id] !== undefined) return;
                 answeredState[q.id] = choice.index;
                 updateScore();
-                renderQuestions(currentFilter);
+                showAnswer(choice.index);
+                feedback.focus();
               });
 
               optionsGrid.appendChild(btn);
@@ -3916,12 +3944,8 @@ int main() {
             article.appendChild(prompt);
             article.appendChild(optionsGrid);
 
-            if (answeredState[q.id] !== undefined) {
-              const expBox = document.createElement('div');
-              expBox.className = 'quiz-explanation p-3.5 rounded-xl border text-xs sm:text-sm';
-              expBox.textContent = q.explanation;
-              article.appendChild(expBox);
-            }
+            article.appendChild(feedback);
+            if (answeredState[q.id] !== undefined) showAnswer(answeredState[q.id]);
 
             container.appendChild(article);
           });
@@ -3929,7 +3953,7 @@ int main() {
 
         function updateScore() {
           const correctCount = Object.entries(answeredState).filter(([id, ans]) => {
-            const q = QUIZ_DATA.find(item => item.id === Number(id));
+            const q = quizQuestions.find(item => item.id === Number(id));
             return q && q.correct === ans;
           }).length;
           scoreEl.textContent = 'النتيجة: ' + correctCount + ' / 10';
