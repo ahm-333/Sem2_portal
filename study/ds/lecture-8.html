@@ -269,7 +269,7 @@
   <!-- Top Sticky Navigation Bar -->
   <header class="sticky top-0 z-50 bg-[var(--bg-card)]/90 backdrop-blur-md border-b border-[var(--border-color)] px-4 py-2.5 transition-colors">
     <div class="reading-container flex flex-wrap items-center justify-between gap-3">
-      
+
       <div class="flex items-center gap-2">
         <a href="../../subject.html?id=data-structure" class="p-2 rounded-xl bg-[var(--bg-soft)] hover:bg-[var(--bg-accent)] text-[var(--text-main)] transition text-xs font-bold flex items-center gap-1.5" aria-label="مقرر هياكل البيانات">
           <span>←</span>
@@ -402,7 +402,7 @@
 
       <div class="reading-block text-justify">
         <p class="mb-3">
-          يا شباب، بعد ما فهمنا في المحاضرة السابعة إزاي الـ Binary Tree العادية بتشتغل، واكتشفنا إن أي عقدة مسموح لها بطفلين كحد أقصى (Left &amp; Right)، بيظهر عندنا سؤال محوري: 
+          يا شباب، بعد ما فهمنا في المحاضرة السابعة إزاي الـ Binary Tree العادية بتشتغل، واكتشفنا إن أي عقدة مسموح لها بطفلين كحد أقصى (Left &amp; Right)، بيظهر عندنا سؤال محوري:
           <strong>هل شجرة ثنائية عشوائية بتساعدنا في البحث السريع؟</strong>
         </p>
         <p class="mb-3">
@@ -427,7 +427,7 @@
       <!-- Memory Layout Diagram -->
       <div class="diagram-frame text-center">
         <span class="text-xs font-bold text-slate-500 block mb-2 font-mono">ترتيب حقول العقدة في الذاكرة على نظام بمؤشرات 8 بايت</span>
-        
+
         <div class="inline-block border-2 border-slate-700 rounded-2xl bg-slate-900 text-white p-4 shadow-xl max-w-md w-full">
           <div class="text-[11px] font-mono text-emerald-400 mb-2 border-b border-slate-800 pb-1">
             عنوان العقدة في الـ Heap: <span class="text-amber-300">0x7ffee0a0</span> (حجم شائع: <bdi dir="ltr">24 bytes</bdi>)
@@ -484,7 +484,7 @@ struct Node {<br>
 
       <div class="reading-block text-justify">
         <p class="mb-3">
-          تعالوا نطبق مثال السلايد رقم 9 بالحرف: 
+          تعالوا نطبق مثال السلايد رقم 9 بالحرف:
           <strong>"Let's build a BST by inserting the numbers: 50, 30, 70, 20, 40, 60, 80"</strong>.
         </p>
         <p class="mb-4">
@@ -807,7 +807,7 @@ Node* deleteNode(Node* root, int key) {<br>
 
       <div class="reading-block text-justify">
         <p class="mb-3">
-          واحدة من أروع خصائص الـ BST على الإطلاق هي: 
+          واحدة من أروع خصائص الـ BST على الإطلاق هي:
           <strong>لما نعمل In-order Traversal (يسار ← جذر ← يمين)، عناصر الشجرة بتطبع مترتبة تصاعدياً من الأصغر للأكبر بنسبة 100%!</strong>
         </p>
       </div>
@@ -860,11 +860,11 @@ Node* deleteNode(Node* root, int key) {<br>
 
       <div class="reading-block text-justify">
         <p class="mb-3">
-          وصلنا دلوقتي للجزء الثاني في المحاضرة الثامنة: <strong>الـ Graphs</strong>. 
+          وصلنا دلوقتي للجزء الثاني في المحاضرة الثامنة: <strong>الـ Graphs</strong>.
           الـ Graph هو أعم وأشمل هيكل بيانات غير خطي في علوم الحاسب. كل شبكات التواصل الاجتماعي (Facebook, LinkedIn)، خرائط جوجل (Google Maps)، وشبكات الإنترنت هي في حقيقتها Graphs عملاقة!
         </p>
         <p class="mb-3">
-          الرسم البياني رياضياً وبرمجياً يُعرّف بزوج: 
+          الرسم البياني رياضياً وبرمجياً يُعرّف بزوج:
           <code class="font-mono text-blue-600 font-bold" dir="ltr">G = (V, E)</code>:
           <br>
           • <strong>V (Vertices / Nodes):</strong> مجموعة الرؤوس أو العقد (زي الأشخاص أو المدن).
@@ -877,7 +877,7 @@ Node* deleteNode(Node* root, int key) {<br>
         <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)]">
           <h4 class="font-bold text-sm text-[var(--text-main)] mb-2">الشجرة (Tree)</h4>
           <p class="text-[var(--text-muted)]">
-            الشجرة هي حالة خاصة جداً من الجراف! 
+            الشجرة هي حالة خاصة جداً من الجراف!
             <strong>A Tree is a connected, undirected graph with NO cycles.</strong>
             عدد حواف الشجرة دائماً <code class="font-mono font-bold">|E| = |V| - 1</code>، وفيه مسار واحد وحيد بين أي نقطتين.
           </p>
@@ -1500,8 +1500,8 @@ DFS: A B D C E</pre>
       const container = document.getElementById("quizContainer");
       if (!container) return;
 
-      const filteredQuestions = currentQuizFilter === "all" 
-        ? quizQuestions 
+      const filteredQuestions = currentQuizFilter === "all"
+        ? quizQuestions
         : quizQuestions.filter(q => q.category === currentQuizFilter);
 
       container.innerHTML = filteredQuestions.map(renderQuestion).join("");

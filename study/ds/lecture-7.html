@@ -436,7 +436,7 @@
             <div class="p-3 rounded-xl diagram-node border-2 border-emerald-500/40 shadow-xs space-y-3">
               <span class="inline-block text-xs font-black px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300">Non-linear (Tree Hierarchy)</span>
               <p class="text-xs text-[var(--text-muted)]" dir="rtl">علاقة هرمية 1 إلى متعدد (العنصر الواحد يتفرع لعدة أبناء)</p>
-              
+
               <!-- Mini Tree Structure in HTML/SVG -->
               <div class="flex flex-col items-center gap-2 py-1" role="img" aria-label="الجذر A، ابنه الأيسر B وابنه الأيمن C">
                 <div class="px-3 py-1 rounded-lg border-2 border-emerald-600 diagram-node font-mono font-bold text-sm">Root: A</div>
@@ -1301,8 +1301,8 @@ int main() {
       const container = document.getElementById("quizContainer");
       if (!container) return;
 
-      const filtered = currentQuizFilter === "all" 
-        ? quizQuestions 
+      const filtered = currentQuizFilter === "all"
+        ? quizQuestions
         : quizQuestions.filter(q => q.category === currentQuizFilter);
 
       container.innerHTML = filtered.map(renderQuestion).join("");
