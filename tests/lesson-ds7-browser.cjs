@@ -69,6 +69,7 @@ async function register({ scenario: testScenario }) {
     const closeBtn = page.locator('#btn-close-toc');
     const backdrop = page.locator('#toc-backdrop');
 
+    assert.deepEqual(await page.evaluate(auditActionContrast, '#btn-open-toc'), [], 'The table of contents button must be readable');
     assert.equal(await opener.getAttribute('aria-controls'), 'sidebar-toc');
     assert.equal(await drawer.getAttribute('role'), 'dialog');
     assert.equal(await drawer.getAttribute('aria-modal'), 'true');
@@ -124,11 +125,17 @@ async function register({ scenario: testScenario }) {
 
     // Font size controls
     const fontLabel = page.locator('#fontSizeLabel');
+    const readingText = page.locator('#part2 h4, #part2 h4 + p, #part6 pre code, #quizContainer article:first-child :is(h3, .quiz-option)');
+    const fontSizes = () => readingText.evaluateAll(nodes => nodes.map(el => parseFloat(getComputedStyle(el).fontSize)));
+    const initialSizes = await fontSizes();
+    assert(initialSizes.length > 0);
     assert.equal(await fontLabel.textContent(), '100%');
     await page.locator('#btnFontInc').press('Enter');
     assert.equal(await fontLabel.textContent(), '110%');
+    assert((await fontSizes()).every((size, index) => size > initialSizes[index]), 'Lesson and quiz text must grow');
     await page.locator('#btnFontDec').press('Enter');
     assert.equal(await fontLabel.textContent(), '100%');
+    assert.deepEqual(await fontSizes(), initialSizes, 'Returning to 100% must restore the original text sizes');
 
     // Line spacing
     const academicQuote = page.locator('.academic-quote').first();
@@ -148,18 +155,26 @@ async function register({ scenario: testScenario }) {
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'reading');
     assert(await page.evaluate(() => document.body.classList.contains('theme-sepia')));
     assert.deepEqual(await page.evaluate(auditActionContrast, '#mainReadingHeader'), []);
+    assert.deepEqual(await page.evaluate(auditActionContrast, '#btn-open-toc'), []);
 
     // Switch to Dark
     await themeDark.press('Enter');
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
     assert(await page.evaluate(() => document.body.classList.contains('theme-dark')));
     assert.deepEqual(await page.evaluate(auditActionContrast, '#mainReadingHeader'), []);
+    assert.deepEqual(await page.evaluate(auditActionContrast, '#btn-open-toc'), []);
 
     // Switch to White (Light)
     await themeWhite.press('Enter');
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'light');
     assert(await page.evaluate(() => document.body.classList.contains('theme-white')));
     assert.deepEqual(await page.evaluate(auditActionContrast, '#mainReadingHeader'), []);
+    assert.deepEqual(await page.evaluate(auditActionContrast, '#btn-open-toc'), []);
+
+    await page.setViewportSize({ width: 320, height: 800 });
+    for (let i = 0; i < 4; i++) await page.locator('#btnFontInc').press('Enter');
+    assert.equal(await fontLabel.textContent(), '140%');
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Maximum text size must fit the narrow viewport');
 
     assert.deepEqual(errors, []);
   });
