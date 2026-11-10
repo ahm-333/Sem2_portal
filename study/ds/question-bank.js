@@ -89,59 +89,59 @@
       .replace(/'/g, '&#039;');
   }
 
-  // Safe reviewed Markdown to HTML formatter
+  // Format the authored bank's small set of math commands on already escaped text.
+  function formatMath(text) {
+    const symbols = { infty: '∞', rightarrow: '→', times: '×', log: 'log', '{': '{', '}': '}' };
+    const formatted = text
+      .replace(/\times\b/g, '×') // Some source multiplication signs have a literal tab before "imes".
+      .replace(/\\+(mathbf|text)\{([^{}]+)\}/g, function (_, command, content) {
+        return command === 'mathbf' ? '<strong>' + content + '</strong>' : content;
+      })
+      .replace(/\\+(infty|rightarrow|times|log|[{}])/g, function (_, command) {
+        return symbols[command];
+      })
+      .replace(/\^([a-zA-Z0-9]+)/g, '<sup>$1</sup>');
+    return '<bdi dir="ltr">' + formatted + '</bdi>';
+  }
+
+  function formatInline(text) {
+    return text.replace(/\x60([^\x60\n]+)\x60|\*\*([^*\n]+)\*\*|(\b[A-Za-z0-9]+(?:[ \t]+\$\\+rightarrow\$[ \t]+[A-Za-z0-9]+)+)|\$([^$\n]+)\$|\n/g,
+      function (token, code, bold, path, math) {
+        if (code !== undefined) return '<code>' + code + '</code>';
+        if (bold !== undefined) return '<strong>' + formatInline(bold) + '</strong>';
+        if (path !== undefined) return formatMath(path.replace(/\$/g, ''));
+        if (math !== undefined) return formatMath(math);
+        return '<br>';
+      });
+  }
+
+  function formatTable(block) {
+    const rows = block.trim().split('\n').map(line => line.trim().slice(1, -1).split('|'));
+    const [header, , ...body] = rows;
+    const renderRow = (cells, tag) => '<tr>' + cells.map(cell =>
+      '<' + tag + '>' + formatInline(cell.trim()) + '</' + tag + '>'
+    ).join('') + '</tr>';
+    return '<div class="solution-table-scroll" tabindex="0" role="region" aria-label="جدول الحل">' +
+      '<table class="solution-table"><thead>' + renderRow(header, 'th') + '</thead><tbody>' +
+      body.map(row => renderRow(row, 'td')).join('') + '</tbody></table></div>';
+  }
+
   function formatMarkdown(text) {
     if (!text || typeof text !== 'string') return '';
 
-    text = escapeHtml(text);
-
-    // Handle Markdown tables
-    if (text.includes('|') && text.includes('---')) {
-      const lines = text.trim().split('\n');
-      let inTable = false;
-      let tableHtml = '<table class="solution-table"><thead>';
-      const newLines = [];
-
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i].trim();
-        if (line.startsWith('|') && line.endsWith('|')) {
-          if (!inTable) {
-            inTable = true;
-            const cols = line.split('|').filter(c => c.trim() !== '');
-            tableHtml += '<tr>' + cols.map(c => '<th>' + c.trim() + '</th>').join('') + '</tr></thead><tbody>';
-            if (i + 1 < lines.length && lines[i + 1].includes('---')) i++;
-          } else {
-            const cols = line.split('|').filter(c => c.trim() !== '');
-            tableHtml += '<tr>' + cols.map(c => '<td>' + c.trim() + '</td>').join('') + '</tr>';
-          }
-        } else {
-          if (inTable) {
-            tableHtml += '</tbody></table>';
-            newLines.push(tableHtml);
-            inTable = false;
-          }
-          newLines.push(line);
-        }
-      }
-      if (inTable) {
-        tableHtml += '</tbody></table>';
-        newLines.push(tableHtml);
-      }
-      text = newLines.join('\n');
+    const escaped = escapeHtml(text);
+    const blocks = /\x60{3}(?:cpp|c\+\+|text)?([\s\S]*?)\x60{3}|(^[ \t]*\|[^\n]*\|[ \t]*\n[ \t]*\|[ \t:|-]+\|[ \t]*(?:\n[ \t]*\|[^\n]*\|[ \t]*)*)/gm;
+    const paragraphs = value => value.trim().split(/\n\n+/).filter(Boolean)
+      .map(paragraph => '<p>' + formatInline(paragraph) + '</p>').join('');
+    let html = '';
+    let cursor = 0;
+    for (const match of escaped.matchAll(blocks)) {
+      const [block, code, table] = match;
+      html += paragraphs(escaped.slice(cursor, match.index));
+      html += table ? formatTable(table) : '<pre><code>' + code.trim() + '</code></pre>';
+      cursor = match.index + block.length;
     }
-
-    // Format each token once so literal Markdown inside code stays intact.
-    text = text.replace(/```(?:cpp|c\+\+|text)?([\s\S]*?)```|`([^`]+)`|\*\*([^*]+)\*\*|\n\n+|\n/g,
-      function (token, blockCode, inlineCode, bold) {
-        if (blockCode !== undefined) return '<pre><code>' + blockCode.trim() + '</code></pre>';
-        if (inlineCode !== undefined) return '<code>' + inlineCode + '</code>';
-        if (bold !== undefined) {
-          return '<strong>' + bold.replace(/`([^`]+)`/g, '<code>$1</code>') + '</strong>';
-        }
-        return token === '\n' ? '<br>' : '</p><p>';
-      });
-
-    return '<p>' + text + '</p>';
+    return html + paragraphs(escaped.slice(cursor));
   }
 
   // Update lecture and stats counters
@@ -349,7 +349,14 @@
     if (statBookmarksEl) statBookmarksEl.textContent = String(bookmarkedIds.size);
 
     if (bookmarksOnly) {
+      const restoreFocus = buttonEl === document.activeElement;
+      const card = buttonEl?.closest('.question-card');
+      const neighbor = card?.nextElementSibling || card?.previousElementSibling;
       render();
+      if (restoreFocus) {
+        const nextButton = document.getElementById(neighbor?.id)?.querySelector('.bookmark-btn');
+        (nextButton || document.getElementById('bookmarkFilterBtn')).focus();
+      }
     }
   }
 
@@ -357,17 +364,33 @@
   function initEvents() {
     const questions = window.DS_QUESTION_BANK_DATA || [];
 
-    // Lecture Tabs
-    document.querySelectorAll('#lectureTabs .tab-btn').forEach(function (btn) {
+    // Lecture tabs use manual activation so browsing labels does not rerender the results.
+    const lectureTabs = [...document.querySelectorAll('#lectureTabs .tab-btn')];
+    const lecturePanel = document.getElementById('lecturePanel');
+    lectureTabs.forEach(function (btn, index) {
       btn.addEventListener('click', function () {
-        document.querySelectorAll('#lectureTabs .tab-btn').forEach(function (b) {
-          b.classList.remove('active');
-          b.setAttribute('aria-selected', 'false');
+        lectureTabs.forEach(function (tab) {
+          const selected = tab === btn;
+          tab.classList.toggle('active', selected);
+          tab.setAttribute('aria-selected', String(selected));
+          tab.tabIndex = selected ? 0 : -1;
         });
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-        currentLecture = btn.getAttribute('data-lec') || 'all';
+        lecturePanel.setAttribute('aria-labelledby', btn.id);
+        currentLecture = btn.dataset.lec;
         render();
+      });
+      btn.addEventListener('keydown', function (event) {
+        const last = lectureTabs.length - 1;
+        const rtl = getComputedStyle(btn).direction === 'rtl';
+        const targets = {
+          Home: 0,
+          End: last,
+          ArrowLeft: (index + (rtl ? 1 : last)) % lectureTabs.length,
+          ArrowRight: (index + (rtl ? last : 1)) % lectureTabs.length
+        };
+        if (!Object.hasOwn(targets, event.key)) return;
+        event.preventDefault();
+        lectureTabs[targets[event.key]].focus();
       });
     });
 
@@ -467,6 +490,7 @@
       });
       backToTopBtn.addEventListener('click', function () {
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.querySelector('.hero-title').focus({ preventScroll: true });
         window.scrollTo({ top: 0, behavior: reduceMotion ? 'instant' : 'smooth' });
       });
     }

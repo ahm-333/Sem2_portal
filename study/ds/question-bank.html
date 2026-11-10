@@ -29,7 +29,7 @@
         <div class="hero-header">
           <div class="hero-icon" aria-hidden="true">DS</div>
           <div>
-            <h1 class="hero-title">بنك أسئلة هياكل البيانات الشامل (CS213)</h1>
+            <h1 class="hero-title" tabindex="-1">بنك أسئلة هياكل البيانات الشامل (CS213)</h1>
             <div class="stat-pill" style="margin-top: 0.35rem;">
               <span>🎯 تدريب وتطبيق عملي لكافة امتحانات الميدتيرم، الفاينل، والتمارين</span>
             </div>
@@ -55,7 +55,7 @@
         <input type="text" 
                id="searchInput" 
                class="search-input" 
-               placeholder="ابحث في نص السؤال، الكود البرمجي C++، أو الشرح بالعربي... (مثال: Stack, Queue, Dijkstra, Tree)"
+               placeholder="ابحث في الأسئلة والشروحات"
                aria-label="البحث في الأسئلة والشروحات">
       </div>
 
@@ -63,25 +63,25 @@
       <div class="lecture-tabs-container">
         <span class="section-label">📌 تصنيف المحاضرات:</span>
         <div class="tabs-list" id="lectureTabs" role="tablist" aria-label="تبويبات المحاضرات">
-          <button class="tab-btn active" data-lec="all" role="tab" aria-selected="true">
+          <button class="tab-btn active" id="lecture-tab-all" data-lec="all" role="tab" aria-controls="lecturePanel" aria-selected="true" tabindex="0">
             🌟 جميع المحاضرات <span class="tab-count" id="count-all">97</span>
           </button>
-          <button class="tab-btn" data-lec="lec1" role="tab" aria-selected="false">
+          <button class="tab-btn" id="lecture-tab-lec1" data-lec="lec1" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             📚 المحاضرة 1: مدخل والمصفوفات <span class="tab-count" id="count-lec1">0</span>
           </button>
-          <button class="tab-btn" data-lec="lec2" role="tab" aria-selected="false">
+          <button class="tab-btn" id="lecture-tab-lec2" data-lec="lec2" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             🔗 المحاضرة 2: القوائم المتصلة <span class="tab-count" id="count-lec2">0</span>
           </button>
-          <button class="tab-btn" data-lec="lec3" role="tab" aria-selected="false">
+          <button class="tab-btn" id="lecture-tab-lec3" data-lec="lec3" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             🔄 المحاضرة 3: الاستدعاء الذاتي <span class="tab-count" id="count-lec3">0</span>
           </button>
-          <button class="tab-btn" data-lec="lec4" role="tab" aria-selected="false">
+          <button class="tab-btn" id="lecture-tab-lec4" data-lec="lec4" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             🥞 المحاضرة 4: المكدس (Stack) <span class="tab-count" id="count-lec4">0</span>
           </button>
-          <button class="tab-btn" data-lec="lec5" role="tab" aria-selected="false">
+          <button class="tab-btn" id="lecture-tab-lec5" data-lec="lec5" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             🚶‍♂️ المحاضرة 5: الطابور و STL <span class="tab-count" id="count-lec5">0</span>
           </button>
-          <button class="tab-btn" data-lec="adv" role="tab" aria-selected="false">
+          <button class="tab-btn" id="lecture-tab-adv" data-lec="adv" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             🌳 موضوعات الفاينل المتقدمة <span class="tab-count" id="count-adv">0</span>
           </button>
         </div>
@@ -125,8 +125,12 @@
     </div>
 
     <!-- Questions Feed Container -->
-    <main class="questions-container" id="questionsContainer" role="feed" aria-label="قائمة الأسئلة والتمارين">
-      <!-- Rendered dynamically by question-bank.js -->
+    <main id="questionBankMain">
+      <section id="lecturePanel" role="tabpanel" aria-labelledby="lecture-tab-all">
+        <div class="questions-container" id="questionsContainer" aria-label="قائمة الأسئلة والتمارين">
+          <!-- Rendered dynamically by question-bank.js -->
+        </div>
+      </section>
     </main>
 
   </div>

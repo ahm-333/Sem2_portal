@@ -411,8 +411,8 @@ async function register({ scenario: testScenario }) {
         }
       }, mode);
 
-      assert.deepEqual(await page.evaluate(auditActionContrast, '#lectureTabs .tab-btn.active'), [],
-        `Active lecture label and count meet WCAG AA in ${mode} mode`);
+      assert.deepEqual(await page.evaluate(auditActionContrast, '#lectureTabs'), [],
+        `Lecture labels and counts meet WCAG AA in ${mode} mode`);
 
       // Desktop screenshot (1440px)
       await page.setViewportSize({ width: 1440, height: 900 });
@@ -424,6 +424,58 @@ async function register({ scenario: testScenario }) {
       await page.waitForTimeout(100);
       await page.screenshot({ path: path.join(output, `ds-bank-${mode}-mobile.png`), fullPage: false });
     }
+  });
+
+  await testScenario('ds-bank-mobile-table-and-math', async ({ page, go }) => {
+    await go('study/ds/question-bank.html');
+    await page.locator('[data-lec="adv"]').tap();
+    const card = page.locator('#card-ADV-FIN25-Q4-II');
+    await card.locator('.solution-toggle-btn').tap();
+    for (const width of [320, 390, 1440]) {
+      await page.setViewportSize({ width, height: 640 });
+      const table = card.locator('.solution-table');
+      const layout = await table.evaluate(el => {
+        const box = el.parentElement;
+        box.scrollLeft = 100;
+        return {
+          scrollLeft: box.scrollLeft,
+          fits: box.getBoundingClientRect().right <= window.innerWidth && document.documentElement.scrollWidth === window.innerWidth,
+          overflow: getComputedStyle(box).overflowX,
+          lines: Math.round(el.rows[0].getBoundingClientRect().height / parseFloat(getComputedStyle(el.rows[0]).lineHeight))
+        };
+      });
+      assert.equal(layout.fits, true);
+      assert.equal(layout.overflow, 'auto');
+      assert.ok(layout.lines < 5, 'Headers stay readable');
+      if (width < 500) {
+        assert.ok(layout.scrollLeft > 0, 'Table scrolls inside its container');
+        assert.equal(await page.locator('#backToTopBtn').evaluate(e => getComputedStyle(e).position), 'static');
+      }
+    }
+    const math = card.locator('.explanation-ar-content bdi').filter({ hasText: '2 + 1 = 3' });
+    assert.equal(await math.getAttribute('dir'), 'ltr');
+    assert.match(await card.locator('.explanation-ar-content').textContent(), /A → C → D → E/);
+    assert.match(await card.locator('table').textContent(), /∞/);
+  }, { hasTouch: true, reducedMotion: 'reduce' });
+
+  await testScenario('ds-bank-keyboard-filters-and-bookmark-focus', async ({ page, go }) => {
+    await go('study/ds/question-bank.html');
+    const all = page.locator('[data-lec="all"]');
+    const firstLecture = page.locator('[data-lec="lec1"]');
+    await all.focus();
+    await page.keyboard.press('ArrowLeft');
+    assert.equal(await firstLecture.evaluate(e => e === document.activeElement), true);
+    await page.keyboard.press('Enter');
+    assert.equal(await firstLecture.getAttribute('aria-selected'), 'true');
+    assert.equal(await all.getAttribute('tabindex'), '-1');
+
+    const bookmark = page.locator('#card-L1-MID24-Q1-1 .bookmark-btn');
+    const filter = page.locator('#bookmarkFilterBtn');
+    await bookmark.press('Enter');
+    await filter.press('Enter');
+    await bookmark.press('Enter');
+    assert.equal(await filter.evaluate(e => e === document.activeElement), true);
+    assert.equal(await page.locator('.empty-state').isVisible(), true);
   });
 
   await testScenario('ds-bank-reduced-motion-back-to-top', async ({ page, go }) => {

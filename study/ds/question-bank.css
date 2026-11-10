@@ -105,7 +105,7 @@ body {
 }
 
 /* Focus visible */
-:is(a, button, input, select):focus-visible {
+:is(a, button, input, select, .solution-table-scroll):focus-visible {
   outline: 3px solid var(--focus-ring) !important;
   outline-offset: 2px !important;
 }
@@ -225,6 +225,11 @@ body {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.search-input::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
 .search-input:focus {
   outline: none;
   border-color: var(--primary);
@@ -281,6 +286,7 @@ body {
 
 .tab-count {
   background: rgba(0, 0, 0, 0.08);
+  color: var(--text-main);
   padding: 0.1rem 0.45rem;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -702,11 +708,19 @@ p code, li code, td code, th code {
   border: 1px solid var(--border-color);
 }
 
-/* Markdown tables */
+/* Keep wide tables inside the answer and let the reader pan the table itself. */
+.solution-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0.85rem 0;
+}
+
 .solution-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0.85rem 0;
+  min-width: min-content;
+  overflow-wrap: normal;
+  word-break: normal;
   font-size: 0.9rem;
   direction: ltr;
   text-align: left;
@@ -718,6 +732,7 @@ p code, li code, td code, th code {
 }
 
 .solution-table th {
+  white-space: nowrap;
   background: var(--bg-soft);
   color: var(--text-main);
   font-weight: 700;
@@ -798,6 +813,16 @@ html[data-theme="dark"] .solution-table tr:nth-child(even) {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* Use a footer control where the floating button would cover the cards. */
+@media (max-width: 1100px) {
+  #backToTopBtn {
+    position: static;
+    margin: 0 auto 1.75rem;
+    opacity: 1;
+    visibility: visible;
   }
 }
 
