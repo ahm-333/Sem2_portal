@@ -676,33 +676,25 @@
 
   // 3. SECTION SWITCHING
   function switchSection(targetId) {
-    const sections = ['sec1', 'sec2', 'sec3', 'sec4', 'sec5'];
-    sections.forEach(function(id) {
-      const el = document.getElementById(id);
-      if (el) {
-        if (id === targetId) {
-          el.classList.remove('hidden');
-          el.removeAttribute('hidden');
-        } else {
-          el.classList.add('hidden');
-          el.setAttribute('hidden', 'true');
-        }
-      }
+    document.querySelectorAll('.study-section').forEach(function(section) {
+      const active = section.id === targetId;
+      section.classList.toggle('hidden', !active);
+      section.hidden = !active;
     });
 
-    const tabBtns = document.querySelectorAll('.tab-btn, [data-target]');
-    tabBtns.forEach(function(btn) {
-      const t = btn.getAttribute('data-target');
-      if (t === targetId) {
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-      } else {
-        btn.classList.remove('active');
-        btn.setAttribute('aria-selected', 'false');
-      }
+    document.querySelectorAll('.tab-btn[data-target]').forEach(function(btn) {
+      const active = btn.dataset.target === targetId;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-current', String(active));
     });
+  }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  function revealFragment() {
+    const target = document.getElementById(window.location.hash.slice(1));
+    const section = target?.closest('.study-section');
+    if (!section) return;
+    switchSection(section.id);
+    target.scrollIntoView({ block: 'start', behavior: 'instant' });
   }
 
   // 4. QUIZ RENDERING
@@ -713,7 +705,7 @@
 
     const optionsHtml = q.options.map(function(opt, idx) {
       let btnClass = 'quiz-option-btn';
-      let icon = '<span class="opt-bullet">⚪</span>';
+      let icon = '<span class="opt-bullet" aria-hidden="true">⚪</span>';
 
       if (hasAnswered) {
         if (idx === q.correct) {
@@ -801,16 +793,35 @@
 
     userAnswers[qid] = idx;
     saveAnswers();
+    const cardId = btn.closest('.quiz-card').id;
+    const hadFocus = document.activeElement === btn;
     renderAllQuizzes();
+    const card = document.getElementById(cardId);
+    if (hadFocus) card.querySelectorAll('.quiz-option-btn')[idx].focus({ preventScroll: true });
+    document.getElementById('quizAnswerStatus').textContent = card.querySelector('.quiz-explanation').innerText;
   }
 
   // 5. EVENT LISTENERS & INITIALIZATION
   document.addEventListener('DOMContentLoaded', function() {
-    // Section tabs
-    document.querySelectorAll('.tab-btn, [data-target]').forEach(function(btn) {
+    // Correct the shared shell's fallback until it supports Computer Graphics.
+    const courseLink = document.querySelector('.study-portal-bar nav a');
+    if (courseLink) {
+      document.documentElement.dataset.studyCourse = 'computer-graphics';
+      courseLink.href = document.getElementById('cgCourseLink').href;
+      courseLink.textContent = 'رسوميات الحاسب';
+    }
+
+    document.querySelectorAll('.tab-btn[data-target], [data-section-link]').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        const target = btn.getAttribute('data-target');
-        if (target) switchSection(target);
+        const target = btn.dataset.target || btn.dataset.sectionLink;
+        switchSection(target);
+        if (btn.dataset.sectionLink) {
+          const heading = document.getElementById(target).querySelector('h2');
+          heading.tabIndex = -1;
+          heading.focus({ preventScroll: true });
+        }
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduceMotion ? 'instant' : 'smooth' });
       });
     });
 
@@ -824,6 +835,7 @@
         userAnswers = {};
         saveAnswers();
         renderAllQuizzes();
+        document.getElementById('quizAnswerStatus').textContent = '';
       });
     }
 
@@ -869,5 +881,7 @@
 
     // Initial render
     renderAllQuizzes();
+    revealFragment();
+    window.addEventListener('hashchange', revealFragment);
   });
 })();

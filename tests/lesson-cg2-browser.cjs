@@ -5,6 +5,7 @@ const http = require('node:http');
 const { chromium } = require('playwright');
 
 const root = path.resolve(__dirname, '..');
+const siteRoot = process.env.PORTAL_STATIC_DIR === 'dist' ? path.join(root, 'dist') : root;
 const output = path.resolve(process.env.PORTAL_TEST_OUTPUT || path.join(root, 'test-results'));
 fs.mkdirSync(output, { recursive: true });
 
@@ -32,7 +33,7 @@ async function scenario(name, fn, options = {}) {
   page.on('pageerror', e => errors.push(e.message));
 
   const go = async route => {
-    await page.goto(base + route, { waitUntil: 'load' });
+    await page.goto(new URL(route, base).href, { waitUntil: 'load' });
   };
 
   try {
@@ -251,7 +252,77 @@ async function register({ scenario: testScenario }) {
     assert(scrollWidth <= clientWidth + 2, `No horizontal overflow at 320px (scrollWidth: ${scrollWidth}, clientWidth: ${clientWidth})`);
   });
 
-  // Scenario 6: Visual verification and screenshot captures across modes and viewports
+  await testScenario('cg2-footer-navigation-and-course-link', async ({ page, go, errors }) => {
+    await go('study/cg/chapter-2.html');
+    const courseLink = page.locator('.study-portal-bar nav a');
+    const next = page.locator('#sec1').getByRole('button', { name: /انتقل للجزء الثاني/ });
+    await next.press('Enter');
+    assert(await page.locator('#sec2').isVisible(), 'Footer Next opens Part 2');
+    const previous = page.locator('#sec2').getByRole('button', { name: /الجزء الأول/ });
+    await previous.press('Enter');
+    assert(await page.locator('#sec1').isVisible(), 'Footer Previous opens Part 1');
+    assert.deepEqual(errors, [], 'Footer navigation reports no script errors');
+    assert.equal(new URL(await courseLink.evaluate(link => link.href)).searchParams.get('id'), 'computer-graphics');
+  });
+
+  await testScenario('cg2-quiz-deep-links', async ({ page, go }) => {
+    for (const route of ['study/cg/chapter-2.html', '/study/cg/chapter-2.html']) {
+      await go(route + '#sec5');
+      assert(await page.locator('#quiz-all').isVisible(), 'Section fragment opens the quiz');
+      await go(route + '#quiz-all');
+      await page.locator('#quiz-all').waitFor({ state: 'visible' });
+      assert(!(await page.locator('#sec1').isVisible()), 'Deep links only show the active section');
+    }
+  });
+
+  await testScenario('cg2-keyboard-feedback-and-contrast', async ({ page, go }) => {
+    await go('study/cg/chapter-2.html');
+    const card = page.locator('#quiz-sec1 .quiz-card').first();
+    const firstOption = card.getByRole('button').first();
+    await firstOption.press('Space');
+    assert(await firstOption.evaluate(button => button === document.activeElement), 'Answer retains keyboard focus');
+    const liveStatus = page.locator('[role="status"]').filter({ hasText: /إجابة/ });
+    assert.equal(await liveStatus.count(), 1, 'An answer updates a live status');
+
+    await page.locator('#btnThemeDark').click();
+    const wrongOption = card.getByRole('button').nth(3);
+    await wrongOption.press('Enter');
+    for (const status of ['incorrect', 'correct']) {
+      const option = await measureElementContrast(page, '#quiz-sec1 .opt-' + status);
+      assert(option >= 4.5, `Dark mode ${status} option contrast must be >= 4.5 (got ${option.toFixed(2)})`);
+      await card.locator('.opt-' + status).press('Enter');
+      const feedback = await measureElementContrast(page, '#quiz-sec1 .status-' + status);
+      assert(feedback >= 4.5, `Dark mode ${status} feedback contrast must be >= 4.5 (got ${feedback.toFixed(2)})`);
+    }
+  });
+
+  await testScenario('cg2-mobile-font-controls', async ({ page, go }) => {
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      await go('study/cg/chapter-2.html');
+      const paragraph = page.locator('#sec1 p.ar-block').first();
+      const readSize = () => paragraph.evaluate(el => parseFloat(getComputedStyle(el).fontSize));
+      const initialSize = await readSize();
+      await page.locator('#btnFontInc').click();
+      assert((await readSize()) > initialSize, `A+ enlarges the reading text at ${width}px`);
+      await page.locator('#btnFontDec').click();
+      assert.equal(await readSize(), initialSize, `A− restores the reading text at ${width}px`);
+    }
+  });
+
+  await testScenario('cg2-reduced-motion-section-navigation', async ({ page, go }) => {
+    await go('study/cg/chapter-2.html');
+    const immediateScroll = await page.evaluate(() => {
+      const control = document.querySelector('.tabs-nav [data-target="sec2"]');
+      window.scrollTo(0, 500);
+      const initialScroll = window.scrollY;
+      control.click();
+      return initialScroll > 0 && window.scrollY === 0;
+    });
+    assert(immediateScroll, 'Section navigation scrolls instantly with reduced motion enabled');
+  }, { reducedMotion: 'reduce' });
+
+  // Visual verification and screenshot captures across modes and viewports
   await testScenario('cg2-visual-verification-and-screenshots', async ({ page, go }) => {
     const shotDir = path.join(root, 'test-results');
     fs.mkdirSync(shotDir, { recursive: true });
@@ -295,8 +366,8 @@ async function runStandalone() {
   server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://localhost');
     const relative = decodeURIComponent(url.pathname).replace(/^\/Sem2_portal\//, '/');
-    const target = path.resolve(root, '.' + relative + (relative.endsWith('/') ? 'index.html' : ''));
-    if (!target.startsWith(root + path.sep)) {
+    const target = path.resolve(siteRoot, '.' + relative + (relative.endsWith('/') ? 'index.html' : ''));
+    if (!target.startsWith(siteRoot + path.sep)) {
       res.writeHead(403);
       res.end();
       return;
