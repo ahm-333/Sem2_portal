@@ -94,7 +94,9 @@
             el.inert = true;
           });
           focusable()[0]?.focus({preventScroll:true});
-          window.requestAnimationFrame(() => window.requestAnimationFrame(() => {if (expanded) focusable()[0]?.focus({preventScroll:true});}));
+          window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+            if (expanded && !drawer.contains(document.activeElement)) focusable()[0]?.focus({preventScroll:true});
+          }));
         } else {
           inertSiblings.forEach((value,el) => {el.inert = value;});
           inertSiblings.clear();

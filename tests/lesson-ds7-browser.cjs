@@ -55,6 +55,8 @@ async function scenario(name, fn, options = {}) {
 
 async function register({ scenario: testScenario }) {
   await testScenario('ds7-landmarks-drawer-and-keyboard-navigation', async ({ page, go, errors }) => {
+    await page.clock.install({ time: 0 });
+    await page.clock.pauseAt(1000);
     await go('study/ds/lecture-7.html');
     
     // WCAG 2.4.1: Main landmark and skip link
@@ -87,7 +89,9 @@ async function register({ scenario: testScenario }) {
     // Shift+Tab wrap to last link
     const lastDrawerLink = drawer.locator('nav a').last();
     await page.keyboard.press('Shift+Tab');
+    await page.clock.runFor(40);
     assert(await isFocused(lastDrawerLink), 'Shift+Tab should wrap to last focusable link in drawer');
+    await page.clock.resume();
 
     // Tab back to close button
     await page.keyboard.press('Tab');
@@ -156,6 +160,7 @@ async function register({ scenario: testScenario }) {
     assert(await page.evaluate(() => document.body.classList.contains('theme-sepia')));
     assert.deepEqual(await page.evaluate(auditActionContrast, '#mainReadingHeader'), []);
     assert.deepEqual(await page.evaluate(auditActionContrast, '#btn-open-toc'), []);
+    assert.deepEqual(await page.evaluate(auditActionContrast, '#btnResetQuiz'), []);
 
     // Switch to Dark
     await themeDark.press('Enter');
@@ -163,6 +168,7 @@ async function register({ scenario: testScenario }) {
     assert(await page.evaluate(() => document.body.classList.contains('theme-dark')));
     assert.deepEqual(await page.evaluate(auditActionContrast, '#mainReadingHeader'), []);
     assert.deepEqual(await page.evaluate(auditActionContrast, '#btn-open-toc'), []);
+    assert.deepEqual(await page.evaluate(auditActionContrast, '#btnResetQuiz'), []);
 
     // Switch to White (Light)
     await themeWhite.press('Enter');
@@ -170,6 +176,7 @@ async function register({ scenario: testScenario }) {
     assert(await page.evaluate(() => document.body.classList.contains('theme-white')));
     assert.deepEqual(await page.evaluate(auditActionContrast, '#mainReadingHeader'), []);
     assert.deepEqual(await page.evaluate(auditActionContrast, '#btn-open-toc'), []);
+    assert.deepEqual(await page.evaluate(auditActionContrast, '#btnResetQuiz'), []);
 
     await page.setViewportSize({ width: 320, height: 800 });
     for (let i = 0; i < 4; i++) await page.locator('#btnFontInc').press('Enter');
@@ -189,6 +196,19 @@ async function register({ scenario: testScenario }) {
     // Verify 16 questions
     const questionCards = page.locator('#quizContainer article');
     assert.equal(await questionCards.count(), 16, 'All 16 questions must be present');
+
+    const expression = page.locator('.quiz-option[data-qid="13"][data-opt="1"] > :first-child');
+    assert(await expression.evaluate(el => {
+      const node = el.firstChild;
+      const range = document.createRange();
+      range.setStart(node, 0);
+      range.setEnd(node, 1);
+      const first = range.getBoundingClientRect();
+      range.setStart(node, node.length - 1);
+      range.setEnd(node, node.length);
+      const last = range.getBoundingClientRect();
+      return first.top === last.top && first.left < last.left;
+    }), 'The leading number in the English formula must render before the function calls');
 
     // First question (id 1, correct option is index 2)
     const q1Correct = page.locator('.quiz-option[data-qid="1"][data-opt="2"]');
