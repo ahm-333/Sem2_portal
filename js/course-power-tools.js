@@ -361,6 +361,21 @@
         </article>
       `).join('');
 
+      const practiceBankHtml = hub.practiceBank ? `
+        <article class="smart-card mt-3" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.05);">
+          <div class="smart-card-header">
+            <div>
+              <span class="smart-card-tag" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">🎯 بنك تدريبي شامل</span>
+              <h3 class="smart-card-title mt-1">${escapeHtml(hub.practiceBank.title)}</h3>
+              <p class="text-xs text-[var(--text-muted)] mt-1">${escapeHtml(hub.practiceBank.sub)}</p>
+            </div>
+            <a href="${escapeHtml(hub.practiceBank.url)}" class="power-action-link is-interactive-tool" id="ds-practice-bank-link">
+              <span>📝 ${escapeHtml(hub.practiceBank.label || 'فتح بنك التدريبات')}</span>
+            </a>
+          </div>
+        </article>
+      ` : '';
+
       panelInteractive.innerHTML = `
         <div class="smart-card mb-4">
           <div class="smart-card-header">
@@ -376,6 +391,7 @@
         </div>
         <div class="space-y-3" id="interactive-units-list">
           ${itemsHtml}
+          ${practiceBankHtml}
         </div>
       `;
     }

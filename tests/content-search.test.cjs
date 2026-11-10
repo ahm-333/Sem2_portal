@@ -275,6 +275,6 @@ test('content-search: combination of course, kind, status, and TA filters works 
 
   // Filter by interactive kind
   const interactive = search.search({ kind: 'interactive' });
-  assert.equal(interactive.length, 25, 'Interactive kind should find 25 local lessons');
+  assert.equal(interactive.length, 30, 'Interactive kind should find 30 local lessons');
   assert.ok(interactive.every(e => Boolean(e.study || e.module)));
 });

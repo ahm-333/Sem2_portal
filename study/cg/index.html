@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html data-study-shell lang="ar" dir="rtl">
+<head>
+  <script src="../../js/shared/storage.js"></script>
+  <script src="../../js/theme.js"></script>
+  <meta charset="UTF-8">
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="../../js/analytics.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة الشرح التفاعلي — الرسم بالحاسوب (Computer Graphics)</title>
+  <link href="../../css/fonts/study/2afba70a56f3.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(59, 130, 246, 0.35);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Cairo', sans-serif;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.06) 0px, transparent 60%);
+      background-attachment: fixed;
+    }
+    .glass-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass-card:hover {
+      border-color: var(--border-highlight);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px -10px rgba(59, 130, 246, 0.2);
+    }
+    .btn-gradient {
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      transition: all 0.25s ease;
+    }
+    .btn-gradient:hover {
+      box-shadow: 0 8px 24px -4px rgba(59, 130, 246, 0.45);
+      transform: translateY(-2px);
+    }
+    html[data-theme="light"] body {
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    html[data-theme="light"] .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+    html[data-theme="light"] .text-white {
+      color: #0f172a !important;
+    }
+    html[data-theme="light"] .text-slate-300 {
+      color: #334155 !important;
+    }
+    html[data-theme="light"] .text-slate-400 {
+      color: #64748b !important;
+    }
+    html[data-theme="reading"] body {
+      background-color: #fbf7ee;
+      color: #2d261e;
+    }
+    html[data-theme="reading"] .glass-card {
+      background: rgba(250, 244, 230, 0.85);
+      border-color: rgba(68, 51, 34, 0.15);
+    }
+    html[data-theme="reading"] .text-white {
+      color: #2d261e !important;
+    }
+    html[data-theme="reading"] .text-slate-300 {
+      color: #4a3e31 !important;
+    }
+    html[data-theme="reading"] .text-slate-400 {
+      color: #6e5f4d !important;
+    }
+  </style>
+  <link rel="stylesheet" href="../../css/fonts/fonts.css">
+  <link rel="stylesheet" href="../../css/study-shell.css">
+</head>
+<body class="p-4 sm:p-6 lg:p-10 flex flex-col justify-between min-h-screen">
+
+  <!-- Main Container -->
+  <div class="max-w-5xl mx-auto w-full space-y-8">
+
+    <!-- Top Navigation Bar -->
+    <nav class="flex flex-wrap items-center justify-between gap-4 py-3 px-5 rounded-2xl glass-card border">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-black text-lg border border-blue-500/30">
+          CG
+        </div>
+        <div>
+          <span class="text-xs text-blue-400 font-bold block">منصة الشرح التفاعلي الذكي</span>
+          <h2 class="text-sm sm:text-base font-extrabold text-white">الرسم بالحاسوب (CS333 · Computer Graphics)</h2>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="../../subject.html?id=computer-graphics" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition border border-white/10">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span>الرجوع لصفحة المادة</span>
+        </a>
+        <a href="../../index.html" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/60 hover:bg-slate-800 text-slate-300 font-bold text-xs transition border border-white/5">
+          <span>🏠 الرئيسية</span>
+        </a>
+      </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <header class="glass-card rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+      <div class="absolute -top-24 -left-24 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 max-w-3xl space-y-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/30 text-blue-300 text-xs font-bold">
+          <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+          <span>شروحات تفاعلية مع اشتقاقات الخوارزميات والكويزات الموثقة</span>
+        </div>
+
+        <h1 class="text-2xl sm:text-4xl font-black text-white leading-tight">
+          دليل مذاكرة <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400">الرسم بالحاسوب (Computer Graphics)</span>
+        </h1>
+
+        <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-medium">
+          شرح تفاعلي شامل لكل فصل مع تفكيك خط أنابيب الرسوميات (Graphics Pipeline)، اشتقاق خوارزميات الـ Rasterization خطوة بخطوة، محاكي بريزنهام التفاعلي، ورسومات توضيحية لنماذج الكاميرا والألوان مع كويزات فورية على كل موضوع.
+        </p>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-white/10">
+          <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+            <span class="text-lg font-black text-blue-400 block font-mono">3</span>
+            <span class="text-xs text-slate-400">فصول مشروحة</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+            <span class="text-lg font-black text-sky-400 block font-mono">100%</span>
+            <span class="text-xs text-slate-400">تغطية للسلايدات</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+            <span class="text-lg font-black text-emerald-400 block font-mono">141</span>
+            <span class="text-xs text-slate-400">سؤال كويز موثق</span>
+          </div>
+          <div class="p-3 rounded-xl bg-white/5 border border-white/5">
+            <span class="text-lg font-black text-purple-400 block font-mono">3</span>
+            <span class="text-xs text-slate-400">أوضاع لراحة العين</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Lectures / Chapters Cards Section -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg sm:text-xl font-extrabold text-white flex items-center gap-2">
+          <span>📖</span>
+          <span>فهرس الفصول والشروحات التفاعلية</span>
+        </h3>
+        <span class="text-xs text-slate-400 font-mono">3 Chapters Available</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Card: Chapter 1 -->
+        <article class="glass-card rounded-3xl p-6 flex flex-col justify-between space-y-5 border relative overflow-hidden group">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="w-12 h-12 rounded-2xl bg-blue-600 text-white font-mono font-black text-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
+                Ch1
+              </span>
+              <span class="text-[11px] px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold">
+                59 سؤال كويز
+              </span>
+            </div>
+
+            <div>
+              <span class="text-xs font-mono text-slate-400 block mb-1">Chapter 1 · Lecture 1</span>
+              <h4 class="text-base sm:text-lg font-black text-white group-hover:text-blue-300 transition-colors">
+                الفصل الأول: مقدمة الرسم ونظم الرسوميات
+              </h4>
+              <p class="text-xs text-slate-400 mt-1 font-mono">Intro, Graphics Systems & Camera Model</p>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+              تطبيقات الرسم، معمارية الـ Frame Buffer وشاشات العرض، تكوين الصورة ونموذج الكاميرا الافتراضية، النظام البصري البشري، وواجهات البرمجة (APIs).
+            </p>
+
+            <div class="space-y-1.5 pt-2 border-t border-white/10 text-[11px] text-slate-400">
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>نموذج الكاميرا الافتراضية وزاوية الرؤية (FOV)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>مقارنة تفصيلية بين Raster و Random Scan</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>بنك كويزات بـ 59 سؤالاً بالعامية المصرية</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="chapter-1.html" class="btn-gradient w-full py-3 px-4 rounded-2xl text-white font-black text-xs text-center flex items-center justify-center gap-2 shadow-lg">
+            <span>فتح الشرح التفاعلي (Ch1)</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          </a>
+        </article>
+
+        <!-- Card: Chapter 2 -->
+        <article class="glass-card rounded-3xl p-6 flex flex-col justify-between space-y-5 border relative overflow-hidden group">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="w-12 h-12 rounded-2xl bg-indigo-600 text-white font-mono font-black text-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                Ch2
+              </span>
+              <span class="text-[11px] px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold">
+                48 سؤال كويز
+              </span>
+            </div>
+
+            <div>
+              <span class="text-xs font-mono text-slate-400 block mb-1">Chapter 2 · Lecture 2</span>
+              <h4 class="text-base sm:text-lg font-black text-white group-hover:text-blue-300 transition-colors">
+                الفصل الثاني: برمجة الرسوميات والكيانات والألوان
+              </h4>
+              <p class="text-xs text-slate-400 mt-1 font-mono">Primitives, Triangulation & Color Models</p>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+              معمارية الـ Graphics APIs، أوليات الإخراج، تمثيل المضلعات والتثليث (Triangulation)، النصوص والمنحنيات، ونماذج الألوان RGB ومخزن الشفافية Alpha.
+            </p>
+
+            <div class="space-y-1.5 pt-2 border-t border-white/10 text-[11px] text-slate-400">
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>تثليث المضلعات المحدبة والمقعرة</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>معادلات دمج الألوان وحسابات الـ Alpha Blending</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>كويز شامل بـ 48 سؤالاً مصنفاً بالأقسام</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="chapter-2.html" class="btn-gradient w-full py-3 px-4 rounded-2xl text-white font-black text-xs text-center flex items-center justify-center gap-2 shadow-lg">
+            <span>فتح الشرح التفاعلي (Ch2)</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          </a>
+        </article>
+
+        <!-- Card: Chapter 3 -->
+        <article class="glass-card rounded-3xl p-6 flex flex-col justify-between space-y-5 border relative overflow-hidden group">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="w-12 h-12 rounded-2xl bg-purple-600 text-white font-mono font-black text-lg flex items-center justify-center shadow-lg shadow-purple-500/20">
+                Ch3
+              </span>
+              <span class="text-[11px] px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20 font-bold">
+                محاكي بريزنهام التفاعلي
+              </span>
+            </div>
+
+            <div>
+              <span class="text-xs font-mono text-slate-400 block mb-1">Chapter 3 · Lecture 3</span>
+              <h4 class="text-base sm:text-lg font-black text-white group-hover:text-blue-300 transition-colors">
+                الفصل الثالث: أوليات الإخراج وخوارزمية بريزنهام
+              </h4>
+              <p class="text-xs text-slate-400 mt-1 font-mono">Bresenham's Line Algorithm & Solver</p>
+            </div>
+
+            <p class="text-xs text-slate-300 leading-relaxed">
+              تحويل المسح التفريدي (Scan Conversion)، اشتقاق خوارزمية بريزنهام الرياضي الكامل، جدول التتبع خطوة بخطوة، ومحاكي بريزنهام التفاعلي للخطوط.
+            </p>
+
+            <div class="space-y-1.5 pt-2 border-t border-white/10 text-[11px] text-slate-400">
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>اشتقاق Decision Parameters لجميع حالات الميل</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>محاكي Bresenham Solver تفاعلي بأي نقطتين</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-emerald-400">✓</span>
+                <span>كويز فوري وتتبع حسابي بـ 34 سؤالاً</span>
+              </div>
+            </div>
+          </div>
+
+          <a href="chapter-3.html" class="btn-gradient w-full py-3 px-4 rounded-2xl text-white font-black text-xs text-center flex items-center justify-center gap-2 shadow-lg">
+            <span>فتح الشرح التفاعلي (Ch3)</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          </a>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Study Guide Footer / Tips -->
+    <footer class="glass-card rounded-2xl p-5 text-center text-xs text-slate-400 border space-y-2">
+      <p class="font-bold text-slate-300">💡 نصيحة للمذاكرة:</p>
+      <p class="max-w-2xl mx-auto leading-relaxed">
+        الرسم بالحاسوب يعتمد على الفهم الرياضي والهندسي قبل البرمجة؛ ابدأ بفهم نموذج الكاميرا والـ Pipeline، ثم تدرب على اشتقاق خوارزمية بريزنهام بيدك باستخدام المحاكي التفاعلي، واختبر استيعابك عبر الكويزات الفورية.
+      </p>
+      <div class="pt-2 border-t border-white/10 flex items-center justify-center gap-4 text-[11px] text-slate-500">
+        <span>بوابة الذكاء الاصطناعي — سنة ثانية (الترم الثاني) 2026</span>
+        <span>•</span>
+        <a href="../../subject.html?id=computer-graphics" class="hover:text-blue-400 transition">العودة إلى صفحة مقرر الرسم بالحاسوب</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="../../js/shared/study-state.js"></script>
+  <script src="../../js/study-modules.js"></script>
+  <script src="../../js/study-session.js"></script>
+  <script src="../../js/study-shell.js"></script>
+</body>
+</html>

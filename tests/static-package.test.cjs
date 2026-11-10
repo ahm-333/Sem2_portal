@@ -54,7 +54,7 @@ test('standalone teaching bodies remain unchanged across platform line endings',
 });
 test('every local link in the standalone study pages resolves',()=>{
   const root=path.resolve(__dirname,'..'),missing=[];
-  for(const folder of ['arch','db','ds'])for(const name of fs.readdirSync(path.join(root,'study',folder)).filter(file=>file.endsWith('.html'))){
+  for(const folder of ['arch','db','ds','cg'])for(const name of fs.readdirSync(path.join(root,'study',folder)).filter(file=>file.endsWith('.html'))){
     const file=`study/${folder}/${name}`,html=fs.readFileSync(path.join(root,file),'utf8'),base=new URL('https://portal.local/'+file);
     for(const match of html.matchAll(/<a\b[^>]*\bhref=["']([^"']+)["']/gi)){
       const href=match[1];if(href.startsWith('#')||href.includes('${'))continue;

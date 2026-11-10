@@ -66,8 +66,14 @@
     } else if (event.key === 'Tab') {
       const items = controls(top.element);
       const index = items.indexOf(document.activeElement);
-    // Programmatic heading/article focus inside the dialog is a valid native Tab starting point.
-    if (index === -1 && document.activeElement !== top.element && top.element.contains(document.activeElement)) return;
+      // Programmatic heading/article focus inside the dialog is a valid native Tab starting point
+      // unless focus is at the boundary where native Tab would escape the dialog.
+      if (index === -1 && document.activeElement !== top.element && top.element.contains(document.activeElement)) {
+        const hasNext = event.shiftKey
+          ? items.some(item => (document.activeElement.compareDocumentPosition(item) & 2))
+          : items.some(item => (document.activeElement.compareDocumentPosition(item) & 4));
+        if (hasNext) return;
+      }
       if (!items.length || (event.shiftKey && index <= 0) || (!event.shiftKey && (index < 0 || index === items.length - 1))) {
         event.preventDefault();
         const next = event.shiftKey ? items.at(-1) : items[0];

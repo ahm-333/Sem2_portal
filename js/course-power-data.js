@@ -152,8 +152,16 @@
         items: [
           { title: 'المحاضرة 1: Arrays, Templates & ADTs', sub: 'شرح تفاعلي + تتبع الذاكرة + كويز 16 سؤال', url: 'study/ds/lecture-1.html' },
           { title: 'المحاضرة 2: Linked Lists (الأجزاء الـ 6 كاملة)', sub: 'تشريح العقد SLL / DLL / CLL بالإضافة والحذف', url: 'study/ds/lecture-2.html' },
-          { title: 'المحاضرة 3: Recursion & Memory Tracing', sub: 'تتبع الـ Call Stack، المضروب، فيبوناتشي، و 8-Queens', url: 'study/ds/lecture-3.html' }
-        ]
+          { title: 'المحاضرة 3: Recursion & Memory Tracing', sub: 'تتبع الـ Call Stack، المضروب، فيبوناتشي، و 8-Queens', url: 'study/ds/lecture-3.html' },
+          { title: 'المحاضرة 4: Stacks Data Structure', sub: 'شرح تفاعلي + محاكي الـ Stack + كويز 10 أسئلة', url: 'study/ds/lecture-4.html' },
+          { title: 'المحاضرة 7: Trees & Tree Traversals', sub: 'مصطلحات الأشجار وتمثيل العقد وتتبع المرور + كويز 16 سؤال', url: 'study/ds/lecture-7.html' }
+        ],
+        practiceBank: {
+          title: 'بنك أسئلة وتدريبات هياكل البيانات الشامل (97 سؤالاً)',
+          sub: 'تدريب تفاعلي شامل لجميع المحاضرات وأسئلة امتحانات الميدتيرم والفاينل',
+          url: 'study/ds/question-bank.html',
+          label: 'فتح بنك التدريبات الشامل'
+        }
       },
       midtermQuestions: [
         {
@@ -506,9 +514,14 @@
 
     'computer-graphics': {
       interactiveHub: {
-        status: 'coming-soon',
-        desc: 'الشرح التفاعلي للرسم بالحاسوب قادم قريبًا.',
-        items: []
+        mainUrl: 'study/cg/index.html',
+        mainLabel: 'فتح بوابة الشرح التفاعلي للرسم بالحاسوب',
+        desc: 'شروحات تفاعلية شاملة لمفاهيم الرسم بالحاسوب، معمارية الأنظمة، أوليات الإخراج، وخوارزميات Bresenham مع كويزات فورية.',
+        items: [
+          { title: 'الفصل الأول: مقدمة ونظم الرسوميات', sub: 'شرح تفاعلي + نموذج الكاميرا والنظام البصري + 59 سؤال كويز', url: 'study/cg/chapter-1.html' },
+          { title: 'الفصل الثاني: برمجة الرسوميات والكيانات والألوان', sub: 'معمارية الـ APIs والـ Triangulation ونماذج الألوان + 48 سؤال كويز', url: 'study/cg/chapter-2.html' },
+          { title: 'الفصل الثالث: أوليات الإخراج وخوارزمية بريزنهام', sub: 'اشتقاق Decision Parameters ومحاكي Bresenham التفاعلي + 34 سؤال كويز', url: 'study/cg/chapter-3.html' }
+        ]
       },
       midtermQuestions: [
         {

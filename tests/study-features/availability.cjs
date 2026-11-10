@@ -5,8 +5,8 @@ async function register({ scenario }) {
     // 1. Inventory all six courses
     const inventoryExpectations = {
       'data-structure': {
-        available: [1, 2, 3],
-        unavailable: [0, 4, 5]
+        available: [1, 2, 3, 4, 7],
+        unavailable: [0, 5]
       },
       'computer-architecture': {
         available: [1, 2, 3, 4, 5],
@@ -21,8 +21,8 @@ async function register({ scenario }) {
         unavailable: []
       },
       'computer-graphics': {
-        available: [],
-        unavailable: [1, 2, 3, 4, 5]
+        available: [1, 2, 3],
+        unavailable: [4, 5]
       },
       'report-writing': {
         available: [],
@@ -77,7 +77,7 @@ async function register({ scenario }) {
     const libraryCount = await page.evaluate(() => {
       return document.querySelectorAll('#library-results .studio-library-row').length;
     });
-    assert.equal(libraryCount, 25, 'Interactive library retains 25 catalogued lessons');
+    assert.equal(libraryCount, 30, 'Interactive library retains 30 catalogued lessons');
   });
 
   await scenario('availability-compaction-profile-rerender-preserves-id0-and-disabled-labels', async ({ page, go }) => {
@@ -159,15 +159,15 @@ async function register({ scenario }) {
     assert.equal(pointerResult.pointerEvents, 'none', 'Disabled button has pointer-events: none');
     assert.equal(pointerResult.cursor, 'not-allowed', 'Disabled button has cursor: not-allowed');
 
-    // 2. Crafted URL requesting standalone-study on computer-graphics lecture 1
-    const cgKey = JSON.stringify(['computer-graphics', 'lecture', '1']);
+    // 2. Crafted URL requesting standalone-study on computer-graphics lecture 4 (unavailable)
+    const cgKey = JSON.stringify(['computer-graphics', 'lecture', '4']);
     await go(`subject.html?id=computer-graphics&track=lecture&kind=lectures&item=${encodeURIComponent(cgKey)}&action=standalone-study`);
 
     const cgResult = await page.evaluate(() => {
       const modal = document.getElementById('lecture-study-modal');
       const isModalOpen = modal && modal.getAttribute('aria-hidden') === 'false';
       const notice = document.querySelector('.portal-nav-notice');
-      const row = document.querySelector(`[data-content-key='${JSON.stringify(['computer-graphics', 'lecture', '1'])}']`);
+      const row = document.querySelector(`[data-content-key='${JSON.stringify(['computer-graphics', 'lecture', '4'])}']`);
       const previewBtn = row?.querySelector('[data-preview-file]');
       const driveLink = row?.querySelector('a[href*="drive.google.com"]');
       return {
