@@ -14,10 +14,10 @@
   --primary: var(--study-accent, #2563eb);
   --primary-light: #eff6ff;
   --primary-dark: #1d4ed8;
-  --accent-green: #059669;
+  --accent-green: #047857;
   --accent-green-bg: #ecfdf5;
   --accent-green-border: #a7f3d0;
-  --accent-amber: #d97706;
+  --accent-amber: #92400e;
   --accent-amber-bg: #fffbeb;
   --accent-amber-border: #fde68a;
   --accent-purple: #7c3aed;
@@ -71,7 +71,7 @@ html[data-theme="reading"] {
   --accent-green: #2d6a4f;
   --accent-green-bg: #e8f5e9;
   --accent-green-border: #b7e4c7;
-  --accent-amber: #b07d2b;
+  --accent-amber: #805816;
   --accent-amber-bg: #fdf6e7;
   --accent-amber-border: #f4d58d;
   --accent-purple: #5c4d7d;
@@ -272,9 +272,9 @@ body {
   border-color: var(--border-card);
 }
 
-.tab-btn.active {
+#lectureTabs .tab-btn.active {
   background: var(--primary);
-  color: #ffffff !important;
+  color: var(--study-on-accent, #ffffff);
   border-color: var(--primary);
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
 }
@@ -288,8 +288,8 @@ body {
 }
 
 .tab-btn.active .tab-count {
-  background: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  background: var(--bg-card);
+  color: var(--text-main);
 }
 
 /* Secondary Filters: Sources & Types */
@@ -323,7 +323,7 @@ body {
   color: var(--text-main);
 }
 
-.filter-chip.active {
+.portal-practice-layout .filter-group .filter-chip.active {
   background: var(--text-main);
   color: var(--bg-card);
   border-color: var(--text-main);
@@ -573,9 +573,9 @@ body {
   border-color: var(--primary);
 }
 
-.solution-toggle-btn.active {
+.question-card .solution-toggle-btn.active[aria-expanded="true"] {
   background: var(--primary);
-  color: #ffffff;
+  color: var(--study-on-accent, #ffffff);
   border-color: var(--primary);
 }
 
@@ -759,7 +759,7 @@ html[data-theme="dark"] .solution-table tr:nth-child(even) {
 }
 
 /* Back to Top Button */
-.back-to-top {
+#backToTopBtn {
   position: fixed;
   bottom: 1.75rem;
   left: 1.75rem;
@@ -767,7 +767,7 @@ html[data-theme="dark"] .solution-table tr:nth-child(even) {
   height: 44px;
   border-radius: 50%;
   background: var(--primary);
-  color: #ffffff;
+  color: var(--study-on-accent, #ffffff);
   border: none;
   font-size: 1.3rem;
   display: flex;
@@ -781,12 +781,12 @@ html[data-theme="dark"] .solution-table tr:nth-child(even) {
   z-index: 99;
 }
 
-.back-to-top.show {
+#backToTopBtn.show {
   opacity: 1;
   visibility: visible;
 }
 
-.back-to-top:hover {
+#backToTopBtn:hover {
   background: var(--primary-dark);
   transform: translateY(-2px);
 }

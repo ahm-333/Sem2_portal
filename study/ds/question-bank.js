@@ -73,6 +73,7 @@
   let currentLecture = 'all';
   let currentSource = 'all';
   let currentType = 'all';
+  let bookmarksOnly = false;
   let searchQuery = '';
   let showAllSolutions = false;
   let bookmarkedIds = loadInitialBookmarks();
@@ -92,6 +93,8 @@
   function formatMarkdown(text) {
     if (!text || typeof text !== 'string') return '';
 
+    text = escapeHtml(text);
+
     // Handle Markdown tables
     if (text.includes('|') && text.includes('---')) {
       const lines = text.trim().split('\n');
@@ -105,11 +108,11 @@
           if (!inTable) {
             inTable = true;
             const cols = line.split('|').filter(c => c.trim() !== '');
-            tableHtml += '<tr>' + cols.map(c => '<th>' + escapeHtml(c.trim()) + '</th>').join('') + '</tr></thead><tbody>';
+            tableHtml += '<tr>' + cols.map(c => '<th>' + c.trim() + '</th>').join('') + '</tr></thead><tbody>';
             if (i + 1 < lines.length && lines[i + 1].includes('---')) i++;
           } else {
             const cols = line.split('|').filter(c => c.trim() !== '');
-            tableHtml += '<tr>' + cols.map(c => '<td>' + escapeHtml(c.trim()) + '</td>').join('') + '</tr>';
+            tableHtml += '<tr>' + cols.map(c => '<td>' + c.trim() + '</td>').join('') + '</tr>';
           }
         } else {
           if (inTable) {
@@ -127,24 +130,17 @@
       text = newLines.join('\n');
     }
 
-    // Code blocks ```cpp ... ```
-    text = text.replace(/```(?:cpp|c\+\+|text)?([\s\S]*?)```/g, function (_, code) {
-      return '<pre><code>' + escapeHtml(code.trim()) + '</code></pre>';
-    });
+    // Format each token once so literal Markdown inside code stays intact.
+    text = text.replace(/```(?:cpp|c\+\+|text)?([\s\S]*?)```|`([^`]+)`|\*\*([^*]+)\*\*|\n\n+|\n/g,
+      function (token, blockCode, inlineCode, bold) {
+        if (blockCode !== undefined) return '<pre><code>' + blockCode.trim() + '</code></pre>';
+        if (inlineCode !== undefined) return '<code>' + inlineCode + '</code>';
+        if (bold !== undefined) {
+          return '<strong>' + bold.replace(/`([^`]+)`/g, '<code>$1</code>') + '</strong>';
+        }
+        return token === '\n' ? '<br>' : '</p><p>';
+      });
 
-    // Inline code `...`
-    text = text.replace(/`([^`]+)`/g, function (_, code) {
-      return '<code>' + escapeHtml(code) + '</code>';
-    });
-
-    // Bold **...**
-    text = text.replace(/\*\*([^*]+)\*\*/g, function (_, content) {
-      return '<strong>' + escapeHtml(content) + '</strong>';
-    });
-
-    // Paragraphs & newlines
-    text = text.replace(/\n\n+/g, '</p><p>');
-    text = text.replace(/\n/g, '<br>');
     return '<p>' + text + '</p>';
   }
 
@@ -184,11 +180,8 @@
       if (currentLecture !== 'all' && q.lecture !== currentLecture) return false;
       if (currentSource !== 'all' && q.source !== currentSource) return false;
 
-      if (currentType === 'bookmarked') {
-        if (!bookmarkedIds.has(q.id)) return false;
-      } else if (currentType !== 'all' && q.type !== currentType) {
-        return false;
-      }
+      if (currentType !== 'all' && q.type !== currentType) return false;
+      if (bookmarksOnly && !bookmarkedIds.has(q.id)) return false;
 
       if (searchQuery) {
         const textToSearch = (
@@ -210,9 +203,9 @@
     if (activeFilterNameEl) {
       const activeLecBtn = document.querySelector('#lectureTabs .tab-btn.active');
       const lecLabel = activeLecBtn ? activeLecBtn.textContent.replace(/\d+$/, '').trim() : 'جميع المحاضرات';
-      const activeTypeBtn = document.querySelector('#typeFilters .filter-chip.active');
+      const activeTypeBtn = document.querySelector('#typeFilters [data-type].active');
       const typeLabel = activeTypeBtn ? activeTypeBtn.textContent.trim() : 'جميع الأنواع';
-      activeFilterNameEl.textContent = lecLabel + ' • ' + typeLabel;
+      activeFilterNameEl.textContent = lecLabel + ' • ' + typeLabel + (bookmarksOnly ? ' • المفضلة فقط' : '');
     }
 
     if (filtered.length === 0) {
@@ -239,7 +232,8 @@
           const opt = q.options[o];
           const isCorrect = q.correctAnswerEn && opt.toLowerCase().includes(q.correctAnswerEn.toLowerCase().substring(0, 15));
           const optionClass = 'option-item' + (isSolVisible && isCorrect ? ' correct-option' : '');
-          optionsHtml += '<div class="' + optionClass + '" role="listitem">' + escapeHtml(opt) + '</div>';
+          optionsHtml += '<div class="' + optionClass + '" role="listitem"' +
+            (isCorrect ? ' data-correct-choice' : '') + '>' + escapeHtml(opt) + '</div>';
         }
         optionsHtml += '</div>';
       }
@@ -312,24 +306,20 @@
     container.innerHTML = cardsHtml;
   }
 
-  // Toggle single solution
-  function toggleSolution(cardId) {
-    const solEl = document.getElementById('sol-' + cardId);
-    const btnEl = document.getElementById('btn-sol-' + cardId);
-    if (!solEl || !btnEl) return;
+  function setSolutionVisibility(button, solution, visible) {
+    solution.classList.toggle('show', visible);
+    button.classList.toggle('active', visible);
+    button.textContent = visible ? '🙈 إخفاء الحل' : '👁️ إظهار الحل والشرح بالعربي';
+    button.setAttribute('aria-expanded', String(visible));
+    button.closest('.question-card').querySelectorAll('[data-correct-choice]').forEach(function (option) {
+      option.classList.toggle('correct-option', visible);
+    });
+  }
 
-    const isShown = solEl.classList.contains('show');
-    if (isShown) {
-      solEl.classList.remove('show');
-      btnEl.classList.remove('active');
-      btnEl.textContent = '👁️ إظهار الحل والشرح بالعربي';
-      btnEl.setAttribute('aria-expanded', 'false');
-    } else {
-      solEl.classList.add('show');
-      btnEl.classList.add('active');
-      btnEl.textContent = '🙈 إخفاء الحل';
-      btnEl.setAttribute('aria-expanded', 'true');
-    }
+  function toggleSolution(cardId) {
+    const solution = document.getElementById('sol-' + cardId);
+    const button = document.getElementById('btn-sol-' + cardId);
+    if (solution && button) setSolutionVisibility(button, solution, !solution.classList.contains('show'));
   }
 
   // Toggle bookmark
@@ -358,7 +348,7 @@
     const statBookmarksEl = document.getElementById('statBookmarks');
     if (statBookmarksEl) statBookmarksEl.textContent = String(bookmarkedIds.size);
 
-    if (currentType === 'bookmarked') {
+    if (bookmarksOnly) {
       render();
     }
   }
@@ -396,9 +386,9 @@
     });
 
     // Type Filter Chips
-    document.querySelectorAll('#typeFilters .filter-chip').forEach(function (chip) {
+    document.querySelectorAll('#typeFilters [data-type]').forEach(function (chip) {
       chip.addEventListener('click', function () {
-        document.querySelectorAll('#typeFilters .filter-chip').forEach(function (c) {
+        document.querySelectorAll('#typeFilters [data-type]').forEach(function (c) {
           c.classList.remove('active');
           c.setAttribute('aria-pressed', 'false');
         });
@@ -408,6 +398,16 @@
         render();
       });
     });
+
+    const bookmarkFilterBtn = document.getElementById('bookmarkFilterBtn');
+    if (bookmarkFilterBtn) {
+      bookmarkFilterBtn.addEventListener('click', function () {
+        bookmarksOnly = !bookmarksOnly;
+        bookmarkFilterBtn.classList.toggle('active', bookmarksOnly);
+        bookmarkFilterBtn.setAttribute('aria-pressed', String(bookmarksOnly));
+        render();
+      });
+    }
 
     // Search input with debounce
     const searchInput = document.getElementById('searchInput');
@@ -427,29 +427,12 @@
     if (toggleAllBtn) {
       toggleAllBtn.addEventListener('click', function () {
         showAllSolutions = !showAllSolutions;
-        if (showAllSolutions) {
-          toggleAllBtn.textContent = '🙈 إخفاء كافة الحلول';
-          toggleAllBtn.setAttribute('aria-expanded', 'true');
-          document.querySelectorAll('.solution-wrapper').forEach(function (w) {
-            w.classList.add('show');
-          });
-          document.querySelectorAll('.solution-toggle-btn').forEach(function (b) {
-            b.classList.add('active');
-            b.textContent = '🙈 إخفاء الحل';
-            b.setAttribute('aria-expanded', 'true');
-          });
-        } else {
-          toggleAllBtn.textContent = '👁️ إظهار كافة الحلول';
-          toggleAllBtn.setAttribute('aria-expanded', 'false');
-          document.querySelectorAll('.solution-wrapper').forEach(function (w) {
-            w.classList.remove('show');
-          });
-          document.querySelectorAll('.solution-toggle-btn').forEach(function (b) {
-            b.classList.remove('active');
-            b.textContent = '👁️ إظهار الحل والشرح بالعربي';
-            b.setAttribute('aria-expanded', 'false');
-          });
-        }
+        toggleAllBtn.textContent = showAllSolutions ? '🙈 إخفاء كافة الحلول' : '👁️ إظهار كافة الحلول';
+        toggleAllBtn.setAttribute('aria-expanded', String(showAllSolutions));
+        document.querySelectorAll('.solution-toggle-btn').forEach(function (button) {
+          const solution = document.getElementById(button.getAttribute('aria-controls'));
+          setSolutionVisibility(button, solution, showAllSolutions);
+        });
       });
     }
 
@@ -483,7 +466,8 @@
         else backToTopBtn.classList.remove('show');
       });
       backToTopBtn.addEventListener('click', function () {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduceMotion ? 'instant' : 'smooth' });
       });
     }
 

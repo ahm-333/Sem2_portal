@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
 const { chromium } = require('playwright');
+const { auditActionContrast } = require('./control-contrast.cjs');
 
 const root = path.resolve(__dirname, '..');
 const output = path.resolve(process.env.PORTAL_TEST_OUTPUT || path.join(root, 'test-results'));
@@ -101,6 +102,10 @@ async function register({ scenario: testScenario }) {
     assert.equal(dataCheck.totalCount, '97', 'Total count stat shows 97');
     assert.equal(dataCheck.displayedCount, '97', 'Displayed count shows 97');
 
+    const templateCard = page.locator('#card-L1-FIN25-Q1-2');
+    assert.match(await templateCard.locator('.question-body-en').textContent(), /template <typename T>/);
+    assert.match(await templateCard.locator('.solution-en-content').textContent(), /Box<double>/);
+
     const expectedTypes = ['fill', 'compare', 'coding', 'mcq', 'math'];
     for (const t of expectedTypes) {
       assert.ok(dataCheck.types.includes(t), `Type '${t}' preserved in bank`);
@@ -198,20 +203,18 @@ async function register({ scenario: testScenario }) {
 
     // Trigger empty state with an impossible combination
     await page.click('[data-source="slides"]');
-    await page.click('[data-type="compare"]');
+    await page.click('[data-type="mcq"]');
     await page.click('[data-lec="lec3"]');
     const emptyCheck = await page.evaluate(() => {
       const cards = document.querySelectorAll('.question-card');
       const emptyEl = document.querySelector('.empty-state');
       return {
         cardCount: cards.length,
-        hasEmptyState: !!emptyEl && emptyEl.offsetParent !== null,
-        emptyText: emptyEl?.textContent || ''
+        hasEmptyState: !!emptyEl && emptyEl.offsetParent !== null
       };
     });
-    if (emptyCheck.cardCount === 0) {
-      assert.equal(emptyCheck.hasEmptyState, true, 'Empty state rendered when no cards match');
-    }
+    assert.equal(emptyCheck.cardCount, 0, 'No cards match the selected filters');
+    assert.equal(emptyCheck.hasEmptyState, true, 'Empty state rendered when no cards match');
   });
 
   // Scenario 4: Live search across questions and explanations
@@ -282,6 +285,14 @@ async function register({ scenario: testScenario }) {
     await page.click('#bookmarkFilterBtn');
     const bookmarkedCardsCount = await page.evaluate(() => document.querySelectorAll('.question-card').length);
     assert.equal(bookmarkedCardsCount, 2, 'Bookmark filter shows exactly 2 cards');
+    await page.click('[data-type="mcq"]');
+    assert.equal(await page.locator('#bookmarkFilterBtn').getAttribute('aria-pressed'), 'true');
+    assert.equal(await page.locator('.question-card').count(), 0, 'Neither bookmarked question is an MCQ');
+    await page.click('#bookmarkFilterBtn');
+    await page.click('#card-L1-FIN25-Q1-2 .bookmark-btn');
+    await page.click('#bookmarkFilterBtn');
+    assert.equal(await page.locator('.question-card').count(), 1, 'Only the bookmarked MCQ matches');
+    assert.equal(await page.locator('.question-card').getAttribute('id'), 'card-L1-FIN25-Q1-2');
   });
 
   // Scenario 6: Solution reveal, toggle all, and keyboard accessibility
@@ -315,8 +326,14 @@ async function register({ scenario: testScenario }) {
     });
     assert.equal(allVisible, true, 'All solutions opened after clicking toggle all');
 
+    await page.click('[data-type="mcq"]');
+    const correctChoices = page.locator('.correct-option');
+    assert.ok(await correctChoices.count() > 0, 'Revealed MCQs mark the correct choices');
+
     // Collapse All
     await toggleAllBtn.click();
+    assert.equal(await correctChoices.count(), 0, 'Hidden MCQs do not reveal correct choices');
+    await page.click('[data-type="all"]');
     const allCollapsed = await page.evaluate(() => {
       const wrappers = document.querySelectorAll('.solution-wrapper');
       return [...wrappers].every(w => !w.classList.contains('show'));
@@ -335,6 +352,7 @@ async function register({ scenario: testScenario }) {
 
   // Scenario 7: WCAG contrast, responsive viewports (320px, 390px, 1440px), LTR code blocks
   await testScenario('ds-bank-wcag-and-responsiveness', async ({ page, go }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await go('study/ds/question-bank.html');
 
     // 1. Mobile 320px: verify no horizontal page scroll
@@ -393,6 +411,9 @@ async function register({ scenario: testScenario }) {
         }
       }, mode);
 
+      assert.deepEqual(await page.evaluate(auditActionContrast, '#lectureTabs .tab-btn.active'), [],
+        `Active lecture label and count meet WCAG AA in ${mode} mode`);
+
       // Desktop screenshot (1440px)
       await page.setViewportSize({ width: 1440, height: 900 });
       await page.waitForTimeout(100);
@@ -402,6 +423,28 @@ async function register({ scenario: testScenario }) {
       await page.setViewportSize({ width: 390, height: 844 });
       await page.waitForTimeout(100);
       await page.screenshot({ path: path.join(output, `ds-bank-${mode}-mobile.png`), fullPage: false });
+    }
+  });
+
+  await testScenario('ds-bank-reduced-motion-back-to-top', async ({ page, go }) => {
+    await go('study/ds/question-bank.html');
+    const button = page.locator('#backToTopBtn');
+    for (const [preference, expected] of [['reduce', 'instant'], ['no-preference', 'smooth']]) {
+      await page.emulateMedia({ reducedMotion: preference });
+      await page.evaluate(() => window.scrollTo({ top: 600, behavior: 'instant' }));
+      await button.waitFor({ state: 'visible' });
+      const behavior = await button.evaluate(el => {
+        const originalScrollTo = window.scrollTo;
+        let requested;
+        window.scrollTo = options => { requested = options.behavior; };
+        try {
+          el.click();
+          return requested;
+        } finally {
+          window.scrollTo = originalScrollTo;
+        }
+      });
+      assert.equal(behavior, expected);
     }
   });
 }

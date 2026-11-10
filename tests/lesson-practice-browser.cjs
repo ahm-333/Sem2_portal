@@ -436,9 +436,9 @@ async function register({ scenario: testScenario }) {
     assert.equal(afterPracticeLoaded, true, 'Question bank loads when practice area is opened');
   });
 
-  // Test 7: WCAG color contrast and keyboard navigation audit across themes
-  await testScenario('wcag-contrast-and-keyboard-navigation', async ({ page, go }) => {
-    for (const theme of ['light', 'dark', 'reading']) {
+  // Start each theme in a fresh context so saved Practice state cannot carry over.
+  for (const theme of ['light', 'dark', 'reading']) {
+    await testScenario(`wcag-contrast-and-keyboard-navigation-${theme}`, async ({ page, go }) => {
       await go('study/db/lesson.html?lecture=2');
       await page.locator('.topic-block-wrapper').first().waitFor();
 
@@ -470,8 +470,8 @@ async function register({ scenario: testScenario }) {
       await page.keyboard.press('Enter');
       assert.equal(await page.locator('#full-quiz-view').isVisible(), true);
       assert.deepEqual(await page.evaluate(auditActionContrast, '#full-quiz-host'), [], `Full quiz contrast meets WCAG AA in ${theme} theme`);
-    }
-  });
+    });
+  }
 }
 
 async function runStandalone() {
