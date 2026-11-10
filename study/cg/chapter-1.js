@@ -128,9 +128,28 @@
   }
 
   window.handleQuizAnswer = function (qId, optionIdx) {
+    const question = QUIZ_QUESTIONS.find(q => q.id === qId);
+    if (!question) return;
+
+    const focusedOption = document.activeElement.closest('.quiz-opt-btn');
+    const focusedCardId = focusedOption?.closest('article')?.id;
+    const focusedOptionIdx = focusedOption?.dataset.option;
+
     userAnswers[qId] = optionIdx;
     saveAnswers();
     renderAllQuizzes();
+
+    if (focusedCardId) {
+      document.getElementById(focusedCardId)
+        ?.querySelector(`button[data-option="${focusedOptionIdx}"]`)
+        ?.focus({ preventScroll: true });
+    }
+
+    const status = document.getElementById('quiz-answer-status');
+    if (status) {
+      const result = optionIdx === question.correct ? 'إجابة صحيحة' : 'إجابة غير صحيحة';
+      status.textContent = `${result}. ${question.ammiya || question.explanation}`;
+    }
   };
 
   // Event delegation for quiz option buttons
@@ -272,8 +291,18 @@
     }
   }
 
+  function setGraphicsBreadcrumb() {
+    // The shared shell does not register Graphics until the catalog wiring change.
+    const breadcrumb = document.querySelector('.study-portal-bar nav a');
+    if (!breadcrumb) return;
+    document.documentElement.dataset.studyCourse = 'computer-graphics';
+    breadcrumb.href = '../../subject.html?id=computer-graphics&kind=lectures';
+    breadcrumb.textContent = 'الرسم بالحاسوب';
+  }
+
   // 8. INITIALIZATION
   document.addEventListener('DOMContentLoaded', function () {
+    setGraphicsBreadcrumb();
     loadSavedAnswers();
     renderAllQuizzes();
 
@@ -281,6 +310,7 @@
     const btnReset = document.getElementById('btnResetAllQuizzes');
     if (btnReset) {
       btnReset.addEventListener('click', function () {
+        document.getElementById('quiz-answer-status').textContent = '';
         Object.keys(userAnswers).forEach(k => delete userAnswers[k]);
         saveAnswers();
         renderAllQuizzes();

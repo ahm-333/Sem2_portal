@@ -3,9 +3,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
 const { chromium } = require('playwright');
+const { packageSite } = require('../tools/package-site.cjs');
 const { extractArrays } = require('../tools/build-question-bank.cjs');
 
 const root = path.resolve(__dirname, '..');
+const release = path.join(root, 'dist');
 const output = path.resolve(process.env.PORTAL_TEST_OUTPUT || path.join(root, 'test-results'));
 fs.mkdirSync(output, { recursive: true });
 
@@ -19,7 +21,9 @@ async function scenario(name, fn, options = {}) {
     viewport: { width: 1440, height: 900 },
     ...options
   });
-  await context.route('https://**', route => route.abort());
+  await context.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin
+    ? route.continue()
+    : route.abort());
   await context.addInitScript(() => {
     if (location.hostname === '127.0.0.1') {
       localStorage.setItem('sem2_first_visit_configured', 'true');
@@ -33,7 +37,7 @@ async function scenario(name, fn, options = {}) {
   page.on('pageerror', e => errors.push(e.message));
   page.on('response', res => {
     if (res.status() >= 400) {
-      console.log('404/ERR RESPONSE:', res.status(), res.url());
+      errors.push(`HTTP ${res.status()}: ${res.url()}`);
     }
   });
   const go = async route => {
@@ -42,6 +46,7 @@ async function scenario(name, fn, options = {}) {
 
   try {
     await fn({ page, context, go, errors });
+    assert.deepEqual(errors, [], 'No page or local resource errors');
     results.push({ name, passed: true });
     console.log('PASS', name);
   } catch (e) {
@@ -130,6 +135,13 @@ async function register({ scenario: testScenario }) {
   await testScenario('cg1-shared-reading-presentation-and-outline', async ({ page, go }) => {
     await go('study/cg/chapter-1.html');
 
+    assert.equal(await page.locator('#mainReadingHeader').evaluate(el => getComputedStyle(el).position), 'sticky');
+    assert.equal(await page.locator('#mainReadingHeader > div').evaluate(el => getComputedStyle(el).display), 'flex');
+    assert.equal(await page.locator('#mainReadingHeader a svg').evaluate(el => el.getBoundingClientRect().width), 12);
+    const breadcrumb = page.locator('.study-portal-bar nav a');
+    assert.match(await breadcrumb.getAttribute('href'), /subject\.html\?id=computer-graphics&kind=lectures$/);
+    assert.equal(await breadcrumb.innerText(), 'الرسم بالحاسوب');
+
     // 1. Verify TOC drawer controls and accessible attributes
     const btnOpenToc = page.locator('#btn-open-toc');
     assert.equal(await btnOpenToc.count(), 1, '#btn-open-toc must exist');
@@ -175,7 +187,10 @@ async function register({ scenario: testScenario }) {
     const lineSpacingBtn = page.locator('#btnLineSpacing');
     assert.equal(await lineSpacingBtn.count(), 1, '#btnLineSpacing must exist');
     const initialLhText = await lineSpacingBtn.innerText();
+    const prose = page.locator('#sec1 p.ar-block').first();
+    const initialLineHeight = await prose.evaluate(el => parseFloat(getComputedStyle(el).lineHeight));
     await lineSpacingBtn.click();
+    assert(await prose.evaluate(el => parseFloat(getComputedStyle(el).lineHeight)) < initialLineHeight);
     assert.notEqual(await lineSpacingBtn.innerText(), initialLhText, 'Line spacing updates on click');
   });
 
@@ -248,6 +263,8 @@ async function register({ scenario: testScenario }) {
       `Dark body text contrast must be at least 4.5:1 (actual: ${darkBodyContrast.toFixed(2)}:1)`
     );
 
+    assert(await measureSelectorContrast('.tab-btn.active') >= 4.5, 'Active section label is legible in dark mode');
+
     // Verify LTR direction on English terms and code tokens
     const ltrCheck = await page.evaluate(() => {
       const tokens = [...document.querySelectorAll('.ltr-inline, .ltr-token, code.inline-code, pre.code-block, .font-mono')];
@@ -274,7 +291,10 @@ async function register({ scenario: testScenario }) {
     const p1Container = page.locator('#quiz-sec1');
     assert.equal(await p1Container.count(), 1, '#quiz-sec1 must exist');
     const firstOption = p1Container.locator('article').first().locator('button.quiz-opt-btn, .quiz-option').nth(1);
-    await firstOption.click();
+    await firstOption.focus();
+    await page.keyboard.press('Enter');
+    assert(await firstOption.evaluate(el => el === document.activeElement), 'Answer keeps keyboard focus');
+    assert.match(await page.locator('#quiz-answer-status').textContent(), /إجابة صحيحة/);
 
     // 3. Verify userAnswers updated in page state
     const answerState = await page.evaluate(() => window.userAnswers['p1_mcq1']);
@@ -310,6 +330,17 @@ async function register({ scenario: testScenario }) {
     });
     assert.equal(overflow320, true, 'Page must not horizontally overflow on 320px viewport');
 
+    const camera = page.locator('#sec3 svg');
+    assert(await camera.isVisible(), 'Camera figure renders with third-party requests blocked');
+    const rays = await camera.locator('polyline').evaluateAll(lines =>
+      lines.map(line => Array.from(line.points, ({ x, y }) => [x, y]))
+    );
+    assert.deepEqual(rays.map(ray => ray[1]), [[270, 110], [270, 110]], 'Both rays pass through the aperture');
+    assert(rays.every(ray => ray[2][0] === 488), 'Both rays end on the film plane');
+    const formula = page.getByRole('math', { name: '350 nanometers to 780 nanometers' });
+    assert(await formula.isVisible());
+    assert.match(await formula.innerText(), /350 nm\s+to\s+780 nm/);
+
     // 2. Mobile 390px
     await page.setViewportSize({ width: 390, height: 844 });
     const overflow390 = await page.evaluate(() => {
@@ -332,11 +363,12 @@ async function register({ scenario: testScenario }) {
 }
 
 async function runStandalone() {
+  packageSite();
   server = http.createServer((req, res) => {
     const url = new URL(req.url, 'http://localhost');
     const relative = decodeURIComponent(url.pathname).replace(/^\/Sem2_portal\//, '/');
-    const target = path.resolve(root, '.' + relative + (relative.endsWith('/') ? 'index.html' : ''));
-    if (!target.startsWith(root + path.sep)) {
+    const target = path.resolve(release, '.' + relative + (relative.endsWith('/') ? 'index.html' : ''));
+    if (!target.startsWith(release + path.sep)) {
       res.writeHead(403);
       res.end();
       return;
@@ -351,6 +383,7 @@ async function runStandalone() {
         '.html': 'text/html; charset=utf-8',
         '.js': 'text/javascript; charset=utf-8',
         '.css': 'text/css',
+        '.woff2': 'font/woff2',
         '.png': 'image/png',
         '.svg': 'image/svg+xml'
       })[path.extname(target)] || 'application/octet-stream');
@@ -359,14 +392,18 @@ async function runStandalone() {
   });
 
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-  base = `http://127.0.0.1:${server.address().port}/Sem2_portal/`;
+
   browser = await chromium.launch({
     headless: true,
     ...(process.env.PORTAL_BROWSER_CHANNEL ? { channel: process.env.PORTAL_BROWSER_CHANNEL } : {})
   });
 
   try {
-    await register({ scenario });
+    for (const prefix of ['', 'Sem2_portal/']) {
+      base = 'http://127.0.0.1:' + server.address().port + '/' + prefix;
+      const label = prefix ? 'subpath' : 'root';
+      await register({ scenario: (name, fn, options) => scenario(label + '-' + name, fn, options) });
+    }
   } finally {
     await browser.close();
     server.close();
