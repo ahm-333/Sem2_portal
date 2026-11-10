@@ -3,33 +3,706 @@
 <head>
   <script src="../../js/shared/storage.js"></script>
   <script src="../../js/theme.js"></script>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <!-- Vercel Web Analytics -->
   <script>
     window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
   </script>
   <script defer src="../../js/analytics.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>المحاضرة الرابعة — المكدس (Stack) | وضع القراءة</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المحاضرة الرابعة: المكدّس (Stack)</title>
   <link href="../../css/fonts/study/cb180f1c5ed1.css" rel="stylesheet">
   <link rel="stylesheet" href="../../css/fonts/fonts.css">
-  <link rel="stylesheet" href="../../css/study/ds-lecture-4.css">
   <link rel="stylesheet" href="../../css/study-shell.css">
   <link rel="stylesheet" href="lecture-4.css">
   <script type="application/json" data-study-tailwind>{"theme":{"extend":{"fontFamily":{"sans":["Tajawal","Cairo","sans-serif"],"heading":["Cairo","sans-serif"],"mono":["JetBrains Mono","monospace"]}}}}</script>
-</head>
-<body class="min-h-screen selection:bg-amber-300 selection:text-slate-950">
+  <style>
 
-  <!-- شريط تقدم القراءة العلوي -->
-  <div class="fixed top-0 left-0 right-0 h-1.5 bg-slate-200/60 z-50">
-    <div id="readingProgressBar" class="h-full bg-blue-600 transition-all duration-150" style="width: 0%"></div>
-  </div>
+    :root {
+      --bg-page: #fdfaf5;
+      --bg-card: #ffffff;
+      --bg-soft: #f5efe4;
+      --bg-accent: #eef2ff;
+      --text-main: #1e293b;
+      --text-muted: #526075;
+      --border-color: #e6decb;
+      --brand-primary: #2563eb;
+      --brand-secondary: #0f766e;
+      --code-bg: #0f172a;
+      --code-text: #f8fafc;
+      --reading-size: 1.15rem;
+      --reading-lh: 2.15;
+
+      /* Compatibility aliases */
+      --bg-primary: var(--bg-page);
+      --bg-secondary: var(--bg-soft);
+      --text-primary: var(--text-main);
+      --text-secondary: var(--text-muted);
+      --border-strong: var(--border-color);
+      --font-scale: var(--reading-size);
+      --line-height: var(--reading-lh);
+    }
+
+    body.theme-white {
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-soft: #f1f5f9;
+      --bg-accent: #eff6ff;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #e2e8f0;
+
+      --bg-primary: var(--bg-page);
+      --bg-secondary: var(--bg-soft);
+      --text-primary: var(--text-main);
+      --text-secondary: var(--text-muted);
+      --border-strong: var(--border-color);
+    }
+
+    body.theme-dark {
+      --bg-page: #0b1120;
+      --bg-card: #131c31;
+      --bg-soft: #1e293b;
+      --bg-accent: #1e3a8a33;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border-color: #26354d;
+
+      --bg-primary: var(--bg-page);
+      --bg-secondary: var(--bg-soft);
+      --text-primary: var(--text-main);
+      --text-secondary: var(--text-muted);
+      --border-strong: var(--border-color);
+    }
+
+    body {
+      font-family: 'Tajawal', 'Cairo', sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-size: var(--reading-size);
+      line-height: var(--reading-lh);
+      transition: background-color 0.25s ease, color 0.25s ease;
+      overflow-x: hidden;
+      margin: 0;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Cairo', sans-serif;
+      line-height: 1.5;
+    }
+
+    .reading-container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    main.reading-container {
+      padding-inline: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .arr-sim-stages {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .arr-sim-cells {
+      max-width: 100%;
+    }
+
+    .arr-sim-empty {
+      color: #475569;
+    }
+
+    .arr-sim-cells span:last-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      text-align: right;
+    }
+
+    .arr-sim-code {
+      white-space: pre-wrap;
+    }
+
+    .code-toolbar > span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .stack-walkthrough-step {
+      background: var(--study-paper);
+      color: var(--study-ink);
+    }
+
+    .stack-diagram-top {
+      color: #1c2305;
+    }
+
+    html[data-study-shell] body .arr-sim-tab,
+    html[data-study-shell] body #arr-sim-reset {
+      background: var(--study-paper);
+      color: var(--study-ink);
+      border-color: var(--text-muted);
+    }
+
+    html[data-study-shell] body .arr-sim-tab[aria-pressed="true"] {
+      background: #064e3b;
+      color: #fff;
+      border-color: #064e3b;
+    }
+
+    #sim-live-panel {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+
+    #sim-input-val {
+      width: min(10rem, 100%);
+      background: var(--bg-soft);
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+
+    #sim-input-val[aria-invalid="true"] {
+      border-width: 2px;
+    }
+
+    html[data-study-shell] {
+      scroll-padding-top: var(--lesson-header-offset, 200px);
+    }
+
+    .reader-navigation,
+    .reader-controls,
+    .reader-control-group {
+      display: flex;
+      align-items: center;
+    }
+
+    .reader-navigation,
+    .reader-controls {
+      gap: 8px;
+    }
+
+    #mainReadingHeader > .reading-container {
+      max-width: 1120px;
+    }
+
+    html[data-study-shell] #mainReadingHeader .reader-navigation {
+      flex-wrap: wrap;
+    }
+
+    .reader-navigation h1 {
+      flex-shrink: 0;
+    }
+
+    .reader-control-group {
+      flex: 0 0 auto;
+      gap: 2px;
+      padding: 2px;
+      background: var(--study-soft);
+      border: 1px solid var(--study-line);
+      border-radius: 12px;
+    }
+
+    html[data-study-shell] body .reader-button,
+    #mainReadingHeader .reader-button {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 44px;
+      min-height: 44px !important;
+      padding: 0 8px;
+      border: 1px solid var(--study-line) !important;
+      border-radius: 8px;
+      background: var(--study-soft) !important;
+      color: var(--study-ink) !important;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1.25;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: box-shadow 0.15s ease;
+    }
+
+    #mainReadingHeader .reader-control-group .reader-button {
+      height: auto;
+      padding-inline: 6px;
+      border-color: transparent !important;
+      background: transparent !important;
+    }
+
+    #mainReadingHeader .reader-control-group .reader-button[aria-pressed="true"] {
+      background: var(--study-accent) !important;
+      color: var(--study-on-accent) !important;
+    }
+
+    #mainReadingHeader .reader-button[aria-pressed="true"]:not(:focus-visible) {
+      outline: none;
+    }
+
+    @media (hover: hover) {
+      html[data-study-shell] body .reader-button:hover,
+      #mainReadingHeader .reader-control-group .reader-button:hover {
+        border-color: var(--study-accent) !important;
+        box-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+      }
+
+      html[data-study-shell] body .reader-button:not([aria-pressed="true"]):hover,
+      #mainReadingHeader .reader-button:not([aria-pressed="true"]):hover {
+        background: var(--study-paper) !important;
+        border-color: var(--study-accent) !important;
+      }
+    }
+
+    html[data-study-shell] body .reader-button:active,
+    #mainReadingHeader .reader-control-group .reader-button:active {
+      box-shadow: inset 0 0 0 1px currentColor;
+    }
+
+    html[data-study-shell] #study-shell-theme {
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    .reader-font-value {
+      min-width: 36px;
+      color: var(--study-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+    }
+
+    html[data-study-shell] #mainReadingHeader > .reader-progress {
+      height: 2px;
+      padding: 0;
+    }
+
+    #reading-progress {
+      height: 100%;
+      background: var(--study-accent);
+    }
+
+    .compact-header {
+      transition: transform 0.28s ease, box-shadow 0.2s ease;
+    }
+    .compact-header.nav-hidden {
+      transform: translateY(-100%);
+    }
+
+    .reading-content p {
+      font-size: var(--reading-size);
+      line-height: var(--reading-lh);
+    }
+
+    .card-surface {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 1.25rem;
+      box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.04);
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .subcard-surface {
+      background-color: var(--bg-soft);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      transition: background-color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .code-surface {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      direction: ltr;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.85;
+    }
+
+    .console-surface {
+      background-color: #090d16 !important;
+      color: #e2e8f0 !important;
+      direction: ltr;
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.8;
+    }
+
+    .inline-code {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #e0f2fe;
+      color: #0c4a6e !important;
+      padding: 0.1rem 0.5rem;
+      border-radius: 0.4rem;
+      font-weight: 800;
+      border: 1.5px solid #7dd3fc;
+      direction: ltr;
+      unicode-bidi: isolate;
+      display: inline-block;
+      line-height: 1.4;
+    }
+
+    .inline-code-amber {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #fef3c7;
+      color: #78350f !important;
+      padding: 0.1rem 0.5rem;
+      border-radius: 0.4rem;
+      font-weight: 800;
+      border: 1.5px solid #fcd34d;
+      direction: ltr;
+      unicode-bidi: isolate;
+      display: inline-block;
+      line-height: 1.4;
+    }
+
+    .inline-code-rose {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #ffe4e6;
+      color: #881337 !important;
+      padding: 0.1rem 0.5rem;
+      border-radius: 0.4rem;
+      font-weight: 800;
+      border: 1.5px solid #fda4af;
+      direction: ltr;
+      unicode-bidi: isolate;
+      display: inline-block;
+      line-height: 1.4;
+    }
+
+    .inline-code-emerald {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #d1fae5;
+      color: #064e3b !important;
+      padding: 0.1rem 0.5rem;
+      border-radius: 0.4rem;
+      font-weight: 800;
+      border: 1.5px solid #6ee7b7;
+      direction: ltr;
+      unicode-bidi: isolate;
+      display: inline-block;
+      line-height: 1.4;
+    }
+
+    .ltr-token {
+      direction: ltr;
+      unicode-bidi: isolate;
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    #toc-backdrop {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #toc-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #sidebar-toc {
+      transform: translateX(105%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #sidebar-toc.open {
+      transform: translateX(0);
+    }
+
+    .exam-table th {
+      background-color: #0f172a;
+      color: #ffffff !important;
+      font-weight: 800;
+      padding: 0.9rem;
+      border: 1.5px solid #334155;
+      text-align: right;
+    }
+    .exam-table td {
+      background-color: #fffdf8;
+      color: #0f172a !important;
+      font-weight: 700;
+      padding: 0.9rem;
+      border: 1.5px solid #cbd5e1;
+      vertical-align: top;
+    }
+    .exam-table tr:nth-child(even) td {
+      background-color: #f3ebda;
+    }
+    body.theme-dark .exam-table th {
+      background-color: #1e293b;
+      color: #f8fafc !important;
+      border-color: #334155;
+    }
+    body.theme-dark .exam-table td {
+      background-color: #0f172a;
+      color: #f1f5f9 !important;
+      border-color: #334155;
+    }
+    body.theme-dark .exam-table tr:nth-child(even) td {
+      background-color: #1e293b;
+    }
+
+    /* Dark Mode Theme & High Contrast Overrides (>= 4.5:1) */
+    body.theme-dark #sidebar-toc {
+      background-color: #131c31;
+      border-color: #26354d;
+      color: #f1f5f9;
+    }
+    body.theme-dark #sidebar-toc h2,
+    body.theme-dark #sidebar-toc p,
+    body.theme-dark #sidebar-toc a {
+      color: #f1f5f9;
+    }
+    body.theme-dark #sidebar-toc .bg-[#ebe2ce] {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    body.theme-dark #sidebar-toc .bg-[#f7f3e8] {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    body.theme-dark .text-slate-950,
+    body.theme-dark .text-slate-900,
+    body.theme-dark .text-sky-950,
+    body.theme-dark .text-amber-950,
+    body.theme-dark .text-emerald-950,
+    body.theme-dark .text-indigo-950 {
+      color: #f1f5f9 !important;
+    }
+    body.theme-dark .text-slate-800,
+    body.theme-dark .text-slate-700 {
+      color: #cbd5e1 !important;
+    }
+    body.theme-dark .bg-[#efe5d2] {
+      background-color: #1e293b !important;
+      color: #f1f5f9 !important;
+      border-color: #334155 !important;
+    }
+    body.theme-dark [class*="bg-amber-50/"] {
+      background-color: #1c1917 !important;
+      border-color: #78350f !important;
+    }
+    body.theme-dark [class*="bg-amber-50/"] h4 {
+      color: #fbbf24 !important;
+    }
+    body.theme-dark .bg-[#fffdf9] {
+      background-color: #0f172a !important;
+      color: #f1f5f9 !important;
+      border-color: #334155 !important;
+    }
+    body.theme-dark .bg-slate-50 {
+      background-color: #0f172a !important;
+      color: #f1f5f9 !important;
+      border-color: #334155 !important;
+    }
+    body.theme-dark .bg-emerald-50 {
+      background-color: #064e3b !important;
+      color: #ecfdf5 !important;
+      border-color: #047857 !important;
+    }
+    body.theme-dark .bg-[#faf5e8] {
+      background-color: #0f172a !important;
+      color: #f1f5f9 !important;
+      border-color: #334155 !important;
+    }
+    body.theme-dark #arr-sim-display {
+      background-color: #020617 !important;
+      color: #f8fafc !important;
+      border-color: #1e293b !important;
+    }
+    body.theme-dark #arr-sim-display .text-emerald-950 {
+      color: #6ee7b7 !important;
+    }
+    body.theme-dark #arr-sim-display .text-slate-900 {
+      color: #f1f5f9 !important;
+    }
+    body.theme-dark .bg-amber-100 {
+      background-color: #451a03 !important;
+      color: #fef3c7 !important;
+      border-color: #d97706 !important;
+    }
+    body.theme-dark .bg-emerald-100 {
+      background-color: #064e3b !important;
+      color: #ecfdf5 !important;
+      border-color: #059669 !important;
+    }
+    body.theme-dark .bg-sky-50 {
+      background-color: #0c4a6e !important;
+      color: #e0f2fe !important;
+    }
+    body.theme-dark .bg-slate-100 {
+      background-color: #1e293b !important;
+      color: #94a3b8 !important;
+    }
+
+    /* Quiz controls & options styling with accessible contrast (>= 4.5:1) in all modes */
+    html[data-study-shell] #quizScoreDisplay {
+      background-color: var(--study-paper, #fdfaf5) !important;
+      color: var(--study-good-ink, #065f46) !important;
+      border-color: var(--study-line, #e6decb) !important;
+    }
+    body.theme-dark #quizScoreDisplay {
+      background-color: #131c31 !important;
+      color: #34d399 !important;
+      border-color: #26354d !important;
+    }
+    html[data-study-shell] .quiz-explanation {
+      background-color: var(--study-soft, #f5efe4) !important;
+      color: var(--study-ink, #1e293b) !important;
+      border-color: var(--study-line, #e6decb) !important;
+    }
+    body.theme-dark .quiz-explanation {
+      background-color: #1e293b !important;
+      color: #f1f5f9 !important;
+      border-color: #334155 !important;
+    }
+    .quiz-filter-btn {
+      background-color: #f1f5f9;
+      color: #0f172a !important;
+      border: 1px solid #cbd5e1;
+    }
+    .quiz-filter-btn.active {
+      background-color: #92400e !important;
+      color: #ffffff !important;
+      border-color: #78350f !important;
+    }
+    body.theme-dark .quiz-filter-btn {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+    body.theme-dark .quiz-filter-btn.active {
+      background-color: #d97706 !important;
+      color: #020617 !important;
+      border-color: #f59e0b !important;
+    }
+
+    #btnResetQuiz {
+      background-color: #f1f5f9;
+      color: #0f172a !important;
+      border: 1px solid #cbd5e1;
+    }
+    body.theme-dark #btnResetQuiz {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+
+    .quiz-option {
+      background-color: #f8fafc;
+      color: #0f172a !important;
+      border: 2px solid #cbd5e1;
+    }
+    .quiz-option:hover {
+      background-color: #e2e8f0;
+    }
+    .quiz-option.correct {
+      background-color: #ecfdf5 !important;
+      border-color: #059669 !important;
+      color: #064e3b !important;
+    }
+    .quiz-option.wrong {
+      background-color: #fff1f2 !important;
+      border-color: #e11d48 !important;
+      color: #881337 !important;
+    }
+    body.theme-dark .quiz-option {
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      border-color: #334155 !important;
+    }
+    body.theme-dark .quiz-option:hover {
+      background-color: #1e293b !important;
+    }
+    body.theme-dark .quiz-option.correct {
+      background-color: #064e3b !important;
+      border-color: #10b981 !important;
+      color: #ecfdf5 !important;
+    }
+    body.theme-dark .quiz-option.wrong {
+      background-color: #7f1d1d !important;
+      border-color: #ef4444 !important;
+      color: #fef2f2 !important;
+    }
+
+    /* Touch target accessibility & visible focus */
+    #arr-sim-prev, #arr-sim-next, #arr-sim-reset, .arr-sim-tab, .quiz-filter-btn, #btnResetQuiz,
+    #sim-live-panel button, #sim-input-val, #btn-clear-draft {
+      min-width: 44px;
+      min-height: 44px;
+      touch-action: manipulation;
+    }
+    #arr-sim-prev:focus-visible, #arr-sim-next:focus-visible, #arr-sim-reset:focus-visible, .arr-sim-tab:focus-visible,
+    #btn-open-toc:focus-visible, #btn-close-toc:focus-visible, .quiz-option:focus-visible,
+    .quiz-explanation:focus, #sim-live-panel :focus-visible, #btn-clear-draft:focus-visible {
+      outline: 3px solid #2563eb;
+      outline-offset: 2px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+  </style>
+</head>
+<body class="theme-sepia">
+
+  <header id="mainReadingHeader" class="compact-header sticky top-0 z-40 backdrop-blur-md bg-[var(--bg-page)]/95 border-b border-[var(--border-color)] shadow-sm">
+    <div class="reading-container px-3 py-1.5 flex items-center justify-between gap-2">
+      <div class="reader-navigation">
+        <a href="../../subject.html?id=data-structure" aria-label="الرجوع إلى مقرر هياكل البيانات" class="reader-button">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span class="hidden sm:inline">الرجوع للمقرر</span>
+        </a>
+        <a href="index.html" title="فهرس شروحات هياكل البيانات" class="reader-button">
+          الفهرس
+        </a>
+        <button id="btn-open-toc" type="button" title="فتح فهرس أجزاء المحاضرة الستة" class="reader-button">
+          الأجزاء
+        </button>
+        <a href="lecture-3.html" aria-label="المحاضرة السابقة: الاستدعاء الذاتي" class="reader-button">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span class="hidden sm:inline">L3: الاستدعاء الذاتي</span>
+          <span class="sm:hidden" dir="ltr">L3</span>
+        </a>
+        <h1 class="font-heading font-bold text-sm leading-tight">المكدّس</h1>
+      </div>
+
+      <div class="reader-controls">
+        <div class="reader-control-group" role="group" aria-label="حجم النص" dir="ltr">
+          <button id="btnFontDec" type="button" class="reader-button" aria-label="تصغير النص">A−</button>
+          <span id="fontSizeLabel" class="reader-font-value">100%</span>
+          <button id="btnFontInc" type="button" class="reader-button" aria-label="تكبير النص">A+</button>
+        </div>
+
+        <div class="reader-control-group" role="group" aria-label="المظهر">
+          <button id="btnThemeWhite" type="button" class="reader-button" aria-label="المظهر الفاتح">فاتح</button>
+          <button id="btnThemeDark" type="button" class="reader-button" aria-label="المظهر الداكن">داكن</button>
+          <button id="btnThemeSepia" type="button" class="reader-button" aria-label="وضع القراءة">قراءة</button>
+        </div>
+
+        <button id="btnLineSpacing" type="button" title="تغيير تباعد السطور" class="reader-button">
+          تباعد: مريح جداً
+        </button>
+      </div>
+    </div>
+
+    <div class="reader-progress" aria-hidden="true">
+      <div id="reading-progress" style="width: 0%"></div>
+    </div>
+  </header>
 
   <!-- Slide-Over Table of Contents Backdrop -->
   <div id="toc-backdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50"></div>
 
   <!-- Slide-Over Table of Contents Drawer -->
-  <aside id="sidebar-toc" role="dialog" aria-modal="true" aria-label="فهرس أجزاء المحاضرة" class="fixed top-0 right-0 bottom-0 w-80 sm:w-[26rem] max-w-[92vw] z-50 bg-[#fffdf8] border-l-4 border-[#a39374] shadow-2xl flex flex-col">
+  <aside id="sidebar-toc" class="fixed top-0 right-0 bottom-0 w-80 sm:w-[26rem] max-w-[92vw] z-50 bg-[#fffdf8] border-l-4 border-[#a39374] shadow-2xl flex flex-col">
     <div class="p-5 bg-[#ebe2ce] border-b-2 border-[#c8bba1] flex items-center justify-between">
       <div class="flex items-center gap-2.5">
         <span class="text-2xl">📑</span>
@@ -38,7 +711,7 @@
           <p class="text-xs font-extrabold text-slate-800">اضغط على أي جزء أو عنوان للانتقال الفوري</p>
         </div>
       </div>
-      <button id="btn-close-toc" type="button" class="reader-control">
+      <button id="btn-close-toc" type="button" class="reader-button">
         ✕ إغلاق الفهرس
       </button>
     </div>
@@ -63,66 +736,70 @@
       </div>
 
       <div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">
-        <a href="#part-2" class="toc-link block font-black text-slate-950 hover:text-amber-800 text-base">
+        <a href="#part-2" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">
           الجزء الثاني (2 / 6): عمليات الـ Stack الستة ومؤشر القمة (top)
         </a>
-        <div class="pr-3 space-y-1 text-xs border-r-4 border-amber-800">
-          <a href="#p2-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. العمليات الستة الأساسية (Slide 9)</a>
-          <a href="#p2-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. التحكم عبر Push و Pop ومؤشر Top (Slide 10)</a>
-          <a href="#p2-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. طرق التنفيذ برمجياً (Array vs Linked List) (Slide 11)</a>
+        <div class="pr-3 space-y-1 text-xs border-r-4 border-indigo-800">
+          <a href="#p2-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. العمليات الستة على الـ Stack (4.2 Stack Operations - Slide 9)</a>
+          <a href="#p2-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. التحكم عبر Push و Pop ومؤشر الـ Top (Slide 10)</a>
+          <a href="#p2-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. طرق تنفيذ الـ Stack: المصفوفة مقابل القائمة المتصلة (Slide 11)</a>
+          <a href="#p2-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. طبّق الآن بإيدك + ملخص وأسئلة الجزء 2</a>
         </div>
       </div>
 
       <div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">
-        <a href="#part-3" class="toc-link block font-black text-slate-950 hover:text-teal-800 text-base">
+        <a href="#part-3" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">
           الجزء الثالث (3 / 6): تنفيذ الـ Stack بالمصفوفة — التأسيس و isFull و Push
         </a>
-        <div class="pr-3 space-y-1 text-xs border-r-4 border-teal-800">
-          <a href="#p3-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. فكرة المصفوفة ولماذا يبدأ top بـ -1؟ (Slides 12–13)</a>
-          <a href="#p3-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تأسيس الكلاس والـ Constructor (Slide 14)</a>
-          <a href="#p3-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. دالة isFull() وطفح المكدس (Slides 15 &amp; 17)</a>
-          <a href="#p3-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. كود push وسر ++top (Slide 16)</a>
+        <div class="pr-3 space-y-1 text-xs border-r-4 border-emerald-800">
+          <a href="#p3-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. فكرة الـ Stack كمصفوفة ولماذا يبدأ top بـ -1؟ (Slides 12–13)</a>
+          <a href="#p3-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تشريح كود تأسيس class Stack والـ Constructor (Slide 14)</a>
+          <a href="#p3-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. شرح عملية Push والـ Data Overflow وكود isFull() (Slides 15–17)</a>
+          <a href="#p3-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. تفكيك كود push(int value) وسر ++top بالتفصيل (Slide 16)</a>
+          <a href="#p3-sec-5" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">5. طبّق الآن بإيدك + ملخص وأسئلة الجزء 3</a>
         </div>
       </div>
 
       <div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">
-        <a href="#part-4" class="toc-link block font-black text-slate-950 hover:text-indigo-800 text-base">
+        <a href="#part-4" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">
           الجزء الرابع (4 / 6): استكمال Array Stack — Pop، Peek، Display، و main()
         </a>
-        <div class="pr-3 space-y-1 text-xs border-r-4 border-indigo-800">
-          <a href="#p4-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. عملية Pop ودالة isEmpty() (Slides 18 &amp; 20)</a>
-          <a href="#p4-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. دالة peek() (Slide 21)</a>
-          <a href="#p4-display" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. دالة display() (Slide 22)</a>
-          <a href="#p4-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. كود main() ومحاكي Array Stack (Slides 23–24)</a>
-          <a href="#p4-sec-5" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">5. الكود الكامل لـ Array Stack</a>
+        <div class="pr-3 space-y-1 text-xs border-r-4 border-amber-800">
+          <a href="#p4-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. عملية الحذف Pop والـ Data Underflow وكود isEmpty() (Slides 18–20)</a>
+          <a href="#p4-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تفكيك كود pop() وسر arr[top--] (Slide 19)</a>
+          <a href="#p4-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. قراءة قمة المكدّس باستخدام peek() (Slide 21)</a>
+          <a href="#p4-display" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">عرض عناصر المكدّس باستخدام display() (Slide 22)</a>
+          <a href="#p4-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. كود main() والمخرجات ومحاكي Array Stack التفاعلي (Slides 23–24)</a>
+          <a href="#p4-sec-5" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">5. طبّق الآن بإيدك + ملخص وأسئلة الجزء 4</a>
         </div>
       </div>
 
       <div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">
-        <a href="#part-5" class="toc-link block font-black text-slate-950 hover:text-purple-800 text-base">
+        <a href="#part-5" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">
           الجزء الخامس (5 / 6): الـ Stack بالقائمة المتصلة — القوالب Templates و Push و Pop
         </a>
-        <div class="pr-3 space-y-1 text-xs border-r-4 border-purple-800">
-          <a href="#p5-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. لماذا Linked List؟ وموقع top عند head (Slides 25–26)</a>
-          <a href="#p5-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. القوالب Templates وبنية Node&lt;T&gt; (Slides 27–28)</a>
-          <a href="#p5-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. دالة push بالقائمة المتصلة (Slide 29)</a>
-          <a href="#p5-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. دالة pop بالقائمة المتصلة (Slide 30)</a>
+        <div class="pr-3 space-y-1 text-xs border-r-4 border-rose-800">
+          <a href="#p5-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. لماذا Top of Stack = Front of Linked-List؟ (Slides 25–26)</a>
+          <a href="#p5-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تشريح كود template &lt;class T&gt; و class Node و Stack (Slides 27–28)</a>
+          <a href="#p5-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. تفكيك كود push(T value) بالرسوم سطر بسطر (Slide 29)</a>
+          <a href="#p5-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. تفكيك كود pop() ومنع تسريب الذاكرة delete temp (Slide 30)</a>
+          <a href="#p5-sec-5" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">5. طبّق الآن بإيدك + ملخص وأسئلة الجزء 5</a>
         </div>
       </div>
 
       <div class="p-3.5 rounded-xl bg-[#f7f3e8] border-2 border-[#b8a98e] space-y-2">
-        <a href="#part-6" class="toc-link block font-black text-slate-950 hover:text-emerald-800 text-base">
+        <a href="#part-6" class="toc-link block font-black text-slate-950 hover:text-sky-800 text-base">
           الجزء السادس (6 / 6): استكمال Linked List Stack، سر مخرجات الشريحة 35، والمقارنة الشاملة
         </a>
-        <div class="pr-3 space-y-1 text-xs border-r-4 border-emerald-800">
+        <div class="pr-3 space-y-1 text-xs border-r-4 border-purple-800">
           <a href="#p6-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. تفكيك دوال isEmpty() و peek() و display() (Slides 31–33)</a>
           <a href="#p6-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تشريح كود main() لـ Stack&lt;int&gt; و Stack&lt;string&gt; (Slide 34)</a>
-          <a href="#p6-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. لغز الشريحة 35: سر سطور pop الأربعة الأخيرة (Slide 35)</a>
-          <a href="#p6-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. الكود الكامل لـ Linked List Stack</a>
-          <a href="#p6-comparison" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">5. المقارنة الشاملة: Array Stack مقابل Linked List Stack</a>
+          <a href="#p6-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. لغز الشريحة 35: لماذا طُبعت 4 سطور pop إضافية في النهاية؟ (Slide 35)</a>
+          <a href="#p6-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. الكود الكامل للقائمة المتصلة</a>
+          <a href="#p6-draft" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">مسودة التدريب</a>
+          <a href="#p6-comparison" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">مقارنة تنفيذ المكدّس بالمصفوفة والقائمة المتصلة</a>
         </div>
       </div>
-
       <div class="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-300 dark:border-emerald-700">
         <a href="#section-quiz" class="toc-link block font-black text-emerald-950 dark:text-emerald-200 hover:text-emerald-700 text-base">
           🎯 بنك الأسئلة الشامل (10 أسئلة تفاعلية)
@@ -131,77 +808,18 @@
     </nav>
   </aside>
 
-  <!-- شريط القراءة والتنقل المدمج (#mainReadingHeader) -->
-  <header id="mainReadingHeader" class="compact-header sticky top-0 z-40 backdrop-blur-md bg-[var(--bg-page)]/95 border-b border-[var(--border-color)] shadow-sm">
-    <div class="reading-container px-3 py-1.5 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2 sm:gap-3">
-        <a href="../../subject.html?id=data-structure" title="الرجوع إلى صفحة مقرر هياكل البيانات" class="reader-control">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-          <span class="hidden sm:inline">الرجوع للمقرر</span>
-        </a>
-        <a href="index.html" title="فهرس شروحات هياكل البيانات" class="reader-control">
-          <span>📚 الفهرس</span>
-        </a>
-        <button id="btn-open-toc" type="button" aria-controls="sidebar-toc" aria-expanded="false" title="فتح فهرس أجزاء المحاضرة الستة" class="reader-control">
-          <span>📑 الأجزاء (6)</span>
-        </button>
-        <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-heading font-bold text-xs shadow-sm shrink-0">L4</span>
-        <div>
-          <h1 class="font-heading font-bold text-xs sm:text-sm leading-tight truncate">المحاضرة الرابعة: المكدس (Stack)</h1>
-        </div>
-      </div>
+  <!-- Top Sticky Header -->
+  
 
-      <!-- أدوات القراءة والتنقل -->
-      <div class="reader-controls">
-        <div class="reader-control-group" role="group" aria-label="حجم النص" dir="ltr">
-          <button id="btnFontDec" type="button" aria-label="تصغير النص" class="reader-control">A−</button>
-          <span id="fontSizeLabel" class="reader-font-value">100%</span>
-          <button id="btnFontInc" type="button" aria-label="تكبير النص" class="reader-control">A+</button>
-        </div>
-
-        <div class="reader-control-group" role="group" aria-label="المظهر">
-          <button id="btnThemeWhite" type="button" aria-label="المظهر الفاتح" class="reader-control">فاتح</button>
-          <button id="btnThemeDark" type="button" aria-label="المظهر الداكن" class="reader-control">داكن</button>
-          <button id="btnThemeSepia" type="button" aria-label="وضع القراءة" class="reader-control">قراءة</button>
-        </div>
-
-        <button id="btnLineSpacing" type="button" title="تغيير تباعد السطور" aria-pressed="false" class="reader-control">
-          ↕ تباعد السطور
-        </button>
-        <a href="lecture-3.html" title="الانتقال للمحاضرة السابقة: الاستدعاء الذاتي" class="reader-control">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-          <span class="hidden sm:inline">L3: الاستدعاء الذاتي</span>
-          <span class="sm:hidden">L3</span>
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <!-- زر الفهرس العائم السريع -->
-  <button id="btn-floating-toc" type="button" class="reader-control fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 shadow-2xl">
-    <span>📑</span>
-    <span>افتح الفهرس (6 أجزاء)</span>
-  </button>
-
-  <!-- الحاوية المركزية المريحة للقراءة -->
-  <div id="main-container" class="reading-container px-3 sm:px-6 py-6 sm:py-10">
-    <main class="space-y-12 reading-content">
+  <!-- Main Eye-Friendly Centered Container -->
+  <div id="main-container" class="py-6 sm:py-10">
+    <main class="reading-container space-y-12 reading-content">
 
       <!-- Hero Banner Card -->
       <section class="card-surface p-5 sm:p-9 border-t-8 border-t-sky-900 space-y-5">
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-200 text-amber-950 border border-amber-500">📖 وضع القراءة الورقي المريح للعين</span>
-          <span class="px-3 py-1 rounded-full text-xs font-black bg-sky-200 text-sky-950 border border-sky-500">🎨 تغطية 100% لجميع شرائح المحاضرة الـ 36</span>
-          <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-200 text-emerald-950 border border-emerald-500">🔍 تفكيك كل كود سطر بسطر وكلمة بكلمة</span>
-        </div>
-
         <h2 class="text-xl sm:text-3xl font-black text-slate-950 leading-snug">
-          المحاضرة الرابعة الشاملة (Lecture 4) — المكدس (Stack): من الصفر إلى الاحتراف (Array &amp; Linked List)
+          المحاضرة الرابعة: المكدّس (<bdi>Stack</bdi>)
         </h2>
-
-        <p class="font-bold text-slate-900">
-          تم تصميم هذا المرجع التفاعلي بنفس أسلوب وطريقة موقع القوائم المتصلة (<span class="inline-code">Linked Lists</span>) بالمللي، ليشرح كل كلمة وكل رسمة وكل سطر برمجي في شرائح المحاضرة الـ 36 بدون ترك أي تفصيلة، مقسماً إلى <strong>6 أجزاء متكاملة</strong>:
-        </p>
 
         <!-- Agenda Box from Slide 2 -->
         <div class="p-4 sm:p-5 rounded-2xl bg-[#f5efe2] border-2 border-[#b8a98e] space-y-2">
@@ -255,21 +873,18 @@
             <span class="inline-block text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-white/20 text-white font-extrabold">الجزء الأول (1 / 6) — الشرائح 1 إلى 8</span>
             <h2 class="text-xl sm:text-3xl font-black text-white">البداية من الصفر: تصنيف هياكل البيانات، الفكرة الأساسية (ADT)، ومبدأ LIFO</h2>
           </div>
-          <button type="button" data-check="part-1" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
-            ✓ تم الفهم
-          </button>
         </div>
 
         <!-- Section 1: Classification of Data Structure (Slides 3 & 4) -->
         <section id="sec-1" class="card-surface p-5 sm:p-9 space-y-6 scroll-mt-20">
-          <div class="flex items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
             <div class="flex items-center gap-3">
               <span class="w-9 h-9 rounded-xl bg-sky-900 text-white font-black flex items-center justify-center text-base shrink-0">1</span>
               <h3 class="text-lg sm:text-2xl font-black text-slate-950">
                 تذكير هام (REMEMBER!): أين يقع الـ Stack في شجرة تصنيف هياكل البيانات؟ (Slides 3 &amp; 4)
               </h3>
             </div>
-            <button type="button" data-check="sec-1" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
+            <button type="button" data-check="sec-1" class="check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100">
               ✓ تم الفهم
             </button>
           </div>
@@ -286,7 +901,7 @@
           <div class="my-6 p-4 sm:p-6 rounded-2xl bg-[#faf5e8] border-2 border-[#b8a98e] shadow-inner">
             <div class="text-xs sm:text-sm font-black text-sky-950 mb-5 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2.5">
               <span>🎨</span>
-              <span>رسمة الشريحة 4 بالمللي: شجرة تصنيف هياكل البيانات (Classification of Data Structure)</span>
+              <span>رسم الشريحة 4: شجرة تصنيف هياكل البيانات (Classification of Data Structure)</span>
             </div>
 
             <div class="flex flex-col items-center space-y-4" dir="ltr">
@@ -329,12 +944,12 @@
 
         <!-- Section 2: Basic Idea & ADT (Slides 5 & 6) -->
         <section id="sec-2" class="card-surface p-5 sm:p-9 space-y-6 scroll-mt-20">
-          <div class="flex items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
             <div class="flex items-center gap-3">
               <span class="w-9 h-9 rounded-xl bg-sky-900 text-white font-black flex items-center justify-center text-base shrink-0">2</span>
               <h3 class="text-lg sm:text-2xl font-black text-slate-950">الفكرة الأساسية للـ Stack ويعني إيه ADT؟ (Slides 5 &amp; 6)</h3>
             </div>
-            <button type="button" data-check="sec-2" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
+            <button type="button" data-check="sec-2" class="check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100">
               ✓ تم الفهم
             </button>
           </div>
@@ -363,12 +978,12 @@
 
         <!-- Section 3: 4.1 What is a Stack & LIFO (Slide 7) -->
         <section id="sec-3" class="card-surface p-5 sm:p-9 space-y-6 scroll-mt-20">
-          <div class="flex items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
             <div class="flex items-center gap-3">
               <span class="w-9 h-9 rounded-xl bg-sky-900 text-white font-black flex items-center justify-center text-base shrink-0">3</span>
               <h3 class="text-lg sm:text-2xl font-black text-slate-950">4.1 ما هو الـ Stack؟ ومبدأ LIFO وإدارة استدعاء الدوال (Slide 7)</h3>
             </div>
-            <button type="button" data-check="sec-3" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
+            <button type="button" data-check="sec-3" class="check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100">
               ✓ تم الفهم
             </button>
           </div>
@@ -401,12 +1016,12 @@
 
         <!-- Section 4: Stack Representation (Slide 8) -->
         <section id="sec-4" class="card-surface p-5 sm:p-9 space-y-6 scroll-mt-20">
-          <div class="flex items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
             <div class="flex items-center gap-3">
               <span class="w-9 h-9 rounded-xl bg-sky-900 text-white font-black flex items-center justify-center text-base shrink-0">4</span>
               <h3 class="text-lg sm:text-2xl font-black text-slate-950">تمثيل الـ Stack في الذاكرة (Stack Representation — Slide 8)</h3>
             </div>
-            <button type="button" data-check="sec-4" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
+            <button type="button" data-check="sec-4" class="check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100">
               ✓ تم الفهم
             </button>
           </div>
@@ -424,7 +1039,7 @@
                 <div class="text-sm font-black text-emerald-900 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-400">
                   ⬇ Push (إدخال عنصر من القمة)
                 </div>
-                <div class="px-4 py-1.5 rounded-lg bg-emerald-600 text-white font-mono text-xs font-bold animate-bounce">
+                <div class="stack-diagram-element px-4 py-1.5 rounded-lg bg-emerald-900 text-white font-mono text-xs font-bold">
                   Data Element (داخل للـ Stack)
                 </div>
                 <div class="w-44 border-x-4 border-b-4 border-slate-800 rounded-b-xl p-2 bg-slate-50 space-y-1.5 pt-4">
@@ -470,12 +1085,12 @@
 
         <!-- Section 5: Hands-on + Summary + MCQs of Part 1 -->
         <section id="sec-5" class="card-surface p-5 sm:p-9 space-y-6 scroll-mt-20">
-          <div class="flex items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b-2 border-[#c8bba1] pb-4">
             <div class="flex items-center gap-3">
               <span class="w-9 h-9 rounded-xl bg-emerald-900 text-white font-black flex items-center justify-center text-base shrink-0">5</span>
               <h3 class="text-lg sm:text-2xl font-black text-emerald-950">تمرين سريع لتثبيت مبدأ LIFO + ملخص وأسئلة الجزء الأول</h3>
             </div>
-            <button type="button" data-check="sec-5" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
+            <button type="button" data-check="sec-5" class="check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100">
               ✓ تم الفهم
             </button>
           </div>
@@ -561,16 +1176,18 @@
             </div>
           </div>
         </section>
-
       </div>
 
+      <!-- ==========================================
+           PART 2: الجزء الثاني (2 / 6) — الشرائح 9 إلى 11
+           ========================================== -->
       <section id="part-2" class="scroll-mt-20 space-y-8 pt-8">
         <div class="p-5 sm:p-8 rounded-2xl bg-indigo-900 text-white shadow-xl flex flex-wrap items-center justify-between gap-4 border-b-4 border-amber-400">
           <div class="space-y-1.5">
             <span class="inline-block text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-white/20 text-white font-extrabold">الجزء الثاني (2 / 6) — الشرائح 9 إلى 11</span>
             <h2 class="text-xl sm:text-3xl font-black leading-snug text-white">العمليات الأساسية على الـ Stack (4.2 Stack Operations) ومؤشر القمة (top)</h2>
           </div>
-          <button type="button" data-check="part-2" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
+          <button type="button" data-check="part-2" class="check-sec-btn shrink-0 px-4 py-2 rounded-xl bg-white text-slate-950 text-xs sm:text-sm font-extrabold hover:bg-emerald-200 transition-all shadow-md">
             ✓ تم الفهم
           </button>
         </div>
@@ -589,7 +1206,7 @@
           <div class="my-6 p-4 sm:p-6 rounded-2xl bg-[#faf5e8] border-2 border-[#b8a98e] shadow-inner">
             <div class="text-xs sm:text-sm font-black text-sky-950 mb-4 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2.5">
               <span>🎨</span>
-              <span>رسمة الشريحة 9 بالمللي: العمليات الستة التي تُجرى على الـ STACK</span>
+              <span>رسم الشريحة 9: العمليات الستة التي تُجرى على الـ STACK</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
@@ -641,7 +1258,7 @@
             </h3>
           </div>
 
-          <p class="font-semibold">تعال نقرأ كل سطر في الشريحة 10 (<span class="inline-code">4.2. STACK OPERATIONS (CONT.)</span>) ونفهمه بالمللي:</p>
+          <p class="font-semibold">عمليات المكدّس في الشريحة 10 (<span class="inline-code">4.2. STACK OPERATIONS (CONT.)</span>):</p>
 
           <div class="space-y-3">
             <div class="subcard-surface p-4 border-r-8 border-r-sky-800">
@@ -726,13 +1343,16 @@
         </div>
       </section>
 
+      <!-- ==========================================
+           PART 3: الجزء الثالث (3 / 6) — الشرائح 12 إلى 17
+           ========================================== -->
       <section id="part-3" class="scroll-mt-20 space-y-8 pt-8">
         <div class="p-5 sm:p-8 rounded-2xl bg-emerald-900 text-white shadow-xl flex flex-wrap items-center justify-between gap-4 border-b-4 border-amber-400">
           <div class="space-y-1.5">
             <span class="inline-block text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-white/20 text-white font-extrabold">الجزء الثالث (3 / 6) — الشرائح 12 إلى 17</span>
             <h2 class="text-xl sm:text-3xl font-black leading-snug text-white">4.3 تنفيذ الـ Stack باستخدام المصفوفة (Stack Using Array): التأسيس، isFull، و Push</h2>
           </div>
-          <button type="button" data-check="part-3" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
+          <button type="button" data-check="part-3" class="check-sec-btn shrink-0 px-4 py-2 rounded-xl bg-white text-slate-950 text-xs sm:text-sm font-extrabold hover:bg-emerald-200 transition-all shadow-md">
             ✓ تم الفهم
           </button>
         </div>
@@ -764,28 +1384,29 @@
           <div class="my-6 p-4 sm:p-6 rounded-2xl bg-[#faf5e8] border-2 border-[#b8a98e] shadow-inner">
             <div class="text-xs sm:text-sm font-black text-sky-950 mb-4 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2.5">
               <span>🎨</span>
-              <span>رسمة الشريحة 13 بالمللي: المصفوفة الرأسية (حجمها MAX = 5) ومتغير top = 2 يشير للعنصر 30</span>
+              <span>رسم الشريحة 13: المصفوفة الرأسية (حجمها MAX = 5) ومتغير top = 2 يشير للعنصر 30</span>
             </div>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-6 py-3" dir="ltr">
               <!-- Green top box -->
-              <div class="flex items-center gap-2">
-                <div class="px-6 py-3 rounded-xl bg-[#8ea627] border-2 border-[#5c6e14] text-white font-mono font-black text-lg shadow-md">
+              <div class="flex items-center gap-2 flex-wrap">
+                
+                <div class="stack-diagram-top px-6 py-3 rounded-xl bg-[#8ea627] border-2 border-[#5c6e14] font-mono font-black text-lg shadow-md">
                   top = 2
                 </div>
-                <span class="text-2xl font-black text-[#6f851b]">━━►</span>
+                <span class="stack-diagram-arrow text-2xl font-black text-slate-800">━━►</span>
               </div>
 
               <!-- Vertical Array -->
               <div class="w-48 border-2 border-[#6f851b] rounded-xl overflow-hidden shadow-lg bg-[#a62c14] text-white font-mono">
-                <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between bg-[#992711]/80 text-white/60 text-xs">
+                <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between bg-[#992711]/80 text-white text-xs">
                   <span>arr[4]</span><span>(فارغ)</span>
                 </div>
-                <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between bg-[#992711]/80 text-white/60 text-xs">
+                <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between bg-[#992711]/80 text-white text-xs">
                   <span>arr[3]</span><span>(فارغ)</span>
                 </div>
                 <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between bg-[#c2381b] ring-2 ring-amber-300 font-black text-lg">
-                  <span class="text-xs text-amber-200">arr[2] (Top)</span><span>30</span>
+                  <span class="stack-diagram-index text-xs text-white">arr[2] (Top)</span><span>30</span>
                 </div>
                 <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between font-bold text-base">
                   <span class="text-xs text-amber-100">arr[1]</span><span>20</span>
@@ -811,9 +1432,9 @@
           </div>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 14 — Stack Class Definition (Lines 1 to 14)</span>
-              <button type="button" data-code="#include &lt;iostream&gt;
+              <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="#include &lt;iostream&gt;
 using namespace std;
 
 const int MAX = 5; // Maximum size of the stack
@@ -826,7 +1447,7 @@ private:
 public:
     Stack() {
         top = -1; // Stack is initially empty
-    }" class="reader-control copy-code-btn">نسخ الكود</button>
+    }">نسخ الكود</button>
             </div>
             <pre class="code-surface p-5 sm:p-6 text-xs sm:text-base overflow-x-auto"><code>1   #include &lt;iostream&gt;
 2   using namespace std;
@@ -960,7 +1581,7 @@ public:
                 <span>ربط الدنيا ببعضها: إزاي الـ Constructor ده مربوط بكل الدوال اللي جاية بعده؟</span>
               </div>
               <div class="space-y-3.5">
-                <div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>الـ Constructor حط <code class="inline-code">top = -1</code> كعلامة رسمية للبداية الفارغة.</span></div><div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>دالة <code class="inline-code">isEmpty()</code> اللي جاية هتبص على نفس المتغير ده: لو لقيته بيساوي <code class="inline-code">-1</code> تعرف فوراً إن الـ Stack فاضي!</span></div><div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>ودالة <code class="inline-code">push()</code> لما تيجي تضيف أول رقم، هتزود الـ <code class="inline-code">-1</code> بواحد (<code class="inline-code">++top</code>) فيتحول إلى <code class="inline-code">0</code> ويسكن أول عنصر في <code class="inline-code">arr[0]</code> بالمللي!</span></div>
+                <div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>الـ Constructor حط <code class="inline-code">top = -1</code> كعلامة رسمية للبداية الفارغة.</span></div><div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>دالة <code class="inline-code">isEmpty()</code> اللي جاية هتبص على نفس المتغير ده: لو لقيته بيساوي <code class="inline-code">-1</code> تعرف فوراً إن الـ Stack فاضي!</span></div><div class="p-3.5 sm:p-4 rounded-xl bg-white/95 border border-emerald-300 text-slate-950 font-bold leading-loose text-sm sm:text-base flex items-start gap-3"><span class="text-emerald-700 font-black shrink-0">🔗</span><span>ودالة <code class="inline-code">push()</code> لما تيجي تضيف أول رقم، هتزود الـ <code class="inline-code">-1</code> بواحد (<code class="inline-code">++top</code>) فيتحول إلى <code class="inline-code">0</code> ويتخزّن أول عنصر في <code class="inline-code">arr[0]</code>.</span></div>
               </div>
             </div>
           </div>
@@ -1002,12 +1623,12 @@ public:
           </h4>
 
           <div class="my-4 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 17 — isFull() Implementation (Lines 23 to 26)</span>
-              <button type="button" data-code="    // Check if stack is full
+              <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Check if stack is full
     bool isFull() {
         return (top == MAX - 1);
-    }" class="reader-control copy-code-btn">نسخ الكود</button>
+    }">نسخ الكود</button>
             </div>
             <pre class="code-surface p-5 sm:p-6 text-xs sm:text-base overflow-x-auto"><code>23      // Check if stack is full
 24      bool isFull() {
@@ -1053,9 +1674,9 @@ public:
           </div>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 16 — push() Implementation (Lines 29 to 38)</span>
-              <button type="button" data-code="    // Function to add an element to the stack
+              <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Function to add an element to the stack
     void push(int value) {
         if (isFull()) {
             cout &lt;&lt; &quot;Stack Overflow! Cannot push &quot; &lt;&lt; value &lt;&lt; endl;
@@ -1064,7 +1685,7 @@ public:
             arr[++top] = value;
             cout &lt;&lt; value &lt;&lt; &quot; pushed into stack.&quot; &lt;&lt; endl;
         }
-    }" class="reader-control copy-code-btn">نسخ الكود</button>
+    }">نسخ الكود</button>
             </div>
             <pre class="code-surface p-5 sm:p-6 text-xs sm:text-base overflow-x-auto"><code>29      // Function to add an element to the stack
 30      void push(int value) {
@@ -1234,13 +1855,16 @@ public:
         </div>
       </section>
 
+      <!-- ==========================================
+           PART 4: الجزء الرابع (4 / 6) — الشرائح 18 إلى 24
+           ========================================== -->
       <section id="part-4" class="scroll-mt-20 space-y-8 pt-8">
         <div class="p-5 sm:p-8 rounded-2xl bg-amber-900 text-white shadow-xl flex flex-wrap items-center justify-between gap-4 border-b-4 border-amber-400">
           <div class="space-y-1.5">
             <span class="inline-block text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-white/20 text-white font-extrabold">الجزء الرابع (4 / 6) — الشرائح 18 إلى 24</span>
             <h2 class="text-xl sm:text-3xl font-black leading-snug text-white">استكمال Array Stack: دوال isEmpty، Pop، Peek، Display، وتشغيل main() بالمحاكي</h2>
           </div>
-          <button type="button" data-check="part-4" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
+          <button type="button" data-check="part-4" class="check-sec-btn shrink-0 px-4 py-2 rounded-xl bg-white text-slate-950 text-xs sm:text-sm font-extrabold hover:bg-emerald-200 transition-all shadow-md">
             ✓ تم الفهم
           </button>
         </div>
@@ -1281,12 +1905,12 @@ public:
           </h4>
 
           <div class="my-4 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 20 — isEmpty() Implementation (Lines 16 to 19)</span>
-              <button type="button" data-code="    // Check if stack is empty
+              <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Check if stack is empty
     bool isEmpty() {
         return (top == -1);
-    }" class="reader-control copy-code-btn">نسخ الكود</button>
+    }">نسخ الكود</button>
             </div>
             <pre class="code-surface p-5 sm:p-6 text-xs sm:text-base overflow-x-auto"><code>16      // Check if stack is empty
 17      bool isEmpty() {
@@ -1309,9 +1933,9 @@ public:
           </div>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 19 — pop() Implementation (Lines 40 to 48)</span>
-              <button type="button" data-code="    // Function to remove the top element
+              <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Function to remove the top element
     void pop() {
         if (isEmpty()) {
             cout &lt;&lt; &quot;Stack Underflow! Cannot pop.&quot; &lt;&lt; endl;
@@ -1319,7 +1943,7 @@ public:
         else {
             cout &lt;&lt; arr[top--] &lt;&lt; &quot; popped from stack.&quot; &lt;&lt; endl;
         }
-    }" class="reader-control copy-code-btn">نسخ الكود</button>
+    }">نسخ الكود</button>
             </div>
             <pre class="code-surface p-5 sm:p-6 text-xs sm:text-base overflow-x-auto"><code>40      // Function to remove the top element
 41      void pop() {
@@ -1409,9 +2033,9 @@ public:
           </div>
 
           <div class="my-4 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slides 21 &amp; 22 — peek() and display() (Lines 50 to 74)</span>
-              <button type="button" data-code="    // Function to get the top element
+              <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Function to get the top element
     void peek() {
         if (isEmpty()) {
             cout &lt;&lt; &quot;Stack is empty.&quot; &lt;&lt; endl;
@@ -1434,7 +2058,7 @@ public:
             cout &lt;&lt; endl;
         }
     }
-};" class="reader-control copy-code-btn">نسخ الكود</button>
+};">نسخ الكود</button>
             </div>
             <pre class="code-surface p-5 sm:p-6 text-xs sm:text-base overflow-x-auto"><code>50      // Function to get the top element
 51      void peek() {
@@ -1532,9 +2156,9 @@ public:
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 my-6">
             <!-- Slide 23 main() -->
             <div class="rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md flex flex-col">
-              <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+              <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
                 <span class="text-xs font-mono text-emerald-300 font-bold">Slide 23 — Usage "main()" (Lines 76 to 95)</span>
-                <button type="button" data-code="int main() {
+                <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="int main() {
     Stack s;
 
     s.push(10);
@@ -1553,7 +2177,7 @@ public:
     s.display();
 
     return 0;
-}" class="reader-control copy-code-btn">نسخ main</button>
+}">نسخ main</button>
               </div>
               <pre class="code-surface p-4 sm:p-5 text-xs sm:text-sm overflow-x-auto flex-1"><code>76  int main() {
 77      Stack s;
@@ -1655,78 +2279,82 @@ Stack elements (top to bottom): 30 20 10 </code></pre>
           <div class="subcard-surface p-4 sm:p-6 border-2 border-emerald-800 space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <h4 class="text-base sm:text-xl font-black text-emerald-950">⚡ محاكي Array Stack التفاعلي (تتبع خطوات main() خطوة بخطوة):</h4>
-              <div class="flex items-center gap-2">
-                <button type="button" id="arr-sim-prev" class="reader-control">السابق</button>
-                <span id="arr-sim-badge" class="px-3 py-1.5 rounded-xl bg-amber-200 text-amber-950 font-mono text-xs font-extrabold border border-amber-500">خطوة 1/5</span>
-                <button type="button" id="arr-sim-next" class="reader-control">الخطوة التالية ⬅</button>
+              <div class="flex flex-wrap items-center gap-2">
+                <button type="button" id="arr-sim-prev" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-extrabold hover:bg-slate-800">السابق</button>
+                <span id="arr-sim-badge" class="px-3 py-1.5 rounded-xl bg-amber-200 text-amber-950 font-mono text-xs font-extrabold border border-amber-500">خطوة 1/6</span>
+                <button type="button" id="arr-sim-next" class="px-3 py-1.5 rounded-xl bg-emerald-900 text-white text-xs font-extrabold hover:bg-emerald-950">الخطوة التالية ⬅</button>
+              
+                <button id="arr-sim-reset" type="button" class="px-3 py-1.5 rounded-xl border-2 text-xs font-extrabold" aria-label="إعادة ضبط المحاكي للبداية">🔄 إعادة ضبط (Reset)</button>
               </div>
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-              <button type="button" data-arr-stage="0" aria-pressed="true" class="reader-control arr-sim-tab">1. Stack s;</button>
-              <button type="button" data-arr-stage="1" aria-pressed="false" class="reader-control arr-sim-tab">2. push(10..30)</button>
-              <button type="button" data-arr-stage="2" aria-pressed="false" class="reader-control arr-sim-tab">3. push(40,50)</button>
-              <button type="button" data-arr-stage="3" aria-pressed="false" class="reader-control arr-sim-tab">4. push(60)!</button>
-              <button type="button" data-arr-stage="4" aria-pressed="false" class="reader-control arr-sim-tab">5. pop() مرتين</button>
+            <div class="grid grid-cols-2 gap-2 arr-sim-stages">
+              <button type="button" data-arr-stage="0" aria-pressed="true" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">١. البداية</button>
+              <button type="button" data-arr-stage="1" aria-pressed="false" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">٢. الإضافة</button>
+              <button type="button" data-arr-stage="2" aria-pressed="false" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">٣. امتلاء المكدّس</button>
+              <button type="button" data-arr-stage="3" aria-pressed="false" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">٤. تجاوز السعة</button>
+              <button type="button" data-arr-stage="4" aria-pressed="false" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">٥. الحذف مرتين</button>
+              <button type="button" data-arr-stage="5" aria-pressed="false" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">٦. الحذف من مكدّس فارغ</button>
             </div>
             <div id="arr-sim-display" class="p-4 sm:p-6 rounded-2xl bg-[#fffdf9] border-2 border-emerald-700 shadow-md space-y-4"></div>
-            <!-- Interactive Simulator Action Controls (Push, Pop, Peek, Reset) -->
-            <div class="p-4 rounded-xl bg-[var(--bg-soft)] border border-[var(--border-color)] flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm">
-              <div class="flex items-center gap-2 flex-wrap">
-                <label for="sim-input-val" class="font-bold text-slate-900 dark:text-slate-100">قيمة العنصر:</label>
-                <input id="sim-input-val" type="number" value="60" class="w-20 px-2 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-mono text-center font-bold" />
-                <button id="sim-btn-push" type="button" class="reader-control">Push(val)</button>
-                <button id="sim-btn-pop" type="button" class="reader-control">Pop()</button>
-                <button id="sim-btn-peek" type="button" class="reader-control">Peek()</button>
-                <button id="sim-btn-reset" type="button" class="reader-control">إعادة ضبط (Reset)</button>
-              </div>
-              <div id="sim-interactive-status" role="status" class="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
-                الحالة: جاهز للتشغيل
+
+            <!-- Static Alternative Walkthrough for Screen Readers and Reduced Motion -->
+            <div id="static-stack-walkthrough" class="static-walkthrough mt-6 p-5 rounded-2xl bg-[#faf5e8] dark:bg-slate-800/80 border-2 border-[#d6cbb5] dark:border-slate-700 space-y-3">
+              <h5 class="font-black text-sm sm:text-base text-slate-950 dark:text-slate-100">📖 مسار التتبع الكامل للمحاكي (Static Walkthrough):</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
+                  <div class="text-amber-800 dark:text-amber-400 font-black">المرحلة 1: الإنشاء (Stack s;)</div>
+                  <div>top = -1 | المصفوفة فارغة تماماً | isEmpty() = true</div>
+                </div>
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
+                  <div class="text-emerald-800 dark:text-emerald-400 font-black">المرحلة 2: إضافة s.push(10..30)</div>
+                  <div>top = 2 | العناصر: arr[0]=10, arr[1]=20, arr[2]=30 ⬅ TOP</div>
+                </div>
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
+                  <div class="text-emerald-800 dark:text-emerald-400 font-black">المرحلة 3: امتلاء المكدس s.push(40, 50)</div>
+                  <div>top = 4 (MAX-1) | الخانات الخمس ممتلئة | isFull() = true</div>
+                </div>
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
+                  <div class="text-rose-800 dark:text-rose-400 font-black">المرحلة 4: تجاوز السعة s.push(60)</div>
+                  <div>Stack Overflow! لا يمكن الإضافة ومؤشر top يظل ثابتاً عند 4</div>
+                </div>
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
+                  <div class="text-sky-800 dark:text-sky-400 font-black">المرحلة 5: الحذف مرتين s.pop() ثم s.peek()</div>
+                  <div>خروج 50 ثم 40 | top = 2 | العنصر في القمة هو arr[2] = 30</div>
+                </div>
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
+                  <div class="text-rose-800 dark:text-rose-400 font-black">المرحلة 6: الحذف بعد تفريغ المكدس</div>
+                  <div>خروج 30 ثم 20 ثم 10 | top = -1 | محاولة pop() مرة أخرى تؤدي إلى Stack Underflow، ويظل top = -1.</div>
+                </div>
               </div>
             </div>
 
-            <div id="sim-live-display" class="p-4 sm:p-6 rounded-2xl bg-[var(--bg-card)] border-2 border-emerald-700 space-y-4"></div>
-
-            <!-- Accessible Static Walkthrough for Screen Readers & Reduced Motion -->
-            <details class="static-walkthrough mt-6 p-4 rounded-xl border border-emerald-700/60 bg-[var(--bg-card)] text-xs sm:text-sm" data-static-walkthrough>
-              <summary class="cursor-pointer font-black text-sm sm:text-base text-emerald-950 dark:text-emerald-300 py-1">
-                📖 عرض الشرح الأكاديمي الثابت لجميع مراحل المحاكي (Accessible Static Walkthrough)
-              </summary>
-              <div class="mt-4 space-y-4 text-slate-900 dark:text-slate-200">
-                <p class="leading-relaxed">يوفر هذا القسم سجلاً ثابتاً ومفصلاً لجميع مراحل تنفيذ البرنامج في الشريحتين 23 و 24 دون الحاجة إلى تشغيل الرسوم المتحركة:</p>
-                <div class="space-y-3">
-                  <div class="p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-[var(--bg-soft)]">
-                    <strong class="block text-emerald-900 dark:text-emerald-300 font-bold mb-1">المرحلة 1: إنشاء المكدس الفارغ (Stack s;)</strong>
-                    <p>الكود: <code class="inline-code">Stack s;</code> — يستدعي الـ Constructor ويجعل <code class="inline-code">top = -1</code>. المصفوفة فارغة بالكامل (جميع الخانات من 0 إلى 4 غير مستخدمة).</p>
-                  </div>
-                  <div class="p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-[var(--bg-soft)]">
-                    <strong class="block text-emerald-900 dark:text-emerald-300 font-bold mb-1">المرحلة 2: إدخال 10 ثم 20 ثم 30</strong>
-                    <p>الكود: <code class="inline-code">s.push(10); s.push(20); s.push(30);</code> — يزيد top تدريجياً: عند 10 يصبح top=0، عند 20 يصبح top=1، وعند 30 يصبح top=2. القمة الحالية هي 30.</p>
-                  </div>
-                  <div class="p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-[var(--bg-soft)]">
-                    <strong class="block text-emerald-900 dark:text-emerald-300 font-bold mb-1">المرحلة 3: إدخال 40 ثم 50 وامتلاء المكدس</strong>
-                    <p>الكود: <code class="inline-code">s.push(40); s.push(50);</code> — يصل top إلى 4 (أي MAX - 1). امتلأت المصفوفة تماماً و <code class="inline-code">isFull()</code> ترجع <code class="inline-code">true</code>.</p>
-                  </div>
-                  <div class="p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-[var(--bg-soft)]">
-                    <strong class="block text-emerald-900 dark:text-emerald-300 font-bold mb-1">المرحلة 4: محاولة إدخال 60 وحدوث طفح المكدس (Stack Overflow)</strong>
-                    <p>الكود: <code class="inline-code">s.push(60);</code> — شرط الامتلاء متحقق فيتم رفض الإضافة وطباعة رسالة الخطأ: <code class="inline-code-rose">Stack Overflow! Cannot push 60</code>، ويبقى top مساوياً 4.</p>
-                  </div>
-                  <div class="p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-[var(--bg-soft)]">
-                    <strong class="block text-emerald-900 dark:text-emerald-300 font-bold mb-1">المرحلة 5: حذف عنصرين بواسطة pop() وقراءة القمة بـ peek()</strong>
-                    <p>الكود: <code class="inline-code">s.pop(); s.pop(); s.peek();</code> — تخرج 50 ثم 40، وينزل المؤشر مرتين ليصبح <code class="inline-code">top = 2</code> مشيراً إلى العنصر 30.</p>
-                  </div>
+            <section id="sim-live-panel" class="p-4 rounded-2xl border space-y-4" aria-labelledby="sim-live-heading" hidden>
+              <h5 id="sim-live-heading" class="text-base font-black">جرّب المكدّس بنفسك</h5>
+              <p id="sim-input-help">أضف أعدادًا صحيحة للمكدّس. سعته 5 عناصر.</p>
+              <form id="sim-live-controls" class="space-y-2" novalidate>
+                <div class="flex flex-wrap items-center gap-2">
+                  <label for="sim-input-val" class="text-sm font-bold">قيمة العنصر</label>
+                  <input id="sim-input-val" type="number" class="rounded-lg border px-3 py-2" dir="ltr" aria-describedby="sim-input-help">
                 </div>
-              </div>
-            </details>
-      
+                <div class="flex flex-wrap gap-2">
+                  <button id="sim-btn-push" type="submit" class="px-3 rounded-xl bg-emerald-900 text-white text-sm font-bold">Push</button>
+                  <button id="sim-btn-pop" type="button" class="px-3 rounded-xl bg-slate-900 text-white text-sm font-bold">Pop()</button>
+                  <button id="sim-btn-peek" type="button" class="px-3 rounded-xl bg-slate-900 text-white text-sm font-bold">Peek()</button>
+                  <button id="sim-btn-reset" type="button" class="px-3 rounded-xl bg-slate-900 text-white text-sm font-bold">إعادة ضبط التجربة</button>
+                </div>
+              </form>
+              <div id="sim-interactive-status" class="text-sm font-bold" role="status">المكدّس فارغ.</div>
+              <div id="sim-live-display"></div>
+            </section>
           </div>
 
           <!-- 5. Hands-on + Full Array Code + MCQs -->
           <div id="p4-sec-5" class="scroll-mt-24 pt-4 space-y-6">
             <h4 class="text-lg sm:text-2xl font-black text-emerald-950">💻 الكود الكامل المتكامل لـ Stack Using Array (تجميع الشرائح 14 إلى 23 في ملف واحد جاهز للتشغيل):</h4>
             <div class="rounded-2xl overflow-hidden border-2 border-emerald-800 shadow-lg">
-              <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+              <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
                 <span class="text-xs font-mono text-emerald-300 font-bold">array_stack_complete.cpp — Full Lecture Code (Lines 1 to 95)</span>
-                <button type="button" data-code="#include &lt;iostream&gt;
+                <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold" data-code="#include &lt;iostream&gt;
 using namespace std;
 
 const int MAX = 5; // Maximum size of the stack
@@ -1816,7 +2444,7 @@ int main() {
     s.display();
 
     return 0;
-}" class="reader-control copy-code-btn">نسخ الكود الكامل</button>
+}">نسخ الكود الكامل</button>
               </div>
               <pre class="code-surface p-5 sm:p-6 text-xs sm:text-sm overflow-x-auto"><code>#include &lt;iostream&gt;
 using namespace std;
@@ -1914,13 +2542,16 @@ int main() {
         </div>
       </section>
 
+      <!-- ==========================================
+           PART 5: الجزء الخامس (5 / 6) — الشرائح 25 إلى 30
+           ========================================== -->
       <section id="part-5" class="scroll-mt-20 space-y-8 pt-8">
         <div class="p-5 sm:p-8 rounded-2xl bg-rose-900 text-white shadow-xl flex flex-wrap items-center justify-between gap-4 border-b-4 border-amber-400">
           <div class="space-y-1.5">
             <span class="inline-block text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-white/20 text-white font-extrabold">الجزء الخامس (5 / 6) — الشرائح 25 إلى 30</span>
             <h2 class="text-xl sm:text-3xl font-black leading-snug text-white">4.4 تنفيذ الـ Stack باستخدام القائمة المتصلة (Stack Using Linked List): القوالب و Push و Pop</h2>
           </div>
-          <button type="button" data-check="part-5" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
+          <button type="button" data-check="part-5" class="check-sec-btn shrink-0 px-4 py-2 rounded-xl bg-white text-slate-950 text-xs sm:text-sm font-extrabold hover:bg-emerald-200 transition-all shadow-md">
             ✓ تم الفهم
           </button>
         </div>
@@ -1951,7 +2582,7 @@ int main() {
           <div class="my-6 p-4 sm:p-6 rounded-2xl bg-[#faf5e8] border-2 border-[#b8a98e] shadow-inner">
             <div class="text-xs sm:text-sm font-black text-sky-950 mb-4 flex items-center justify-center gap-2 border-b border-[#d6cbb5] pb-2.5">
               <span>🎨</span>
-              <span>رسمة الشريحة 26 بالمللي: Top of Stack = Front of Linked-List (العقدة الأولى a1 هي قمة المكدس)</span>
+              <span>رسم الشريحة 26: Top of Stack = Front of Linked-List (العقدة الأولى a1 هي قمة المكدس)</span>
             </div>
 
             <div class="p-4 rounded-xl border-2 border-slate-800 bg-white space-y-3" dir="ltr">
@@ -2018,9 +2649,9 @@ int main() {
           </div>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slides 27 &amp; 28 — Node &amp; Stack Classes with Templates (Lines 1 to 25)</span>
-              <button type="button" data-code="#include &lt;iostream&gt;
+              <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="#include &lt;iostream&gt;
 using namespace std;
 
 // Node structure
@@ -2044,7 +2675,7 @@ private:
 public:
     Stack() {
         top = nullptr;
-    }" class="reader-control copy-code-btn">نسخ الكود</button>
+    }">نسخ الكود</button>
             </div>
             <pre class="code-surface p-5 sm:p-6 text-xs sm:text-base overflow-x-auto"><code>1   #include &lt;iostream&gt;
 2   using namespace std;
@@ -2144,7 +2775,7 @@ public:
               <span class="text-sky-900 font-black text-xl mt-0.5 shrink-0">🎯</span>
               <div class="flex-1 text-slate-950 font-semibold leading-loose space-y-2">
                 <div class="font-black text-slate-950 text-base sm:text-lg underline decoration-amber-500/70 decoration-2">السطر 20 — Node&lt;T&gt;* top;:</div>
-                <div class="text-slate-900 text-sm sm:text-base leading-loose">بدل ما كنا عاملين مصفوفة <code class="inline-code">arr[MAX]</code> ومتغير <code class="inline-code">int top</code>، هنا الـ Stack كله بيتلخص في <strong>مؤشر واحد فقط</strong> اسمه <code class="inline-code-amber">top</code> من نوع <code class="inline-code">Node&lt;T&gt;*</code> بيشاور على أول عقدة في الـ Linked List (يعني هو نفسه الـ <code class="inline-code">head</code> بالمللي!).</div>
+                <div class="text-slate-900 text-sm sm:text-base leading-loose">بدل ما كنا عاملين مصفوفة <code class="inline-code">arr[MAX]</code> ومتغير <code class="inline-code">int top</code>، هنا الـ Stack كله بيتلخص في <strong>مؤشر واحد فقط</strong> اسمه <code class="inline-code-amber">top</code> من نوع <code class="inline-code">Node&lt;T&gt;*</code> بيشاور على أول عقدة في الـ Linked List (يعني هو نفسه الـ <code class="inline-code">head</code>).</div>
               </div>
             </div>
 
@@ -2177,18 +2808,18 @@ public:
             </h3>
           </div>
 
-          <p class="font-semibold">تذكر: عملية <code class="inline-code">push</code> في الـ Linked List Stack هي بالمللي عملية <strong>الإضافة في بداية القائمة (<span class="inline-code">insertAtBeginning</span>)</strong> اللي شرحناها في المحاضرة التانية!</p>
+          <p class="font-semibold">تذكر: عملية <code class="inline-code">push</code> في الـ Linked List Stack هي عملية <strong>الإضافة في بداية القائمة (<span class="inline-code">insertAtBeginning</span>)</strong> اللي شرحناها في المحاضرة التانية!</p>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 29 — Push Implementation (Lines 27 to 33)</span>
-              <button type="button" data-code="    // Push operation
+              <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Push operation
     void push(T value) {
         Node&lt;T&gt;* newNode = new Node&lt;T&gt;(value);
         newNode-&gt;next = top;
         top = newNode;
         cout &lt;&lt; value &lt;&lt; &quot; pushed into stack.&quot; &lt;&lt; endl;
-    }" class="reader-control copy-code-btn">نسخ الكود</button>
+    }">نسخ الكود</button>
             </div>
             <pre class="code-surface p-5 sm:p-6 text-xs sm:text-base overflow-x-auto"><code>27      // Push operation
 28      void push(T value) {
@@ -2269,11 +2900,11 @@ public:
               <span>4. تفكيك كود pop() ومنع تسريب الذاكرة delete temp (Slide 30 — السطور 35 إلى 46)</span>
             </h3>
           </div>
-          <p class="font-semibold">عملية <code class="inline-code">pop()</code> هنا هي بالمللي عملية <strong>الحذف من بداية القائمة المتصلة (<span class="inline-code">deleteFromBeginning</span>)</strong> التي درسناها في المحاضرة الثانية!</p>
+          <p class="font-semibold">عملية <code class="inline-code">pop()</code> هنا هي عملية <strong>الحذف من بداية القائمة المتصلة (<span class="inline-code">deleteFromBeginning</span>)</strong> التي درسناها في المحاضرة الثانية!</p>
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 30 — Pop Implementation (Lines 35 to 46)</span>
-              <button type="button" data-code="    // Pop operation
+              <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Pop operation
     void pop() {
         if (isEmpty()) {
             cout &lt;&lt; &quot;Stack Underflow! Cannot pop.&quot; &lt;&lt; endl;
@@ -2284,7 +2915,7 @@ public:
             top = top-&gt;next;
             delete temp;
         }
-    }" class="reader-control copy-code-btn">نسخ الكود</button>
+    }">نسخ الكود</button>
             </div>
             <pre class="code-surface p-5 sm:p-6 text-xs sm:text-base overflow-x-auto"><code>35      // Pop operation
 36      void pop() {
@@ -2400,13 +3031,16 @@ public:
         </div>
       </section>
 
+      <!-- ==========================================
+           PART 6: الجزء السادس (6 / 6) — الشرائح 31 إلى 36
+           ========================================== -->
       <section id="part-6" class="scroll-mt-20 space-y-8 pt-8">
         <div class="p-5 sm:p-8 rounded-2xl bg-purple-900 text-white shadow-xl flex flex-wrap items-center justify-between gap-4 border-b-4 border-amber-400">
           <div class="space-y-1.5">
             <span class="inline-block text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-white/20 text-white font-extrabold">الجزء السادس والأخير (6 / 6) — الشرائح 31 إلى 36</span>
             <h2 class="text-xl sm:text-3xl font-black leading-snug text-white">استكمال Linked List Stack، حل لغز الشريحة 35، والمقارنة الشاملة</h2>
           </div>
-          <button type="button" data-check="part-6" aria-pressed="false" class="reader-control check-sec-btn shrink-0">
+          <button type="button" data-check="part-6" class="check-sec-btn shrink-0 px-4 py-2 rounded-xl bg-white text-slate-950 text-xs sm:text-sm font-extrabold hover:bg-emerald-200 transition-all shadow-md">
             ✓ تم الفهم
           </button>
         </div>
@@ -2421,9 +3055,9 @@ public:
           </div>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slides 31, 32 &amp; 33 — peek(), isEmpty(), and display() (Lines 49 to 78)</span>
-              <button type="button" data-code="    // Peek (top element)
+              <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Peek (top element)
     void peek() {
         if (isEmpty()) {
             cout &lt;&lt; &quot;Stack is empty.&quot; &lt;&lt; endl;
@@ -2452,7 +3086,7 @@ public:
             }
             cout &lt;&lt; endl;
         }
-    }" class="reader-control copy-code-btn">نسخ الكود</button>
+    }">نسخ الكود</button>
             </div>
             <pre class="code-surface p-5 sm:p-6 text-xs sm:text-base overflow-x-auto"><code>49      // Peek (top element)
 50      void peek() {
@@ -2570,9 +3204,9 @@ public:
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 my-6">
             <!-- Slide 34 main() -->
             <div class="rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md flex flex-col">
-              <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+              <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
                 <span class="text-xs font-mono text-emerald-300 font-bold">Slide 34 — Usage "main()" (Lines 88 to 108)</span>
-                <button type="button" data-code="int main() {
+                <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="int main() {
     cout &lt;&lt; &quot;Stack of Integers:\n&quot;;
     Stack&lt;int&gt; s1;
     s1.push(10);
@@ -2592,7 +3226,7 @@ public:
     s2.peek();
 
     return 0;
-}" class="reader-control copy-code-btn">نسخ main</button>
+}">نسخ main</button>
               </div>
               <pre class="code-surface p-4 sm:p-5 text-xs sm:text-sm overflow-x-auto flex-1"><code>88  int main() {
 89      cout &lt;&lt; &quot;Stack of Integers:\n&quot;;
@@ -2680,9 +3314,9 @@ AI popped from stack.
           <div id="p6-sec-4" class="scroll-mt-24 pt-4 space-y-6">
             <h4 class="text-lg sm:text-2xl font-black text-purple-950">💻 الكود الكامل المتكامل لـ Stack Using Linked List (تجميع الشرائح 27 إلى 35 بالـ Destructor):</h4>
             <div class="rounded-2xl overflow-hidden border-2 border-purple-800 shadow-lg">
-              <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+              <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
                 <span class="text-xs font-mono text-emerald-300 font-bold">linked_list_stack_complete.cpp — Full Lecture Code (Lines 1 to 108)</span>
-                <button type="button" data-code="#include &lt;iostream&gt;
+                <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold" data-code="#include &lt;iostream&gt;
 using namespace std;
 
 // Node structure
@@ -2788,7 +3422,7 @@ int main() {
     s2.peek();
 
     return 0;
-}" class="reader-control copy-code-btn">نسخ الكود الكامل</button>
+}">نسخ الكود الكامل</button>
               </div>
               <pre class="code-surface p-5 sm:p-6 text-xs sm:text-sm overflow-x-auto"><code>#include &lt;iostream&gt;
 using namespace std;
@@ -2900,10 +3534,10 @@ int main() {
             </div>
 
             <!-- Hands-on Practice Box -->
-            <div class="p-5 sm:p-6 rounded-2xl bg-[#f5efe2] border-2 border-[#b8a98e] space-y-4">
+            <div id="p6-draft" class="scroll-mt-24 p-5 sm:p-6 rounded-2xl bg-[#f5efe2] border-2 border-[#b8a98e] space-y-4">
               <div class="flex items-center justify-between">
                 <label for="student-code-area" class="text-xs sm:text-sm font-black text-slate-950">✍️ مساحة مسودة لكتابة وتجربة كود الـ Stack بإيدك:</label>
-                <button type="button" id="btn-clear-draft" class="reader-control">مسح المسودة</button>
+                <button type="button" id="btn-clear-draft" class="reader-button">مسح المسودة</button>
               </div>
               <textarea id="student-code-area" rows="5" dir="ltr" class="w-full p-4 rounded-xl code-surface border-2 border-slate-800 text-sm font-mono" placeholder="// اكتب كود Stack بالمصفوفة أو بالـ Linked List هنا للتدريب..."></textarea>
             </div>
@@ -2916,7 +3550,7 @@ int main() {
               </div>
 
               <div class="overflow-x-auto my-4">
-                <table class="w-full exam-table comparison-table rounded-xl overflow-hidden text-xs sm:text-sm">
+                <table class="w-full exam-table rounded-xl overflow-hidden text-xs sm:text-sm">
                   <thead>
                     <tr>
                       <th>وجه المقارنة (Feature)</th>
@@ -3009,216 +3643,591 @@ int main() {
         </div>
       </section>
 
-      
-      <!-- ==========================================
-           Interactive Dynamic Quiz Section (#section-quiz)
-           ========================================== -->
-      <section id="section-quiz" class="scroll-mt-20 space-y-6 pt-8">
-        <div class="p-5 sm:p-8 rounded-2xl bg-gradient-to-r from-emerald-900 via-teal-900 to-sky-950 text-white shadow-xl flex flex-wrap items-center justify-between gap-4 border-b-4 border-emerald-400">
-          <div class="space-y-1.5">
-            <span class="inline-block text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-white/20 text-white font-extrabold">🎯 بنك الأسئلة التفاعلي الشامل</span>
-            <h2 class="text-xl sm:text-3xl font-black leading-snug text-white">اختبر معلوماتك في المكدس (Stack) — 10 أسئلة امتحانات سابقة</h2>
-            <p class="text-xs sm:text-sm text-emerald-200 font-bold">اختر الإجابة المناسبة لكل سؤال وتحقق من الشرح النموذجي والتفسير الأكاديمي فوراً.</p>
-          </div>
-          <div class="flex items-center gap-2">
-            <span id="quizScoreDisplay" class="px-4 py-2 rounded-xl bg-emerald-800 text-white text-xs sm:text-sm font-black font-mono shadow-md border border-emerald-500">النتيجة: 0 / 10</span>
-            <button id="btnResetQuiz" type="button" class="reader-control">
-              🔄 إعادة تعيين الكويز
-            </button>
-          </div>
-        </div>
-
-        <!-- أزرار تصفية الأسئلة حسب الأجزاء -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 text-xs font-bold" dir="rtl">
-          <button type="button" data-quiz-filter="all" aria-pressed="true" class="reader-control quiz-filter-btn">
-            جميع الأسئلة (10)
-          </button>
-          <button type="button" data-quiz-filter="p1" aria-pressed="false" class="reader-control quiz-filter-btn">
-            الجزء 1: التعريف و LIFO (3)
-          </button>
-          <button type="button" data-quiz-filter="p2" aria-pressed="false" class="reader-control quiz-filter-btn">
-            الجزء 2: العمليات ومؤشر top (2)
-          </button>
-          <button type="button" data-quiz-filter="p3" aria-pressed="false" class="reader-control quiz-filter-btn">
-            الجزء 3: المصفوفة و isFull (2)
-          </button>
-          <button type="button" data-quiz-filter="p5" aria-pressed="false" class="reader-control quiz-filter-btn">
-            الجزء 5: القائمة المتصلة (1)
-          </button>
-          <button type="button" data-quiz-filter="p6" aria-pressed="false" class="reader-control quiz-filter-btn">
-            الجزء 6: القوالب والمقارنة (2)
-          </button>
-        </div>
-
-        <!-- حاوية الأسئلة -->
-        <div id="quizQuestionsContainer" class="space-y-6"></div>
-      </section>
-
-
     </main>
   </div>
 
-  <!-- إشعار النسخ (Toast) -->
+  <!-- Toast Notification -->
   <div id="toast" class="fixed bottom-6 left-6 z-50 px-5 py-3 rounded-xl bg-emerald-900 text-white font-extrabold text-sm shadow-2xl transition-all duration-300 opacity-0 pointer-events-none translate-y-2">
     تم نسخ الكود بنجاح!
   </div>
 
-  <!-- سكريبتات المنظومة والمقرر المشتركة -->
+  
+
+
+  <script>
+    (function () {
+      'use strict';
+      const quizQuestions = [{"id":1,"part":"p1","partLabel":"الجزء الأول: مبدأ LIFO وتصنيف هياكل البيانات • سؤال 1","question":"Q1: Which order principle does a Stack data structure follow?","options":["A) FIFO (First In, First Out)","B) LIFO (Last In, First Out)","C) Random Access Order","D) Hierarchical Tree Order"],"correct":1,"explanation":"التفسير: الـ Stack يتبع مبدأ LIFO (Last In, First Out) أي أن آخر عنصر يدخل هو أول عنصر يخرج."},{"id":2,"part":"p1","partLabel":"الجزء الأول: مبدأ LIFO وتصنيف هياكل البيانات • سؤال 2","question":"Q2: According to the classification of data structures, a Stack is classified as:","options":["A) Linear Data Structure","B) Non-linear Data Structure","C) Primitive Hardware Register","D) Graph-based Structure"],"correct":0,"explanation":"التفسير: كما ظهر في شجرة التصنيف بالشريحة 4، ينتمي الـ Stack إلى عائلة هياكل البيانات الخطية (Linear Data Structures) بجانب Array و Queue و Linked-list."},{"id":3,"part":"p1","partLabel":"الجزء الأول: مبدأ LIFO وتصنيف هياكل البيانات • سؤال 3","question":"Q3: Stacks are crucial in almost all programming environments for managing:","options":["A) Database SQL queries and indexing","B) Function calls and subroutine execution stack","C) Hard drive physical sectors and tracks","D) Network routing tables and ARP cache"],"correct":1,"explanation":"التفسير: نص الشريحة 7 يؤكد أن الـ Stack ضروري لإدارة استدعاءات الدوال (Function calls) والحفاظ على ترتيب التنفيذ والعودة بسلاسة."},{"id":4,"part":"p2","partLabel":"الجزء الثاني: عمليات الـ Stack ومؤشر top • سؤال 1","question":"Q1: Which operation returns or displays the top element of the stack WITHOUT removing it?","options":["A) pop()","B) push()","C) peek()","D) isFull()"],"correct":2,"explanation":"التفسير: دالة peek() تطبع أو ترجع قيمة العنصر الموجود في قمة المكدس (top) دون أن تحذفه، بينما pop() تقوم بحذفه."},{"id":5,"part":"p2","partLabel":"الجزء الثاني: عمليات الـ Stack ومؤشر top • سؤال 2","question":"Q2: In a Stack, where do both `push` and `pop` operations take place?","options":["A) At opposite ends (one at head and one at tail)","B) At the same end called the top","C) At random indices decided by the CPU","D) In the middle position (floor(n/2))"],"correct":1,"explanation":"التفسير: نص الشريحة 10 ينص صراحة على أن كلتا العمليتين (push و pop) تحدثان من طرف واحد فقط يُسمى top."},{"id":6,"part":"p3","partLabel":"الجزء الثالث: تنفيذ Stack بالمصفوفة و Overflow • سؤال 1","question":"Q1: In an array implementation of a Stack of size `MAX`, what is the condition for \"Stack Overflow\" (`isFull()`)?","options":["A) top == -1","B) top == MAX","C) top == MAX - 1","D) top == 0"],"correct":2,"explanation":"التفسير: لأن فهارس المصفوفة في C++ تبدأ من 0 إلى MAX - 1، فعندما يصل المؤشر top إلى MAX - 1 تكون المصفوفة قد امتلأت بالكامل."},{"id":7,"part":"p3","partLabel":"الجزء الثالث: تنفيذ Stack بالمصفوفة و Overflow • سؤال 2","question":"Q2: What does the statement `arr[++top] = value;` do during a `push` operation?","options":["A) It stores value at current top, then increments top afterwards.","B) It increments top by 1 first, then stores value at the new top index.","C) It increments value by 1 before inserting into the array.","D) It clears the stack and inserts value at index 0."],"correct":1,"explanation":"التفسير: المعامل `++top` (Pre-increment) يزيد قيمة `top` بمقدار 1 أولاً، ثم يضع القيمة الجديدة في الموضع الجديد."},{"id":8,"part":"p5","partLabel":"الجزء الخامس: تنفيذ Stack بالقائمة المتصلة • سؤال 1","question":"Q1: When implementing a Stack using a Singly Linked List, which end of the linked list serves as the `top` of the stack?","options":["A) The front (head) of the linked list","B) The back (tail) of the linked list","C) The middle node of the linked list","D) Any random node chosen by memory allocator"],"correct":0,"explanation":"التفسير: كما نصت الشريحة 26 (Top of Stack = Front of Linked-List)، لأن الإضافة والحذف من بداية القائمة المتصلة يتم في وقت ثابت O(1)."},{"id":9,"part":"p6","partLabel":"الجزء السادس: المقارنة الشاملة وحالات الـ Underflow • سؤال 1","question":"Q1: Attempting to perform a `pop()` operation on an empty stack results in which condition?","options":["A) Stack Overflow","B) Stack Underflow (Data Underflow)","C) Memory Leak","D) Segmentation Fault automatically prevented by compiler"],"correct":1,"explanation":"التفسير: محاولة الحذف (pop) من مكدس فارغ تسمى Stack Underflow، بينما محاولة الإضافة (push) في مكدس ممتلئ تسمى Stack Overflow."},{"id":10,"part":"p6","partLabel":"الجزء السادس: المقارنة الشاملة وحالات الـ Underflow • سؤال 2","question":"Q2: In the Linked List implementation of Stack, what is the purpose of `template <class T>`?","options":["A) To speed up execution time to O(0.5).","B) To allow the Stack class to store any data type (int, string, double, etc.) generically.","C) To restrict stack elements to integers only.","D) To automatically delete unused nodes from RAM."],"correct":1,"explanation":"التفسير: القوالب (Templates) تتيح كتابة كلاس عام يعمل مع أي نوع بيانات مثل Stack<int> و Stack<string> كما ظهر في الشريحة 34."}];
+      window.quizQuestions = quizQuestions;
+
+      // 1. Reading Progress Bar
+      const readerHeader = document.getElementById('mainReadingHeader');
+      const syncHeaderOffset = () => {
+        document.documentElement.style.setProperty('--lesson-header-offset', (readerHeader.offsetHeight + 8) + 'px');
+      };
+      syncHeaderOffset();
+      if (window.ResizeObserver) new ResizeObserver(syncHeaderOffset).observe(readerHeader);
+
+      const progressBar = document.getElementById('reading-progress');
+      window.addEventListener('scroll', function () {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const pct = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+        if (progressBar) progressBar.style.width = pct + '%';
+      });
+
+      // 2. Slide-Over Table of Contents Drawer
+      const sidebarToc = document.getElementById('sidebar-toc');
+      const tocBackdrop = document.getElementById('toc-backdrop');
+      const btnOpenToc = document.getElementById('btn-open-toc');
+      const btnCloseToc = document.getElementById('btn-close-toc');
+
+      function openToc() {
+        if (sidebarToc) sidebarToc.classList.add('open');
+        if (tocBackdrop) tocBackdrop.classList.add('open');
+      }
+
+      function closeToc() {
+        if (sidebarToc) sidebarToc.classList.remove('open');
+        if (tocBackdrop) tocBackdrop.classList.remove('open');
+      }
+
+      if (btnOpenToc) btnOpenToc.addEventListener('click', openToc);
+      if (btnCloseToc) btnCloseToc.addEventListener('click', closeToc);
+      if (tocBackdrop) tocBackdrop.addEventListener('click', closeToc);
+
+      document.querySelectorAll('.toc-link').forEach(function (link) {
+        link.addEventListener('click', function () {
+          closeToc();
+        });
+      });
+
+      // 3. Interactive Array Stack Simulator
+      const arrayCapacity = 5;
+
+      function renderStackCells(values, topIdx) {
+        let html = '<div class="flex flex-col sm:flex-row items-center justify-center gap-6 py-2" dir="ltr">';
+        html += '<div class="px-5 py-2.5 rounded-xl bg-amber-100 border-2 border-amber-600 text-amber-950 font-mono font-black text-base shadow-xs">top = ' + topIdx + '</div>';
+        html += '<div class="arr-sim-cells w-56 border-2 border-slate-800 rounded-xl overflow-hidden bg-white shadow-md font-mono">';
+        for (let i = arrayCapacity - 1; i >= 0; i--) {
+          const val = i <= topIdx ? values[i] : '(فارغ)';
+          const isTop = i === topIdx;
+          const rowBg = isTop ? 'bg-emerald-100 text-emerald-950 font-black border-l-8 border-l-emerald-700' : (i < topIdx ? 'bg-sky-50 text-slate-900 font-bold' : 'bg-slate-100 arr-sim-empty');
+          html += '<div class="p-2.5 border-b border-slate-300 last:border-b-0 flex items-center justify-between text-xs sm:text-sm ' + rowBg + '">' +
+            '<span>arr[' + i + ']' + (isTop ? ' ⬅ TOP' : '') + '</span>' +
+            '<span>' + val + '</span>' +
+          '</div>';
+        }
+        html += '</div></div>';
+        return html;
+      }
+
+      const arrStages = [
+        {
+          title: 'المرحلة 1: إنشاء مكدّس فارغ',
+          code: 'Stack s; // Constructor sets top = -1',
+          desc: 'في البداية المصفوفة فارغة تماماً، والمتغير top يساوي -1 (خارج حدود الفهارس 0..4):',
+          html: renderStackCells([], -1)
+        },
+        {
+          title: 'المرحلة 2: إضافة 10 ثم 20 ثم 30 (السطور 79–81)',
+          code: 's.push(10);  s.push(20);  s.push(30);',
+          desc: 'مع كل push، يزيد top بـ 1 أولاً (++top) ثم يدخل الرقم. الآن top = 2 ويشير للرقم 30:',
+          html: renderStackCells([10, 20, 30], 2)
+        },
+        {
+          title: 'المرحلة 3: إضافة 40 ثم 50 — امتلاء المصفوفة (السطران 82–83)',
+          code: 's.push(40);  s.push(50); // top reaches MAX - 1 (4)',
+          desc: 'وصل top إلى 4 (وهو MAX - 1)، وبذلك امتلأت الخانات الخمسة بالكامل وأصبحت isFull() ترجع true:',
+          html: renderStackCells([10, 20, 30, 40, 50], 4)
+        },
+        {
+          title: 'المرحلة 4: محاولة إضافة 60 وحدوث Stack Overflow! (السطر 84)',
+          code: 's.push(60); // Output: Stack Overflow! Cannot push 60',
+          desc: 'لأن isFull() رجعت true، يرفض البرنامج إدخال الـ 60 ويطبع رسالة Stack Overflow ويظل top = 4 عند 50:',
+          html: renderStackCells([10, 20, 30, 40, 50], 4)
+        },
+        {
+          title: 'المرحلة 5: الحذف مرتين ثم قراءة القمة (السطور 88–91)',
+          code: 's.pop(); // 50 popped\ns.pop(); // 40 popped\ns.peek(); // Top is 30',
+          desc: 'خرجت 50 ثم خرجت 40 ونزل المؤشر مرتين ليصبح top = 2 واقفاً عند العنصر 30:',
+          html: renderStackCells([10, 20, 30], 2)
+        },
+        {
+          title: 'المرحلة 6: الحذف من مكدّس فارغ <bdi dir="ltr">(Stack Underflow)</bdi>',
+          code: 's.pop(); // 30\ns.pop(); // 20\ns.pop(); // 10\ns.pop(); // Stack Underflow!',
+          desc: 'خرجت 30 ثم 20 ثم 10 وأصبح top = -1. في المحاولة التالية ترجع isEmpty() القيمة true، فتظهر رسالة Stack Underflow ويفضل top = -1.',
+          html: renderStackCells([], -1)
+        }
+      ];
+
+      let currentArrStage = 0;
+      const arrSimDisplay = document.getElementById('arr-sim-display');
+      const arrSimBadge = document.getElementById('arr-sim-badge');
+      const arrSimTabs = document.querySelectorAll('.arr-sim-tab');
+      const simPrev = document.getElementById('arr-sim-prev');
+      const simNext = document.getElementById('arr-sim-next');
+      const simReset = document.getElementById('arr-sim-reset');
+
+      function renderArrSim() {
+        if (!arrSimDisplay || !arrSimBadge) return;
+        const st = arrStages[currentArrStage];
+        arrSimBadge.textContent = 'خطوة ' + (currentArrStage + 1) + '/' + arrStages.length;
+        arrSimDisplay.innerHTML =
+          '<div class="font-black text-emerald-950 dark:text-emerald-300 text-base sm:text-lg">' + st.title + '</div>' +
+          '<div class="code-surface arr-sim-code p-3 rounded-xl border border-slate-700 text-xs sm:text-sm text-emerald-300 font-mono" dir="ltr">' + st.code + '</div>' +
+          '<div class="text-sm sm:text-base text-slate-900 dark:text-slate-100 font-bold">' + st.desc + '</div>' +
+          '<div class="pt-2 bg-[#faf5e8] dark:bg-slate-900/60 p-4 rounded-xl border border-[#d6cbb5] dark:border-slate-700">' + st.html + '</div>';
+
+        arrSimTabs.forEach(function (tab, idx) {
+          tab.setAttribute('aria-pressed', String(idx === currentArrStage));
+        });
+      }
+
+      if (simPrev) {
+        simPrev.setAttribute('role', 'button');
+        simPrev.setAttribute('tabindex', '0');
+        simPrev.setAttribute('aria-label', 'الخطوة السابقة في محاكي المكدس');
+        simPrev.addEventListener('click', function () {
+          currentArrStage = (currentArrStage - 1 + arrStages.length) % arrStages.length;
+          renderArrSim();
+        });
+        simPrev.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            simPrev.click();
+          }
+        });
+      }
+
+      if (simNext) {
+        simNext.setAttribute('role', 'button');
+        simNext.setAttribute('tabindex', '0');
+        simNext.setAttribute('aria-label', 'الخطوة التالية في محاكي المكدس');
+        simNext.addEventListener('click', function () {
+          currentArrStage = (currentArrStage + 1) % arrStages.length;
+          renderArrSim();
+        });
+        simNext.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            simNext.click();
+          }
+        });
+      }
+
+      if (simReset) {
+        simReset.setAttribute('role', 'button');
+        simReset.setAttribute('tabindex', '0');
+        simReset.setAttribute('aria-label', 'إعادة ضبط المحاكي للبداية');
+        simReset.addEventListener('click', function () {
+          currentArrStage = 0;
+          renderArrSim();
+        });
+        simReset.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            simReset.click();
+          }
+        });
+      }
+
+      arrSimTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          currentArrStage = Number(tab.dataset.arrStage);
+          renderArrSim();
+        });
+      });
+
+      renderArrSim();
+
+      const liveStack = [];
+      const livePanel = document.getElementById('sim-live-panel');
+      const liveControls = document.getElementById('sim-live-controls');
+      const liveInput = document.getElementById('sim-input-val');
+      const liveDisplay = document.getElementById('sim-live-display');
+      const liveStatus = document.getElementById('sim-interactive-status');
+
+      function renderLiveStack() {
+        liveDisplay.innerHTML = renderStackCells(liveStack, liveStack.length - 1);
+      }
+
+      liveControls.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const value = liveInput.valueAsNumber;
+        if (!/^-?\d+$/.test(liveInput.value) || !Number.isSafeInteger(value)) {
+          liveInput.setAttribute('aria-invalid', 'true');
+          liveStatus.textContent = 'أدخل عددًا صحيحًا.';
+          liveInput.focus();
+          return;
+        }
+
+        liveInput.removeAttribute('aria-invalid');
+        if (liveStack.length === arrayCapacity) {
+          liveStatus.textContent = 'Stack Overflow: المكدّس ممتلئ.';
+          return;
+        }
+
+        liveStack.push(value);
+        liveStatus.textContent = 'تمت إضافة ' + value + '. القمة عند الفهرس ' + (liveStack.length - 1) + '.';
+        renderLiveStack();
+      });
+
+      document.getElementById('sim-btn-pop').addEventListener('click', function () {
+        if (liveStack.length === 0) {
+          liveStatus.textContent = 'Stack Underflow: المكدّس فارغ.';
+          return;
+        }
+
+        const removed = liveStack.pop();
+        liveStatus.textContent = 'تم حذف ' + removed + '. القمة عند الفهرس ' + (liveStack.length - 1) + '.';
+        renderLiveStack();
+      });
+
+      document.getElementById('sim-btn-peek').addEventListener('click', function () {
+        liveStatus.textContent = liveStack.length
+          ? 'قيمة العنصر في القمة: ' + liveStack.at(-1) + '.'
+          : 'المكدّس فارغ.';
+      });
+
+      document.getElementById('sim-btn-reset').addEventListener('click', function () {
+        liveStack.length = 0;
+        liveInput.value = '';
+        liveInput.removeAttribute('aria-invalid');
+        liveStatus.textContent = 'تم تفريغ المكدّس. القمة عند الفهرس -1.';
+        renderLiveStack();
+      });
+
+      renderLiveStack();
+      livePanel.hidden = false;
+
+      // 4. Copy Code Buttons
+      const toast = document.getElementById('toast');
+      function showToast(msg) {
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.classList.remove('opacity-0', 'translate-y-2');
+        setTimeout(function () {
+          toast.classList.add('opacity-0', 'translate-y-2');
+        }, 2000);
+      }
+
+      document.querySelectorAll('.copy-code-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const code = btn.getAttribute('data-code');
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(code).then(function () {
+              showToast('تم نسخ الكود بنجاح!');
+            }).catch(function () {
+              fallbackCopy(code);
+            });
+          } else {
+            fallbackCopy(code);
+          }
+        });
+      });
+
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          showToast('تم نسخ الكود بنجاح!');
+        } catch (e) {}
+        document.body.removeChild(ta);
+      }
+
+      // 5. Section Completion Checkmarks
+      const completedSections = {};
+      const badgeEl = document.getElementById('completed-count-badge');
+      const totalCheckBtns = document.querySelectorAll('.check-sec-btn').length;
+      if (badgeEl) badgeEl.textContent = '0/' + (totalCheckBtns || 10);
+
+      document.querySelectorAll('.check-sec-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const id = btn.getAttribute('data-check');
+          completedSections[id] = !completedSections[id];
+          if (completedSections[id]) {
+            btn.className = 'check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-emerald-700 bg-emerald-700 text-white transition-all';
+            btn.textContent = '✓ مكتمل';
+          } else {
+            btn.className = 'check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white dark:bg-slate-800 text-slate-950 dark:text-slate-100 hover:bg-emerald-100 transition-all';
+            btn.textContent = '✓ تم الفهم';
+          }
+          const count = Object.values(completedSections).filter(Boolean).length;
+          if (badgeEl) badgeEl.textContent = count + '/' + (totalCheckBtns || 10);
+        });
+      });
+
+      // 6. Clear Draft Button
+      const clearDraftBtn = document.getElementById('btn-clear-draft');
+      if (clearDraftBtn) {
+        clearDraftBtn.addEventListener('click', function () {
+          const codeArea = document.getElementById('student-code-area');
+          if (!codeArea) return;
+          codeArea.value = '';
+          codeArea.focus();
+        });
+      }
+
+      // 7. Typography & Theme Controls
+      let fontScale = 100;
+      let lineSpacingMode = 'relaxed';
+
+      function applyReadingTypography() {
+        document.documentElement.style.setProperty('--reading-size', (1.15 * (fontScale / 100)) + 'rem');
+        const label = document.getElementById('fontSizeLabel');
+        if (label) label.textContent = fontScale + '%';
+      }
+
+      const btnInc = document.getElementById('btnFontInc');
+      if (btnInc) {
+        btnInc.addEventListener('click', function () {
+          if (fontScale < 140) {
+            fontScale += 10;
+            applyReadingTypography();
+          }
+        });
+      }
+
+      const btnDec = document.getElementById('btnFontDec');
+      if (btnDec) {
+        btnDec.addEventListener('click', function () {
+          if (fontScale > 80) {
+            fontScale -= 10;
+            applyReadingTypography();
+          }
+        });
+      }
+
+      const btnSpacing = document.getElementById('btnLineSpacing');
+      if (btnSpacing) {
+        btnSpacing.addEventListener('click', function () {
+          if (lineSpacingMode === 'relaxed') {
+            lineSpacingMode = 'spacious';
+            document.documentElement.style.setProperty('--reading-lh', '2.5');
+            btnSpacing.textContent = 'تباعد: واسع جداً';
+          } else if (lineSpacingMode === 'spacious') {
+            lineSpacingMode = 'normal';
+            document.documentElement.style.setProperty('--reading-lh', '1.85');
+            btnSpacing.textContent = 'تباعد: قياسي';
+          } else {
+            lineSpacingMode = 'relaxed';
+            document.documentElement.style.setProperty('--reading-lh', '2.15');
+            btnSpacing.textContent = 'تباعد: مريح جداً';
+          }
+        });
+      }
+
+      const btnSepia = document.getElementById('btnThemeSepia');
+      if (btnSepia) {
+        btnSepia.addEventListener('click', function () {
+          if (window.PortalTheme && window.PortalTheme.setTheme) {
+            window.PortalTheme.setTheme('reading');
+          } else {
+            document.body.classList.remove('theme-white', 'theme-dark');
+          }
+        });
+      }
+
+      const btnWhite = document.getElementById('btnThemeWhite');
+      if (btnWhite) {
+        btnWhite.addEventListener('click', function () {
+          if (window.PortalTheme && window.PortalTheme.setTheme) {
+            window.PortalTheme.setTheme('light');
+          } else {
+            document.body.classList.remove('theme-dark');
+            document.body.classList.add('theme-white');
+          }
+        });
+      }
+
+      const btnDark = document.getElementById('btnThemeDark');
+      if (btnDark) {
+        btnDark.addEventListener('click', function () {
+          if (window.PortalTheme && window.PortalTheme.setTheme) {
+            window.PortalTheme.setTheme('dark');
+          } else {
+            document.body.classList.remove('theme-white');
+            document.body.classList.add('theme-dark');
+          }
+        });
+      }
+
+      // 8. Dynamic Interactive Quiz Section Injection & Logic
+      function initInteractiveQuiz() {
+        const main = document.querySelector('main');
+        if (!main || document.getElementById('section-quiz')) return;
+
+        const quizSection = document.createElement('section');
+        quizSection.id = 'section-quiz';
+        quizSection.className = 'mt-12 p-6 sm:p-8 rounded-3xl bg-[#f5ede0] dark:bg-slate-900 border-2 border-[#c8bba1] dark:border-slate-800 shadow-xl space-y-6';
+
+        quizSection.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-5 border-[#d6cbb5] dark:border-slate-800">
+            <div class="space-y-1">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-900 dark:bg-emerald-950/60 dark:text-emerald-300">
+                <span>🎯</span> بنك الأسئلة التفاعلي الشامل
+              </span>
+              <h3 class="text-xl sm:text-2xl font-black text-slate-950 dark:text-slate-100">
+                اختبر فهمك لجميع أجزاء المحاضرة الرابعة (10 أسئلة تفاعلية)
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                أسئلة الامتحانات المحلولة تم تحويلها لبنك تفاعلي مع العداد وميزة إعادة الاختبار
+              </p>
+            </div>
+            <div class="flex items-center gap-3">
+              <div id="quizScoreDisplay" class="px-4 py-2 rounded-2xl border font-black text-sm">
+                النتيجة: 0 / 10
+              </div>
+              <button id="btnResetQuiz" class="px-4 py-2 rounded-2xl font-bold text-xs transition">
+                🔄 إعادة الاختبار
+              </button>
+            </div>
+          </div>
+
+          <!-- Part filter buttons -->
+          <div class="flex flex-wrap items-center gap-2" role="group" aria-label="تصفية الأسئلة حسب الجزء">
+            <button data-quiz-filter="all" class="quiz-filter-btn active px-3 py-1.5 rounded-xl text-xs font-bold transition">الكل (10)</button>
+            <button data-quiz-filter="p1" class="quiz-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition">الجزء 1 (3)</button>
+            <button data-quiz-filter="p2" class="quiz-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition">الجزء 2 (2)</button>
+            <button data-quiz-filter="p3" class="quiz-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition">الجزء 3 (2)</button>
+            <button data-quiz-filter="p5" class="quiz-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition">الجزء 5 (1)</button>
+            <button data-quiz-filter="p6" class="quiz-filter-btn px-3 py-1.5 rounded-xl text-xs font-bold transition">الجزء 6 (2)</button>
+          </div>
+
+          <!-- Questions container -->
+          <div id="quizQuestionsContainer" class="space-y-4"></div>
+        `;
+
+        main.appendChild(quizSection);
+
+        const container = document.getElementById('quizQuestionsContainer');
+        const scoreEl = document.getElementById('quizScoreDisplay');
+        const answeredState = {};
+
+        function renderQuestions(filter) {
+          container.innerHTML = '';
+          const filtered = filter === 'all' ? quizQuestions : quizQuestions.filter(q => q.part === filter);
+
+          filtered.forEach(q => {
+            const article = document.createElement('article');
+            article.className = 'p-5 rounded-2xl bg-white dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 shadow-sm space-y-4';
+            article.dataset.qid = String(q.id);
+            article.dataset.part = q.part;
+
+            const header = document.createElement('div');
+            header.className = 'flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-bold';
+            header.innerHTML = '<span>' + q.partLabel + '</span>';
+
+            const prompt = document.createElement('h4');
+            prompt.className = 'text-sm sm:text-base font-black text-slate-950 dark:text-slate-100 leading-relaxed';
+            prompt.textContent = q.question;
+
+            const optionsGrid = document.createElement('div');
+            optionsGrid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1';
+
+            const choices = q.options.map((opt, idx) => ({
+              text: opt,
+              index: idx,
+              isCorrect: idx === q.correct
+            }));
+
+            const choiceItems = window.QuizChoices && window.QuizChoices.shuffleChoices
+              ? window.QuizChoices.shuffleChoices(choices, q.id)
+              : choices;
+
+            const feedback = document.createElement('div');
+            feedback.className = 'quiz-explanation p-3.5 rounded-xl border text-xs sm:text-sm';
+            feedback.tabIndex = -1;
+            feedback.hidden = true;
+
+            function showAnswer(selectedIndex) {
+              choiceItems.forEach((choice, position) => {
+                const option = optionsGrid.children[position];
+                option.disabled = true;
+                if (choice.index === q.correct) {
+                  option.classList.add('correct');
+                } else if (choice.index === selectedIndex) {
+                  option.classList.add('wrong');
+                }
+              });
+              const outcome = selectedIndex === q.correct ? 'إجابة صحيحة.' : 'إجابة غير صحيحة.';
+              feedback.textContent = outcome + ' ' + q.explanation;
+              feedback.hidden = false;
+            }
+
+            choiceItems.forEach(choice => {
+              const btn = document.createElement('button');
+              btn.type = 'button';
+              btn.className = 'quiz-option w-full p-3.5 rounded-xl text-right text-xs sm:text-sm font-bold transition flex items-center justify-between';
+              btn.innerHTML = '<span>' + choice.text + '</span>';
+
+              btn.addEventListener('click', () => {
+                if (answeredState[q.id] !== undefined) return;
+                answeredState[q.id] = choice.index;
+                updateScore();
+                showAnswer(choice.index);
+                feedback.focus();
+              });
+
+              optionsGrid.appendChild(btn);
+            });
+
+            article.appendChild(header);
+            article.appendChild(prompt);
+            article.appendChild(optionsGrid);
+
+            article.appendChild(feedback);
+            if (answeredState[q.id] !== undefined) showAnswer(answeredState[q.id]);
+
+            container.appendChild(article);
+          });
+        }
+
+        function updateScore() {
+          const correctCount = Object.entries(answeredState).filter(([id, ans]) => {
+            const q = quizQuestions.find(item => item.id === Number(id));
+            return q && q.correct === ans;
+          }).length;
+          scoreEl.textContent = 'النتيجة: ' + correctCount + ' / 10';
+        }
+
+        let currentFilter = 'all';
+        document.querySelectorAll('.quiz-filter-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.quiz-filter-btn').forEach(b => {
+              b.classList.remove('active');
+            });
+            btn.classList.add('active');
+            currentFilter = btn.dataset.quizFilter;
+            renderQuestions(currentFilter);
+          });
+        });
+
+        document.getElementById('btnResetQuiz').addEventListener('click', () => {
+          Object.keys(answeredState).forEach(k => delete answeredState[k]);
+          updateScore();
+          renderQuestions(currentFilter);
+        });
+
+        renderQuestions('all');
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initInteractiveQuiz);
+      } else {
+        initInteractiveQuiz();
+      }
+    })();
+  </script>
+
   <script src="../../js/shared/study-state.js"></script>
   <script src="../../js/study-modules.js"></script>
   <script src="../../js/study-session.js"></script>
   <script src="../../js/study-shell.js"></script>
   <script src="../../js/shared/quiz-choices.js"></script>
-
-  <!-- بنك الأسئلة التفاعلي للمحاضرة الرابعة -->
-  <script>
-    var quizQuestions = [
-  {
-    "id": 1,
-    "part": "p1",
-    "partLabel": "الجزء الأول • Slide 7",
-    "question": "Q1: Which order principle does a Stack data structure follow?",
-    "options": [
-      "A) FIFO (First In, First Out)",
-      "B) LIFO (Last In, First Out)",
-      "C) Random Access Order",
-      "D) Hierarchical Tree Order"
-    ],
-    "correct": 1,
-    "explanation": "التفسير: الـ Stack يتبع مبدأ LIFO (Last In, First Out) أي أن آخر عنصر يدخل هو أول عنصر يخرج."
-  },
-  {
-    "id": 2,
-    "part": "p1",
-    "partLabel": "الجزء الأول • Slide 4",
-    "question": "Q2: According to the classification of data structures, a Stack is classified as:",
-    "options": [
-      "A) Linear Data Structure",
-      "B) Non-linear Data Structure",
-      "C) Primitive Hardware Register",
-      "D) Graph-based Structure"
-    ],
-    "correct": 0,
-    "explanation": "التفسير: كما ظهر في شجرة التصنيف بالشريحة 4، ينتمي الـ Stack إلى عائلة هياكل البيانات الخطية (Linear Data Structures) بجانب Array و Queue و Linked-list."
-  },
-  {
-    "id": 3,
-    "part": "p1",
-    "partLabel": "الجزء الأول • Slide 7",
-    "question": "Q3: Stacks are crucial in almost all programming environments for managing:",
-    "options": [
-      "A) Disk formatting",
-      "B) Function calls and execution order",
-      "C) Monitor screen brightness",
-      "D) Network cable voltage"
-    ],
-    "correct": 1,
-    "explanation": "التفسير: نص الشريحة 7 يؤكد أن الـ Stack ضروري لإدارة استدعاءات الدوال (Function calls) والحفاظ على ترتيب التنفيذ والعودة بسلاسة."
-  },
-  {
-    "id": 4,
-    "part": "p2",
-    "partLabel": "الجزء الثاني • Slide 9",
-    "question": "Q1: Which operation returns or displays the top element of the stack WITHOUT removing it?",
-    "options": [
-      "A) pop()",
-      "B) push()",
-      "C) peek()",
-      "D) isFull()"
-    ],
-    "correct": 2,
-    "explanation": "التفسير: دالة peek() تطبع أو ترجع قيمة العنصر الموجود في قمة المكدس (top) دون أن تحذفه، بينما pop() تقوم بحذفه."
-  },
-  {
-    "id": 5,
-    "part": "p2",
-    "partLabel": "الجزء الثاني • Slide 10",
-    "question": "Q2: In a Stack, where do both `push` and `pop` operations take place?",
-    "options": [
-      "A) Push at top, Pop at bottom",
-      "B) Both take place from one end called `top`",
-      "C) In the middle of the stack",
-      "D) Push at bottom, Pop at top"
-    ],
-    "correct": 1,
-    "explanation": "التفسير: نص الشريحة 10 ينص صراحة على أن كلتا العمليتين (push و pop) تحدثان من طرف واحد فقط يُسمى top."
-  },
-  {
-    "id": 6,
-    "part": "p3",
-    "partLabel": "الجزء الثالث • Slide 17",
-    "question": "Q1: In an array implementation of a Stack of size `MAX`, what is the condition for \"Stack Overflow\" (`isFull()`)?",
-    "options": [
-      "A) top == -1",
-      "B) top == MAX",
-      "C) top == MAX - 1",
-      "D) top == 0"
-    ],
-    "correct": 2,
-    "explanation": "التفسير: لأن فهارس المصفوفة في C++ تبدأ من 0 إلى MAX - 1، فعندما يصل المؤشر top إلى MAX - 1 تكون المصفوفة قد امتلأت بالكامل."
-  },
-  {
-    "id": 7,
-    "part": "p3",
-    "partLabel": "الجزء الثالث • Slide 16",
-    "question": "Q2: What does the statement `arr[++top] = value;` do during a `push` operation?",
-    "options": [
-      "A) Stores value at `arr[top]`, then increments `top`",
-      "B) Increments `top` by 1 first, then stores `value` at the new `arr[top]`",
-      "C) Decrements `top` by 1, then deletes `value`",
-      "D) Checks if the stack is empty"
-    ],
-    "correct": 1,
-    "explanation": "التفسير: المعامل `++top` (Pre-increment) يزيد قيمة `top` بمقدار 1 أولاً، ثم يضع القيمة الجديدة في الموضع الجديد."
-  },
-  {
-    "id": 8,
-    "part": "p5",
-    "partLabel": "الجزء الخامس • Slide 26",
-    "question": "Q1: When implementing a Stack using a Singly Linked List, which end of the linked list serves as the `top` of the stack?",
-    "options": [
-      "A) The front (head) of the linked list",
-      "B) The tail (last node) of the linked list",
-      "C) The middle node of the linked list",
-      "D) Any random node"
-    ],
-    "correct": 0,
-    "explanation": "التفسير: كما نصت الشريحة 26 (Top of Stack = Front of Linked-List)، لأن الإضافة والحذف من بداية القائمة المتصلة يتم في وقت ثابت O(1)."
-  },
-  {
-    "id": 9,
-    "part": "p6",
-    "partLabel": "الجزء السادس • Slide 18 & 20",
-    "question": "Q1: Attempting to perform a `pop()` operation on an empty stack results in which condition?",
-    "options": [
-      "A) Stack Overflow",
-      "B) Stack Underflow (Data Underflow)",
-      "C) Memory Leak",
-      "D) Array Out of Bounds"
-    ],
-    "correct": 1,
-    "explanation": "التفسير: محاولة الحذف (pop) من مكدس فارغ تسمى Stack Underflow، بينما محاولة الإضافة (push) في مكدس ممتلئ تسمى Stack Overflow."
-  },
-  {
-    "id": 10,
-    "part": "p6",
-    "partLabel": "الجزء السادس • Slide 34",
-    "question": "Q2: In the Linked List implementation of Stack, what is the purpose of `template &lt;class T&gt;`?",
-    "options": [
-      "A) To restrict the stack to integers only",
-      "B) To allow the Stack to store elements of any data type (e.g., `int`, `string`)",
-      "C) To delete nodes automatically",
-      "D) To set the maximum array size to 5"
-    ],
-    "correct": 1,
-    "explanation": "التفسير: القوالب (Templates) تتيح كتابة كلاس عام يعمل مع أي نوع بيانات مثل `Stack&lt;int&gt;` و `Stack&lt;string&gt;` كما ظهر في الشريحة 34."
-  }
-];
-window.quizQuestions = quizQuestions;
-  </script>
-
-  <!-- السكريبت المحلي التفاعلي للمحاضرة -->
-  <script src="lecture-4.js"></script>
-
 </body>
 </html>

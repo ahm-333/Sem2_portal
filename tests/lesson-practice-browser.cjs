@@ -447,6 +447,7 @@ async function register({ scenario: testScenario }) {
 
       await page.locator('#view-btn-practice').click();
       await page.locator('.topic-practice-card').first().waitFor();
+      assert.equal(await page.locator('#full-quiz-view').isVisible(), false);
 
       // Run contrast audit on practice hub
       const issues = await page.evaluate(auditActionContrast, '#practice-hub');
