@@ -76,7 +76,8 @@ body.theme-dark, html[data-theme="dark"] body {
 }
 
 html {
-  overflow-x: hidden;
+  scroll-padding-block-start: calc(var(--reader-header-height, 0px) + 12px);
+  overflow-x: clip;
 }
 
 body {
@@ -86,7 +87,7 @@ body {
   font-size: var(--reading-size);
   line-height: var(--reading-lh);
   transition: background-color 0.25s ease, color 0.25s ease;
-  overflow-x: hidden;
+  overflow-x: clip;
   margin: 0;
   direction: rtl;
 }
@@ -239,14 +240,136 @@ h1, h2, h3, h4, .font-heading {
   pointer-events: auto;
 }
 
+/* Keep lesson anchors clear of the toolbar as its controls wrap. */
+.reading-content [class*="scroll-mt-"] {
+  scroll-margin-block-start: 0;
+}
+
+.reader-controls,
+.reader-control-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reader-control-group {
+  flex: 0 0 auto;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--study-line);
+  border-radius: 12px;
+  background: var(--study-soft);
+}
+
+.reader-font-value {
+  min-inline-size: 34px;
+  color: var(--study-muted);
+  font: 600 0.75rem/1.25 Alexandria, Tahoma, sans-serif;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+html[data-study-shell] .reader-control {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 1px solid var(--study-line);
+  border-radius: 8px;
+  background: var(--study-soft);
+  color: var(--study-ink);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+}
+
+/* The shared shell supplies legacy header overrides and theme synchronization. */
+html[data-study-shell] #mainReadingHeader .reader-control {
+  height: auto;
+  min-width: 44px;
+  min-height: 44px !important;
+  border-color: var(--study-line) !important;
+}
+
+html[data-study-shell] #mainReadingHeader .reader-control-group .reader-control {
+  padding-inline: 6px;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+html[data-study-shell] #study-shell-theme {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@media (hover: hover) {
+  html[data-study-shell] .reader-control:hover:not(:disabled),
+  html[data-study-shell] #mainReadingHeader .reader-control:hover {
+    border-color: var(--study-accent) !important;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+  }
+
+  html[data-study-shell] #mainReadingHeader .reader-control:hover:not([aria-pressed="true"]):not([aria-expanded="true"]) {
+    background: var(--study-paper) !important;
+  }
+}
+
+html[data-study-shell] .reader-control:active:not(:disabled),
+html[data-study-shell] #mainReadingHeader .reader-control:active {
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+
+html[data-study-shell] .reader-control:is([aria-pressed="true"], [aria-expanded="true"], #btn-floating-toc),
+html[data-study-shell] #mainReadingHeader .reader-control:is([aria-pressed="true"], [aria-expanded="true"]) {
+  background: var(--study-accent) !important;
+  color: var(--study-on-accent) !important;
+  border-color: var(--study-accent) !important;
+}
+
+#mainReadingHeader .reader-control[aria-pressed="true"]:not(:focus-visible) {
+  outline: none;
+}
+
+html[data-study-shell][data-theme="dark"] body .reader-control.copy-code-btn {
+  color: var(--study-ink) !important;
+}
+
+html[data-study-shell] .reader-control.quiz-option {
+  justify-content: space-between;
+  min-height: 48px;
+  padding: 0.875rem;
+  background: var(--study-paper);
+}
+
+@media (max-width: 640px) {
+  html[data-study-shell] #mainReadingHeader .reading-container {
+    gap: 6px;
+    padding-block: 6px;
+  }
+
+  html[data-study-shell] #mainReadingHeader > div > div:first-child {
+    flex-wrap: wrap;
+  }
+
+  html[data-study-shell] #mainReadingHeader > div > div:first-child > div {
+    flex: 1 0 100%;
+    order: -1;
+  }
+
+  html[data-study-shell] #mainReadingHeader .reader-controls {
+    gap: 6px;
+  }
+}
+
 /* Quiz Option styling */
 .quiz-option {
-  border: 2px solid var(--border-color);
-  background-color: var(--bg-card);
-  color: var(--text-main);
-  min-height: 48px;
-  transition: all 0.2s ease;
-  cursor: pointer;
   text-align: right;
 }
 .quiz-option:hover:not(:disabled) {
@@ -270,11 +393,6 @@ h1, h2, h3, h4, .font-heading {
   background-color: var(--bg-soft);
   color: var(--text-main);
   line-height: 1.8;
-}
-.quiz-filter-btn.active {
-  background-color: #0f172a !important;
-  color: #ffffff !important;
-  border-color: #0f172a !important;
 }
 
 /* Dark Mode Contrast Overrides */
@@ -346,11 +464,6 @@ body.theme-dark, html[data-theme="dark"] body {
     background-color: #881337 !important;
     border-color: #f43f5e !important;
     color: #fff1f2 !important;
-  }
-  .quiz-filter-btn.active {
-    background-color: #3b82f6 !important;
-    color: #ffffff !important;
-    border-color: #3b82f6 !important;
   }
   #sidebar-toc {
     background-color: #0f172a !important;

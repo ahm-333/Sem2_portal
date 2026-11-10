@@ -15,6 +15,15 @@
     });
   }
 
+  const readingHeader = document.getElementById('mainReadingHeader');
+  if (readingHeader) {
+    const updateHeaderOffset = () => {
+      document.documentElement.style.setProperty('--reader-header-height', readingHeader.offsetHeight + 'px');
+    };
+    updateHeaderOffset();
+    new ResizeObserver(updateHeaderOffset).observe(readingHeader);
+  }
+
   // 2. Slide-Over Table of Contents Drawer
   const sidebarToc = document.getElementById('sidebar-toc');
   const tocBackdrop = document.getElementById('toc-backdrop');
@@ -92,6 +101,7 @@
   if (lineSpacingBtn) {
     lineSpacingBtn.addEventListener('click', function () {
       lineSpacingTight = !lineSpacingTight;
+      lineSpacingBtn.setAttribute('aria-pressed', String(lineSpacingTight));
       document.documentElement.style.setProperty('--reading-lh', lineSpacingTight ? '1.75' : '2.15');
       lineSpacingBtn.textContent = lineSpacingTight ? '↕ تباعد مكثف' : '↕ تباعد مريح';
     });
@@ -173,11 +183,7 @@
       '<div class="pt-2 bg-[#faf5e8] dark:bg-slate-800/80 p-4 rounded-xl border border-[#d6cbb5] dark:border-slate-700">' + st.html + '</div>';
 
     arrSimTabs.forEach(function (tab, idx) {
-      if (idx === currentArrStage) {
-        tab.className = 'arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-emerald-900 bg-emerald-900 text-white transition-all';
-      } else {
-        tab.className = 'arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white dark:bg-slate-800 text-slate-950 dark:text-slate-100 hover:bg-emerald-50 transition-all';
-      }
+      tab.setAttribute('aria-pressed', String(idx === currentArrStage));
     });
   }
 
@@ -340,13 +346,8 @@
     btn.addEventListener('click', function () {
       const id = btn.getAttribute('data-check');
       completedSections[id] = !completedSections[id];
-      if (completedSections[id]) {
-        btn.className = 'check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-emerald-700 bg-emerald-700 text-white transition-all';
-        btn.textContent = '✓ مكتمل';
-      } else {
-        btn.className = 'check-sec-btn shrink-0 px-3 py-1.5 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950 hover:bg-emerald-100 transition-all';
-        btn.textContent = '✓ تم الفهم';
-      }
+      btn.setAttribute('aria-pressed', String(completedSections[id]));
+      btn.textContent = completedSections[id] ? '✓ مكتمل' : '✓ تم الفهم';
       const count = Object.values(completedSections).filter(Boolean).length;
       if (badgeEl) badgeEl.textContent = count + '/' + totalCheckBtns;
     });
@@ -392,7 +393,8 @@
 
       choiceItems.forEach(choice => {
         const btn = document.createElement('button');
-        btn.className = 'quiz-option w-full p-3.5 rounded-xl text-right text-xs sm:text-sm font-bold transition flex items-center justify-between';
+        btn.className = 'reader-control quiz-option w-full';
+        btn.type = 'button';
         btn.innerHTML = '<span>' + choice.text + '</span>';
 
         btn.addEventListener('click', () => {
@@ -442,8 +444,9 @@
   let currentFilter = 'all';
   document.querySelectorAll('.quiz-filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.quiz-filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      document.querySelectorAll('.quiz-filter-btn').forEach(b => {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
       currentFilter = btn.getAttribute('data-quiz-filter');
       renderQuestions(currentFilter);
     });
