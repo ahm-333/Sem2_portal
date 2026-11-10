@@ -168,14 +168,122 @@
       border-width: 2px;
     }
 
-    @media (max-width: 380px) {
-      html[data-study-shell] #mainReadingHeader > div > div:first-child {
-        flex-wrap: wrap;
+    html[data-study-shell] {
+      scroll-padding-top: var(--lesson-header-offset, 200px);
+    }
+
+    .reader-navigation,
+    .reader-controls,
+    .reader-control-group {
+      display: flex;
+      align-items: center;
+    }
+
+    .reader-navigation,
+    .reader-controls {
+      gap: 8px;
+    }
+
+    #mainReadingHeader > .reading-container {
+      max-width: 1120px;
+    }
+
+    html[data-study-shell] #mainReadingHeader .reader-navigation {
+      flex-wrap: wrap;
+    }
+
+    .reader-navigation h1 {
+      flex-shrink: 0;
+    }
+
+    .reader-control-group {
+      flex: 0 0 auto;
+      gap: 2px;
+      padding: 2px;
+      background: var(--study-soft);
+      border: 1px solid var(--study-line);
+      border-radius: 12px;
+    }
+
+    html[data-study-shell] body .reader-button,
+    #mainReadingHeader .reader-button {
+      appearance: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 44px;
+      min-height: 44px !important;
+      padding: 0 8px;
+      border: 1px solid var(--study-line) !important;
+      border-radius: 8px;
+      background: var(--study-soft) !important;
+      color: var(--study-ink) !important;
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1.25;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: box-shadow 0.15s ease;
+    }
+
+    #mainReadingHeader .reader-control-group .reader-button {
+      height: auto;
+      padding-inline: 6px;
+      border-color: transparent !important;
+      background: transparent !important;
+    }
+
+    #mainReadingHeader .reader-control-group .reader-button[aria-pressed="true"] {
+      background: var(--study-accent) !important;
+      color: var(--study-on-accent) !important;
+    }
+
+    #mainReadingHeader .reader-button[aria-pressed="true"]:not(:focus-visible) {
+      outline: none;
+    }
+
+    @media (hover: hover) {
+      html[data-study-shell] body .reader-button:hover,
+      #mainReadingHeader .reader-control-group .reader-button:hover {
+        border-color: var(--study-accent) !important;
+        box-shadow: 0 2px 4px rgb(0 0 0 / 12%);
       }
 
-      html[data-study-shell] #mainReadingHeader > div > div:first-child > div {
-        min-width: max-content;
+      html[data-study-shell] body .reader-button:not([aria-pressed="true"]):hover,
+      #mainReadingHeader .reader-button:not([aria-pressed="true"]):hover {
+        background: var(--study-paper) !important;
+        border-color: var(--study-accent) !important;
       }
+    }
+
+    html[data-study-shell] body .reader-button:active,
+    #mainReadingHeader .reader-control-group .reader-button:active {
+      box-shadow: inset 0 0 0 1px currentColor;
+    }
+
+    html[data-study-shell] #study-shell-theme {
+      min-width: 44px;
+      min-height: 44px;
+    }
+
+    .reader-font-value {
+      min-width: 36px;
+      color: var(--study-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+    }
+
+    html[data-study-shell] #mainReadingHeader > .reader-progress {
+      height: 2px;
+      padding: 0;
+    }
+
+    #reading-progress {
+      height: 100%;
+      background: var(--study-accent);
     }
 
     .compact-header {
@@ -547,57 +655,48 @@
 
   <header id="mainReadingHeader" class="compact-header sticky top-0 z-40 backdrop-blur-md bg-[var(--bg-page)]/95 border-b border-[var(--border-color)] shadow-sm">
     <div class="reading-container px-3 py-1.5 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2 sm:gap-3">
-        <a href="../../subject.html?id=data-structure" title="الرجوع إلى صفحة مقرر هياكل البيانات" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 text-white hover:bg-blue-600 font-bold text-xs shadow-sm transition">
+      <div class="reader-navigation">
+        <a href="../../subject.html?id=data-structure" aria-label="الرجوع إلى مقرر هياكل البيانات" class="reader-button">
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           <span class="hidden sm:inline">الرجوع للمقرر</span>
         </a>
-        <a href="index.html" title="فهرس شروحات هياكل البيانات" class="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] hover:bg-[var(--bg-soft)] font-bold text-xs shadow-sm transition">
-          <span>📚 الفهرس</span>
+        <a href="index.html" title="فهرس شروحات هياكل البيانات" class="reader-button">
+          الفهرس
         </a>
-        <button id="btn-open-toc" type="button" title="فتح فهرس أجزاء المحاضرة الستة" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-100 font-bold text-xs shadow-sm transition">
-          <span>📑 الأجزاء (6)</span>
+        <button id="btn-open-toc" type="button" title="فتح فهرس أجزاء المحاضرة الستة" class="reader-button">
+          الأجزاء
         </button>
-        <div>
-          <h1 class="font-heading font-bold text-sm leading-tight">المكدّس</h1>
-        </div>
-      </div>
-
-      <!-- أدوات القراءة والتنقل -->
-      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-        <a href="lecture-3.html" title="الانتقال للمحاضرة السابقة: الاستدعاء الذاتي" class="px-2 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-main)] text-xs font-heading font-bold hover:bg-[var(--bg-soft)] transition inline-flex items-center gap-1">
+        <a href="lecture-3.html" aria-label="المحاضرة السابقة: الاستدعاء الذاتي" class="reader-button">
           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           <span class="hidden sm:inline">L3: الاستدعاء الذاتي</span>
-          <span class="sm:hidden">L3</span>
+          <span class="sm:hidden" dir="ltr">L3</span>
         </a>
+        <h1 class="font-heading font-bold text-sm leading-tight">المكدّس</h1>
+      </div>
 
-        <!-- تكبير وتصغير الخط -->
-        <div class="flex items-center rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-0.5">
-          <button id="btnFontDec" type="button" title="تصغير النص" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-[var(--bg-soft)] transition">A-</button>
-          <span id="fontSizeLabel" class="px-1.5 text-[11px] font-semibold text-[var(--text-muted)]">100%</span>
-          <button id="btnFontInc" type="button" title="تكبير النص" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-[var(--bg-soft)] transition">A+</button>
+      <div class="reader-controls">
+        <div class="reader-control-group" role="group" aria-label="حجم النص" dir="ltr">
+          <button id="btnFontDec" type="button" class="reader-button" aria-label="تصغير النص">A−</button>
+          <span id="fontSizeLabel" class="reader-font-value">100%</span>
+          <button id="btnFontInc" type="button" class="reader-button" aria-label="تكبير النص">A+</button>
         </div>
 
-        <!-- تباعد الأسطر -->
-        <button id="btnLineSpacing" type="button" title="تغيير تباعد السطور" class="px-2 py-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] text-[11px] font-heading font-bold hover:bg-[var(--bg-soft)] transition">
+        <div class="reader-control-group" role="group" aria-label="المظهر">
+          <button id="btnThemeWhite" type="button" class="reader-button" aria-label="المظهر الفاتح">فاتح</button>
+          <button id="btnThemeDark" type="button" class="reader-button" aria-label="المظهر الداكن">داكن</button>
+          <button id="btnThemeSepia" type="button" class="reader-button" aria-label="وضع القراءة">قراءة</button>
+        </div>
+
+        <button id="btnLineSpacing" type="button" title="تغيير تباعد السطور" class="reader-button">
           تباعد: مريح جداً
         </button>
-
-        <!-- ألوان الخلفية لراحة العين -->
-        <div class="flex items-center gap-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-1">
-          <button id="btnThemeSepia" type="button" title="ورقي دافئ لراحة العين" class="w-4 h-4 rounded-full bg-[#fdfaf5] border-2 border-amber-600 shadow-sm"></button>
-          <button id="btnThemeWhite" type="button" title="أبيض نقي" class="w-4 h-4 rounded-full bg-white border border-slate-300"></button>
-          <button id="btnThemeDark" type="button" title="ليلي مريح" class="w-4 h-4 rounded-full bg-slate-900 border border-slate-600"></button>
-        </div>
       </div>
     </div>
+
+    <div class="reader-progress" aria-hidden="true">
+      <div id="reading-progress" style="width: 0%"></div>
+    </div>
   </header>
-
-
-  <!-- Top Reading Progress Bar -->
-  <div class="fixed top-0 right-0 left-0 h-2 z-50 bg-stone-300">
-    <div id="reading-progress" class="h-full bg-gradient-to-l from-sky-800 via-indigo-800 to-emerald-800 transition-all duration-150" style="width: 0%"></div>
-  </div>
 
   <!-- Slide-Over Table of Contents Backdrop -->
   <div id="toc-backdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50"></div>
@@ -612,7 +711,7 @@
           <p class="text-xs font-extrabold text-slate-800">اضغط على أي جزء أو عنوان للانتقال الفوري</p>
         </div>
       </div>
-      <button id="btn-close-toc" type="button" class="px-3.5 py-1.5 rounded-xl bg-rose-800 text-white font-extrabold text-xs hover:bg-rose-900 transition-all">
+      <button id="btn-close-toc" type="button" class="reader-button">
         ✕ إغلاق الفهرس
       </button>
     </div>
@@ -3438,7 +3537,7 @@ int main() {
             <div id="p6-draft" class="scroll-mt-24 p-5 sm:p-6 rounded-2xl bg-[#f5efe2] border-2 border-[#b8a98e] space-y-4">
               <div class="flex items-center justify-between">
                 <label for="student-code-area" class="text-xs sm:text-sm font-black text-slate-950">✍️ مساحة مسودة لكتابة وتجربة كود الـ Stack بإيدك:</label>
-                <button type="button" id="btn-clear-draft" class="text-xs font-extrabold text-rose-800 hover:underline">مسح المسودة</button>
+                <button type="button" id="btn-clear-draft" class="reader-button">مسح المسودة</button>
               </div>
               <textarea id="student-code-area" rows="5" dir="ltr" class="w-full p-4 rounded-xl code-surface border-2 border-slate-800 text-sm font-mono" placeholder="// اكتب كود Stack بالمصفوفة أو بالـ Linked List هنا للتدريب..."></textarea>
             </div>
@@ -3562,6 +3661,13 @@ int main() {
       window.quizQuestions = quizQuestions;
 
       // 1. Reading Progress Bar
+      const readerHeader = document.getElementById('mainReadingHeader');
+      const syncHeaderOffset = () => {
+        document.documentElement.style.setProperty('--lesson-header-offset', (readerHeader.offsetHeight + 8) + 'px');
+      };
+      syncHeaderOffset();
+      if (window.ResizeObserver) new ResizeObserver(syncHeaderOffset).observe(readerHeader);
+
       const progressBar = document.getElementById('reading-progress');
       window.addEventListener('scroll', function () {
         const scrollTop = window.scrollY || document.documentElement.scrollTop;

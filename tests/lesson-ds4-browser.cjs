@@ -507,21 +507,67 @@ async function register({ scenario: testScenario }) {
     const themeButtons = { reading: '#btnThemeSepia', light: '#btnThemeWhite', dark: '#btnThemeDark' };
     for (const [device, viewport] of Object.entries({
       desktop: { width: 1440, height: 900 },
-      mobile: { width: 390, height: 844 }
+      mobile: { width: 390, height: 844 },
+      compact: { width: 320, height: 568 }
     })) {
       await page.setViewportSize(viewport);
-      await go('study/ds/lecture-4.html');
 
       for (const [theme, selector] of Object.entries(themeButtons)) {
-        await page.locator(selector).click();
+        await go('study/ds/lecture-4.html');
+        const button = page.locator(selector);
+        if (device === 'desktop') {
+          await button.press('Enter');
+          assert(await button.evaluate(el => {
+            const style = getComputedStyle(el);
+            return el.matches(':focus-visible') && style.outlineStyle === 'solid' && parseFloat(style.outlineWidth) >= 3;
+          }), 'Keyboard theme selection leaves visible focus');
+        } else {
+          await button.tap();
+          await page.locator('#btnFontInc').tap();
+          assert.equal(await page.locator('#fontSizeLabel').innerText(), '110%');
+          await page.locator('#btnFontDec').tap();
+          assert.equal(await page.locator('#fontSizeLabel').innerText(), '100%');
+        }
         assert.equal(await page.locator('html').getAttribute('data-theme'), theme);
+        assert.equal(await button.getAttribute('aria-pressed'), 'true');
+        assert.equal(await page.locator('#mainReadingHeader [aria-pressed="true"]').count(), 1);
+        assert.equal(await page.locator('#study-shell-theme').inputValue(), theme);
+        assert.deepEqual(await page.evaluate(auditActionContrast, '#mainReadingHeader'), [], `Reader controls meet contrast in ${theme}`);
+        assert(await measureElementContrast(page, '#fontSizeLabel') >= 4.5, `Font percentage meets contrast in ${theme}`);
+
+        const problems = await page.locator('#mainReadingHeader :is(button, a[href])').evaluateAll(controls => {
+          const rects = controls.map(control => control.getBoundingClientRect());
+          return rects.flatMap((rect, index) => {
+            const name = controls[index].id || controls[index].getAttribute('href');
+            if (rect.width < 44 || rect.height < 44 || rect.left < 0 || rect.right > window.innerWidth) return [name];
+            return rects.slice(index + 1).some(other =>
+              rect.left < other.right && rect.right > other.left && rect.top < other.bottom && rect.bottom > other.top
+            ) ? [name] : [];
+          });
+        });
+        assert.deepEqual(problems, [], `Toolbar targets fit at ${viewport.width}px`);
         await page.screenshot({
           path: path.join(output, `ds4-${device}-${theme}.png`),
           animations: 'disabled'
         });
+
+        const opener = page.locator('#btn-open-toc');
+        const destination = page.locator('#sidebar-toc a[href="#p4-display"]');
+        if (device === 'desktop') {
+          await opener.press('Enter');
+          await destination.press('Enter');
+        } else {
+          await opener.tap();
+          await destination.tap();
+        }
+        await page.waitForFunction(() => {
+          const section = document.getElementById('p4-display').getBoundingClientRect();
+          const header = document.getElementById('mainReadingHeader').getBoundingClientRect();
+          return window.location.hash === '#p4-display' && section.top >= header.bottom && section.top < window.innerHeight;
+        });
       }
     }
-  });
+  }, { hasTouch: true, reducedMotion: 'reduce' });
 }
 
 async function runStandalone() {
