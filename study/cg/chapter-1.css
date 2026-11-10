@@ -190,9 +190,105 @@ html[data-study-shell] body :is(.cg-accent-surface, .tab-btn:is(.active, :hover)
   outline-offset: 3px;
 }
 
-/* Header toolbar layout */
-#mainReadingHeader {
-  width: 100%;
+html[data-study-shell] {
+  scroll-padding-top: calc(var(--cg-toolbar-height, 180px) + 12px);
+}
+
+.reader-controls,
+.reader-control-group {
+  display: flex;
+  align-items: center;
+}
+
+.reader-controls {
+  gap: 8px;
+}
+
+.reader-control-group {
+  gap: 2px;
+  padding: 2px;
+  background: var(--study-soft);
+  border: 1px solid var(--study-line);
+  border-radius: 12px;
+}
+
+.reader-font-value {
+  min-inline-size: 36px;
+  color: var(--study-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* Match the reader controls while overriding the shell's legacy toolbar rules. */
+html[data-study-shell] :is(#mainReadingHeader, #sidebar-toc) .reader-control {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 6px;
+  min-inline-size: 44px;
+  min-block-size: 44px !important;
+  height: auto;
+  padding: 0 8px;
+  border: 1px solid var(--study-line) !important;
+  border-radius: 8px;
+  background: var(--study-soft) !important;
+  color: var(--study-ink) !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  cursor: pointer;
+}
+
+html[data-study-shell] #mainReadingHeader .reader-control-group .reader-control {
+  border-color: transparent !important;
+}
+
+html[data-study-shell] #mainReadingHeader .reader-control[aria-pressed="true"] {
+  background: var(--study-accent) !important;
+  color: var(--study-on-accent) !important;
+}
+
+html[data-study-shell] #mainReadingHeader .reader-control[aria-pressed="true"]:not(:focus-visible) {
+  outline: none;
+}
+
+html[data-study-shell] #study-shell-theme {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  cursor: pointer;
+}
+
+:where(main button) {
+  appearance: none;
+  border: 1px solid var(--study-line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  html[data-study-shell] :is(#mainReadingHeader, #sidebar-toc) .reader-control:hover {
+    border-color: var(--study-accent) !important;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+  }
+
+  html[data-study-shell] :is(#mainReadingHeader, #sidebar-toc) .reader-control:not([aria-pressed="true"]):hover,
+  html[data-study-shell] #study-shell-theme:hover {
+    background: var(--study-paper) !important;
+  }
+
+  main button:hover {
+    box-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+  }
+}
+
+html[data-study-shell] :is(#mainReadingHeader, #sidebar-toc) .reader-control:active,
+html[data-study-shell] #study-shell-theme:active,
+main button:active {
+  box-shadow: inset 0 0 0 1px currentColor;
 }
 
 #sidebar-toc {

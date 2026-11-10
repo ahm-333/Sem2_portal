@@ -56,8 +56,6 @@
         } else if (idx === answered) {
           extraClass = 'incorrect-choice';
           icon = '❌';
-        } else {
-          extraClass = 'opacity-60';
         }
       }
 
@@ -293,9 +291,20 @@
     breadcrumb.textContent = 'الرسم بالحاسوب';
   }
 
+  function initToolbarScrollOffset() {
+    const toolbar = document.getElementById('mainReadingHeader');
+    if (!toolbar) return;
+    const update = () => {
+      document.documentElement.style.setProperty('--cg-toolbar-height', toolbar.offsetHeight + 'px');
+    };
+    update();
+    new ResizeObserver(update).observe(toolbar);
+  }
+
   // 8. INITIALIZATION
   document.addEventListener('DOMContentLoaded', function () {
     setGraphicsBreadcrumb();
+    initToolbarScrollOffset();
     loadSavedAnswers();
     renderAllQuizzes();
 
