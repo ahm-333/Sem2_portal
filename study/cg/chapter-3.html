@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html data-study-shell lang="ar" dir="rtl">
+<head>
+  <script src="../../js/shared/storage.js"></script>
+  <script src="../../js/theme.js"></script>
+  <meta charset="UTF-8" />
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="../../js/analytics.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>المحاضرة الثالثة: أوليات الإخراج وخوارزمية بريزنهام (Chapter 3: Output Primitives &amp; Bresenham's Algorithm) | وضع القراءة</title>
+  <link rel="stylesheet" href="../../css/fonts/fonts.css">
+  <link rel="stylesheet" href="../../css/study-shell.css">
+  <link rel="stylesheet" href="chapter-3.css">
+</head>
+<body class="theme-light">
+  <!-- Shared Reading Header -->
+  <header id="mainReadingHeader" class="header-bar compact-header sticky top-0 z-40 backdrop-blur-md bg-[var(--study-paper)]/95 border-b border-[var(--study-line)] shadow-sm">
+    <div class="reading-container px-3 py-1.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a id="cgCourseLink" href="../../subject.html?id=computer-graphics&amp;kind=lectures" aria-label="الرجوع إلى صفحة مقرر الرسم بالحاسوب" class="reader-control">
+          <svg class="w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          <span class="hidden sm:inline">الرجوع للمقرر</span>
+        </a>
+        <button id="btn-open-toc" type="button" aria-controls="sidebar-toc" aria-expanded="false" title="فهرس المحاضرة" class="reader-control">
+          <span>📑 الفهرس</span>
+        </button>
+        <span class="w-7 h-7 rounded-lg cg-accent-surface flex items-center justify-center font-heading font-bold text-xs shadow-sm shrink-0">L3</span>
+        <div>
+          <h1 class="font-heading font-bold text-xs sm:text-sm leading-tight truncate">الفصل الثالث: أوليات الإخراج وخوارزمية بريزنهام <bdi dir="ltr" lang="en">(Chapter 3: Output Primitives)</bdi></h1>
+        </div>
+      </div>
+
+      <div class="reader-controls">
+        <div class="reader-control-group" role="group" aria-label="حجم الخط" dir="ltr">
+          <button id="btnFontDec" type="button" class="reader-control" aria-label="تصغير الخط">A−</button>
+          <span id="fontSizeLabel" class="reader-font-value">100%</span>
+          <button id="btnFontInc" type="button" class="reader-control" aria-label="تكبير الخط">A+</button>
+        </div>
+
+        <div class="reader-control-group" role="group" aria-label="المظهر">
+          <button id="btnThemeLight" data-theme-btn="light" type="button" class="reader-control" aria-label="المظهر الفاتح">فاتح</button>
+          <button id="btnThemeDark" data-theme-btn="dark" type="button" class="reader-control" aria-label="المظهر الداكن">داكن</button>
+          <button id="btnThemeSepia" data-theme-btn="reading" type="button" class="reader-control" aria-label="وضع القراءة">قراءة</button>
+        </div>
+
+        <button id="btnLineSpacing" type="button" class="reader-control">تباعد: مريح جداً</button>
+        <span id="scoreBadge" dir="ltr" class="score-badge font-mono text-xs font-bold px-2 py-1 rounded-lg border" title="مجموع الإجابات الصحيحة في الكويزات">0 / 34</span>
+      </div>
+    </div>
+    <div class="w-full h-1 bg-black/5">
+      <div id="globalQuizProgress" class="h-full transition-all duration-300" style="width: 0%; background-color: var(--study-accent);" role="progressbar" aria-label="تقدم حل الكويزات" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+    </div>
+  </header>
+
+  <!-- Outline TOC Drawer (Accessible Dialog) -->
+  <aside id="sidebar-toc" role="dialog" aria-modal="true" aria-label="فهرس المحاضرة" class="sidebar-toc card-surface p-5 space-y-4">
+    <div class="flex items-center justify-between border-b pb-3 border-[var(--study-line)]">
+      <h2 class="font-bold text-sm sm:text-base">📑 محتويات الفصل الثالث</h2>
+      <button id="btn-close-toc" type="button" aria-label="إغلاق الفهرس" class="reader-control">✕</button>
+    </div>
+    <nav class="space-y-1.5" aria-label="أقسام المحاضرة">
+      <a href="#sec1" class="block p-2 rounded-lg subtle-surface hover:bg-[var(--study-soft)] font-medium text-xs sm:text-sm">1. الجزء الأول: أوليات الإخراج، الشاشات، ومعضلة الـ Jaggies (9 أسئلة)</a>
+      <a href="#sec2" class="block p-2 rounded-lg subtle-surface hover:bg-[var(--study-soft)] font-medium text-xs sm:text-sm">2. الجزء 2.1: من معادلة الخط إلى المسافات d1 و d2 (6 أسئلة)</a>
+      <a href="#sec3" class="block p-2 rounded-lg subtle-surface hover:bg-[var(--study-soft)] font-medium text-xs sm:text-sm">3. الجزء 2.2: استنتاج معامل القرار p_k (6 أسئلة)</a>
+      <a href="#sec4" class="block p-2 rounded-lg subtle-surface hover:bg-[var(--study-soft)] font-medium text-xs sm:text-sm">4. الجزء 2.3: تكملة المحاضرة سلايد 23–26 واستنتاج p_{k+1} و p_0 (4 أسئلة)</a>
+      <a href="#sec5" class="block p-2 rounded-lg subtle-surface hover:bg-[var(--study-soft)] font-medium text-xs sm:text-sm">5. الجزء الثالث: المسألة المحلولة وجدول التتبع (6 أسئلة)</a>
+      <a href="#sec6" class="block p-2 rounded-lg subtle-surface hover:bg-[var(--study-soft)] font-medium text-xs sm:text-sm">6. الكتالوج الشامل ومحلل بريزنهام التفاعلي (3 أسئلة)</a>
+      <a href="#sec7" class="block p-2 rounded-lg subtle-surface hover:bg-[var(--study-soft)] font-medium text-xs sm:text-sm">7. بنك كويزات الفصل الثالث بالكامل (34 سؤال شامل بالعامية)</a>
+    </nav>
+  </aside>
+  <div id="toc-backdrop" class="toc-backdrop"></div>
+
+  <!-- Main Content Container -->
+  <main id="main" tabindex="-1" class="reading-container mx-auto px-4 py-6 max-w-4xl">
+    <div id="quiz-answer-status" class="sr-only" role="status" aria-atomic="true"></div>
+
+    <!-- Provenance, Lecture ID 3 Handoff, & 34-Question Audit Banner -->
+    <aside id="provenanceNote" class="card-surface rounded-2xl p-4 sm:p-5 mb-6 border-r-4" style="border-right-color: var(--study-accent);" aria-label="توثيق المصدر ومطابقة المحاضرة الثالثة">
+      <div class="ar-block space-y-1.5 text-xs sm:text-sm">
+        <div class="font-extrabold cg-text-blue">📌 مطابقة المحتوى وتوثيق المصدر <bdi dir="ltr" lang="en">(Lecture 3 Provenance &amp; Handoff)</bdi></div>
+        <p>
+          يطابق هذا الفصل <strong>المحاضرة 3 (<span class="ltr-inline">Lecture 3: Output Primitives &amp; Line Drawing Algorithms</span>)</strong> في مقرر الرسم بالحاسوب، ويغطي بالتفصيل أوليات الإخراج واستنتاج وتتبع <strong>خوارزمية بريزنهام (<span class="ltr-inline">Bresenham's Algorithm</span>)</strong> من السلايدات المعتمدة، مع بقاء مصادر وشروحات خوارزمية <strong><span class="ltr-inline">DDA</span></strong> وأزرار ملف المحاضرة الأصلي (<span class="ltr-inline">48 pages PDF</span>) متاحة عبر صفحة المقرر ومسألة الربط.
+        </p>
+        <p>
+          <strong>تدقيق بنك الأسئلة:</strong> يحتوي المصدر الأصلي فعلياً على <strong>34 سؤالاً</strong> مؤلفاً بالكامل (موزعة حسب الأقسام: <span class="ltr-inline">9 + 6 + 6 + 4 + 6 + 3 = 34</span> سؤالاً، وليست 28 كما كان مكتوباً في العنوان الثابت القديم)، وتم الحفاظ على جميع الـ 34 سجلاً بإجاباتها وشرحها بالعامية المصرية.
+        </p>
+      </div>
+    </aside>
+
+    <!-- Quick Section Navigation Pills -->
+    <nav id="topNavTabs" class="tab-nav-container my-4 flex items-center gap-1.5 overflow-x-auto pb-2" aria-label="التنقل السريع بين أجزاء المحاضرة">
+      <button type="button" data-section="sec1" data-target="sec1" aria-current="true" class="tab-btn active px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition">1. الجزء الأول (p1)</button>
+      <button type="button" data-section="sec2" data-target="sec2" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition">2. الجزء 2.1 (p2)</button>
+      <button type="button" data-section="sec3" data-target="sec3" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition">3. الجزء 2.2 (p3)</button>
+      <button type="button" data-section="sec4" data-target="sec4" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition">4. تكملة المحاضرة (سلايد 23–26)</button>
+      <button type="button" data-section="sec5" data-target="sec5" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition">5. الجزء الثالث: المسألة (P4)</button>
+      <button type="button" data-section="sec6" data-target="sec6" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition">6. إزاي أحل أي مسألة؟</button>
+      <button type="button" data-section="sec7" data-target="sec7" class="tab-btn px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition">7. كل الكويزات (34)</button>
+    </nav>
+
+
+    <!-- =========================================================================
+         SECTION 1: EXACT MATCH FOR p1.txt
+         ========================================================================= -->
+    <section id="sec1" class="study-section chapter-section space-y-8 mb-12">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="border-b pb-4" style="border-color: var(--border-color);">
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الفصل الثالث: أوليات الإخراج (Chapter 3: Output Primitives)</h2>
+          <h3 class="text-lg sm:text-xl font-bold mt-2 ar-block" style="color: var(--accent-primary);">الجزء الأول: مفاهيم الإخراج، عتاد الشاشات، ومعضلة الـ Jaggies</h3>
+        </div>
+
+        <!-- 1. ما هي أوليات الإخراج؟ -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">1. ما هي أوليات الإخراج؟ (What are Output Primitives?)</h4>
+
+          <div class="slide-quote">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">النص الإنجليزي من السلايدات:</div>
+            <p class="font-bold text-base">"Output primitives are the basic geometric structures provided by graphics packages to create pictures, such as points, straight line segments, and curves."</p>
+          </div>
+
+          <div class="ar-block space-y-3">
+            <p><strong>توضيح:</strong></p>
+            <p>في علم الجرافيكس، أي مشهد معقد (زي شخصية في لعبة أو عمارة ثلاثية الأبعاد) مبيتصممش كوحدة واحدة؛ هو في الأصل متقسم لأشكال هندسية بدائية وصغيرة جداً. مكتبات الجرافيكس البرمجية بتوفرلك "أوليات" أو "عناصر خام" جاهزة للرسم، أهمها:</p>
+            <div class="step-list">
+              <div class="step-item"><strong>1. النقطة (Points):</strong> أبسط وحدة ممكنة.</div>
+              <div class="step-item"><strong>2. القطع المستقيمة (Straight Line Segments):</strong> التوصيل بين نقطتين.</div>
+              <div class="step-item"><strong>3. المنحنيات والمضلعات (Curves &amp; Polygons):</strong> دوائر، قطوع ناقصة، مثلثات، ومضلعات.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 2. كيفية رسم النقطة -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">2. كيفية رسم النقطة (Point Plotting)</h4>
+
+          <div class="slide-quote space-y-2">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">النص الإنجليزي من السلايدات:</div>
+            <p class="font-bold text-base">"Point plotting is accomplished by converting a single coordinate position furnished by an application program into appropriate operations for the output device in use."</p>
+            <p class="font-bold text-base">"With a CRT monitor, for example, the electron beam is turned on to illuminate the screen phosphor at the selected location."</p>
+          </div>
+
+          <div class="ar-block space-y-3">
+            <p><strong>توضيح متعمق:</strong></p>
+            <p>البرنامج بيبعت للكمبيوتر أمر بسيط: <em>"ارسم نقطة عند الإحداثي <span class="ltr-inline">(X, Y)</span>"</em>.</p>
+            <p>مهمة كارت الجرافيكس إنه يترجم الإحداثي ده لإشارة فيزيائية يفهمها جهاز العرض:</p>
+            <div class="step-list">
+              <div class="step-item">
+                <strong>في شاشات أنبوبة أشعة الكاثود القديمة (<span class="ltr-inline">CRT - Cathode Ray Tube</span>):</strong><br>
+                الشاشة من جوة مدهونة بطبقة من مادة كيميائية بتنور أول ما تخبط فيها الإلكترونات اسمها <strong>الفوسفور (Phosphor)</strong>. الجهاز بيوجه مدفع الإلكترونات للمكان المحدد بالظبط، وأول ما يوصل، يفتح الشعاع الإشعاعي (<span class="ltr-inline">Turn on the electron beam</span>) عشان يصطدم بالفوسفور وينوره لحظياً.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 3. رسم الخطوط: مقارنة جوهرية بين الأجهزة التناظرية والرقمية -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">3. رسم الخطوط: مقارنة جوهرية بين الأجهزة التناظرية والرقمية (Analog vs. Digital Devices)</h4>
+
+          <p class="ar-block">عشان ترسم خط مستقيم من نقطة بداية <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>1</sub>, y<sub>1</sub>)</span></span> لنقطة نهاية <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>2</sub>, y<sub>2</sub>)</span></span>، الطريقة بتختلف جذرياً حسب نوع الهاردوير:</p>
+
+          <!-- Clean Step-by-Step Diagram replacing Mermaid -->
+          <div class="subtle-surface rounded-xl p-5 space-y-4">
+            <div class="text-center font-extrabold text-base py-2 rounded-lg cg-accent-surface">
+              Line Drawing Devices (أجهزة رسم الخطوط)
+            </div>
+            <div class="space-y-4">
+              <div class="card-surface p-4 rounded-xl border-r-4 border-emerald-600 space-y-2 ar-block">
+                <div class="font-extrabold text-lg cg-text-emerald">1. Analog Devices (أجهزة تناظرية)</div>
+                <div class="step-list">
+                  <div class="step-item"><span class="ltr-inline">Vector Pen Plotter / Random-Scan Display</span></div>
+                  <div class="step-item">رسم متصل وناعم تماماً (<span class="ltr-inline">Smooth Continuous Line</span>)</div>
+                  <div class="step-item">السر: توليد جهود كهربية انحرافية متغيرة خطياً (<span class="ltr-inline">Linearly varying deflection voltages</span>)</div>
+                </div>
+              </div>
+
+              <div class="card-surface p-4 rounded-xl border-r-4 border-blue-600 space-y-2 ar-block">
+                <div class="font-extrabold text-lg cg-text-blue">2. Digital Devices (أجهزة رقمية)</div>
+                <div class="step-list">
+                  <div class="step-item"><span class="ltr-inline">Raster Video Displays</span> (شاشات الكمبيوتر الحالية)</div>
+                  <div class="step-item">رسم نقاط منفصلة فقط (<span class="ltr-inline">Discrete Points / Pixels</span>)</div>
+                  <div class="step-item">تخزين الألوان في مخزن الإطار (<span class="ltr-inline">Frame Buffer</span>) ثم يقرأها كارت الشاشة (<span class="ltr-inline">Video Controller</span>)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- أ. الأجهزة التناظرية -->
+          <div class="space-y-3 pt-2">
+            <h5 class="text-lg font-extrabold ar-block">أ. الأجهزة التناظرية (Analog Devices)</h5>
+            <div class="step-list">
+              <div class="step-item"><strong>أمثلتها:</strong> الراسمات المتجهة بالقلم (<span class="ltr-inline">Vector Pen Plotter</span>) وشاشات العرض الموجهة (<span class="ltr-inline">Random-Scan Display</span>).</div>
+              <div class="step-item"><strong>كيف ترسم الخط؟</strong></div>
+            </div>
+            <div class="slide-quote">
+              <p class="font-bold text-base">"A straight line can be drawn smoothly from one endpoint to the other. Linearly varying horizontal and vertical deflection voltages are generated that are proportional to the required changes in the x and y directions to produce the smooth line."</p>
+            </div>
+            <div class="step-list">
+              <div class="step-item">
+                <strong>توضيح متعمق:</strong><br>
+                هنا مفيش شبكة مربعات أو بكسلات بتتحكم فينا! الجهاز بيولد <strong>جهد كهربي متغير بنعومة وبشكل خطي</strong> في المحور الأفقي (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">X</span></span>) والمحور الرأسي (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Y</span></span>). الجهد ده بيحرك سن القلم أو مدفع الإلكترونات بسلاسة متصلة (<span class="ltr-inline">Continuous</span>) من أول نقطة لآخر نقطة، عشان كده الخط بيطلع مستقيم وناعم 100% وبدون أي تعرجات.
+              </div>
+            </div>
+          </div>
+
+          <!-- ب. الأجهزة الرقمية -->
+          <div class="space-y-3 pt-2">
+            <h5 class="text-lg font-extrabold ar-block">ب. الأجهزة الرقمية (Digital / Raster Devices)</h5>
+            <div class="step-list">
+              <div class="step-item"><strong>أمثلتها:</strong> شاشات الـ <span class="ltr-inline">LCD, LED</span>، وكل الشاشات النقطية الحديثة (<span class="ltr-inline">Raster Displays</span>).</div>
+              <div class="step-item"><strong>كيف ترسم الخط؟</strong></div>
+            </div>
+            <div class="slide-quote">
+              <p class="font-bold text-base">"Digital devices display a straight line segment by plotting discrete points between the two endpoints. Discrete coordinate positions along the line path are calculated from the equation of the line."</p>
+            </div>
+            <div class="step-list">
+              <div class="step-item">
+                <strong>توضيح متعمق:</strong><br>
+                الشاشة الرقمية مش لوحة مفتوحة، دي مصفوفة ثابتة من المربعات الصغيرة (<span class="ltr-inline">Pixels</span>). الجهاز بيضطر يستخدم معادلة الخط عشان يحسب مجموعة <strong>نقاط منفصلة (<span class="ltr-inline">Discrete points</span>)</strong> ويقرر مين البكسلات اللي المفروض تنور عشان تمثل الخط ده.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 4. بنية الشاشة ونظام الإحداثيات والـ Frame Buffer -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">4. بنية الشاشة ونظام الإحداثيات والـ Frame Buffer</h4>
+
+          <div class="slide-quote space-y-2">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">النص الإنجليزي من السلايدات:</div>
+            <p class="font-bold text-base">"For a raster video display, the line color (intensity) is then loaded into the frame buffer at the corresponding pixel coordinates."</p>
+            <p class="font-bold text-base">"Reading from the frame buffer, the video controller then plots the screen pixels."</p>
+          </div>
+
+          <div class="ar-block space-y-3">
+            <h5 class="text-lg font-extrabold">ما هو الـ Frame Buffer؟</h5>
+            <p>هو مساحة مخصصة في ذاكرة الفيديو (<span class="ltr-inline">VRAM</span>) بتشتغل كمرآة رقمية لكل بكسل على الشاشة. المعالج أو كارت الشاشة لما بيحسب إحداثيات البكسلات ولونها، بيسجلها الأول جوة الـ <strong>Frame Buffer</strong>، وبعدين بيجي مكون هاردوير اسمه <strong>Video Controller</strong> يقرا البيانات دي من الذاكرة باستمرار ويحولها لإشارات تنور البكسلات على الشاشة فعلياً.</p>
+
+            <h5 class="text-lg font-extrabold pt-2">نظام الإحداثيات للشاشة (Screen Device Coordinates):</h5>
+          </div>
+
+          <div class="slide-quote">
+            <p class="font-bold text-base">"Pixel positions are referenced according to scan-line number and column number. Scan lines are numbered consecutively from 0, starting at the bottom of the screen; and pixel columns are numbered from 0, left to right across each scan line."</p>
+          </div>
+
+          <!-- Clean Visual Screen Coordinate Diagram -->
+          <div class="subtle-surface rounded-xl p-5 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="font-extrabold text-sm ar-block">رسم تخطيطي يوضح ترقيم الشاشة (اضغط على أي بكسل):</span>
+              <span id="coordReadout" class="px-3 py-1 rounded-lg font-mono text-xs font-bold cg-accent-surface" role="status" aria-live="polite" dir="ltr">
+                Pixel: (Col X = 2, Scan Line Y = 1)
+              </span>
+            </div>
+            <div class="overflow-x-auto diagram-frame" dir="ltr" tabindex="0" role="region" aria-label="شبكة إحداثيات الشاشة التفاعلية">
+              <svg id="screenCoordSvg" viewBox="0 0 440 300" role="img" aria-label="Interactive Screen Coordinate Grid" class="w-full max-w-md mx-auto h-auto card-surface rounded-xl p-2"></svg>
+            </div>
+          </div>
+
+          <div class="ar-block space-y-2 pt-2">
+            <p><strong>قواعد مهمة جداً للامتحان:</strong></p>
+            <div class="step-list">
+              <div class="step-item"><strong>1. خطوط المسح (<span class="ltr-inline">Scan lines</span>):</strong> بتمثل الصفوف الأفقية (محور <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Y</span></span>)، وبتبدأ ترقيمها من <strong><span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">0</span></span> من أسفل الشاشة (<span class="ltr-inline">Bottom</span>)</strong> وتزيد للأعلى.</div>
+              <div class="step-item"><strong>2. الأعمدة (<span class="ltr-inline">Pixel Columns</span>):</strong> بتمثل المواقع الرأسية (محور <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">X</span></span>)، وبتبدأ ترقيمها من <strong><span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">0</span></span> من أقصى اليسار (<span class="ltr-inline">Left</span>)</strong> وتزيد لليمين.</div>
+              <div class="step-item"><strong>3. كل إحداثيات الجهاز أرقام صحيحة موجبة (<span class="ltr-inline">Integers</span> فقط).</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 5. ظاهرة التدرج السلّمي (The Jaggies) -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">5. ظاهرة التدرج السلّمي (The Jaggies / Stair-step effect)</h4>
+
+          <div class="slide-quote space-y-2">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">النص الإنجليزي من السلايدات:</div>
+            <p class="font-bold text-base">"Screen locations are referenced with integer values, so plotted positions may only approximate actual line positions between two specified endpoints."</p>
+            <p class="font-bold text-base">"A computed line position of (10.48, 20.51), for example, would be converted to pixel position (10, 21)."</p>
+            <p class="font-bold text-base">"Thus rounding of coordinate values to integers causes lines to be displayed with a stair-step appearance ('the jaggies')."</p>
+          </div>
+
+          <div class="ar-block space-y-3">
+            <p><strong>توضيح متعمق للسبب الرياضي:</strong></p>
+            <p>في الرياضيات، الخط المستقيم عبارة عن دالة متصلة بتمر بنقاط فيها كسور عشرية لا نهائية. لكن على شاشة الكمبيوتر، مفيش إحداثي اسمه كسر؛ البكسلات عبارة عن مربعات كاملة بعناوين صحيحة فقط. فلو معادلة الخط قالتلك إن النقطة موقعها الدقيق هو:</p>
+          </div>
+
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">(10.48,   20.51)</span>
+          </div>
+
+          <div class="ar-block space-y-2">
+            <p>الشاشة مش هتقدر ترسم الكسر ده، فبتضطر <strong>تقرب (<span class="ltr-inline">Round</span>)</strong> النقطة لأقرب عدد صحيح:</p>
+            <div class="step-list">
+              <div class="step-item"><span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">10.48 ≈ 10</span></span></div>
+              <div class="step-item"><span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">20.51 ≈ 21</span></span></div>
+              <div class="step-item">فتنور البكسل <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(10, 21)</span></span>.</div>
+            </div>
+            <p>عملية <strong>التقريب الإجباري للأعداد الصحيحة (<span class="ltr-inline">Rounding to integers</span>)</strong> بتخلي مسار البكسلات ينحرف يمين وفوق على شكل درجات سلم، وده اللي بنسميه في علم الجرافيكس: <strong>The Jaggies</strong>.</p>
+          </div>
+
+          <!-- Clean Jaggies Diagram -->
+          <div class="subtle-surface rounded-xl p-5 space-y-3">
+            <div class="font-extrabold text-sm ar-block">رسم توضيحي للفرق بين الخط الحقيقي ومسار البكسلات (Jaggies - Slide 9):</div>
+            <div class="overflow-x-auto diagram-frame" dir="ltr" tabindex="0" role="region" aria-label="رسم توضيحي لظاهرة التدرج السلمي The Jaggies">
+              <svg id="jaggiesSvg" viewBox="0 0 440 215" role="img" aria-label="Stair-step effect (the jaggies) vs Ideal Smooth Line" class="w-full max-w-lg mx-auto h-auto card-surface rounded-xl p-2"></svg>
+            </div>
+          </div>
+
+          <div class="ar-block space-y-2 pt-2">
+            <h5 class="text-lg font-extrabold">كيف نقلل أو نعالج تأثير الـ Jaggies؟ (حسب ما ورد بالسلايدات):</h5>
+            <div class="step-list">
+              <div class="step-item">
+                <strong>1. استخدام أنظمة عالية الدقة (<span class="ltr-inline">High-resolution systems</span>):</strong><br>
+                لما الدقة تزيد، حجم البكسل نفسه بيصغر جداً، فدرجات السلم بتصغر لدرجة إن العين متبقاش قادرة تميز التكسير بسهولة.
+              </div>
+              <div class="step-item">
+                <strong>2. تعديل شدة إضاءة البكسلات (<span class="ltr-inline">Adjusting pixel intensities</span>):</strong><br>
+                ودي التقنية الأكثر فاعلية؛ بننور البكسلات الأساسية بشدة كاملة، والبكسلات المجاورة على حواف الخط بشدة إضاءة أقل تدرجياً، فالعين تترجم التدرج ده على إنه خط ناعم وأملس (وهو المبدأ الأساسي للـ <span class="ltr-inline">Antialiasing</span>).
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz for Section 1 -->
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-4 border-2" style="border-color: var(--accent-primary);">
+        <h3 class="text-xl font-extrabold ar-block">أسئلة للمراجعة والتثبيت على الجزء الأول (كويز تفاعلي بالعامية)</h3>
+        <div id="quiz-sec1" class="space-y-4"></div>
+      </div>
+
+      <div class="flex justify-end">
+        <button type="button" onclick="switchSection('sec2')" class="px-6 py-3 rounded-xl font-bold shadow-md cg-accent-surface">
+          انتقل للجزء (2.1): من معادلة الخط إلى المسافات d1 و d2 ←
+        </button>
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 2: EXACT MATCH FOR p2.txt
+         ========================================================================= -->
+    <section id="sec2" class="study-section chapter-section space-y-8 mb-12">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="border-b pb-4" style="border-color: var(--border-color);">
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء (2.1) بتفكيك عميق: من معادلة الخط إلى قياس المسافات (<span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub></span> و <span role="math" dir="ltr" class="ltr-inline">d<sub>2</sub></span>)</h2>
+        </div>
+
+        <!-- 1. القصة بتبدأ منين؟ -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">1. القصة بتبدأ منين؟ (معادلة الخط من إعدادي)</h4>
+          <p class="ar-block">تخيل معايا إن عندنا شاشة كمبيوتر، وعايزين نرسم خط مستقيم من نقطة بداية <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>1</sub>, y<sub>1</sub>)</span></span> لنقطة نهاية <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>2</sub>, y<sub>2</sub>)</span></span>.</p>
+          <p class="ar-block">في السلايدات بيبدأ معاك بالمعادلة الكلاسيكية:</p>
+
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">y = m · x + b</span>
+          </div>
+
+          <p class="ar-block font-bold">تعال نفكك كل حرف فيها:</p>
+          <div class="step-list">
+            <div class="step-item">
+              <strong>1. <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x</span></span> و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y</span></span>:</strong> هما إحداثيات أي نقطة ماشية على مسار الخط.
+            </div>
+            <div class="step-item">
+              <strong>2. <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m</span></span> (الميل - <span class="ltr-inline">Slope</span>):</strong>
+              <div class="math-box">
+                <span role="math" class="math-formula" dir="ltr">m = Δy / Δx = (y<sub>2</sub> - y<sub>1</sub>) / (x<sub>2</sub> - x<sub>1</sub>)</span>
+              </div>
+              <p class="mt-1">• <strong>معناه البسيط:</strong> كل ما أمشي خطوة واحدة أفقياً في اتجاه <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x</span></span>، الخط هيطلع لفوق بمقدار قد إيه في اتجاه <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y</span></span>؟</p>
+              <p>• لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m = 0.5</span></span>: معناه كل ما أمشي خطوة في <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x</span></span>، أطلع نص خطوة بس في <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y</span></span>.</p>
+            </div>
+            <div class="step-item">
+              <strong>3. <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">b</span></span> (الجزء المقطوع - <span class="ltr-inline">y-intercept</span>):</strong>
+              <div class="math-box">
+                <span role="math" class="math-formula" dir="ltr">b = y<sub>1</sub> - m · x<sub>1</sub></span>
+              </div>
+              <p class="mt-1">• <strong>معناه البسيط:</strong> الخط بيقطع محور الصادات الرأسي فين بالظبط لما <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x = 0</span></span>.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 2. السؤال البديهي: ليه مكملناش بالمعادلة دي وخلاص؟ -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">2. السؤال البديهي: ليه مكملناش بالمعادلة دي وخلاص؟</h4>
+          <p class="ar-block">ليه العالم <strong>جاك بريزنهام (Jack Bresenham)</strong> قعد يخترع خوارزمية جديدة؟ تعال نجرب نطبق المعادلة دي على الكمبيوتر بأرقام حقيقية عشان تشوف المشكلة بعينك:</p>
+
+          <p class="ar-block font-bold">تخيل إن:</p>
+          <div class="step-list">
+            <div class="step-item">نقطة البداية <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>1</sub>, y<sub>1</sub>) = (10, 11)</span></span></div>
+            <div class="step-item">نقطة النهاية <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>2</sub>, y<sub>2</sub>) = (15, 13)</span></span></div>
+            <div class="step-item">الميل: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m = (13 - 11) / (15 - 10) = 2 / 5 = 0.4</span></span> (رقم عشري كسر!)</div>
+            <div class="step-item">المقطع: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">b = 11 - (0.4 × 10) = 7</span></span></div>
+          </div>
+
+          <p class="ar-block">عشان نرسم النقطة اللي بعد البداية، هنزود <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x</span></span> من <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">10</span></span> لـ <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">11</span></span>:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">y = (0.4 × 11) + 7 = 4.4 + 7 = 11.4</span>
+          </div>
+
+          <p class="ar-block font-bold cg-text-danger">هنا الكارثة البرمجية بتظهر:</p>
+          <div class="step-list">
+            <div class="step-item">
+              <strong>1. ضرب وكسور:</strong> المعالج اضطر يضرب رقم عشري (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">0.4 × 11</span></span>). والعمليات الكسرية (<span class="ltr-inline">Floating-point operations</span>) في لغة الآلة بتاخد وقت وطاقة كبيرة جداً مقارنة بالجمع العادي.
+            </div>
+            <div class="step-item">
+              <strong>2. الناتج فيه كسر:</strong> الناتج طلع <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y = 11.4</span></span>، ومفيش بكسل في الشاشة اسمه <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">11.4</span></span>! فالكمبيوتر بيضطر يستدعي دالة تقريب <span class="ltr-inline">round(11.4)</span> فيطلع <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">11</span></span>.
+            </div>
+            <div class="step-item">
+              <strong>3. التكرار:</strong> تخيل إن الخط فيه آلاف النقاط، وأنت بتعمل في كل نقطة ضرب أرقام عشرية + جمع أرقام عشرية + تقريب! الألعاب والبرامج هتهنج فوراً.
+            </div>
+          </div>
+
+          <div class="subtle-surface p-4 rounded-xl border-r-4 border-emerald-600 ar-block">
+            <strong>الحل اللي فكر فيه بريزنهام:</strong><br>
+            إحنا عايزين طريقة نعرف بيها البكسل الصح <strong>بمجرد عمليات جمع وطرح أرقام صحيحة بس (<span class="ltr-inline">Integer addition and subtraction</span>)</strong> وبدون ما نضرب في كسور وبدون ما نستخدم دالة <span class="ltr-inline">round()</span> نهائياً!
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 3. دراسة الحالة الأساسية: لما يكون الميل 0 < m < 1 -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">3. دراسة الحالة الأساسية: لما يكون الميل <span role="math" dir="ltr" class="ltr-inline">0 < m < 1</span></h4>
+          <p class="ar-block">بريزنهام قال: عشان نفهم الموضوع ببساطة، هندرس الحالة القياسية:</p>
+          <div class="step-list">
+            <div class="step-item">1. الخط ماشي من الشمال لليمين (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x<sub>1</sub> < x<sub>2</sub></span></span>).</div>
+            <div class="step-item">2. الميل موجب وأقل من الواحد الصحيح:</div>
+          </div>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">0 < m < 1</span>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block">يعني إيه الميل أقل من 1 بالمنطق الفيزيائي؟</h5>
+          <p class="ar-block">الميل هو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δy / Δx</span></span>. فلما يكون أصغر من <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">1</span></span>، ده معناه إن المقام أكبر من البسط:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">Δx > Δy</span>
+          </div>
+          <p class="ar-block"><strong>ترجمتها البسيطة:</strong> التغير الأفقي أسرع بكتير من التغير الرأسي. يعني الخط نايم أكتر ما هو واقف!</p>
+          <p class="ar-block"><strong>النتيجة المباشرة:</strong> طالما الخط بيتحرك أفقياً بسرعة، فإحنا <strong>مضمون وأكيد</strong> في كل خطوة هنتحرك بمقدار عمود بكسل واحد كامل في محور <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x</span></span>:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">x<sub>k+1</sub> = x<sub>k</sub> + 1</span>
+          </div>
+          <p class="ar-block">ودي اللي السلايد بتسميها نصاً: <strong>"Sampling at unit x intervals"</strong> (يعني بناخد عينات بمسافات أفقية متساوية قيمتها <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">1</span></span>).</p>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 4. معضلة البكسلين المرشحين (Candidate Pixels) -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">4. معضلة البكسلين المرشحين (Candidate Pixels)</h4>
+          <p class="ar-block">تعال نرجع لمثال السلايد الشهير (سلايد 15 و 16):</p>
+          <div class="step-list">
+            <div class="step-item">إحنا لونا خلاص نقطة البداية: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(10, 11)</span></span>.</div>
+            <div class="step-item">في الخطوة التالية، روحنا للعمود اللي بعده: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x = 11</span></span>.</div>
+          </div>
+
+          <p class="ar-block">الخط الرياضي الحقيقي طلع ارتفاعه <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">11.4</span></span> (ماشي بين خط المسح <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">11</span></span> وخط المسح <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">12</span></span>). الكمبيوتر واقف محتار بين خيارين اتنين بس مفيش غيرهم:</p>
+          <div class="step-list">
+            <div class="step-item"><strong>1. الخيار الأول (السفلي):</strong> ينور البكسل اللي على نفس الخط الحالي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹ (11, 11)</span></span>.</div>
+            <div class="step-item"><strong>2. الخيار الثاني (العلوي):</strong> يطلع لخط المسح الأعلى وينور البكسل <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹ (11, 12)</span></span>.</div>
+          </div>
+
+          <p class="ar-block font-bold">بالعقل كده: نختار مين؟</p>
+          <p class="ar-block">الخط الحقيقي ارتفاعه <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">11.4</span></span>:</p>
+          <div class="step-list">
+            <div class="step-item">بعده عن البكسل السفلي (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">11</span></span>) هو: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">11.4 - 11 = 0.4</span></span></div>
+            <div class="step-item">بعده عن البكسل العلوي (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">12</span></span>) هو: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">12 - 11.4 = 0.6</span></span></div>
+          </div>
+          <p class="ar-block">بما إن بعده عن السفلي (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">0.4</span></span>) أصغر من بعده عن العلوي (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">0.6</span></span>)، يبقى <strong>البكسل السفلي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(11, 11)</span></span> هو الأقرب للمسار الحقيقي</strong> وهو الصح اللي لازم ننوره!</p>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 5. تعميم الفكرة بالرموز الرياضية: ظهور المسافات d1 و d2 -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">5. تعميم الفكرة بالرموز الرياضية: ظهور المسافات <span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub></span> و <span role="math" dir="ltr" class="ltr-inline">d<sub>2</sub></span></h4>
+          <p class="ar-block">بريزنهام حب يحول الملاحظة الذكية دي لقوانين عامة تطبق على أي خط:</p>
+          <div class="step-list">
+            <div class="step-item">بدل ما نقول العمود <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">10</span></span>، هنسميه الرمز العام: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x<sub>k</sub></span></span>.</div>
+            <div class="step-item">وبدل ما نقول خط المسح <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">11</span></span>، هنسميه: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y<sub>k</sub></span></span>.</div>
+            <div class="step-item">يبقى البكسل الحالي اللي إحنا واقفين عنده هو: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub>, y<sub>k</sub>)</span></span>.</div>
+          </div>
+
+          <p class="ar-block">الآن سنتحرك خطوة واحدة للأمام في <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x</span></span>، العمود الجديد أصبح:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">x<sub>k</sub> + 1</span>
+          </div>
+
+          <p class="ar-block">عند العمود ده، الارتفاع الحقيقي الدقيق للخط المستقيم هو:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">y = m(x<sub>k</sub> + 1) + b</span>
+          </div>
+
+          <!-- Clean SVG Diagram for Candidate Pixels & d1/d2 -->
+          <div class="subtle-surface rounded-xl p-5 space-y-3">
+            <div class="font-extrabold text-sm ar-block">رسمة المسافتين الرأسيتين <span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub></span> و <span role="math" dir="ltr" class="ltr-inline">d<sub>2</sub></span> عند العمود <span role="math" dir="ltr" class="ltr-inline">x<sub>k</sub> + 1</span> (سلايد 16 و 19):</div>
+            <div class="overflow-x-auto diagram-frame" dir="ltr" tabindex="0" role="region" aria-label="رسم المسافتين الرأسيتين d1 و d2">
+              <svg id="d1d2Svg" viewBox="0 0 460 300" role="img" aria-label="Candidate pixels and vertical distances d1 and d2" class="w-full max-w-lg mx-auto h-auto card-surface rounded-xl p-2"></svg>
+            </div>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block pt-2">تعريف القوانين الرياضية للمسافات:</h5>
+          <div class="step-list">
+            <div class="step-item">
+              <strong>1. المسافة الأولى (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub></span></span>):</strong><br>
+              • <strong>معناها:</strong> البعد الرأسي بين مسار الخط الحقيقي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y</span></span> ومركز البكسل السفلي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y<sub>k</sub></span></span>.<br>
+              • <strong>قانونها:</strong> الكبير ناقص الصغير:
+              <div class="math-box">
+                <span role="math" class="math-formula" dir="ltr">d<sub>1</sub> = y - y<sub>k</sub></span>
+              </div>
+              • نعوض بقيمة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y = m(x<sub>k</sub> + 1) + b</span></span>:
+              <div class="math-box">
+                <span role="math" class="math-formula" dir="ltr">d<sub>1</sub> = m(x<sub>k</sub> + 1) + b - y<sub>k</sub></span>
+              </div>
+            </div>
+
+            <div class="step-item">
+              <strong>2. المسافة الثانية (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>2</sub></span></span>):</strong><br>
+              • <strong>معناها:</strong> البعد الرأسي بين مركز البكسل العلوي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(y<sub>k</sub> + 1)</span></span> ومسار الخط الحقيقي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y</span></span>.<br>
+              • <strong>قانونها:</strong> الكبير ناقص الصغير:
+              <div class="math-box">
+                <span role="math" class="math-formula" dir="ltr">d<sub>2</sub> = (y<sub>k</sub> + 1) - y</span>
+              </div>
+              • نعوض بقيمة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y = m(x<sub>k</sub> + 1) + b</span></span>:
+              <div class="math-box">
+                <span role="math" class="math-formula" dir="ltr">d<sub>2</sub> = (y<sub>k</sub> + 1) - ( m(x<sub>k</sub> + 1) + b ) = y<sub>k</sub> + 1 - m(x<sub>k</sub> + 1) - b</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="subtle-surface p-4 rounded-xl border-r-4 border-blue-600 ar-block space-y-2">
+            <div class="font-extrabold">ملخص الفكرة في كلمتين (Key Takeaway):</div>
+            <p>الخوارزمية في كل خطوة بتسأل:</p>
+            <p>• لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> < d<sub>2</sub></span></span>: الخط أقرب لتحت <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹</span></span> اختار البكسل السفلي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub>)</span></span>.</p>
+            <p>• لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> > d<sub>2</sub></span></span>: الخط أقرب لفوق <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹</span></span> اختار البكسل العلوي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub> + 1)</span></span>.</p>
+            <p>لكن عشان نقارن <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub></span></span> و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>2</sub></span></span>، المعادلات دي لسه فيها <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m</span></span> اللي هو كسر! وده اللي هيقودنا للخطوة الجاية: إزاي نطرحهم ونحولهم لعمليات صحيحة 100%.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz for Section 2 -->
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-4 border-2" style="border-color: var(--accent-primary);">
+        <h3 class="text-xl font-extrabold ar-block">أسئلة للمراجعة والتثبيت على الجزء 2.1 (كويز تفاعلي بالعامية)</h3>
+        <div id="quiz-sec2" class="space-y-4"></div>
+      </div>
+
+      <div class="flex justify-between">
+        <button type="button" onclick="switchSection('sec1')" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ الجزء الأول</button>
+        <button type="button" onclick="switchSection('sec3')" class="px-6 py-3 rounded-xl font-bold shadow-md cg-accent-surface">انتقل للجزء (2.2): استنتاج معامل القرار p_k ←</button>
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 3: EXACT MATCH FOR p3.txt
+         ========================================================================= -->
+    <section id="sec3" class="study-section chapter-section space-y-8 mb-12">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="border-b pb-4" style="border-color: var(--border-color);">
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء (2.2): استنتاج معامل القرار (<span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span> - Decision Parameter)</h2>
+        </div>
+
+        <!-- 1. الهدف -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">1. الهدف: إزاي نعرف مين الأصغر من غير ما نحسب <span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub></span> و <span role="math" dir="ltr" class="ltr-inline">d<sub>2</sub></span> كأرقام عشرية؟</h4>
+          <p class="ar-block">في الجزء اللي فات عرفنا إن:</p>
+          <div class="step-list">
+            <div class="step-item">لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> < d<sub>2</sub></span></span>: نختار البكسل السفلي.</div>
+            <div class="step-item">لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> > d<sub>2</sub></span></span>: نختار البكسل العلوي.</div>
+          </div>
+
+          <p class="ar-block">في الرياضيات، لو عندك قيمتين وعايز تعرف مين فيهم الأكبر، أسهل حركة بتعملها هي إنك <strong>تطرحهم من بعض</strong>:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">(d<sub>1</sub> - d<sub>2</sub>)</span>
+          </div>
+
+          <div class="step-list">
+            <div class="step-item">لو الناتج طلع <strong>سالب (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> - d<sub>2</sub> < 0</span></span>)</strong>: ده معناه إن <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> < d<sub>2</sub></span></span> (يعني البكسل السفلي أقرب).</div>
+            <div class="step-item">لو الناتج طلع <strong>موجب (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> - d<sub>2</sub> > 0</span></span>)</strong>: ده معناه إن <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> > d<sub>2</sub></span></span> (يعني البكسل العلوي أقرب).</div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 2. خطوة الطرح الجبري بالتفصيل الممل -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">2. خطوة الطرح الجبري بالتفصيل الممل (سلايد 21)</h4>
+          <p class="ar-block">تعال نفتكر المعادلتين بتوع المسافات من السلايد اللي فات:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">d<sub>1</sub> = m(x<sub>k</sub> + 1) + b - y<sub>k</sub></span>
+          </div>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">d<sub>2</sub> = y<sub>k</sub> + 1 - m(x<sub>k</sub> + 1) - b</span>
+          </div>
+
+          <p class="ar-block">الآن هنطرح <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(d<sub>1</sub> - d<sub>2</sub>)</span></span>:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">d<sub>1</sub> - d<sub>2</sub> = [ m(x<sub>k</sub> + 1) + b - y<sub>k</sub> ] - [ y<sub>k</sub> + 1 - m(x<sub>k</sub> + 1) - b ]</span>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block">تعال نفك القوس التاني ونوزع إشارة السالب بحذر شديد:</h5>
+          <div class="step-list">
+            <div class="step-item">
+              القوس الأول يفضل زي ما هو:
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">m(x<sub>k</sub> + 1) + b - y<sub>k</sub></span></div>
+            </div>
+            <div class="step-item">
+              القوس التاني السالب يدخل يعكس كل الإشارات جواه:
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">-(y<sub>k</sub>) ⟹ -y<sub>k</sub></span></div>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">-(+1) ⟹ -1</span></div>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">-(-m(x<sub>k</sub> + 1)) ⟹ +m(x<sub>k</sub> + 1)</span></div>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">-(-b) ⟹ +b</span></div>
+            </div>
+          </div>
+
+          <p class="ar-block">نحط السطر كله جنب بعضه:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">d<sub>1</sub> - d<sub>2</sub> = m(x<sub>k</sub> + 1) + b - y<sub>k</sub> - y<sub>k</sub> - 1 + m(x<sub>k</sub> + 1) + b</span>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block">نجمع الحدود المتشابهة مع بعض:</h5>
+          <div class="step-list">
+            <div class="step-item">1. عندنا <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m(x<sub>k</sub> + 1)</span></span> في الأول و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m(x<sub>k</sub> + 1)</span></span> في النص <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹ 2m(x<sub>k</sub> + 1)</span></span></div>
+            <div class="step-item">2. عندنا <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">-y<sub>k</sub></span></span> و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">-y<sub>k</sub></span></span> <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹ -2y<sub>k</sub></span></span></div>
+            <div class="step-item">3. عندنا <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">+b</span></span> و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">+b</span></span> <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹ +2b</span></span></div>
+            <div class="step-item">4. ويتبقى الرقم <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">-1</span></span></div>
+          </div>
+
+          <p class="ar-block">يطلع الناتج النهائي لطرح المسافتين (زي ما هو مكتوب نصاً في سلايد 21):</p>
+          <div class="math-box border-2 border-blue-500">
+            <span role="math" class="math-formula" dir="ltr">d<sub>1</sub> - d<sub>2</sub> = 2m(x<sub>k</sub> + 1) - 2y<sub>k</sub> + 2b - 1</span>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 3. ضربة المعلم: التخلص من الكسر وظهور معامل القرار p_k -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">3. ضربة المعلم: التخلص من الكسر وظهور معامل القرار <span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span> (سلايد 22)</h4>
+          <p class="ar-block">المعادلة السابقة لسه فيها مشكلة: فيها الميل <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m</span></span>، والميل عبارة عن كسر:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">m = Δy / Δx</span>
+          </div>
+
+          <p class="ar-block">تعال نعوض بقيمة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m</span></span> في المعادلة:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">d<sub>1</sub> - d<sub>2</sub> = 2(Δy / Δx)(x<sub>k</sub> + 1) - 2y<sub>k</sub> + 2b - 1</span>
+          </div>
+
+          <p class="ar-block">المقام هنا هو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span>. بريزنهام سأل نفسه: <strong>إزاي أطير المقام <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span> ده نهائياً؟</strong><br>الإجابة: هضرب المعادلة كلها في <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span>!</p>
+
+          <h5 class="text-lg font-extrabold ar-block">هل ضرب المعادلة في <span role="math" dir="ltr" class="ltr-inline">Δx</span> قانوني وميغيرش النتيجة؟</h5>
+          <p class="ar-block">نعم، قانوني 100%! ليه؟ لأننا متفقين إن الخط ماشي من الشمال لليمين، يعني:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">x<sub>end</sub> > x<sub>start</sub> ⟹ Δx = (x<sub>end</sub> - x<sub>start</sub>) > 0</span>
+          </div>
+          <p class="ar-block">وطالما <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span> رقم <strong>موجب دائماً وأكبر من الصفر</strong>، فلو ضربته في أي مقدار:</p>
+          <div class="step-list">
+            <div class="step-item">لو المقدار كان سالب، هيفضل سالب.</div>
+            <div class="step-item">لو المقدار كان موجب، هيفضل موجب.</div>
+            <div class="step-item"><strong>إشارة المقارنة مش هتتأثر نهائياً!</strong></div>
+          </div>
+
+          <p class="ar-block">من هنا اتولد في علم الجرافيكس مفهوم: <strong>معامل القرار عند الخطوة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k</span></span></strong> واسمه بالإنجليزي: <strong>The Decision Parameter (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span></span>)</strong>:</p>
+          <div class="math-box border-2 border-emerald-500">
+            <span role="math" class="math-formula" dir="ltr">p<sub>k</sub> = Δx · (d<sub>1</sub> - d<sub>2</sub>)</span>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 4. فك معادلة p_k بالخطوات البسيطة -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">4. فك معادلة <span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span> بالخطوات البسيطة (سلايد 22)</h4>
+          <p class="ar-block">تعال نضرب كل حد في المعادلة في <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span>:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">p<sub>k</sub> = Δx · [ 2(Δy / Δx)(x<sub>k</sub> + 1) - 2y<sub>k</sub> + 2b - 1 ]</span>
+          </div>
+
+          <div class="step-list">
+            <div class="step-item">
+              <strong>1. لما نضرب الحد الأول في <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span>:</strong> الـ <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span> في البسط تطير مع الـ <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span> في المقام، يتبقى:
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">2Δy(x<sub>k</sub> + 1) = 2Δy · x<sub>k</sub> + 2Δy</span></div>
+            </div>
+            <div class="step-item">
+              <strong>2. لما نضرب الحد التاني في <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span>:</strong>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">-2Δx · y<sub>k</sub></span></div>
+            </div>
+            <div class="step-item">
+              <strong>3. لما نضرب باقي الحدود <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(2b - 1)</span></span> في <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span>:</strong>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">Δx(2b - 1)</span></div>
+            </div>
+          </div>
+
+          <p class="ar-block">نجمعهم كلهم في سطر واحد:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">p<sub>k</sub> = 2Δy · x<sub>k</sub> - 2Δx · y<sub>k</sub> + [ 2Δy + Δx(2b - 1) ]</span>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block">الملاحظة العبقرية:</h5>
+          <p class="ar-block">بص على القوس الأخير ده: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">[ 2Δy + Δx(2b - 1) ]</span></span>. هل فيه <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x<sub>k</sub></span></span>؟ لأ. هل فيه <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y<sub>k</sub></span></span>؟ لأ. ده عبارة عن ثوابت للخط، قيمته مبتتغيرش مع الخطوات، فممكن نسميه ثابت ونرمز له بالرمز <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">c</span></span>:</p>
+          <div class="math-box">
+            <span role="math" class="math-formula" dir="ltr">c = 2Δy + Δx(2b - 1)</span>
+          </div>
+
+          <p class="ar-block">فتصبح معادلة معامل القرار في سلايد 22 مكتوبة بالشكل البسيط ده:</p>
+          <div class="math-box border-2 border-blue-500">
+            <span role="math" class="math-formula" dir="ltr">p<sub>k</sub> = 2Δy · x<sub>k</sub> - 2Δx · y<sub>k</sub> + c</span>
+          </div>
+
+          <div class="subtle-surface p-4 rounded-xl border-r-4 border-emerald-600 ar-block">
+            <strong>ركز هنا:</strong> <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span> رقم صحيح، <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δy</span></span> رقم صحيح، <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x<sub>k</sub></span></span> رقم صحيح، <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y<sub>k</sub></span></span> رقم صحيح! <strong>مفيش ولا كسر ولا رقم عشري واحد!</strong> الحسابات كلها بقت أعداد صحيحة 100% (<span class="ltr-inline">Pure Integers</span>).
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 5. قاعدة القرار الحاسمة -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">5. قاعدة القرار الحاسمة في السلايد</h4>
+          <p class="ar-block">دلوقتي الكمبيوتر عنده رقم صحيح اسمه <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span></span>، بيبص على <strong>إشارته بس</strong>:</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <strong>لو سالبة (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> < 0</span></span>):</strong><br>
+              معناها <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> - d<sub>2</sub> < 0</span></span> يعني <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> < d<sub>2</sub></span></span> (المسار أقرب للبكسل السفلي) <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹</span></span> <strong>القرار: ارسم البكسل السفلي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub>)</span></span></strong>.
+            </div>
+            <div class="step-item">
+              <strong>لو موجبة أو صفر (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> ≥ 0</span></span>):</strong><br>
+              معناها <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> - d<sub>2</sub> ≥ 0</span></span> يعني <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> ≥ d<sub>2</sub></span></span> (المسار أقرب للبكسل العلوي) <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹</span></span> <strong>القرار: ارسم البكسل العلوي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub> + 1)</span></span></strong>.
+            </div>
+          </div>
+
+          <div class="slide-quote space-y-2">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">نص السلايد حرفياً:</div>
+            <p class="font-bold text-base">• "The sign of <span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span> is the same as the sign of <span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> - d<sub>2</sub></span>, since <span role="math" dir="ltr" class="ltr-inline">Δx > 0</span>."</p>
+            <p class="font-bold text-base">• "If <span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> < 0</span>, the line is closer to the lower pixel, and we choose the lower pixel at <span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub>)</span>."</p>
+            <p class="font-bold text-base">• "If <span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> ≥ 0</span>, the line is closer to the upper pixel, and we choose the upper pixel at <span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub> + 1)</span>."</p>
+          </div>
+
+          <div class="ar-block space-y-2 pt-2">
+            <h5 class="text-lg font-extrabold">ملخص الجزء (2.2) في 3 نقاط:</h5>
+            <div class="step-list">
+              <div class="step-item">1. طرحنا المسافتين: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">d<sub>1</sub> - d<sub>2</sub> = 2m(x<sub>k</sub> + 1) - 2y<sub>k</sub> + 2b - 1</span></span>.</div>
+              <div class="step-item">2. ضربنا في <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span> عشان نطير مقام الميل <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m = Δy / Δx</span></span>، فطلع معامل القرار <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> = Δx(d<sub>1</sub> - d<sub>2</sub>)</span></span>.</div>
+              <div class="step-item">3. إشارة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span></span> هي الحكم: لو سالب اختار البكسل السفلي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub>)</span></span>، لو موجب أو صفر اختار البكسل العلوي <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub> + 1)</span></span>.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz for Section 3 -->
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-4 border-2" style="border-color: var(--accent-primary);">
+        <h3 class="text-xl font-extrabold ar-block">أسئلة للمراجعة والتثبيت على الجزء 2.2 (كويز تفاعلي بالعامية)</h3>
+        <div id="quiz-sec3" class="space-y-4"></div>
+      </div>
+
+      <div class="flex justify-between">
+        <button type="button" onclick="switchSection('sec2')" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ الجزء 2.1</button>
+        <button type="button" onclick="switchSection('sec4')" class="px-6 py-3 rounded-xl font-bold shadow-md cg-accent-surface">انتقل لتكملة المحاضرة (سلايد 23 إلى 26) ←</button>
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 4: MISSING SLIDES 23-26 IN EXACT SAME STYLE
+         ========================================================================= -->
+    <section id="sec4" class="study-section chapter-section space-y-8 mb-12">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="border-b pb-4" style="border-color: var(--border-color);">
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء (2.3) تكملة المحاضرة (سلايد 23 إلى 26): التخلص من الثابت <span role="math" dir="ltr" class="ltr-inline">c</span> واستنتاج <span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub></span> و <span role="math" dir="ltr" class="ltr-inline">p<sub>0</sub></span></h2>
+        </div>
+
+        <!-- 1. التخلص من الثابت c (سلايد 23) -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">1. تعريف الثابت <span role="math" dir="ltr" class="ltr-inline">c</span> وكيف نتخلص منه (سلايد 23)</h4>
+
+          <div class="slide-quote space-y-2">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">النص الإنجليزي من السلايدات (Slide 23):</div>
+            <p class="font-bold text-base">• "The constant <span role="math" dir="ltr" class="ltr-inline">c</span> is defined as: <span role="math" dir="ltr" class="ltr-inline">c = 2Δy + Δx(2b - 1)</span>"</p>
+            <p class="font-bold text-base">• "Which is independent of pixel position and will be eliminated in the recursive calculations for <span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span>. We can eliminate this constant."</p>
+            <p class="font-bold text-base">• "At the step <span role="math" dir="ltr" class="ltr-inline">k + 1</span>, the decision parameter is: <span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = 2Δy · x<sub>k+1</sub> - 2Δx · y<sub>k+1</sub> + c</span>"</p>
+          </div>
+
+          <div class="ar-block space-y-3">
+            <p><strong>توضيح خطوة بخطوة:</strong></p>
+            <div class="step-list">
+              <div class="step-item">
+                <strong>1. ليه عايزين نتخلص من الثابت <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">c</span></span>؟</strong><br>
+                لأن الثابت <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">c = 2Δy + Δx(2b - 1)</span></span> جواه الرمز <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">b</span></span>، والـ <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">b</span></span> بيعتمد على الميل الكسري <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m</span></span>.
+              </div>
+              <div class="step-item">
+                <strong>2. إزاي بنطيره؟</strong><br>
+                بما أن <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">c</span></span> رقم ثابت مبيعتمدش على مكان البكسل (<span class="ltr-inline">Independent of pixel position</span>)، فقيمته عند الخطوة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k</span></span> هي نفس قيمته عند الخطوة التالية <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k + 1</span></span>.
+              </div>
+              <div class="step-item">
+                <strong>3. نكتب معادلة الخطوة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k + 1</span></span>:</strong><br>
+                بمجرد استبدال كل <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k</span></span> بـ <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k+1</span></span> تصبح المعادلة:
+                <div class="math-box"><span role="math" class="math-formula" dir="ltr">p<sub>k+1</sub> = 2Δy · x<sub>k+1</sub> - 2Δx · y<sub>k+1</sub> + c</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 2. طرح p_{k+1} - p_k (سلايد 24) -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">2. طرح المعادلتين واستنتاج قانون التحديث <span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub></span> (سلايد 24)</h4>
+
+          <div class="slide-quote space-y-2">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">النص الإنجليزي من السلايدات (Slide 24):</div>
+            <p class="font-bold text-base">• "<span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> - p<sub>k</sub> = 2Δy(x<sub>k+1</sub> - x<sub>k</sub>) - 2Δx(y<sub>k+1</sub> - y<sub>k</sub>)</span>"</p>
+            <p class="font-bold text-base">• "Since <span role="math" dir="ltr" class="ltr-inline">x<sub>k+1</sub> = x<sub>k</sub> + 1</span>, we can write: <span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + 2Δy - 2Δx(y<sub>k+1</sub> - y<sub>k</sub>)</span>"</p>
+            <p class="font-bold text-base">• "The term <span role="math" dir="ltr" class="ltr-inline">y<sub>k+1</sub> - y<sub>k</sub></span> is either '0' or '1' depending on the sign of parameter <span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span>."</p>
+          </div>
+
+          <div class="ar-block space-y-3">
+            <p><strong>تتبع الاستنتاج بالخطوات:</strong></p>
+            <div class="step-list">
+              <div class="step-item">
+                <strong>1. نطرح <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> - p<sub>k</sub></span></span> فيطير الثابت <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">c</span></span> نهائياً:</strong>
+                <div class="math-box"><span role="math" class="math-formula" dir="ltr">p<sub>k+1</sub> - p<sub>k</sub> = 2Δy(x<sub>k+1</sub> - x<sub>k</sub>) - 2Δx(y<sub>k+1</sub> - y<sub>k</sub>)</span></div>
+              </div>
+              <div class="step-item">
+                <strong>2. نعوض عن <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x<sub>k+1</sub> = x<sub>k</sub> + 1</span></span> (أي أن <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x<sub>k+1</sub> - x<sub>k</sub> = 1</span></span>):</strong>
+                <div class="math-box"><span role="math" class="math-formula" dir="ltr">p<sub>k+1</sub> = p<sub>k</sub> + 2Δy - 2Δx(y<sub>k+1</sub> - y<sub>k</sub>)</span></div>
+              </div>
+              <div class="step-item">
+                <strong>3. قيمة القوس <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(y<sub>k+1</sub> - y<sub>k</sub>)</span></span> إما <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">0</span></span> أو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">1</span></span> حسب إشارة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span></span>:</strong><br>
+                • إذا كان <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> < 0</span></span>: نختار البكسل السفلي فيكون <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y<sub>k+1</sub> = y<sub>k</sub> ⟹ (y<sub>k+1</sub> - y<sub>k</sub>) = 0</span></span>:
+                <div class="math-box"><span role="math" class="math-formula" dir="ltr">p<sub>k+1</sub> = p<sub>k</sub> + 2Δy</span></div>
+                • إذا كان <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> ≥ 0</span></span>: نختار البكسل العلوي فيكون <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y<sub>k+1</sub> = y<sub>k</sub> + 1 ⟹ (y<sub>k+1</sub> - y<sub>k</sub>) = 1</span></span>:
+                <div class="math-box"><span role="math" class="math-formula" dir="ltr">p<sub>k+1</sub> = p<sub>k</sub> + 2Δy - 2Δx</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 3. خطوات الخوارزمية الخمس ومعامل البداية p_0 (سلايد 25 و 26) -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">3. الخطوات الخمس لخوارزمية بريزنهام وحساب <span role="math" dir="ltr" class="ltr-inline">p<sub>0</sub></span> (سلايد 25 و 26)</h4>
+
+          <div class="slide-quote space-y-2">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">النص الإنجليزي من السلايدات (Slides 25 &amp; 26):</div>
+            <p class="font-bold text-base">1. "Input the two line endpoints and store the left endpoint in <span role="math" dir="ltr" class="ltr-inline">(x<sub>0</sub>, y<sub>0</sub>)</span>."</p>
+            <p class="font-bold text-base">2. "Load <span role="math" dir="ltr" class="ltr-inline">(x<sub>0</sub>, y<sub>0</sub>)</span> into the frame buffer; that is, plot the first point."</p>
+            <p class="font-bold text-base">3. "Calculate constants <span role="math" dir="ltr" class="ltr-inline">Δx, Δy, 2Δy</span>, and <span role="math" dir="ltr" class="ltr-inline">2Δy - 2Δx</span>, then obtain the starting value for the initial decision parameter as: <span role="math" dir="ltr" class="ltr-inline">p<sub>0</sub> = 2Δy - Δx</span>"</p>
+            <p class="font-bold text-base">4. "At each <span role="math" dir="ltr" class="ltr-inline">x<sub>k</sub></span> along the line, starting at <span role="math" dir="ltr" class="ltr-inline">k = 0</span>, perform the following test: If <span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> < 0</span>, the next point to plot is <span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub>)</span> and <span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + 2Δy</span>. Otherwise, the next point to plot is <span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub> + 1)</span> and <span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + 2Δy - 2Δx</span>."</p>
+            <p class="font-bold text-base">5. "Repeat step 4 <span role="math" dir="ltr" class="ltr-inline">Δx</span> times."</p>
+          </div>
+
+          <div class="ar-block space-y-2">
+            <p><strong>ترجمة الخطوات الخمس للحل في الامتحان:</strong></p>
+            <div class="step-list">
+              <div class="step-item"><strong>الخطوة 1:</strong> استقبل نقطتي الخط وخزن نقطة اليسار في <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>0</sub>, y<sub>0</sub>)</span></span>.</div>
+              <div class="step-item"><strong>الخطوة 2:</strong> حمل نقطة البداية <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>0</sub>, y<sub>0</sub>)</span></span> في الـ Frame Buffer (ارسم أول نقطة فوراً).</div>
+              <div class="step-item">
+                <strong>الخطوة 3:</strong> احسب الثوابت <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx, Δy, 2Δy, (2Δy - 2Δx)</span></span>، واحسب معامل القرار الابتدائي:
+                <div class="math-box border-2 border-amber-500"><span role="math" class="math-formula" dir="ltr">p<sub>0</sub> = 2Δy - Δx</span></div>
+              </div>
+              <div class="step-item">
+                <strong>الخطوة 4:</strong> عند كل <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x<sub>k</sub></span></span> بدءاً من <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k = 0</span></span>:<br>
+                • لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> < 0</span></span>: ارسم النقطة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub>)</span></span>، واحسب <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + 2Δy</span></span>.<br>
+                • غير ذلك (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> ≥ 0</span></span>): ارسم النقطة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1, y<sub>k</sub> + 1)</span></span>، واحسب <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + 2Δy - 2Δx</span></span>.
+              </div>
+              <div class="step-item"><strong>الخطوة 5:</strong> كرر الخطوة رقم (4) عدد <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span> من المرات.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz for Section 4 -->
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-4 border-2" style="border-color: var(--accent-primary);">
+        <h3 class="text-xl font-extrabold ar-block">أسئلة للمراجعة والتثبيت على الجزء 2.3 (سلايد 23–26 • شرح بالعامية)</h3>
+        <div id="quiz-sec4" class="space-y-4"></div>
+      </div>
+
+      <div class="flex justify-between">
+        <button type="button" onclick="switchSection('sec3')" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ الجزء 2.2</button>
+        <button type="button" onclick="switchSection('sec5')" class="px-6 py-3 rounded-xl font-bold shadow-md cg-accent-surface">انتقل للجزء الثالث: المسألة المحلولة ←</button>
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 5: EXACT MATCH FOR P4.txt
+         ========================================================================= -->
+    <section id="sec5" class="study-section chapter-section space-y-8 mb-12">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="border-b pb-4" style="border-color: var(--border-color);">
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الثالث (Part 3): المسألة المحلولة وجدول التتبع (Solved Example &amp; Tracing Table)</h2>
+        </div>
+
+        <!-- 1. نص المسألة بالسلايد -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">1. نص المسألة بالسلايد (Slide 27)</h4>
+          <div class="slide-quote space-y-1">
+            <p class="font-bold text-base">"Solved Example:"</p>
+            <p class="font-bold text-base">"To illustrate the algorithm, we digitize the line with endpoints (20, 10) and (30, 18)."</p>
+          </div>
+
+          <div class="ar-block space-y-2">
+            <p><strong>توضيح:</strong> المطلوب هنا توليد كل نقاط البكسل اللي هتتنور على الشاشة بين النقطتين:</p>
+            <div class="step-list">
+              <div class="step-item">نقطة البداية: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>0</sub>, y<sub>0</sub>) = (20, 10)</span></span></div>
+              <div class="step-item">نقطة النهاية: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>end</sub>, y<sub>end</sub>) = (30, 18)</span></span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 2. الخطوة التمهيدية: حساب الثوابت -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">2. الخطوة التمهيدية: حساب الثوابت (Preliminary Calculations - Slide 28)</h4>
+          <p class="ar-block">قبل ما نفتح الجدول، لازم نحسب الـ 4 ثوابت اللي اتفقنا عليهم:</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <strong>1. فرق الإحداثيات (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span> و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δy</span></span>):</strong>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">Δx = x<sub>end</sub> - x<sub>0</sub> = 30 - 20 = 10</span></div>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">Δy = y<sub>end</sub> - y<sub>0</sub> = 18 - 10 = 8</span></div>
+            </div>
+            <div class="step-item">
+              <strong>2. التأكد من شرط الخوارزمية (الميل <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m</span></span>):</strong>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">m = Δy / Δx = 8 / 10 = 0.8</span></div>
+              <p>الميل موجب وأقل من الواحد الصحيح (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">0 < m < 1</span></span>) <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹</span></span> خوارزمية بريزنهام القياسية تنطبق بنسبة 100%!</p>
+            </div>
+            <div class="step-item">
+              <strong>3. حساب الثابتين المستخدمين في التحديث:</strong>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">2Δy = 2 × 8 = 16</span></div>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">2Δy - 2Δx = 16 - 2(10) = 16 - 20 = -4</span></div>
+            </div>
+            <div class="step-item">
+              <strong>4. حساب القيمة الابتدائية لمعامل القرار (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>0</sub></span></span>):</strong>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">p<sub>0</sub> = 2Δy - Δx = 16 - 10 = 6</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 3. قاعدة التحرك في الجدول -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">3. قاعدة التحرك في الجدول (The Two Rules)</h4>
+          <p class="ar-block">عشان تحل أي مسألة في ثواني، خلي القاعدتين دول قدام عينك (عند كل خطوة بنزود <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x</span></span> بواحد دايماً <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x<sub>k+1</sub> = x<sub>k</sub> + 1</span></span>):</p>
+          <div class="step-list">
+            <div class="step-item">
+              <strong>لو إشارة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span></span> سالبة (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> < 0</span></span>):</strong><br>
+              1. <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y</span></span> يفضل زي ما هو ثابت.<br>
+              2. <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + 16</span></span>
+            </div>
+            <div class="step-item">
+              <strong>لو إشارة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span></span> موجبة أو صفر (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> ≥ 0</span></span>):</strong><br>
+              1. <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y</span></span> يزيد بمقدار <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">1</span></span>.<br>
+              2. <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + (-4)</span></span>
+            </div>
+          </div>
+          <p class="ar-block font-bold">نقطة البداية بترسمها فوراً قبل ما تبدأ الجدول: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(20, 10)</span></span>.</p>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 4. جدول التتبع الكامل خطوة بخطوة -->
+        <div class="space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h4 class="text-xl font-extrabold ar-block">4. جدول التتبع الكامل خطوة بخطوة (Full Tracing Table - Slide 29)</h4>
+            <div class="flex items-center gap-1.5">
+              <button id="btnExPrev" type="button" class="px-3 py-1 rounded-lg text-xs font-bold subtle-surface">السابق</button>
+              <span id="exStepBadge" class="px-3 py-1 rounded-lg text-xs font-mono font-bold cg-accent-surface" role="status" aria-live="polite">كل الخطوات (10/10)</span>
+              <button id="btnExNext" type="button" class="px-3 py-1 rounded-lg text-xs font-bold subtle-surface">التالي</button>
+              <button id="btnExAll" type="button" class="px-3 py-1 rounded-lg text-xs font-bold cg-emerald-btn">عرض الكل</button>
+            </div>
+          </div>
+
+          <p class="ar-block">السلايد بتمشي من <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k = 0</span></span> لحد <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k = 9</span></span> (بعدد <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx = 10</span></span> خطوات):</p>
+
+          <div class="overflow-x-auto table-container" tabindex="0" role="region" aria-label="جدول تتبع خطوات بريزنهام">
+              <table class="w-full text-sm border-collapse card-surface rounded-xl overflow-hidden">
+              <thead>
+                <tr class="cg-accent-surface">
+                  <th class="p-3 border border-white/20">الخطوة (<span role="math" dir="ltr" class="ltr-inline">k</span>)</th>
+                  <th class="p-3 border border-white/20">قيمة <span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span></th>
+                  <th class="p-3 border border-white/20">الإشارة والقرار</th>
+                  <th class="p-3 border border-white/20">البكسل المختار <span role="math" dir="ltr" class="ltr-inline">(x<sub>k+1</sub>, y<sub>k+1</sub>)</span></th>
+                  <th class="p-3 border border-white/20">حساب <span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub></span> للخطوة التالية</th>
+                </tr>
+              </thead>
+              <tbody id="exampleTableBody" class="divide-y text-center" style="border-color: var(--border-color);"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 5. رسمة مسار البكسلات على الشاشة -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">5. رسمة مسار البكسلات على الشاشة (Slide 30)</h4>
+          <p class="ar-block">كل البكسلات اللي بتنور على الشاشة بالترتيب هي:</p>
+          <div class="math-box text-sm">
+            <span role="math" class="math-formula" dir="ltr">(20, 10) → (21, 11) → (22, 12) → (23, 12) → (24, 13) → (25, 14) → (26, 15) → (27, 16) → (28, 16) → (29, 17) → (30, 18)</span>
+          </div>
+
+          <div class="subtle-surface rounded-xl p-5">
+            <div class="overflow-x-auto diagram-frame" dir="ltr" tabindex="0" role="region" aria-label="رسم مسار البكسلات للمسألة المحلولة">
+              <svg id="examplePlotSvg" viewBox="0 0 450 340" role="img" aria-label="Plotted pixels from (20,10) to (30,18)" class="w-full max-w-lg mx-auto h-auto card-surface rounded-xl p-2"></svg>
+            </div>
+          </div>
+
+          <div class="ar-block space-y-2 pt-2">
+            <h5 class="text-lg font-extrabold">ملاحظة ذكية جداً تفهمك المنطق:</h5>
+            <p>بص عند الخطوة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k = 2</span></span> والخطوة <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k = 7</span></span>:</p>
+            <div class="step-list">
+              <div class="step-item">عند النقطتين <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(22, 12)</span></span> و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(23, 12)</span></span> <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹</span></span> الـ <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y</span></span> فضل ثابت على <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">12</span></span> مرتين ورا بعض!</div>
+              <div class="step-item">وعند النقطتين <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(27, 16)</span></span> و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(28, 16)</span></span> <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">⟹</span></span> الـ <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y</span></span> فضل ثابت على <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">16</span></span> مرتين ورا بعض!</div>
+            </div>
+            <p><strong>ليه ده حصل؟</strong> لأن الميل <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m = 0.8</span></span>، يعني الخط بيطلع <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">0.8</span></span> بس في كل خطوة، فمش كل خطوة هيطلع خط مسح كامل، بعد كل كام خطوة بيضطر يمشي خطوة أفقية مستقيمة عشان يعوض الكسر ويرجع للمسار الحقيقي للخط بدون أي انحراف!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz for Section 5 -->
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-4 border-2" style="border-color: var(--accent-primary);">
+        <h3 class="text-xl font-extrabold ar-block">أسئلة للمراجعة والتثبيت على الجزء الثالث (كويز تفاعلي بالعامية)</h3>
+        <div id="quiz-sec5" class="space-y-4"></div>
+      </div>
+
+      <div class="flex justify-between">
+        <button type="button" onclick="switchSection('sec4')" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ تكملة المحاضرة (2.3)</button>
+        <button type="button" onclick="switchSection('sec6')" class="px-6 py-3 rounded-xl font-bold shadow-md cg-accent-surface">انتقل للكتالوج الشامل: إزاي أحل أي مسألة؟ ←</button>
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 6: EXACT MATCH FOR ازايي احل اي مساله.txt
+         ========================================================================= -->
+    <section id="sec6" class="study-section chapter-section space-y-8 mb-12">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="border-b pb-4" style="border-color: var(--border-color);">
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الكتالوج الشامل لحل أي مسألة Bresenham بأي أرقام</h2>
+        </div>
+
+        <!-- Clean Vertical Steps replacing Mermaid -->
+        <div class="step-list">
+          <div class="step-item"><strong>1. استقبل النقطتين:</strong> <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>0</sub>, y<sub>0</sub>)</span></span> و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>end</sub>, y<sub>end</sub>)</span></span>.</div>
+          <div class="step-item"><strong>2. احسب الفروق والميل:</strong> <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx</span></span> و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δy</span></span> والميل <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m = Δy / Δx</span></span>.</div>
+          <div class="step-item"><strong>3. حدد نوع الحالة (Case):</strong> قياسية (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">0 < m < 1</span></span>)، ميل حاد (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m > 1</span></span>)، ميل سالب (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">-1 < m < 0</span></span>)، أو خط مستقيم أفقي/رأسي.</div>
+          <div class="step-item"><strong>4. احسب الثوابت واملأ جدول التتبع (<span class="ltr-inline">Tracing Table</span>).</strong></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- الخطوة (1): تجهيز المعطيات وحساب الفروق -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">الخطوة (1): تجهيز المعطيات وحساب الفروق (The Setup)</h4>
+          <p class="ar-block">أول ما تشوف المسألة، طلع النقطتين فوراً:</p>
+          <div class="step-list">
+            <div class="step-item">نقطة البداية: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>0</sub>, y<sub>0</sub>)</span></span></div>
+            <div class="step-item">نقطة النهاية: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>end</sub>, y<sub>end</sub>)</span></span></div>
+          </div>
+          <p class="ar-block">احسب الفروق المطلقة والميل:</p>
+          <div class="math-box"><span role="math" class="math-formula" dir="ltr">Δx = |x<sub>end</sub> - x<sub>0</sub>|  &nbsp;&nbsp;  ,  &nbsp;&nbsp;  Δy = |y<sub>end</sub> - y<sub>0</sub>|</span></div>
+          <div class="math-box"><span role="math" class="math-formula" dir="ltr">m = (y<sub>end</sub> - y<sub>0</sub>) / (x<sub>end</sub> - x<sub>0</sub>)</span></div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- الخطوة (2): تحديد الحالة (The 4 Cases) -->
+        <div class="space-y-6">
+          <h4 class="text-xl font-extrabold ar-block">الخطوة (2): تحديد الحالة (The 4 Cases)</h4>
+          <p class="ar-block">الامتحان مش هيخرج برة واحدة من الـ 4 حالات دول:</p>
+
+          <!-- Case 1 -->
+          <div class="subtle-surface p-5 rounded-xl space-y-3 ar-block border-r-4 border-blue-600">
+            <h5 class="text-lg font-extrabold cg-text-blue">الحالة الأولى: الحالة القياسية المشهورة (<span role="math" dir="ltr" class="ltr-inline">0 < m < 1</span>)</h5>
+            <p class="text-sm"><em>(ودي اللي عليها 95% من مسائل الامتحانات ومثال السلايدات)</em>:</p>
+            <div class="step-list">
+              <div class="step-item"><strong>المحور السريع (المحور الأساسي):</strong> هو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">X</span></span> (بنزوده بواحد دايماً: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x<sub>k+1</sub> = x<sub>k</sub> + 1</span></span>).</div>
+              <div class="step-item"><strong>المحور البطيء (محور القرار):</strong> هو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Y</span></span> (يا يفضل ثابت يا يزيد واحد).</div>
+              <div class="step-item">
+                <strong>قيمة البداية والثابتان:</strong>
+                <div class="math-box"><span role="math" class="math-formula" dir="ltr">p<sub>0</sub> = 2Δy - Δx</span></div>
+                <div class="math-box"><span role="math" class="math-formula" dir="ltr">const<sub>1</sub> = 2Δy  &nbsp;&nbsp;  ,  &nbsp;&nbsp;  const<sub>2</sub> = 2Δy - 2Δx</span></div>
+              </div>
+              <div class="step-item">
+                <strong>قاعدة القرار:</strong><br>
+                • لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> < 0</span></span>: البكسل هو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1,   y<sub>k</sub>)</span></span>، والمعامل: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + const<sub>1</sub></span></span><br>
+                • لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> ≥ 0</span></span>: البكسل هو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1,   y<sub>k</sub> + 1)</span></span>، والمعامل: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + const<sub>2</sub></span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 2 -->
+          <div class="subtle-surface p-5 rounded-xl space-y-3 ar-block border-r-4 border-purple-600">
+            <h5 class="text-lg font-extrabold cg-text-purple">الحالة الثانية: الخط الحاد الواقف (<span role="math" dir="ltr" class="ltr-inline">m > 1</span>)</h5>
+            <p class="text-sm"><em>(سؤال التريكات والامتياز في الامتحانات!)</em>: هنا التغير الرأسي أسرع من الأفقي (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δy > Δx</span></span>). <strong>الحل: اعكس الأدوار بين <span role="math" dir="ltr" class="ltr-inline">X</span> و <span role="math" dir="ltr" class="ltr-inline">Y</span> تماماً:</strong></p>
+            <div class="step-list">
+              <div class="step-item"><strong>المحور السريع:</strong> هو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Y</span></span> (هو اللي بيزيد واحد دايماً: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">y<sub>k+1</sub> = y<sub>k</sub> + 1</span></span>).</div>
+              <div class="step-item"><strong>المحور البطيء:</strong> هو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">X</span></span> (يا يفضل ثابت يا يزيد واحد).</div>
+              <div class="step-item">
+                <strong>قيمة البداية والثابتان (بدل <span role="math" dir="ltr" class="ltr-inline">Δy</span> بـ <span role="math" dir="ltr" class="ltr-inline">Δx</span>):</strong>
+                <div class="math-box"><span role="math" class="math-formula" dir="ltr">p<sub>0</sub> = 2Δx - Δy</span></div>
+                <div class="math-box"><span role="math" class="math-formula" dir="ltr">const<sub>1</sub> = 2Δx  &nbsp;&nbsp;  ,  &nbsp;&nbsp;  const<sub>2</sub> = 2Δx - 2Δy</span></div>
+              </div>
+              <div class="step-item">
+                <strong>قاعدة القرار:</strong><br>
+                • لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> < 0</span></span>: البكسل هو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub>,   y<sub>k</sub> + 1)</span></span>، والمعامل: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + const<sub>1</sub></span></span><br>
+                • لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> ≥ 0</span></span>: البكسل هو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>k</sub> + 1,   y<sub>k</sub> + 1)</span></span>، والمعامل: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + const<sub>2</sub></span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Case 3 -->
+          <div class="subtle-surface p-5 rounded-xl space-y-3 ar-block border-r-4 border-amber-600">
+            <h5 class="text-lg font-extrabold cg-text-amber">الحالة الثالثة: الميل السالب الخفيف (<span role="math" dir="ltr" class="ltr-inline">-1 < m < 0</span>)</h5>
+            <div class="step-list">
+              <div class="step-item">الخط نازل لتحت بس ميلانه هادي: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">X</span></span> بيزيد عادي (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">x<sub>k+1</sub> = x<sub>k</sub> + 1</span></span>)، لكن <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Y</span></span> لما بنغيره <strong>بينقص <span role="math" dir="ltr" class="ltr-inline">1</span> بدل ما يزيد</strong>:</div>
+              <div class="step-item">• لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> < 0</span></span>: نثبت <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Y ⟹ (x<sub>k</sub> + 1,   y<sub>k</sub>)</span></span>، والتحديث: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + 2Δy</span></span></div>
+              <div class="step-item">• لو <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub> ≥ 0</span></span>: نطرح <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">1</span></span> من <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Y ⟹ (x<sub>k</sub> + 1,   y<sub>k</sub> - 1)</span></span>، والتحديث: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub> = p<sub>k</sub> + 2Δy - 2Δx</span></span></div>
+            </div>
+          </div>
+
+          <!-- Case 4 -->
+          <div class="subtle-surface p-5 rounded-xl space-y-3 ar-block border-r-4 border-emerald-600">
+            <h5 class="text-lg font-extrabold cg-text-emerald">الحالة الرابعة: الخطوط الأفقية والرأسية المباشرة (Special Trivial Cases)</h5>
+            <div class="step-list">
+              <div class="step-item">• <strong>لو الخط أفقي تماماً (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m = 0</span></span>):</strong> <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δy = 0 ⟹</span></span> ثبت <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Y</span></span> وزود <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">X</span></span> بواحد في كل خطوة حتى النهاية بدون أي خوارزمية!</div>
+              <div class="step-item">• <strong>لو الخط رأسي تماماً (<span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m = ∞</span></span>):</strong> <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx = 0 ⟹</span></span> ثبت <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">X</span></span> وزود <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Y</span></span> بواحد في كل خطوة حتى النهاية بدون أي خوارزمية!</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- الخطوة (3): فورمة الجدول السحرية + المسألة التدريبية -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">الخطوة (3): مسألة تدريبية كاملة بأرقام جديدة من الصفر لتطبيق الفورمة</h4>
+          <div class="subtle-surface p-4 rounded-xl ar-block">
+            <strong>المسألة:</strong> ارسم الخط المستقيم بين النقطتين: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(2, 3)</span></span> و <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(7, 6)</span></span> باستخدام خوارزمية بريزنهام.
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block">1. الحسابات التمهيدية:</h5>
+          <div class="step-list">
+            <div class="step-item">البداية: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>0</sub>, y<sub>0</sub>) = (2, 3)</span></span> ، النهاية: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(x<sub>end</sub>, y<sub>end</sub>) = (7, 6)</span></span></div>
+            <div class="step-item"><span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx = 7 - 2 = 5</span></span> ، <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δy = 6 - 3 = 3</span></span></div>
+            <div class="step-item">الميل: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">m = 3 / 5 = 0.6 ⟹</span></span> (الحالة القياسية: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">0 < m < 1</span></span>).</div>
+            <div class="step-item">
+              الثوابت وقيمة البداية:
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">2Δy = 2 × 3 = 6  &nbsp;&nbsp;  ,  &nbsp;&nbsp;  2Δy - 2Δx = 6 - 2(5) = -4</span></div>
+              <div class="math-box"><span role="math" class="math-formula" dir="ltr">p<sub>0</sub> = 2Δy - Δx = 6 - 5 = 1</span></div>
+            </div>
+            <div class="step-item">نقطة البداية المرسومة فوراً: <strong><span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">(2, 3)</span></span></strong>. عدد خطوات الجدول: <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">Δx = 5</span></span> (من <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k=0</span></span> إلى <span class="ltr-inline"><span role="math" dir="ltr" class="ltr-inline">k=4</span></span>).</div>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block pt-2">2. ملء الجدول مباشرة بالقواعد (وجرب تغير الأرقام بنفسك):</h5>
+
+          <div class="subtle-surface p-4 rounded-xl space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs font-bold ar-block">اختبر أي نقطتين:</span>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" onclick="loadPresetLine(2, 3, 7, 6)" data-preset-line="2,3,7,6" aria-pressed="true" class="preset-line-btn px-3 py-1.5 rounded-lg text-xs font-bold">مسألة التدريب (2,3)→(7,6)</button>
+                <button type="button" onclick="loadPresetLine(20, 10, 30, 18)" data-preset-line="20,10,30,18" aria-pressed="false" class="preset-line-btn px-3 py-1.5 rounded-lg text-xs font-bold">مثال المحاضرة (20,10)→(30,18)</button>
+                <button type="button" onclick="loadPresetLine(1, 1, 5, 8)" data-preset-line="1,1,5,8" aria-pressed="false" class="preset-line-btn px-3 py-1.5 rounded-lg text-xs font-bold">ميل حاد m&gt;1 (1,1)→(5,8)</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 items-end">
+              <div>
+                <label for="inpX0" class="block text-xs font-bold mb-1"><span role="math" dir="ltr" class="ltr-inline">x<sub>0</sub></span></label>
+                <input id="inpX0" type="number" value="2" class="w-full px-3 py-1.5 rounded-lg card-surface font-mono text-sm" dir="ltr" />
+              </div>
+              <div>
+                <label for="inpY0" class="block text-xs font-bold mb-1"><span role="math" dir="ltr" class="ltr-inline">y<sub>0</sub></span></label>
+                <input id="inpY0" type="number" value="3" class="w-full px-3 py-1.5 rounded-lg card-surface font-mono text-sm" dir="ltr" />
+              </div>
+              <div>
+                <label for="inpX1" class="block text-xs font-bold mb-1"><span role="math" dir="ltr" class="ltr-inline">x<sub>end</sub></span></label>
+                <input id="inpX1" type="number" value="7" class="w-full px-3 py-1.5 rounded-lg card-surface font-mono text-sm" dir="ltr" />
+              </div>
+              <div>
+                <label for="inpY1" class="block text-xs font-bold mb-1"><span role="math" dir="ltr" class="ltr-inline">y<sub>end</sub></span></label>
+                <input id="inpY1" type="number" value="6" class="w-full px-3 py-1.5 rounded-lg card-surface font-mono text-sm" dir="ltr" />
+              </div>
+              <div class="col-span-2 sm:col-span-1">
+                <button id="btnSolveCustom" type="button" class="w-full py-1.5 px-3 rounded-lg font-bold text-sm cg-accent-surface">احسب الجدول</button>
+              </div>
+            </div>
+
+            <div id="solverSummaryCards" class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs"></div>
+
+            <div class="overflow-x-auto table-container" tabindex="0" role="region" aria-label="جدول تتبع خطوات بريزنهام">
+              <table class="w-full text-sm border-collapse card-surface rounded-xl overflow-hidden">
+                <thead>
+                  <tr class="cg-accent-surface">
+                    <th class="p-2.5 border border-white/20"><span role="math" dir="ltr" class="ltr-inline">k</span></th>
+                    <th class="p-2.5 border border-white/20"><span role="math" dir="ltr" class="ltr-inline">p<sub>k</sub></span></th>
+                    <th class="p-2.5 border border-white/20">الإشارة والقرار</th>
+                    <th class="p-2.5 border border-white/20">البكسل المختار</th>
+                    <th class="p-2.5 border border-white/20">حساب <span role="math" dir="ltr" class="ltr-inline">p<sub>k+1</sub></span></th>
+                  </tr>
+                </thead>
+                <tbody id="customSolverTableBody" class="divide-y text-center" style="border-color: var(--border-color);"></tbody>
+              </table>
+            </div>
+
+            <div class="overflow-x-auto diagram-frame pt-2" dir="ltr" tabindex="0" role="region" aria-label="رسم مسار البكسلات لمحلل بريزنهام التفاعلي">
+              <svg id="customSolverSvg" viewBox="0 0 440 285" role="img" aria-label="Custom Bresenham line raster plot" class="w-full max-w-md mx-auto h-auto card-surface rounded-xl p-2"></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz for Section 6 -->
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-4 border-2" style="border-color: var(--accent-primary);">
+        <h3 class="text-xl font-extrabold ar-block">أسئلة للمراجعة والتثبيت على الكتالوج الشامل (كويز تفاعلي بالعامية)</h3>
+        <div id="quiz-sec6" class="space-y-4"></div>
+      </div>
+
+      <div class="flex justify-between">
+        <button type="button" onclick="switchSection('sec5')" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ الجزء الثالث</button>
+        <button type="button" onclick="switchSection('sec7')" class="px-6 py-3 rounded-xl font-bold shadow-md cg-accent-surface">انتقل لبنك الكويزات الشامل (34 سؤال) ←</button>
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 7: ALL QUIZZES COMBINED
+         ========================================================================= -->
+    <section id="sec7" class="study-section chapter-section space-y-6 mb-12">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 flex flex-wrap items-center justify-between gap-3">
+        <div class="ar-block">
+          <h2 class="text-2xl font-extrabold">بنك كويزات الفصل الثالث بالكامل (34 سؤال بالعامية المصرية)</h2>
+          <p class="text-sm mt-1" style="color: var(--text-muted);">كل أسئلة الـ MCQ والـ True/False من ملفات الشرح مجمعة هنا للمراجعة النهائية.</p>
+        </div>
+        <button id="btnResetAllQuizzes" type="button" class="px-4 py-2 rounded-xl font-bold text-xs sm:text-sm bg-rose-600 text-white">
+          إعادة تصفير الإجابات
+        </button>
+      </div>
+
+      <div id="quiz-all" class="space-y-4"></div>
+    </section>
+
+  
+  </main>
+
+  <script src="../../js/shared/study-state.js"></script>
+  <script src="../../js/study-modules.js"></script>
+  <script src="../../js/study-session.js"></script>
+  <script src="../../js/study-shell.js"></script>
+  <script src="../../js/shared/quiz-choices.js"></script>
+
+  <script>
+    // All 34 authored quiz questions for Chapter 3 (9 + 6 + 6 + 4 + 6 + 3 = 34)
+    const quizQuestions = [
+      {
+            "id": "q1_1",
+            "section": "sec1",
+            "type": "MCQ",
+            "qEn": "Q1: In raster-graphics systems, scan lines are numbered consecutively from 0 starting at the:",
+            "question": "Q1: In raster-graphics systems, scan lines are numbered consecutively from 0 starting at the:",
+            "options": [
+                  "A) Top of the screen",
+                  "B) Bottom of the screen",
+                  "C) Left of the screen",
+                  "D) Center of the screen"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B) Bottom of the screen! ليه بقى؟ في شاشات الـ Raster، خطوط المسح (Scan lines) اللي بتمثل الصفوف الأفقية (محور Y) بنبدأ نعدها من 0 من قاع الشاشة تحت خالص (Bottom) وإحنا طالعين لفوق، أما الأعمدة (Columns X) هي اللي بتبدأ من 0 من الشمال لليمين.",
+            "explanation": "الإجابة الصح هي (B) Bottom of the screen! ليه بقى؟ في شاشات الـ Raster، خطوط المسح (Scan lines) اللي بتمثل الصفوف الأفقية (محور Y) بنبدأ نعدها من 0 من قاع الشاشة تحت خالص (Bottom) وإحنا طالعين لفوق، أما الأعمدة (Columns X) هي اللي بتبدأ من 0 من الشمال لليمين."
+      },
+      {
+            "id": "q1_2",
+            "section": "sec1",
+            "type": "MCQ",
+            "qEn": "Q2: The stair-step appearance (\"the jaggies\") of raster lines is directly caused by:",
+            "question": "Q2: The stair-step appearance (\"the jaggies\") of raster lines is directly caused by:",
+            "options": [
+                  "A) Deflection voltage fluctuations in the CRT",
+                  "B) Rounding continuous coordinates to integer pixel positions",
+                  "C) Delay in reading from the frame buffer",
+                  "D) Changes in the slope m along the line segment"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B)! السبب المباشر للتعرجات أو درجات السلم (The Jaggies) إن معادلة الخط بتطلع أرقام فيها كسور عشرية، بس الشاشة مفيهاش غير بكسلات بأرقام صحيحة (Integers)، فبنضطر نقرب (Round) الإحداثيات لأقرب رقم صحيح، والتقريب الإجباري ده هو اللي بيعمل شكل السلم.",
+            "explanation": "الإجابة الصح هي (B)! السبب المباشر للتعرجات أو درجات السلم (The Jaggies) إن معادلة الخط بتطلع أرقام فيها كسور عشرية، بس الشاشة مفيهاش غير بكسلات بأرقام صحيحة (Integers)، فبنضطر نقرب (Round) الإحداثيات لأقرب رقم صحيح، والتقريب الإجباري ده هو اللي بيعمل شكل السلم."
+      },
+      {
+            "id": "q1_3",
+            "section": "sec1",
+            "type": "MCQ",
+            "qEn": "Q3: Which device draws smooth lines using linearly varying deflection voltages?",
+            "question": "Q3: Which device draws smooth lines using linearly varying deflection voltages?",
+            "options": [
+                  "A) Raster video display",
+                  "B) LCD monitor",
+                  "C) Vector pen plotter",
+                  "D) OLED television"
+            ],
+            "correct": 2,
+            "ammiya": "الإجابة الصح هي (C) Vector pen plotter! لأن ده جهاز تناظري (Analog device) زي الـ Random-scan display، بيولد جهد كهربي بيتغير بنعومة وخطياً (Linearly varying deflection voltage) فيحرك القلم أو الشعاع في خط متصل ناعم 100% من غير بكسلات.",
+            "explanation": "الإجابة الصح هي (C) Vector pen plotter! لأن ده جهاز تناظري (Analog device) زي الـ Random-scan display، بيولد جهد كهربي بيتغير بنعومة وخطياً (Linearly varying deflection voltage) فيحرك القلم أو الشعاع في خط متصل ناعم 100% من غير بكسلات."
+      },
+      {
+            "id": "q1_4",
+            "section": "sec1",
+            "type": "MCQ",
+            "qEn": "Q4: A calculated point on a line is (14.49, 18.51). On a standard raster display, it will be mapped to the pixel:",
+            "question": "Q4: A calculated point on a line is (14.49, 18.51). On a standard raster display, it will be mapped to the pixel:",
+            "options": [
+                  "A) (14, 18)",
+                  "B) (15, 19)",
+                  "C) (14, 19)",
+                  "D) (15, 18)"
+            ],
+            "correct": 2,
+            "ammiya": "الإجابة الصح هي (C) (14, 19)! تعال نقربها سوا: الـ 14.49 الكسر بتاعها أقل من النص (.49) فتتقرب لتحت تبقى 14، والـ 18.51 الكسر بتاعها أكبر من النص (.51) فتتقرب لفوق تبقى 19. يبقى البكسل اللي هينور هو (14, 19).",
+            "explanation": "الإجابة الصح هي (C) (14, 19)! تعال نقربها سوا: الـ 14.49 الكسر بتاعها أقل من النص (.49) فتتقرب لتحت تبقى 14، والـ 18.51 الكسر بتاعها أكبر من النص (.51) فتتقرب لفوق تبقى 19. يبقى البكسل اللي هينور هو (14, 19)."
+      },
+      {
+            "id": "q1_5",
+            "section": "sec1",
+            "type": "TF",
+            "qEn": "1. Analog devices display lines by plotting discrete points calculated from the equation of the line.",
+            "question": "1. Analog devices display lines by plotting discrete points calculated from the equation of the line.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 1,
+            "ammiya": "غلط طبعاً (False)! اللي بيرسم نقط منفصلة (Discrete points) هي الأجهزة الرقمية (Digital / Raster devices). إنما الأجهزة التناظرية (Analog) بترسم خط متصل وناعم (Smooth continuous line).",
+            "explanation": "غلط طبعاً (False)! اللي بيرسم نقط منفصلة (Discrete points) هي الأجهزة الرقمية (Digital / Raster devices). إنما الأجهزة التناظرية (Analog) بترسم خط متصل وناعم (Smooth continuous line)."
+      },
+      {
+            "id": "q1_6",
+            "section": "sec1",
+            "type": "TF",
+            "qEn": "2. The video controller reads pixel data directly from the frame buffer to refresh the display screen.",
+            "question": "2. The video controller reads pixel data directly from the frame buffer to refresh the display screen.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح 100% (True)! كارت الشاشة بيحط ألوان وإحداثيات البكسلات الأول في الـ Frame Buffer، وبعدين ييجي الـ Video Controller يقرأ منها علطول عشان ينور البكسلات على الشاشة.",
+            "explanation": "صح 100% (True)! كارت الشاشة بيحط ألوان وإحداثيات البكسلات الأول في الـ Frame Buffer، وبعدين ييجي الـ Video Controller يقرأ منها علطول عشان ينور البكسلات على الشاشة."
+      },
+      {
+            "id": "q1_7",
+            "section": "sec1",
+            "type": "TF",
+            "qEn": "3. The characteristic stair-step effect of raster lines is more noticeable on high-resolution systems than on low-resolution systems.",
+            "question": "3. The characteristic stair-step effect of raster lines is more noticeable on high-resolution systems than on low-resolution systems.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 1,
+            "ammiya": "غلط (False)! العكس هو الصح؛ شكل السلم (Jaggies) بيبقى باين وواضح أوي في الشاشات ضعيفة الدقة (Low-resolution) لأن البكسل بيبقى كبير، وبيتحسن في الشاشات الـ High-resolution.",
+            "explanation": "غلط (False)! العكس هو الصح؛ شكل السلم (Jaggies) بيبقى باين وواضح أوي في الشاشات ضعيفة الدقة (Low-resolution) لأن البكسل بيبقى كبير، وبيتحسن في الشاشات الـ High-resolution."
+      },
+      {
+            "id": "q1_8",
+            "section": "sec1",
+            "type": "TF",
+            "qEn": "4. Output primitives include basic geometric elements such as points, straight lines, and curves.",
+            "question": "4. Output primitives include basic geometric elements such as points, straight lines, and curves.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح جداً (True)! أوليات الإخراج (Output Primitives) هي العناصر الهندسية الأساسية اللي بتوفرها مكتبات الجرافيكس زي النقط والخطوط المستقيمة والمنحنيات.",
+            "explanation": "صح جداً (True)! أوليات الإخراج (Output Primitives) هي العناصر الهندسية الأساسية اللي بتوفرها مكتبات الجرافيكس زي النقط والخطوط المستقيمة والمنحنيات."
+      },
+      {
+            "id": "q1_9",
+            "section": "sec1",
+            "type": "TF",
+            "qEn": "5. Adjusting pixel intensities along line paths is an effective method for smoothing raster lines.",
+            "question": "5. Adjusting pixel intensities along line paths is an effective method for smoothing raster lines.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح (True)! دي الطريقة الأكثر فاعلية لتنعيم الخطوط: بنعدل شدة إضاءة البكسلات على مسار الخط فالعين تشوفه ناعم وأملس.",
+            "explanation": "صح (True)! دي الطريقة الأكثر فاعلية لتنعيم الخطوط: بنعدل شدة إضاءة البكسلات على مسار الخط فالعين تشوفه ناعم وأملس."
+      },
+      {
+            "id": "q2_1",
+            "section": "sec2",
+            "type": "MCQ",
+            "qEn": "Q1: In Bresenham’s algorithm, when the slope 0 < m < 1, which condition is true?",
+            "question": "Q1: In Bresenham’s algorithm, when the slope 0 < m < 1, which condition is true?",
+            "options": [
+                  "A) Δy > Δx",
+                  "B) Δx > Δy",
+                  "C) Δx = 0",
+                  "D) Δy = 0"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B) Δx > Δy! لأن الميل m بيساوي Δy على Δx، فطالما الكسر ده أصغر من 1، يبقى أكيد المقام (Δx) أكبر من البسط (Δy)، يعني التغير الأفقي أسرع من الرأسي.",
+            "explanation": "الإجابة الصح هي (B) Δx > Δy! لأن الميل m بيساوي Δy على Δx، فطالما الكسر ده أصغر من 1، يبقى أكيد المقام (Δx) أكبر من البسط (Δy)، يعني التغير الأفقي أسرع من الرأسي."
+      },
+      {
+            "id": "q2_2",
+            "section": "sec2",
+            "type": "MCQ",
+            "qEn": "Q2: If the mathematical line height at column x_k + 1 is y = 11.7, and the lower pixel is at y_k = 11, what is the value of d1?",
+            "question": "Q2: If the mathematical line height at column x_k + 1 is y = 11.7, and the lower pixel is at y_k = 11, what is the value of d1?",
+            "options": [
+                  "A) 0.3",
+                  "B) 0.7",
+                  "C) 1.7",
+                  "D) 0.5"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B) 0.7! لأن d1 قانونها (y - y_k) يعني المسافة من الخط الحقيقي (11.7) للبكسـل السفلي (11): 11.7 - 11 = 0.7.",
+            "explanation": "الإجابة الصح هي (B) 0.7! لأن d1 قانونها (y - y_k) يعني المسافة من الخط الحقيقي (11.7) للبكسـل السفلي (11): 11.7 - 11 = 0.7."
+      },
+      {
+            "id": "q2_3",
+            "section": "sec2",
+            "type": "MCQ",
+            "qEn": "Q3: Which equation correctly expresses the vertical distance d2 to the upper pixel?",
+            "question": "Q3: Which equation correctly expresses the vertical distance d2 to the upper pixel?",
+            "options": [
+                  "A) d2 = y - y_k",
+                  "B) d2 = y_k + 1 - y",
+                  "C) d2 = y_k - y",
+                  "D) d2 = y - (y_k + 1)"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B) d2 = y_k + 1 - y! لأن البكسل العلوي مكانه عند (y_k + 1) وهو أعلى من الخط الحقيقي y، فنطرح الكبير ناقص الصغير: (y_k + 1) - y.",
+            "explanation": "الإجابة الصح هي (B) d2 = y_k + 1 - y! لأن البكسل العلوي مكانه عند (y_k + 1) وهو أعلى من الخط الحقيقي y، فنطرح الكبير ناقص الصغير: (y_k + 1) - y."
+      },
+      {
+            "id": "q2_4",
+            "section": "sec2",
+            "type": "TF",
+            "qEn": "1. If d1 < d2, it means the actual line path is closer to the upper pixel (x_k + 1, y_k + 1).",
+            "question": "1. If d1 < d2, it means the actual line path is closer to the upper pixel (x_k + 1, y_k + 1).",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 1,
+            "ammiya": "غلط (False)! d1 هي المسافة للبكسل السفلي، فلو d1 أصغر من d2، يبقى الخط أقرب للبكسل السفلي (Lower pixel) مش العلوي!",
+            "explanation": "غلط (False)! d1 هي المسافة للبكسل السفلي، فلو d1 أصغر من d2، يبقى الخط أقرب للبكسل السفلي (Lower pixel) مش العلوي!"
+      },
+      {
+            "id": "q2_5",
+            "section": "sec2",
+            "type": "TF",
+            "qEn": "2. Floating-point multiplication in the direct line equation y = mx + b makes line generation slower compared to integer addition.",
+            "question": "2. Floating-point multiplication in the direct line equation y = mx + b makes line generation slower compared to integer addition.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح جداً (True)! ضرب الأرقام العشرية (Floating-point) بياخد وقت وطاقة كبيرة من المعالج مقارنة بجمع الأعداد الصحيحة.",
+            "explanation": "صح جداً (True)! ضرب الأرقام العشرية (Floating-point) بياخد وقت وطاقة كبيرة من المعالج مقارنة بجمع الأعداد الصحيحة."
+      },
+      {
+            "id": "q2_6",
+            "section": "sec2",
+            "type": "TF",
+            "qEn": "3. At each sampling step when 0 < m < 1, the next pixel's x coordinate is always x_k + 1.",
+            "question": "3. At each sampling step when 0 < m < 1, the next pixel's x coordinate is always x_k + 1.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح 100% (True)! لما الميل يكون بين 0 و 1، بنتحرك في كل خطوة بمقدار 1 ثابت في محور x (Unit x intervals).",
+            "explanation": "صح 100% (True)! لما الميل يكون بين 0 و 1، بنتحرك في كل خطوة بمقدار 1 ثابت في محور x (Unit x intervals)."
+      },
+      {
+            "id": "q3_1",
+            "section": "sec3",
+            "type": "MCQ",
+            "qEn": "Q1: The decision parameter p_k in Bresenham's algorithm is defined as:",
+            "question": "Q1: The decision parameter p_k in Bresenham's algorithm is defined as:",
+            "options": [
+                  "A) p_k = Δy · (d1 - d2)",
+                  "B) p_k = Δx · (d1 - d2)",
+                  "C) p_k = (d1 - d2) / Δx",
+                  "D) p_k = d1 + d2"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B) p_k = Δx · (d1 - d2)! ضربنا فرق المسافتين (d1 - d2) في Δx عشان نطير المقام بتاع الميل m = Δy / Δx.",
+            "explanation": "الإجابة الصح هي (B) p_k = Δx · (d1 - d2)! ضربنا فرق المسافتين (d1 - d2) في Δx عشان نطير المقام بتاع الميل m = Δy / Δx."
+      },
+      {
+            "id": "q3_2",
+            "section": "sec3",
+            "type": "MCQ",
+            "qEn": "Q2: The sign of p_k is identical to the sign of (d1 - d2) because:",
+            "question": "Q2: The sign of p_k is identical to the sign of (d1 - d2) because:",
+            "options": [
+                  "A) The slope m is always negative",
+                  "B) Δx > 0 when scanning from left to right",
+                  "C) y_k is always greater than x_k",
+                  "D) The y-intercept b is equal to zero"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B)! لأننا ماشيين من الشمال لليمين فدايماً Δx أكبر من الصفر (موجب)، والضرب في رقم موجب بيحافظ على الإشارة زي ما هي.",
+            "explanation": "الإجابة الصح هي (B)! لأننا ماشيين من الشمال لليمين فدايماً Δx أكبر من الصفر (موجب)، والضرب في رقم موجب بيحافظ على الإشارة زي ما هي."
+      },
+      {
+            "id": "q3_3",
+            "section": "sec3",
+            "type": "MCQ",
+            "qEn": "Q3: If at a certain step the decision parameter evaluates to p_k = -5, the algorithm chooses:",
+            "question": "Q3: If at a certain step the decision parameter evaluates to p_k = -5, the algorithm chooses:",
+            "options": [
+                  "A) The upper pixel (x_k + 1, y_k + 1)",
+                  "B) The lower pixel (x_k + 1, y_k)",
+                  "C) The current pixel (x_k, y_k)",
+                  "D) The next column pixel (x_k + 2, y_k)"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B) البكسل السفلي (x_k + 1, y_k)! لأن p_k سالب (-5 < 0)، وده معناه إن d1 < d2 فالخط أقرب للبكسل السفلي.",
+            "explanation": "الإجابة الصح هي (B) البكسل السفلي (x_k + 1, y_k)! لأن p_k سالب (-5 < 0)، وده معناه إن d1 < d2 فالخط أقرب للبكسل السفلي."
+      },
+      {
+            "id": "q3_4",
+            "section": "sec3",
+            "type": "TF",
+            "qEn": "1. The difference between the two vertical distances is d1 - d2 = 2m(x_k + 1) - 2y_k + 2b - 1.",
+            "question": "1. The difference between the two vertical distances is d1 - d2 = 2m(x_k + 1) - 2y_k + 2b - 1.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح (True)! دي المعادلة النصية في السلايد لما طرحنا d1 ناقص d2 وجمعنا الحدود المتشابهة.",
+            "explanation": "صح (True)! دي المعادلة النصية في السلايد لما طرحنا d1 ناقص d2 وجمعنا الحدود المتشابهة."
+      },
+      {
+            "id": "q3_5",
+            "section": "sec3",
+            "type": "TF",
+            "qEn": "2. When p_k >= 0, the line path is closer to the lower pixel on the current scan line.",
+            "question": "2. When p_k >= 0, the line path is closer to the lower pixel on the current scan line.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 1,
+            "ammiya": "غلط (False)! لما p_k >= 0، المسار بيكون أقرب للبكسل العلوي (Upper pixel) مش السفلي.",
+            "explanation": "غلط (False)! لما p_k >= 0، المسار بيكون أقرب للبكسل العلوي (Upper pixel) مش السفلي."
+      },
+      {
+            "id": "q3_6",
+            "section": "sec3",
+            "type": "TF",
+            "qEn": "3. Multiplying (d1 - d2) by Δx eliminates the division operation in calculating the slope m.",
+            "question": "3. Multiplying (d1 - d2) by Δx eliminates the division operation in calculating the slope m.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح جداً (True)! لأن الميل m = Δy / Δx، فلما نضرب في Δx المقام بيطير ونتخلص من القسمة والكسور.",
+            "explanation": "صح جداً (True)! لأن الميل m = Δy / Δx، فلما نضرب في Δx المقام بيطير ونتخلص من القسمة والكسور."
+      },
+      {
+            "id": "q4_1",
+            "section": "sec4",
+            "type": "MCQ",
+            "qEn": "Q1: Why is the constant c = 2Δy + Δx(2b - 1) eliminated when computing p_{k+1} - p_k?",
+            "question": "Q1: Why is the constant c = 2Δy + Δx(2b - 1) eliminated when computing p_{k+1} - p_k?",
+            "options": [
+                  "A) Because c is always equal to zero",
+                  "B) Because c is independent of pixel position and cancels out in recursive subtraction",
+                  "C) Because Δx equals Δy",
+                  "D) Because b is always zero"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B)! الثابت c مبيعتمدش على مكان البكسل (مفيهوش لا x_k ولا y_k)، فلما بنطرح p_{k+1} ناقص p_k بيطير خالص.",
+            "explanation": "الإجابة الصح هي (B)! الثابت c مبيعتمدش على مكان البكسل (مفيهوش لا x_k ولا y_k)، فلما بنطرح p_{k+1} ناقص p_k بيطير خالص."
+      },
+      {
+            "id": "q4_2",
+            "section": "sec4",
+            "type": "MCQ",
+            "qEn": "Q2: In the equation p_{k+1} = p_k + 2Δy - 2Δx(y_{k+1} - y_k), the term (y_{k+1} - y_k) when p_k < 0 equals:",
+            "question": "Q2: In the equation p_{k+1} = p_k + 2Δy - 2Δx(y_{k+1} - y_k), the term (y_{k+1} - y_k) when p_k < 0 equals:",
+            "options": [
+                  "A) 0",
+                  "B) 1",
+                  "C) -1",
+                  "D) 2"
+            ],
+            "correct": 0,
+            "ammiya": "الإجابة الصح هي (A) صفر! لأن لما p_k بيكون سالب بنثبت الـ y (يعني y_{k+1} = y_k)، فطرحهم بيساوي صفر ويتبقى p_{k+1} = p_k + 2Δy.",
+            "explanation": "الإجابة الصح هي (A) صفر! لأن لما p_k بيكون سالب بنثبت الـ y (يعني y_{k+1} = y_k)، فطرحهم بيساوي صفر ويتبقى p_{k+1} = p_k + 2Δy."
+      },
+      {
+            "id": "q4_3",
+            "section": "sec4",
+            "type": "MCQ",
+            "qEn": "Q3: What is the starting value for the initial decision parameter p_0 when 0 < m < 1?",
+            "question": "Q3: What is the starting value for the initial decision parameter p_0 when 0 < m < 1?",
+            "options": [
+                  "A) p_0 = 2Δx - Δy",
+                  "B) p_0 = 2Δy - 2Δx",
+                  "C) p_0 = 2Δy - Δx",
+                  "D) p_0 = Δy - Δx"
+            ],
+            "correct": 2,
+            "ammiya": "الإجابة الصح هي (C) p_0 = 2Δy - Δx! ده قانون البداية في سلايد 25.",
+            "explanation": "الإجابة الصح هي (C) p_0 = 2Δy - Δx! ده قانون البداية في سلايد 25."
+      },
+      {
+            "id": "q4_4",
+            "section": "sec4",
+            "type": "TF",
+            "qEn": "1. Step 4 in Bresenham's algorithm is repeated Δx times.",
+            "question": "1. Step 4 in Bresenham's algorithm is repeated Δx times.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح 100% (True)! بنكرر الاختبار ورسم النقاط بعدد خطوات Δx.",
+            "explanation": "صح 100% (True)! بنكرر الاختبار ورسم النقاط بعدد خطوات Δx."
+      },
+      {
+            "id": "q5_1",
+            "section": "sec5",
+            "type": "MCQ",
+            "qEn": "Q1: For the line endpoints (20, 10) and (30, 18), what is the initial decision parameter p_0?",
+            "question": "Q1: For the line endpoints (20, 10) and (30, 18), what is the initial decision parameter p_0?",
+            "options": [
+                  "A) 2",
+                  "B) -2",
+                  "C) 6",
+                  "D) 14"
+            ],
+            "correct": 2,
+            "ammiya": "الإجابة الصح هي (C) 6! لأن Δx = 10 و Δy = 8، فيبقى p_0 = 2Δy - Δx = 16 - 10 = 6.",
+            "explanation": "الإجابة الصح هي (C) 6! لأن Δx = 10 و Δy = 8، فيبقى p_0 = 2Δy - Δx = 16 - 10 = 6."
+      },
+      {
+            "id": "q5_2",
+            "section": "sec5",
+            "type": "MCQ",
+            "qEn": "Q2: In the same example, when k = 2, the value of p_2 is -2. The plotted pixel at this step is:",
+            "question": "Q2: In the same example, when k = 2, the value of p_2 is -2. The plotted pixel at this step is:",
+            "options": [
+                  "A) (23, 13)",
+                  "B) (23, 12)",
+                  "C) (22, 12)",
+                  "D) (24, 12)"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B) (23, 12)! كنا واقفين عند (22, 12)، ولما طلع p_2 = -2 (سالب) زودنا X بواحد بقت 23 وثبتنا Y على 12.",
+            "explanation": "الإجابة الصح هي (B) (23, 12)! كنا واقفين عند (22, 12)، ولما طلع p_2 = -2 (سالب) زودنا X بواحد بقت 23 وثبتنا Y على 12."
+      },
+      {
+            "id": "q5_3",
+            "section": "sec5",
+            "type": "MCQ",
+            "qEn": "Q3: The update constant (2Δy - 2Δx) in this example equals:",
+            "question": "Q3: The update constant (2Δy - 2Δx) in this example equals:",
+            "options": [
+                  "A) 16",
+                  "B) -4",
+                  "C) 4",
+                  "D) -20"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B) -4! لأن 2(8) - 2(10) = 16 - 20 = -4.",
+            "explanation": "الإجابة الصح هي (B) -4! لأن 2(8) - 2(10) = 16 - 20 = -4."
+      },
+      {
+            "id": "q5_4",
+            "section": "sec5",
+            "type": "TF",
+            "qEn": "1. In the example (20, 10) to (30, 18), the total number of sampling steps in the loop is Δx = 10.",
+            "question": "1. In the example (20, 10) to (30, 18), the total number of sampling steps in the loop is Δx = 10.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح (True)! عدد الخطوات في الجدول من k=0 لحد k=9 هو Δx = 10 خطوات.",
+            "explanation": "صح (True)! عدد الخطوات في الجدول من k=0 لحد k=9 هو Δx = 10 خطوات."
+      },
+      {
+            "id": "q5_5",
+            "section": "sec5",
+            "type": "TF",
+            "qEn": "2. When p_k = -2, the next decision parameter is calculated as p_{k+1} = -2 + (-4) = -6.",
+            "question": "2. When p_k = -2, the next decision parameter is calculated as p_{k+1} = -2 + (-4) = -6.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 1,
+            "ammiya": "غلط (False)! لما p_k يكون سالب (-2) بنجمع 2Δy اللي هي 16، فتبقى p_{k+1} = -2 + 16 = 14.",
+            "explanation": "غلط (False)! لما p_k يكون سالب (-2) بنجمع 2Δy اللي هي 16، فتبقى p_{k+1} = -2 + 16 = 14."
+      },
+      {
+            "id": "q5_6",
+            "section": "sec5",
+            "type": "TF",
+            "qEn": "3. The line passes through both pixels (22, 12) and (23, 12), keeping the same scan line consecutively.",
+            "question": "3. The line passes through both pixels (22, 12) and (23, 12), keeping the same scan line consecutively.",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح (True)! عند k=2 كان المعامل سالب ففضلنا على نفس خط المسح 12 مرتين ورا بعض.",
+            "explanation": "صح (True)! عند k=2 كان المعامل سالب ففضلنا على نفس خط المسح 12 مرتين ورا بعض."
+      },
+      {
+            "id": "q6_1",
+            "section": "sec6",
+            "type": "MCQ",
+            "qEn": "Q1: When the slope is steep (m > 1, so Δy > Δx), how do we adapt Bresenham's algorithm?",
+            "question": "Q1: When the slope is steep (m > 1, so Δy > Δx), how do we adapt Bresenham's algorithm?",
+            "options": [
+                  "A) Keep everything identical to 0 < m < 1",
+                  "B) Swap roles of x and y: increment y by 1 each step, decide on x, with p_0 = 2Δx - Δy",
+                  "C) Set p_0 = 0",
+                  "D) Multiply by floating-point m"
+            ],
+            "correct": 1,
+            "ammiya": "الإجابة الصح هي (B)! في الميل الحاد (m > 1) بنعكس الأدوار بين X و Y تماماً، فيبقى المحور السريع هو Y وقانون البداية p_0 = 2Δx - Δy.",
+            "explanation": "الإجابة الصح هي (B)! في الميل الحاد (m > 1) بنعكس الأدوار بين X و Y تماماً، فيبقى المحور السريع هو Y وقانون البداية p_0 = 2Δx - Δy."
+      },
+      {
+            "id": "q6_2",
+            "section": "sec6",
+            "type": "MCQ",
+            "qEn": "Q2: For the training problem with endpoints (2, 3) and (7, 6), what are p_0, 2Δy, and (2Δy - 2Δx)?",
+            "question": "Q2: For the training problem with endpoints (2, 3) and (7, 6), what are p_0, 2Δy, and (2Δy - 2Δx)?",
+            "options": [
+                  "A) p_0 = 1, 2Δy = 6, 2Δy - 2Δx = -4",
+                  "B) p_0 = 6, 2Δy = 16, 2Δy - 2Δx = -4",
+                  "C) p_0 = -1, 2Δy = 5, 2Δy - 2Δx = -3",
+                  "D) p_0 = 2, 2Δy = 6, 2Δy - 2Δx = -2"
+            ],
+            "correct": 0,
+            "ammiya": "الإجابة الصح هي (A)! لأن Δx = 5 و Δy = 3، فيكون 2Δy = 6، و 2Δy - 2Δx = 6 - 10 = -4، و p_0 = 6 - 5 = 1.",
+            "explanation": "الإجابة الصح هي (A)! لأن Δx = 5 و Δy = 3، فيكون 2Δy = 6، و 2Δy - 2Δx = 6 - 10 = -4، و p_0 = 6 - 5 = 1."
+      },
+      {
+            "id": "q6_3",
+            "section": "sec6",
+            "type": "TF",
+            "qEn": "1. In the case of gentle negative slope (-1 < m < 0), when p_k >= 0 we decrement y by 1 (y_{k+1} = y_k - 1).",
+            "question": "1. In the case of gentle negative slope (-1 < m < 0), when p_k >= 0 we decrement y by 1 (y_{k+1} = y_k - 1).",
+            "options": [
+                  "True",
+                  "False"
+            ],
+            "correct": 0,
+            "ammiya": "صح (True)! لأن الخط نازل لتحت، فلما نغير Y بننقص 1 بدل ما نزود.",
+            "explanation": "صح (True)! لأن الخط نازل لتحت، فلما نغير Y بننقص 1 بدل ما نزود."
+      }
+];
+    const QUIZ_QUESTIONS = quizQuestions;
+    window.quizQuestions = quizQuestions;
+    window.QUIZ_QUESTIONS = QUIZ_QUESTIONS;
+  </script>
+
+  <script src="chapter-3.js"></script>
+</body>
+</html>
