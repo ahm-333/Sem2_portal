@@ -190,6 +190,14 @@ async function register({ scenario: testScenario }) {
     assert(partLinks.includes('#part-5'), 'TOC links to #part-5');
     assert(partLinks.includes('#part-6'), 'TOC links to #part-6');
     assert(partLinks.includes('#section-quiz'), 'TOC links to #section-quiz');
+    assert(partLinks.includes('#p4-display'), 'TOC links directly to display()');
+    assert(partLinks.includes('#p6-comparison'), 'TOC links directly to the implementation comparison');
+    const missingTargets = await page.evaluate(() => {
+      return [...document.querySelectorAll('#sidebar-toc a[href^="#"]')]
+        .map(link => link.hash.slice(1))
+        .filter(id => !document.getElementById(id));
+    });
+    assert.deepEqual(missingTargets, [], 'All outline links point to sections on the page');
 
     await btnCloseToc.click();
     assert(await tocDrawer.evaluate(el => !el.classList.contains('open')), 'TOC drawer closes on close button');
@@ -265,8 +273,10 @@ async function register({ scenario: testScenario }) {
 
     // Test direct tab click for stage 1 (index 0)
     const stage1Tab = page.locator('.arr-sim-tab[data-arr-stage="0"]');
-    await stage1Tab.click();
+    await stage1Tab.press('Space');
     assert.equal(await simBadge.innerText(), 'خطوة 1/6');
+    assert.equal(await stage1Tab.getAttribute('aria-pressed'), 'true');
+    assert.equal(await page.locator('.arr-sim-tab[aria-pressed="true"]').count(), 1);
 
     // Test reset button
     if (await simReset.count()) {
@@ -297,6 +307,67 @@ async function register({ scenario: testScenario }) {
       const contrast = await measureElementContrast(page, '#arr-sim-display .bg-slate-100 span');
       assert(contrast >= 4.5, `Empty stack labels meet 4.5:1 in ${theme}, got ${contrast}`);
     }
+  });
+
+  await testScenario('ds4-free-stack-exploration-and-draft', async ({ page, go }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await go('study/ds/lecture-4.html');
+
+    const input = page.locator('#sim-input-val');
+    const status = page.locator('#sim-interactive-status');
+    const display = page.locator('#sim-live-display');
+    assert(await input.isVisible(), 'The experiment exposes a value input');
+    assert.match(await display.innerText(), /top = -1/);
+    await page.locator('#arr-sim-next').click();
+    const guidedStep = await page.locator('#arr-sim-badge').innerText();
+
+    await page.getByRole('button', { name: 'Pop()', exact: true }).click();
+    assert.match(await status.innerText(), /Stack Underflow/);
+    await input.fill('1.5');
+    await input.press('Enter');
+    assert.match(await status.innerText(), /عددًا صحيحًا/);
+    assert.equal(await input.getAttribute('aria-invalid'), 'true');
+    assert.match(await display.innerText(), /top = -1/);
+
+    for (const value of ['-10', '0', '20', '30', '40']) {
+      await input.fill(value);
+      await input.press('Enter');
+    }
+    assert.equal(await input.getAttribute('aria-invalid'), null);
+    assert.match(await display.innerText(), /top = 4/);
+    assert.match(await display.innerText(), /arr\[4\].*TOP\s+40/);
+    await input.fill('50');
+    await input.press('Enter');
+    assert.match(await status.innerText(), /Stack Overflow/);
+    assert.match(await display.innerText(), /arr\[4\].*TOP\s+40/);
+
+    await page.getByRole('button', { name: 'Peek()', exact: true }).click();
+    assert.match(await status.innerText(), /40/);
+    assert.match(await display.innerText(), /top = 4/);
+    await page.getByRole('button', { name: 'Pop()', exact: true }).click();
+    assert.match(await status.innerText(), /40/);
+    assert.match(await display.innerText(), /top = 3/);
+    assert.match(await display.innerText(), /arr\[3\].*TOP\s+30/);
+
+    await page.locator('#sim-btn-reset').click();
+    assert.match(await display.innerText(), /top = -1/);
+    assert.equal(await display.getByText('(فارغ)', { exact: true }).count(), 5);
+    assert.equal(await page.locator('#arr-sim-badge').innerText(), guidedStep);
+    for (const theme of ['light', 'reading', 'dark']) {
+      await page.evaluate(mode => window.PortalTheme.setTheme(mode), theme);
+      assert(await measureElementContrast(page, '#sim-interactive-status') >= 4.5, `Live status contrast in ${theme}`);
+      assert(await measureElementContrast(page, '#sim-live-display .arr-sim-empty span') >= 4.5, `Empty cells contrast in ${theme}`);
+      for (const control of ['.arr-sim-tab[aria-pressed="false"]', '.arr-sim-tab[aria-pressed="true"]', '#arr-sim-reset', '#sim-btn-push', '#sim-btn-pop', '#sim-input-val']) {
+        const contrast = await measureElementContrast(page, control);
+        assert(contrast >= 4.5, `${control} contrast in ${theme}, got ${contrast}`);
+      }
+    }
+
+    const draft = page.locator('#student-code-area');
+    await draft.fill('Stack stack;');
+    await page.locator('#btn-clear-draft').press('Enter');
+    assert.equal(await draft.inputValue(), '');
+    assert.equal(await draft.evaluate(el => el === document.activeElement), true);
   });
 
   // 5. Acceptance 5: Quiz interactive states, reset, check states, responsive 390px / 1440px
@@ -366,6 +437,8 @@ async function register({ scenario: testScenario }) {
     await go('study/ds/lecture-4.html');
 
     // Verify no body horizontal overflow at 320px
+    const mobileHeader = await page.locator('#mainReadingHeader').boundingBox();
+    assert(mobileHeader.height < 200, `Mobile header stays compact, got ${mobileHeader.height}px`);
     const bodyScrollWidth = await page.evaluate(() => document.body.scrollWidth);
     const bodyClientWidth = await page.evaluate(() => document.body.clientWidth);
     assert(bodyScrollWidth <= bodyClientWidth + 1, `No horizontal overflow at 320px: scrollWidth ${bodyScrollWidth} <= clientWidth ${bodyClientWidth}`);

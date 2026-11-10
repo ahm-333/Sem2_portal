@@ -110,8 +110,58 @@
       max-width: 100%;
     }
 
-    #arr-sim-display .arr-sim-empty {
+    .arr-sim-empty {
       color: #475569;
+    }
+
+    .arr-sim-cells span:last-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      text-align: right;
+    }
+
+    .arr-sim-code {
+      white-space: pre-wrap;
+    }
+
+    html[data-study-shell] body .arr-sim-tab,
+    html[data-study-shell] body #arr-sim-reset {
+      background: var(--study-paper);
+      color: var(--study-ink);
+      border-color: var(--text-muted);
+    }
+
+    html[data-study-shell] body .arr-sim-tab[aria-pressed="true"] {
+      background: #064e3b;
+      color: #fff;
+      border-color: #064e3b;
+    }
+
+    #sim-live-panel {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+
+    #sim-input-val {
+      width: min(10rem, 100%);
+      background: var(--bg-soft);
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+
+    #sim-input-val[aria-invalid="true"] {
+      border-width: 2px;
+    }
+
+    @media (max-width: 380px) {
+      html[data-study-shell] #mainReadingHeader > div > div:first-child {
+        flex-wrap: wrap;
+      }
+
+      html[data-study-shell] #mainReadingHeader > div > div:first-child > div {
+        min-width: max-content;
+      }
     }
 
     .compact-header {
@@ -456,14 +506,15 @@
     }
 
     /* Touch target accessibility & visible focus */
-    #arr-sim-prev, #arr-sim-next, #arr-sim-reset, .arr-sim-tab, .quiz-filter-btn, #btnResetQuiz {
+    #arr-sim-prev, #arr-sim-next, #arr-sim-reset, .arr-sim-tab, .quiz-filter-btn, #btnResetQuiz,
+    #sim-live-panel button, #sim-input-val, #btn-clear-draft {
       min-width: 44px;
       min-height: 44px;
       touch-action: manipulation;
     }
     #arr-sim-prev:focus-visible, #arr-sim-next:focus-visible, #arr-sim-reset:focus-visible, .arr-sim-tab:focus-visible,
     #btn-open-toc:focus-visible, #btn-close-toc:focus-visible, .quiz-option:focus-visible,
-    .quiz-explanation:focus {
+    .quiz-explanation:focus, #sim-live-panel :focus-visible, #btn-clear-draft:focus-visible {
       outline: 3px solid #2563eb;
       outline-offset: 2px;
     }
@@ -493,9 +544,8 @@
         <button id="btn-open-toc" type="button" title="فتح فهرس أجزاء المحاضرة الستة" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-500/30 hover:bg-blue-100 font-bold text-xs shadow-sm transition">
           <span>📑 الأجزاء (6)</span>
         </button>
-        <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-heading font-bold text-xs shadow-sm shrink-0">L4</span>
         <div>
-          <h1 class="font-heading font-bold text-xs sm:text-sm leading-tight truncate">المحاضرة الرابعة: المكدس (Stack — Array & Linked List)</h1>
+          <h1 class="font-heading font-bold text-sm leading-tight">المكدّس</h1>
         </div>
       </div>
 
@@ -604,7 +654,8 @@
         <div class="pr-3 space-y-1 text-xs border-r-4 border-amber-800">
           <a href="#p4-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. عملية الحذف Pop والـ Data Underflow وكود isEmpty() (Slides 18–20)</a>
           <a href="#p4-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تفكيك كود pop() وسر arr[top--] (Slide 19)</a>
-          <a href="#p4-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. تفكيك كود peek() وكود display() من القمة للقاع (Slides 21–22)</a>
+          <a href="#p4-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. قراءة قمة المكدّس باستخدام peek() (Slide 21)</a>
+          <a href="#p4-display" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">عرض عناصر المكدّس باستخدام display() (Slide 22)</a>
           <a href="#p4-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. كود main() والمخرجات ومحاكي Array Stack التفاعلي (Slides 23–24)</a>
           <a href="#p4-sec-5" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">5. طبّق الآن بإيدك + ملخص وأسئلة الجزء 4</a>
         </div>
@@ -631,7 +682,8 @@
           <a href="#p6-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. تفكيك دوال isEmpty() و peek() و display() (Slides 31–33)</a>
           <a href="#p6-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تشريح كود main() لـ Stack&lt;int&gt; و Stack&lt;string&gt; (Slide 34)</a>
           <a href="#p6-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. لغز الشريحة 35: لماذا طُبعت 4 سطور pop إضافية في النهاية؟ (Slide 35)</a>
-          <a href="#p6-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. طبّق الآن بإيدك + المقارنة الشاملة وقاموس المصطلحات</a>
+          <a href="#p6-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. الكود الكامل ومسودة التدريب</a>
+          <a href="#p6-comparison" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">مقارنة تنفيذ المكدّس بالمصفوفة والقائمة المتصلة</a>
         </div>
       </div>
       <div class="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-300 dark:border-emerald-700">
@@ -644,12 +696,6 @@
 
   <!-- Top Sticky Header -->
   
-
-  <!-- Floating Quick-Access TOC Button -->
-  <button id="btn-floating-toc" type="button" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 px-3.5 py-2.5 sm:px-5 sm:py-3 rounded-2xl bg-sky-900 hover:bg-sky-950 text-white font-black text-xs sm:text-sm shadow-2xl border-2 border-amber-300 flex items-center gap-1.5 sm:gap-2 transition-all">
-    <span>📑</span>
-    <span>افتح الفهرس (6 أجزاء)</span>
-  </button>
 
   <!-- Main Eye-Friendly Centered Container -->
   <div id="main-container" class="py-6 sm:py-10">
@@ -1952,7 +1998,7 @@ public:
               </div>
             </div>
 
-            <div class="mt-9 mb-4 p-4 sm:p-5 rounded-xl bg-amber-100/95 border-r-8 border-r-amber-700 font-black text-amber-950 text-base sm:text-xl shadow-xs">
+            <div id="p4-display" class="scroll-mt-24 mt-9 mb-4 p-4 sm:p-5 rounded-xl bg-amber-100/95 border-r-8 border-r-amber-700 font-black text-amber-950 text-base sm:text-xl shadow-xs">
               السطور 62 إلى 65 (الشريحة 22 — بداية <code class="inline-code" dir="ltr">display()</code>): <code class="inline-code" dir="ltr">if (isEmpty()) { cout &lt;&lt; "Stack is empty." &lt;&lt; endl; }</code>
             </div>
 
@@ -2124,16 +2170,16 @@ Stack elements (top to bottom): 30 20 10 </code></pre>
                 <span id="arr-sim-badge" class="px-3 py-1.5 rounded-xl bg-amber-200 text-amber-950 font-mono text-xs font-extrabold border border-amber-500">خطوة 1/6</span>
                 <button type="button" id="arr-sim-next" class="px-3 py-1.5 rounded-xl bg-emerald-900 text-white text-xs font-extrabold hover:bg-emerald-950">الخطوة التالية ⬅</button>
               
-                <button id="arr-sim-reset" type="button" class="px-3 py-1.5 rounded-xl border-2 border-slate-400 bg-white dark:bg-slate-800 text-slate-950 dark:text-slate-100 text-xs font-extrabold hover:bg-slate-100 dark:hover:bg-slate-700 transition" aria-label="إعادة ضبط المحاكي للبداية">🔄 إعادة ضبط (Reset)</button>
+                <button id="arr-sim-reset" type="button" class="px-3 py-1.5 rounded-xl border-2 text-xs font-extrabold" aria-label="إعادة ضبط المحاكي للبداية">🔄 إعادة ضبط (Reset)</button>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-2 arr-sim-stages">
-              <button type="button" data-arr-stage="0" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-emerald-900 bg-emerald-900 text-white">1. Stack s;</button>
-              <button type="button" data-arr-stage="1" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950">2. push(10..30)</button>
-              <button type="button" data-arr-stage="2" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950">3. push(40,50)</button>
-              <button type="button" data-arr-stage="3" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950">4. push(60)!</button>
-              <button type="button" data-arr-stage="4" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950">5. pop() مرتين</button>
-              <button type="button" data-arr-stage="5" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white text-slate-950">6. Stack Underflow</button>
+              <button type="button" data-arr-stage="0" aria-pressed="true" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">١. البداية</button>
+              <button type="button" data-arr-stage="1" aria-pressed="false" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">٢. الإضافة</button>
+              <button type="button" data-arr-stage="2" aria-pressed="false" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">٣. امتلاء المكدّس</button>
+              <button type="button" data-arr-stage="3" aria-pressed="false" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">٤. تجاوز السعة</button>
+              <button type="button" data-arr-stage="4" aria-pressed="false" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">٥. الحذف مرتين</button>
+              <button type="button" data-arr-stage="5" aria-pressed="false" class="arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2">٦. الحذف من مكدّس فارغ</button>
             </div>
             <div id="arr-sim-display" class="p-4 sm:p-6 rounded-2xl bg-[#fffdf9] border-2 border-emerald-700 shadow-md space-y-4"></div>
 
@@ -2167,6 +2213,25 @@ Stack elements (top to bottom): 30 20 10 </code></pre>
                 </div>
               </div>
             </div>
+
+            <section id="sim-live-panel" class="p-4 rounded-2xl border space-y-4" aria-labelledby="sim-live-heading" hidden>
+              <h5 id="sim-live-heading" class="text-base font-black">جرّب المكدّس بنفسك</h5>
+              <p id="sim-input-help">أضف أعدادًا صحيحة للمكدّس. سعته 5 عناصر.</p>
+              <form id="sim-live-controls" class="space-y-2" novalidate>
+                <div class="flex flex-wrap items-center gap-2">
+                  <label for="sim-input-val" class="text-sm font-bold">قيمة العنصر</label>
+                  <input id="sim-input-val" type="number" class="rounded-lg border px-3 py-2" dir="ltr" aria-describedby="sim-input-help">
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button id="sim-btn-push" type="submit" class="px-3 rounded-xl bg-emerald-900 text-white text-sm font-bold">Push</button>
+                  <button id="sim-btn-pop" type="button" class="px-3 rounded-xl bg-slate-900 text-white text-sm font-bold">Pop()</button>
+                  <button id="sim-btn-peek" type="button" class="px-3 rounded-xl bg-slate-900 text-white text-sm font-bold">Peek()</button>
+                  <button id="sim-btn-reset" type="button" class="px-3 rounded-xl bg-slate-900 text-white text-sm font-bold">إعادة ضبط التجربة</button>
+                </div>
+              </form>
+              <div id="sim-interactive-status" class="text-sm font-bold" role="status">المكدّس فارغ.</div>
+              <div id="sim-live-display"></div>
+            </section>
           </div>
 
           <!-- 5. Hands-on + Full Array Code + MCQs -->
@@ -3364,7 +3429,7 @@ int main() {
             </div>
 
             <!-- Final Comprehensive Exam Cheatsheet -->
-            <div class="my-8 p-5 sm:p-8 rounded-2xl bg-[#efe5d2] border-2 border-[#a39374] space-y-4 shadow-md">
+            <div id="p6-comparison" class="scroll-mt-24 my-8 p-5 sm:p-8 rounded-2xl bg-[#efe5d2] border-2 border-[#a39374] space-y-4 shadow-md">
               <div class="flex items-center gap-2.5 border-b-2 border-[#b8a98e] pb-3">
                 <span class="text-2xl">📋</span>
                 <h4 class="text-lg sm:text-2xl font-black text-slate-950">المقارنة النهائية الشاملة للامتحان: Stack as Array vs. Stack as Linked List</h4>
@@ -3494,7 +3559,6 @@ int main() {
       const sidebarToc = document.getElementById('sidebar-toc');
       const tocBackdrop = document.getElementById('toc-backdrop');
       const btnOpenToc = document.getElementById('btn-open-toc');
-      const btnFloatingToc = document.getElementById('btn-floating-toc');
       const btnCloseToc = document.getElementById('btn-close-toc');
 
       function openToc() {
@@ -3508,7 +3572,6 @@ int main() {
       }
 
       if (btnOpenToc) btnOpenToc.addEventListener('click', openToc);
-      if (btnFloatingToc) btnFloatingToc.addEventListener('click', openToc);
       if (btnCloseToc) btnCloseToc.addEventListener('click', closeToc);
       if (tocBackdrop) tocBackdrop.addEventListener('click', closeToc);
 
@@ -3519,11 +3582,13 @@ int main() {
       });
 
       // 3. Interactive Array Stack Simulator
+      const arrayCapacity = 5;
+
       function renderStackCells(values, topIdx) {
         let html = '<div class="flex flex-col sm:flex-row items-center justify-center gap-6 py-2" dir="ltr">';
         html += '<div class="px-5 py-2.5 rounded-xl bg-amber-100 border-2 border-amber-600 text-amber-950 font-mono font-black text-base shadow-xs">top = ' + topIdx + '</div>';
         html += '<div class="arr-sim-cells w-56 border-2 border-slate-800 rounded-xl overflow-hidden bg-white shadow-md font-mono">';
-        for (let i = 4; i >= 0; i--) {
+        for (let i = arrayCapacity - 1; i >= 0; i--) {
           const val = i <= topIdx ? values[i] : '(فارغ)';
           const isTop = i === topIdx;
           const rowBg = isTop ? 'bg-emerald-100 text-emerald-950 font-black border-l-8 border-l-emerald-700' : (i < topIdx ? 'bg-sky-50 text-slate-900 font-bold' : 'bg-slate-100 arr-sim-empty');
@@ -3538,7 +3603,7 @@ int main() {
 
       const arrStages = [
         {
-          title: 'المرحلة 1: إنشاء المكدس الفارغ (Stack s;)',
+          title: 'المرحلة 1: إنشاء مكدّس فارغ',
           code: 'Stack s; // Constructor sets top = -1',
           desc: 'في البداية المصفوفة فارغة تماماً، والمتغير top يساوي -1 (خارج حدود الفهارس 0..4):',
           html: renderStackCells([], -1)
@@ -3562,14 +3627,14 @@ int main() {
           html: renderStackCells([10, 20, 30, 40, 50], 4)
         },
         {
-          title: 'المرحلة 5: تنفيذ s.pop() مرتين ثم s.peek() (السطور 88–91)',
-          code: 's.pop(); // 50 popped   s.pop(); // 40 popped   s.peek(); // Top is 30',
+          title: 'المرحلة 5: الحذف مرتين ثم قراءة القمة (السطور 88–91)',
+          code: 's.pop(); // 50 popped\ns.pop(); // 40 popped\ns.peek(); // Top is 30',
           desc: 'خرجت 50 ثم خرجت 40 ونزل المؤشر مرتين ليصبح top = 2 واقفاً عند العنصر 30:',
           html: renderStackCells([10, 20, 30], 2)
         },
         {
-          title: 'المرحلة 6: محاولة الحذف بعد تفريغ المكدس (Stack Underflow)',
-          code: 's.pop(); // 30   s.pop(); // 20   s.pop(); // 10<br>s.pop(); // Stack Underflow!',
+          title: 'المرحلة 6: الحذف من مكدّس فارغ <bdi dir="ltr">(Stack Underflow)</bdi>',
+          code: 's.pop(); // 30\ns.pop(); // 20\ns.pop(); // 10\ns.pop(); // Stack Underflow!',
           desc: 'خرجت 30 ثم 20 ثم 10 وأصبح top = -1. في المحاولة التالية ترجع isEmpty() القيمة true، فتظهر رسالة Stack Underflow ويفضل top = -1.',
           html: renderStackCells([], -1)
         }
@@ -3589,16 +3654,12 @@ int main() {
         arrSimBadge.textContent = 'خطوة ' + (currentArrStage + 1) + '/' + arrStages.length;
         arrSimDisplay.innerHTML =
           '<div class="font-black text-emerald-950 dark:text-emerald-300 text-base sm:text-lg">' + st.title + '</div>' +
-          '<div class="code-surface p-3 rounded-xl border border-slate-700 text-xs sm:text-sm text-emerald-300 font-mono">' + st.code + '</div>' +
+          '<div class="code-surface arr-sim-code p-3 rounded-xl border border-slate-700 text-xs sm:text-sm text-emerald-300 font-mono" dir="ltr">' + st.code + '</div>' +
           '<div class="text-sm sm:text-base text-slate-900 dark:text-slate-100 font-bold">' + st.desc + '</div>' +
           '<div class="pt-2 bg-[#faf5e8] dark:bg-slate-900/60 p-4 rounded-xl border border-[#d6cbb5] dark:border-slate-700">' + st.html + '</div>';
 
         arrSimTabs.forEach(function (tab, idx) {
-          if (idx === currentArrStage) {
-            tab.className = 'arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-emerald-900 bg-emerald-900 text-white transition-all';
-          } else {
-            tab.className = 'arr-sim-tab px-2.5 py-2 rounded-xl text-xs font-extrabold border-2 border-slate-400 bg-white dark:bg-slate-800 text-slate-950 dark:text-slate-100 hover:bg-emerald-50 dark:hover:bg-slate-700 transition-all';
-          }
+          tab.setAttribute('aria-pressed', String(idx === currentArrStage));
         });
       }
 
@@ -3651,21 +3712,73 @@ int main() {
       }
 
       arrSimTabs.forEach(function (tab) {
-        tab.setAttribute('role', 'tab');
-        tab.setAttribute('tabindex', '0');
         tab.addEventListener('click', function () {
-          currentArrStage = parseInt(tab.getAttribute('data-arr-stage'), 10);
+          currentArrStage = Number(tab.dataset.arrStage);
           renderArrSim();
-        });
-        tab.addEventListener('keydown', function (e) {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            tab.click();
-          }
         });
       });
 
       renderArrSim();
+
+      const liveStack = [];
+      const livePanel = document.getElementById('sim-live-panel');
+      const liveControls = document.getElementById('sim-live-controls');
+      const liveInput = document.getElementById('sim-input-val');
+      const liveDisplay = document.getElementById('sim-live-display');
+      const liveStatus = document.getElementById('sim-interactive-status');
+
+      function renderLiveStack() {
+        liveDisplay.innerHTML = renderStackCells(liveStack, liveStack.length - 1);
+      }
+
+      liveControls.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const value = liveInput.valueAsNumber;
+        if (!Number.isSafeInteger(value)) {
+          liveInput.setAttribute('aria-invalid', 'true');
+          liveStatus.textContent = 'أدخل عددًا صحيحًا.';
+          liveInput.focus();
+          return;
+        }
+
+        liveInput.removeAttribute('aria-invalid');
+        if (liveStack.length === arrayCapacity) {
+          liveStatus.textContent = 'Stack Overflow: المكدّس ممتلئ.';
+          return;
+        }
+
+        liveStack.push(value);
+        liveStatus.textContent = 'تمت إضافة ' + value + '. القمة عند الفهرس ' + (liveStack.length - 1) + '.';
+        renderLiveStack();
+      });
+
+      document.getElementById('sim-btn-pop').addEventListener('click', function () {
+        if (liveStack.length === 0) {
+          liveStatus.textContent = 'Stack Underflow: المكدّس فارغ.';
+          return;
+        }
+
+        const removed = liveStack.pop();
+        liveStatus.textContent = 'تم حذف ' + removed + '. القمة عند الفهرس ' + (liveStack.length - 1) + '.';
+        renderLiveStack();
+      });
+
+      document.getElementById('sim-btn-peek').addEventListener('click', function () {
+        liveStatus.textContent = liveStack.length
+          ? 'قيمة العنصر في القمة: ' + liveStack.at(-1) + '.'
+          : 'المكدّس فارغ.';
+      });
+
+      document.getElementById('sim-btn-reset').addEventListener('click', function () {
+        liveStack.length = 0;
+        liveInput.value = '';
+        liveInput.removeAttribute('aria-invalid');
+        liveStatus.textContent = 'تم تفريغ المكدّس. القمة عند الفهرس -1.';
+        renderLiveStack();
+      });
+
+      renderLiveStack();
+      livePanel.hidden = false;
 
       // 4. Copy Code Buttons
       const toast = document.getElementById('toast');
@@ -3732,7 +3845,9 @@ int main() {
       if (clearDraftBtn) {
         clearDraftBtn.addEventListener('click', function () {
           const codeArea = document.getElementById('student-code-area');
-          if (codeArea) codeArea.value = '';
+          if (!codeArea) return;
+          codeArea.value = '';
+          codeArea.focus();
         });
       }
 
