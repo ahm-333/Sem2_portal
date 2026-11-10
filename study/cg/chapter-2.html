@@ -32,26 +32,24 @@
       </div>
 
       <!-- أدوات القراءة والمظهر -->
-      <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-        <!-- تكبير وتصغير الخط -->
-        <div class="flex items-center rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-0.5">
-          <button id="btnFontDec" type="button" title="تصغير النص" aria-label="تصغير النص" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-[var(--bg-subtle)] transition">A-</button>
-          <span id="fontSizeLabel" class="px-1.5 text-[11px] font-semibold text-[var(--text-muted)]">100%</span>
-          <button id="btnFontInc" type="button" title="تكبير النص" aria-label="تكبير النص" class="px-1.5 py-0.5 rounded text-xs font-bold hover:bg-[var(--bg-subtle)] transition">A+</button>
+      <div class="reader-controls">
+        <div class="reader-control-group" role="group" aria-label="حجم النص" dir="ltr">
+          <button id="btnFontDec" type="button" class="reader-control" aria-label="تصغير النص">A−</button>
+          <span id="fontSizeLabel" class="reader-font-value">100%</span>
+          <button id="btnFontInc" type="button" class="reader-control" aria-label="تكبير النص">A+</button>
         </div>
 
-        <!-- ألوان المظهر المتزامنة مع المنصة -->
-        <div class="flex items-center gap-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-card)] p-1">
-          <button id="btnThemeSepia" type="button" title="ورقي دافئ لراحة العين" aria-label="وضع القراءة" class="w-4 h-4 rounded-full bg-[#fdfaf5] border-2 border-amber-600 shadow-sm"></button>
-          <button id="btnThemeWhite" type="button" title="أبيض نقي" aria-label="المظهر الفاتح" class="w-4 h-4 rounded-full bg-white border border-slate-300"></button>
-          <button id="btnThemeDark" type="button" title="ليلي مريح" aria-label="المظهر الداكن" class="w-4 h-4 rounded-full bg-slate-900 border border-slate-600"></button>
+        <div class="reader-control-group" role="group" aria-label="المظهر">
+          <button id="btnThemeWhite" type="button" class="reader-control" aria-label="المظهر الفاتح">فاتح</button>
+          <button id="btnThemeDark" type="button" class="reader-control" aria-label="المظهر الداكن">داكن</button>
+          <button id="btnThemeSepia" type="button" class="reader-control" aria-label="وضع القراءة">قراءة</button>
         </div>
       </div>
     </div>
 
     <!-- شريط تقدم القراءة العلوي -->
-    <div class="w-full bg-transparent h-0.5">
-      <div id="readingProgressBar" class="h-0.5 bg-blue-600 transition-all duration-150" style="width: 0%;"></div>
+    <div class="reading-progress" aria-hidden="true">
+      <div id="readingProgressBar" style="width: 0%;"></div>
     </div>
   </header>
 

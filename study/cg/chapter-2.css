@@ -132,6 +132,87 @@ p { margin-top: 0; margin-bottom: 1rem; }
   margin: 0;
 }
 
+.reader-controls,
+.reader-control-group {
+  display: flex;
+  align-items: center;
+}
+
+.reader-controls {
+  gap: 8px;
+}
+
+.reader-control-group {
+  gap: 2px;
+  padding: 2px;
+  background: var(--study-soft);
+  border: 1px solid var(--study-line);
+  border-radius: 12px;
+}
+
+/* Override the shared shell's legacy button styles for this toolbar. */
+#mainReadingHeader .reader-control {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px !important;
+  padding: 0 6px;
+  border: 1px solid transparent !important;
+  border-radius: 8px;
+  background: transparent !important;
+  color: var(--study-ink) !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+}
+
+#mainReadingHeader .reader-control[aria-pressed="true"] {
+  background: var(--study-accent) !important;
+  color: var(--study-on-accent) !important;
+}
+
+#mainReadingHeader .reader-control[aria-pressed="true"]:not(:focus-visible) {
+  outline: none;
+}
+
+@media (hover: hover) {
+  #mainReadingHeader .reader-control:hover {
+    border-color: var(--study-accent) !important;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+  }
+
+  #mainReadingHeader .reader-control:not([aria-pressed="true"]):hover {
+    background: var(--study-paper) !important;
+  }
+}
+
+#mainReadingHeader .reader-control:active {
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.reader-font-value {
+  min-width: 36px;
+  color: var(--study-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+html[data-study-shell] #mainReadingHeader > .reading-progress {
+  height: 2px;
+  padding: 0;
+}
+
+.reading-progress > div {
+  height: 100%;
+  background: var(--study-accent);
+}
+
 /* Content cards */
 .card-surface {
   background-color: var(--bg-card);
