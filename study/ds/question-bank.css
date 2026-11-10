@@ -13,7 +13,6 @@
   --border-card: var(--study-line, #cbd5e1);
   --primary: var(--study-accent, #2563eb);
   --primary-light: #eff6ff;
-  --primary-dark: #1d4ed8;
   --accent-green: #047857;
   --accent-green-bg: #ecfdf5;
   --accent-green-border: #a7f3d0;
@@ -40,7 +39,6 @@ html[data-theme="dark"] {
   --border-card: var(--study-line, #3c425f);
   --primary: var(--study-accent, #818cf8);
   --primary-light: #1e1b4b;
-  --primary-dark: #a5b4fc;
   --accent-green: #34d399;
   --accent-green-bg: #064e3b;
   --accent-green-border: #047857;
@@ -67,7 +65,6 @@ html[data-theme="reading"] {
   --border-card: var(--study-line, #ced8c8);
   --primary: var(--study-accent, #34634d);
   --primary-light: #e6f0e6;
-  --primary-dark: #204434;
   --accent-green: #2d6a4f;
   --accent-green-bg: #e8f5e9;
   --accent-green-border: #b7e4c7;
@@ -236,6 +233,105 @@ body {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
+/* Bank controls follow the lesson workspace toolbar and reader settings. */
+html[data-study-shell][data-ds-question-bank] .study-theme-control {
+  display: none;
+}
+
+.bank-reader-toolbar,
+.bank-reader-group {
+  display: flex;
+  align-items: center;
+}
+
+.bank-reader-toolbar {
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  margin-block-end: 1rem;
+  border: 1px solid var(--study-line);
+  border-radius: 14px;
+  background: var(--study-paper);
+}
+
+.bank-reader-group {
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--study-line);
+  border-radius: 12px;
+  background: var(--study-soft);
+}
+
+.bank-font-size {
+  min-width: 38px;
+  color: var(--study-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+html[data-study-shell][data-ds-question-bank] button.bank-button {
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 1px solid var(--study-line);
+  border-radius: 8px;
+  background: var(--study-soft);
+  color: var(--study-ink);
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease;
+}
+
+html[data-study-shell][data-ds-question-bank] button.bank-button:is(.bookmark-btn, #backToTopBtn) {
+  padding: 0;
+}
+
+html[data-study-shell][data-ds-question-bank] button.bank-reader-button {
+  padding: 0 6px;
+  border-color: transparent;
+  background: transparent;
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+html[data-study-shell][data-ds-question-bank] button.bank-button:is(
+  [aria-pressed="true"], [aria-selected="true"], [aria-expanded="true"], #backToTopBtn
+) {
+  border-color: var(--study-accent);
+  background: var(--study-accent);
+  color: var(--study-on-accent, #ffffff);
+}
+
+@media (hover: hover) {
+  html[data-study-shell][data-ds-question-bank] button.bank-button:hover:not([aria-disabled="true"]) {
+    border-color: var(--study-accent);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+  }
+
+  html[data-study-shell][data-ds-question-bank] button.bank-button:hover:not(
+    [aria-pressed="true"], [aria-selected="true"], [aria-expanded="true"], #backToTopBtn, [aria-disabled="true"]
+  ) {
+    background: var(--study-paper);
+  }
+}
+
+html[data-study-shell][data-ds-question-bank] button.bank-button:active:not([aria-disabled="true"]) {
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+html[data-study-shell][data-ds-question-bank] button.bank-reader-button[aria-disabled="true"] {
+  color: var(--study-muted);
+  cursor: default;
+}
+
 /* Lecture Tabs */
 .lecture-tabs-container {
   margin-bottom: 1.25rem;
@@ -256,32 +352,9 @@ body {
 }
 
 .tab-btn {
-  background: var(--bg-page);
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
-  padding: 0.5rem 0.9rem;
-  border-radius: 0.75rem;
   font-family: inherit;
   font-size: 0.86rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
   gap: 0.45rem;
-  transition: all 0.2s ease;
-}
-
-.tab-btn:hover {
-  background: var(--bg-soft);
-  color: var(--text-main);
-  border-color: var(--border-card);
-}
-
-#lectureTabs .tab-btn.active {
-  background: var(--primary);
-  color: var(--study-on-accent, #ffffff);
-  border-color: var(--primary);
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
 }
 
 .tab-count {
@@ -312,27 +385,8 @@ body {
 }
 
 .filter-chip {
-  background: var(--bg-page);
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
-  padding: 0.35rem 0.75rem;
-  border-radius: 0.6rem;
   font-family: inherit;
   font-size: 0.82rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.filter-chip:hover {
-  background: var(--bg-soft);
-  color: var(--text-main);
-}
-
-.portal-practice-layout .filter-group .filter-chip.active {
-  background: var(--text-main);
-  color: var(--bg-card);
-  border-color: var(--text-main);
 }
 
 /* Action Controls Bar */
@@ -357,25 +411,9 @@ body {
 }
 
 .toggle-all-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  color: var(--text-main);
-  padding: 0.45rem 1rem;
-  border-radius: 0.75rem;
   font-family: inherit;
   font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
   gap: 0.4rem;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-sm);
-}
-
-.toggle-all-btn:hover {
-  background: var(--bg-soft);
-  border-color: var(--border-card);
 }
 
 /* Questions Container */
@@ -446,38 +484,17 @@ body {
 }
 
 .bookmark-btn {
-  background: var(--bg-page);
-  border: 1px solid var(--border-color);
-  color: var(--text-muted);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  width: 44px;
+  height: 44px;
   font-size: 1.25rem;
   line-height: 1;
-  transition: all 0.2s;
   flex-shrink: 0;
-}
-
-.bookmark-btn:hover {
-  background: var(--bg-soft);
-  color: var(--accent-amber);
-  border-color: var(--accent-amber);
-}
-
-.bookmark-btn.bookmarked {
-  background: var(--accent-amber-bg);
-  color: var(--accent-amber);
-  border-color: var(--accent-amber);
 }
 
 .question-title {
   margin: 0 0 1rem;
   font-family: 'Cairo', Alexandria, sans-serif;
-  font-size: 1.15rem;
+  font-size: calc(1.15rem * var(--bank-text-scale, 1));
   font-weight: 700;
   color: var(--text-main);
   display: flex;
@@ -496,7 +513,7 @@ body {
   text-align: left;
   unicode-bidi: isolate;
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 0.98rem;
+  font-size: calc(0.98rem * var(--bank-text-scale, 1));
   line-height: 1.75;
   color: var(--text-main);
   background: var(--bg-page);
@@ -531,7 +548,7 @@ body {
   border: 1px solid var(--border-color);
   background: var(--bg-card);
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 0.93rem;
+  font-size: calc(0.93rem * var(--bank-text-scale, 1));
   line-height: 1.6;
   color: var(--text-main);
   transition: all 0.2s ease;
@@ -557,32 +574,10 @@ body {
 
 /* Solution Toggle Button */
 .solution-toggle-btn {
-  background: var(--bg-soft);
-  border: 1px solid var(--border-color);
-  color: var(--primary);
-  padding: 0.65rem 1.25rem;
-  border-radius: 0.75rem;
   font-family: inherit;
   font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
   gap: 0.45rem;
-  transition: all 0.2s ease;
   width: 100%;
-  justify-content: center;
-}
-
-.solution-toggle-btn:hover {
-  background: var(--primary-light);
-  border-color: var(--primary);
-}
-
-.question-card .solution-toggle-btn.active[aria-expanded="true"] {
-  background: var(--primary);
-  color: var(--study-on-accent, #ffffff);
-  border-color: var(--primary);
 }
 
 /* Solution Wrapper (Expand/Collapse) */
@@ -629,7 +624,7 @@ body {
 
 .solution-en-content {
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 0.95rem;
+  font-size: calc(0.95rem * var(--bank-text-scale, 1));
   line-height: 1.7;
   color: var(--text-main);
 }
@@ -664,7 +659,7 @@ body {
 }
 
 .explanation-ar-content {
-  font-size: 0.95rem;
+  font-size: calc(0.95rem * var(--bank-text-scale, 1));
   line-height: 1.9;
   color: var(--text-main);
 }
@@ -684,7 +679,7 @@ pre {
   background-color: var(--code-bg);
   color: var(--code-text);
   font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
-  font-size: 0.88rem;
+  font-size: calc(0.88rem * var(--bank-text-scale, 1));
   line-height: 1.7;
   padding: 1rem 1.15rem;
   border-radius: 0.75rem;
@@ -721,7 +716,7 @@ p code, li code, td code, th code {
   min-width: min-content;
   overflow-wrap: normal;
   word-break: normal;
-  font-size: 0.9rem;
+  font-size: calc(0.9rem * var(--bank-text-scale, 1));
   direction: ltr;
   text-align: left;
 }
@@ -780,30 +775,17 @@ html[data-theme="dark"] .solution-table tr:nth-child(even) {
   left: 1.75rem;
   width: 44px;
   height: 44px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: var(--study-on-accent, #ffffff);
-  border: none;
   font-size: 1.3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
   opacity: 0;
   visibility: hidden;
-  transition: all 0.25s ease;
   z-index: 99;
+  transition: opacity 0.15s ease;
 }
 
 #backToTopBtn.show {
   opacity: 1;
   visibility: visible;
-}
-
-#backToTopBtn:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
 }
 
 /* Reduced motion preference */
@@ -849,7 +831,7 @@ html[data-theme="dark"] .solution-table tr:nth-child(even) {
   }
 
   .question-title {
-    font-size: 1.05rem;
+    font-size: calc(1.05rem * var(--bank-text-scale, 1));
   }
 
   .card-header-bar {

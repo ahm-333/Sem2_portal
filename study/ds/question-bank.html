@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-study-shell lang="ar" dir="rtl">
+<html data-study-shell data-ds-question-bank lang="ar" dir="rtl">
 <head>
   <script src="../../js/shared/storage.js"></script>
   <script src="../../js/theme.js"></script>
@@ -22,6 +22,18 @@
 <body>
 
   <div class="portal-practice-layout">
+    <div class="bank-reader-toolbar" role="group" aria-label="أدوات القراءة">
+      <div class="bank-reader-group" role="group" aria-label="المظهر">
+        <button type="button" class="bank-button bank-reader-button" id="btnThemeWhite" aria-pressed="false">فاتح</button>
+        <button type="button" class="bank-button bank-reader-button" id="btnThemeDark" aria-pressed="false">داكن</button>
+        <button type="button" class="bank-button bank-reader-button" id="btnThemeSepia" aria-pressed="false">قراءة</button>
+      </div>
+      <div class="bank-reader-group" role="group" aria-label="حجم النص" dir="ltr">
+        <button type="button" class="bank-button bank-reader-button" id="bankFontDec" aria-label="تصغير النص">A−</button>
+        <output id="bankFontSize" class="bank-font-size" aria-label="حجم النص">100%</output>
+        <button type="button" class="bank-button bank-reader-button" id="bankFontInc" aria-label="تكبير النص">A+</button>
+      </div>
+    </div>
     
     <!-- Hero / Welcome Banner -->
     <header class="hero-banner">
@@ -63,25 +75,25 @@
       <div class="lecture-tabs-container">
         <span class="section-label">📌 تصنيف المحاضرات:</span>
         <div class="tabs-list" id="lectureTabs" role="tablist" aria-label="تبويبات المحاضرات">
-          <button class="tab-btn active" id="lecture-tab-all" data-lec="all" role="tab" aria-controls="lecturePanel" aria-selected="true" tabindex="0">
+          <button type="button" class="bank-button tab-btn active" id="lecture-tab-all" data-lec="all" role="tab" aria-controls="lecturePanel" aria-selected="true" tabindex="0">
             🌟 جميع المحاضرات <span class="tab-count" id="count-all">97</span>
           </button>
-          <button class="tab-btn" id="lecture-tab-lec1" data-lec="lec1" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
+          <button type="button" class="bank-button tab-btn" id="lecture-tab-lec1" data-lec="lec1" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             📚 المحاضرة 1: مدخل والمصفوفات <span class="tab-count" id="count-lec1">0</span>
           </button>
-          <button class="tab-btn" id="lecture-tab-lec2" data-lec="lec2" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
+          <button type="button" class="bank-button tab-btn" id="lecture-tab-lec2" data-lec="lec2" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             🔗 المحاضرة 2: القوائم المتصلة <span class="tab-count" id="count-lec2">0</span>
           </button>
-          <button class="tab-btn" id="lecture-tab-lec3" data-lec="lec3" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
+          <button type="button" class="bank-button tab-btn" id="lecture-tab-lec3" data-lec="lec3" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             🔄 المحاضرة 3: الاستدعاء الذاتي <span class="tab-count" id="count-lec3">0</span>
           </button>
-          <button class="tab-btn" id="lecture-tab-lec4" data-lec="lec4" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
+          <button type="button" class="bank-button tab-btn" id="lecture-tab-lec4" data-lec="lec4" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             🥞 المحاضرة 4: المكدس (Stack) <span class="tab-count" id="count-lec4">0</span>
           </button>
-          <button class="tab-btn" id="lecture-tab-lec5" data-lec="lec5" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
+          <button type="button" class="bank-button tab-btn" id="lecture-tab-lec5" data-lec="lec5" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             🚶‍♂️ المحاضرة 5: الطابور و STL <span class="tab-count" id="count-lec5">0</span>
           </button>
-          <button class="tab-btn" id="lecture-tab-adv" data-lec="adv" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
+          <button type="button" class="bank-button tab-btn" id="lecture-tab-adv" data-lec="adv" role="tab" aria-controls="lecturePanel" aria-selected="false" tabindex="-1">
             🌳 موضوعات الفاينل المتقدمة <span class="tab-count" id="count-adv">0</span>
           </button>
         </div>
@@ -90,27 +102,27 @@
       <!-- Secondary Filter: Exam Source -->
       <div class="filter-group" id="sourceFilters" role="group" aria-label="فلترة حسب مصدر الامتحان">
         <span class="section-label">🎯 المصدر:</span>
-        <button class="filter-chip active" data-source="all" aria-pressed="true">الكل</button>
-        <button class="filter-chip" data-source="mid2025" aria-pressed="false">ميدتيرم 2025</button>
-        <button class="filter-chip" data-source="mid2024" aria-pressed="false">ميدتيرم 2024</button>
-        <button class="filter-chip" data-source="final2025" aria-pressed="false">فاينل 2025-2026</button>
-        <button class="filter-chip" data-source="final2023" aria-pressed="false">فاينل 2023</button>
-        <button class="filter-chip" data-source="final2022" aria-pressed="false">فاينل 2022</button>
-        <button class="filter-chip" data-source="slides" aria-pressed="false">تمارين المحاضرات</button>
+        <button type="button" class="bank-button filter-chip active" data-source="all" aria-pressed="true">الكل</button>
+        <button type="button" class="bank-button filter-chip" data-source="mid2025" aria-pressed="false">ميدتيرم 2025</button>
+        <button type="button" class="bank-button filter-chip" data-source="mid2024" aria-pressed="false">ميدتيرم 2024</button>
+        <button type="button" class="bank-button filter-chip" data-source="final2025" aria-pressed="false">فاينل 2025-2026</button>
+        <button type="button" class="bank-button filter-chip" data-source="final2023" aria-pressed="false">فاينل 2023</button>
+        <button type="button" class="bank-button filter-chip" data-source="final2022" aria-pressed="false">فاينل 2022</button>
+        <button type="button" class="bank-button filter-chip" data-source="slides" aria-pressed="false">تمارين المحاضرات</button>
       </div>
 
       <!-- Secondary Filter: Question Type -->
       <div class="filter-group" id="typeFilters" role="group" aria-label="فلترة حسب نوع السؤال">
         <span class="section-label">💡 النوع:</span>
-        <button class="filter-chip active" data-type="all" aria-pressed="true">جميع الأنواع</button>
-        <button class="filter-chip" data-type="mcq" aria-pressed="false">اختيار من متعدد (MCQ)</button>
-        <button class="filter-chip" data-type="coding" aria-pressed="false">كتابة وتكملة كود</button>
-        <button class="filter-chip" data-type="compare" aria-pressed="false">مقارنات ومفاهيم</button>
-        <button class="filter-chip" data-type="fill" aria-pressed="false">أكمل الفراغ</button>
-        <button class="filter-chip" data-type="math" aria-pressed="false">مسائل وتتبع خطوات</button>
+        <button type="button" class="bank-button filter-chip active" data-type="all" aria-pressed="true">جميع الأنواع</button>
+        <button type="button" class="bank-button filter-chip" data-type="mcq" aria-pressed="false">اختيار من متعدد (MCQ)</button>
+        <button type="button" class="bank-button filter-chip" data-type="coding" aria-pressed="false">كتابة وتكملة كود</button>
+        <button type="button" class="bank-button filter-chip" data-type="compare" aria-pressed="false">مقارنات ومفاهيم</button>
+        <button type="button" class="bank-button filter-chip" data-type="fill" aria-pressed="false">أكمل الفراغ</button>
+        <button type="button" class="bank-button filter-chip" data-type="math" aria-pressed="false">مسائل وتتبع خطوات</button>
       </div>
       <div class="filter-group">
-        <button class="filter-chip" id="bookmarkFilterBtn" aria-pressed="false">⭐ المفضلة فقط</button>
+        <button type="button" class="bank-button filter-chip" id="bookmarkFilterBtn" aria-pressed="false">⭐ المفضلة فقط</button>
       </div>
     </section>
 
@@ -119,7 +131,7 @@
       <div class="results-info" aria-live="polite">
         يتم عرض: <strong id="displayedCount">97</strong> سؤال (<span id="activeFilterName">جميع الأسئلة</span>)
       </div>
-      <button class="toggle-all-btn" id="toggleAllSolBtn" aria-expanded="false">
+      <button type="button" class="bank-button toggle-all-btn" id="toggleAllSolBtn" aria-expanded="false">
         👁️ إظهار كافة الحلول
       </button>
     </div>
@@ -136,7 +148,7 @@
   </div>
 
   <!-- Floating Back to Top Button -->
-  <button class="back-to-top" id="backToTopBtn" title="الرجوع للأعلى" aria-label="الرجوع للأعلى">↑</button>
+  <button type="button" class="bank-button back-to-top" id="backToTopBtn" title="الرجوع للأعلى" aria-label="الرجوع للأعلى">↑</button>
 
   <!-- Scripts -->
   <script src="../../js/study-shell.js"></script>

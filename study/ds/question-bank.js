@@ -251,7 +251,7 @@
               '<span class="badge badge-source">📝 ' + escapeHtml(q.sourceName || q.source) + '</span>' +
               '<span class="badge badge-type">🏷️ ' + escapeHtml(q.typeName || q.type) + '</span>' +
             '</div>' +
-            '<button class="bookmark-btn' + (isBookmarked ? ' bookmarked' : '') + '" ' +
+            '<button type="button" class="bank-button bookmark-btn' + (isBookmarked ? ' bookmarked' : '') + '" ' +
                     'data-question-id="' + escapeHtml(q.id) + '" ' +
                     'title="' + (isBookmarked ? 'في المفضلة' : 'حفظ في المفضلة') + '" ' +
                     'aria-label="' + (isBookmarked ? 'إزالة السؤال من المفضلة' : 'حفظ السؤال في المفضلة') + '" ' +
@@ -271,7 +271,7 @@
 
           optionsHtml +
 
-          '<button class="solution-toggle-btn' + (isSolVisible ? ' active' : '') + '" ' +
+          '<button type="button" class="bank-button solution-toggle-btn' + (isSolVisible ? ' active' : '') + '" ' +
                   'id="btn-sol-' + escapeHtml(q.id) + '" ' +
                   'data-target-sol="sol-' + escapeHtml(q.id) + '" ' +
                   'aria-expanded="' + String(isSolVisible) + '" ' +
@@ -363,6 +363,25 @@
   // Event Listeners setup
   function initEvents() {
     const questions = window.DS_QUESTION_BANK_DATA || [];
+
+    const decreaseFont = document.getElementById('bankFontDec');
+    const increaseFont = document.getElementById('bankFontInc');
+    const fontSize = document.getElementById('bankFontSize');
+    const questionsContainer = document.getElementById('questionsContainer');
+    let fontPercent = 100;
+
+    function changeFontSize(step) {
+      const nextPercent = Math.max(85, Math.min(135, fontPercent + step));
+      if (nextPercent === fontPercent) return;
+      fontPercent = nextPercent;
+      questionsContainer.style.setProperty('--bank-text-scale', fontPercent / 100);
+      fontSize.value = fontPercent + '%';
+      decreaseFont.setAttribute('aria-disabled', String(fontPercent === 85));
+      increaseFont.setAttribute('aria-disabled', String(fontPercent === 135));
+    }
+
+    decreaseFont.addEventListener('click', function () { changeFontSize(-5); });
+    increaseFont.addEventListener('click', function () { changeFontSize(5); });
 
     // Lecture tabs use manual activation so browsing labels does not rerender the results.
     const lectureTabs = [...document.querySelectorAll('#lectureTabs .tab-btn')];
