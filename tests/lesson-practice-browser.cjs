@@ -373,11 +373,12 @@ async function register({ scenario: testScenario }) {
     assert.equal(await page.locator('.practice-hub-header .rounded-full').evaluate(el => getComputedStyle(el).width), '10px');
   });
 
-  await testScenario('practice-loading-failure-can-retry', async ({ page, context, go, errors }) => {
-    const failures = ['course-question-bank.js', 'lesson-practice.js', 'study-quiz.js', 'shared/quiz-attempt.js']
-      .map(resource => ({ resource }));
-    failures.push({ resource: 'lesson-practice.js', invalidScript: true });
-    for (const { resource, invalidScript } of failures) {
+  const failures = ['course-question-bank.js', 'lesson-practice.js', 'study-quiz.js', 'shared/quiz-attempt.js']
+    .map(resource => ({ resource }));
+  failures.push({ resource: 'lesson-practice.js', invalidScript: true });
+  for (const { resource, invalidScript } of failures) {
+    const caseName = (invalidScript ? 'invalid-' : '') + resource.replace('/', '-');
+    await testScenario('practice-loading-failure-can-retry-' + caseName, async ({ page, context, go, errors }) => {
       let requests = 0;
       await context.route('**/js/' + resource, route => {
         requests++;
@@ -395,10 +396,9 @@ async function register({ scenario: testScenario }) {
       assert.equal(requests, 2, resource + ' must be requested again after failure');
       await page.locator('[data-practice-group-tab="full"]').click();
       assert.equal(await page.locator('#full-quiz-host .a1-quiz-main > [data-qid]').count(), 20);
-      await context.unroute('**/js/' + resource);
-    }
-    assert.deepEqual(errors, []);
-  });
+      assert.deepEqual(errors, []);
+    });
+  }
 
   await testScenario('practice-concurrent-opens-share-loading', async ({ page, go, errors }) => {
     const requests = [];
@@ -437,20 +437,13 @@ async function register({ scenario: testScenario }) {
   });
 
   // Test 7: WCAG color contrast and keyboard navigation audit across themes
-  await testScenario('wcag-contrast-and-keyboard-navigation', async ({ page, go }) => {
-    for (const theme of ['light', 'dark', 'reading']) {
+  for (const theme of ['light', 'dark', 'reading']) {
+    await testScenario('wcag-contrast-and-keyboard-navigation-' + theme, async ({ page, go }) => {
       await go('study/db/lesson.html?lecture=2');
       await page.locator('.topic-block-wrapper').first().waitFor();
 
-      await page.evaluate(t => {
-        if (window.PortalTheme && typeof window.PortalTheme.set === 'function') {
-          window.PortalTheme.set(t);
-        } else {
-          document.documentElement.setAttribute('data-theme', t);
-          if (t === 'dark') document.documentElement.classList.add('dark');
-          else document.documentElement.classList.remove('dark');
-        }
-      }, theme);
+      await page.evaluate(t => window.PortalTheme.setTheme(t), theme);
+      assert.equal(await page.locator('html').getAttribute('data-theme'), theme);
 
       await page.locator('#view-btn-practice').click();
       await page.locator('.topic-practice-card').first().waitFor();
@@ -470,8 +463,8 @@ async function register({ scenario: testScenario }) {
       await page.keyboard.press('Enter');
       assert.equal(await page.locator('#full-quiz-view').isVisible(), true);
       assert.deepEqual(await page.evaluate(auditActionContrast, '#full-quiz-host'), [], `Full quiz contrast meets WCAG AA in ${theme} theme`);
-    }
-  });
+    });
+  }
 }
 
 async function runStandalone() {

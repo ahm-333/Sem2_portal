@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html data-study-shell lang="ar" dir="rtl">
+<head>
+  <script src="../../js/shared/storage.js"></script>
+  <script src="../../js/theme.js"></script>
+  <meta charset="UTF-8" />
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="../../js/analytics.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الفصل الثاني: برمجة الرسوميات، الكيانات، ونماذج الألوان | وضع القراءة</title>
+  <link rel="stylesheet" href="../../css/fonts/fonts.css">
+  <link href="../../css/fonts/study/6573cd97ac50.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/study-shell.css">
+  <link rel="stylesheet" href="chapter-2.css">
+</head>
+<body class="theme-white">
+
+  <!-- هيدر القراءة وأدوات التحكم الموحدة للمنصة -->
+  <header id="mainReadingHeader" class="compact-header sticky top-0 z-40 backdrop-blur-md border-b">
+    <div class="reading-container px-3 py-1.5 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 sm:gap-3">
+        <a id="cgCourseLink" href="../../subject.html?id=computer-graphics&amp;kind=lectures" aria-label="الرجوع إلى صفحة مقرر رسوميات الحاسب" class="course-back">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+        <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-heading font-bold text-xs shadow-sm shrink-0">CG2</span>
+        <div>
+          <h1 class="font-heading font-bold text-xs sm:text-sm leading-tight truncate">الفصل الثاني: برمجة الرسوميات، الكيانات، ونماذج الألوان <bdi dir="ltr" lang="en">(Chapter 2)</bdi></h1>
+        </div>
+      </div>
+
+      <!-- أدوات القراءة والمظهر -->
+      <div class="reader-controls">
+        <div class="reader-control-group" role="group" aria-label="حجم النص" dir="ltr">
+          <button id="btnFontDec" type="button" class="reader-control" aria-label="تصغير النص">A−</button>
+          <span id="fontSizeLabel" class="reader-font-value">100%</span>
+          <button id="btnFontInc" type="button" class="reader-control" aria-label="تكبير النص">A+</button>
+        </div>
+
+        <div class="reader-control-group" role="group" aria-label="المظهر">
+          <button id="btnThemeWhite" type="button" class="reader-control" aria-label="المظهر الفاتح">فاتح</button>
+          <button id="btnThemeDark" type="button" class="reader-control" aria-label="المظهر الداكن">داكن</button>
+          <button id="btnThemeSepia" type="button" class="reader-control" aria-label="وضع القراءة">قراءة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- شريط تقدم القراءة العلوي -->
+    <div class="reading-progress" aria-hidden="true">
+      <div id="readingProgressBar" style="width: 0%;"></div>
+    </div>
+  </header>
+
+  <!-- الحاوية الرئيسية للمحتوى -->
+  <main id="mainContentContainer" class="reading-container py-6 space-y-6">
+
+    <!-- تنبيه التوافق التنظيمي للمقرر -->
+    <div class="discrepancy-banner card-surface" role="note" aria-label="تنبيه توافق المحتوى">
+      <div class="flex items-start gap-3">
+        <span class="text-xl shrink-0" aria-hidden="true">💡</span>
+        <div class="space-y-1">
+          <h2 class="text-sm font-bold m-0 text-blue-600 dark:text-blue-400">ملاحظة تنظيمية حول تسلسل المحتوى (Content Mapping Note)</h2>
+          <p class="text-xs text-[var(--text-muted)] m-0 leading-relaxed">
+            يغطي هذا المرجع الدراسي المعتمد الفصل الثاني في الرسوميات (Chapter 2: Graphics Programming, Primitives &amp; Color Models)، بينما تتناول المحاضرة الثانية في البوابة عنوان Basic Concepts &amp; Graphic Displays (تقنيات الشاشات وأنابيب CRT). تم إعداد هذه الصفحة بالتوازي كمسار متكامل، بانتظار التأكيد المعتمد للربط النهائي عبر بطاقات الفهرس في مسألة الربط المنفصلة.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- تبويبات التنقل بين أجزاء الفصل وبنك الأسئلة -->
+    <nav class="tabs-nav" aria-label="أجزاء الفصل الثاني">
+      <button type="button" class="tab-btn active" data-target="sec1" aria-controls="sec1" aria-current="true">الجزء 1: المعمارية والدوال (Architecture &amp; API)</button>
+      <button type="button" class="tab-btn" data-target="sec2" aria-controls="sec2" aria-current="false">الجزء 2: الكيانات والتثليث (Primitives &amp; Triangulation)</button>
+      <button type="button" class="tab-btn" data-target="sec3" aria-controls="sec3" aria-current="false">الجزء 3: النصوص والمنحنيات (Text &amp; Curves)</button>
+      <button type="button" class="tab-btn" data-target="sec4" aria-controls="sec4" aria-current="false">الجزء 4: الألوان والشفافية (Color &amp; Opacity)</button>
+      <button type="button" class="tab-btn" data-target="sec5" aria-controls="sec5" aria-current="false">بنك الأسئلة الشامل (48 سؤال) 🎯</button>
+    </nav>
+
+    <!-- عداد النقاط وشريط الإنجاز الكلي -->
+    <div class="card-surface p-3 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-bold text-[var(--text-muted)]">إنجاز كويزات الفصل:</span>
+        <span id="scoreBadge" class="score-badge" dir="ltr">0 / 48</span>
+      </div>
+      <div class="flex-1 max-w-xs">
+        <div class="progress-track">
+          <div id="globalQuizProgress" class="progress-fill" style="width: 0%;" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- الجزء الأول -->
+    <section id="sec1" class="study-section space-y-8">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="border-b pb-4" style="border-color: var(--border-color);">
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الأول <bdi dir="ltr" lang="en">(Part 1)</bdi>: معمارية النظام ودوال واجهات برمجة الرسوميات <bdi dir="ltr" lang="en">(Graphics System Architecture &amp; API Functions)</bdi></h2>
+        </div>
+
+        <!-- 1. نظام الرسوميات كصندوق أسود -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">1. نظام الرسوميات كصندوق أسود (The Graphics System as a Black Box)</h4>
+
+          <p class="ar-block">تبدأ المحاضرة بتجريد عبقري لنظام الجرافيكس كله؛ بنتعامل معاه كـ <strong><span class="ltr-inline">Black Box</span> (صندوق أسود)</strong>، إحنا مش شاغلين بالنا بتعقيد الدوائر الإلكترونية من جوة قد ما يهمنا نعرف: <strong>إيه اللي بيدخل له؟ وإيه اللي بيخرج منه؟</strong></p>
+
+          <div class="slide-quote">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">نص السلايد بوضوح:</div>
+            <p class="font-bold text-base">"We can think of the graphics system as a black box whose inputs are function calls from an application program; measurements from input devices, such as the mouse and keyboard; and possibly other input, such as messages from the operating system. The outputs are primarily the graphics sent to our output devices."</p>
+          </div>
+
+          <!-- Clean SVG Diagram of Black Box System -->
+          <div class="subtle-surface rounded-xl p-5 space-y-3">
+            <div id="black-box-heading" class="font-extrabold text-sm ar-block">رسم تخطيطي لنظام الرسوميات كصندوق أسود <bdi dir="ltr" lang="en">(The Black Box Model)</bdi>:</div>
+            <div class="black-box-scroll" dir="ltr" tabindex="0" role="region" aria-labelledby="black-box-heading">
+              <svg viewBox="0 0 640 200" class="w-full max-w-2xl h-auto card-surface rounded-xl p-2" dir="ltr">
+                <!-- Inputs Column -->
+                <rect x="15" y="18" width="185" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+                <text x="107" y="38" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e3a8a">1. Function Calls</text>
+                <text x="107" y="53" text-anchor="middle" font-size="10" fill="#1e40af">(أوامر التطبيق البرمجي)</text>
+
+                <rect x="15" y="78" width="185" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+                <text x="107" y="98" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e3a8a">2. Device Measurements</text>
+                <text x="107" y="113" text-anchor="middle" font-size="10" fill="#1e40af">(إحداثيات الماوس والكيبورد)</text>
+
+                <rect x="15" y="138" width="185" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
+                <text x="107" y="158" text-anchor="middle" font-size="11" font-weight="bold" fill="#1e3a8a">3. OS Messages</text>
+                <text x="107" y="173" text-anchor="middle" font-size="10" fill="#1e40af">(رسائل نظام التشغيل)</text>
+
+                <!-- Black Box Core -->
+                <rect x="245" y="45" width="175" height="110" rx="12" fill="#0f172a" stroke="#3b82f6" stroke-width="3" />
+                <text x="332" y="92" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">Graphics System</text>
+                <text x="332" y="112" text-anchor="middle" font-size="11" fill="#93c5fd">(The Black Box / API)</text>
+
+                <!-- Output Box -->
+                <rect x="465" y="65" width="160" height="70" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5" />
+                <text x="545" y="95" text-anchor="middle" font-size="11" font-weight="bold" fill="#14532d">Graphics Output</text>
+                <text x="545" y="113" text-anchor="middle" font-size="10" fill="#166534">(Sent to Output Devices)</text>
+
+                <!-- Arrows -->
+                <line x1="200" y1="40" x2="245" y2="75" stroke="#2563eb" stroke-width="2.2" />
+                <line x1="200" y1="100" x2="245" y2="100" stroke="#2563eb" stroke-width="2.2" />
+                <line x1="200" y1="160" x2="245" y2="125" stroke="#2563eb" stroke-width="2.2" />
+                <line x1="420" y1="100" x2="465" y2="100" stroke="#16a34a" stroke-width="3" />
+              </svg>
+            </div>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block pt-2">المدخلات الثلاثة الحتمية للنظام (The 3 Major Inputs):</h5>
+          <div class="step-list">
+            <div class="step-item">
+              <strong>1. استدعاءات الدوال من برنامج التطبيق (<span class="ltr-inline">Function Calls from Application Program</span>):</strong><br>
+              الأوامر البرمجية اللي كتبها المطور (زي: ارسم خط، حط نقطة، املأ مثلث، غير زاوية الكاميرا).
+            </div>
+            <div class="step-item">
+              <strong>2. قياسات أجهزة الإدخال (<span class="ltr-inline">Measurements from Input Devices</span>):</strong><br>
+              إحداثيات حركة الفأرة (<span class="ltr-inline">Mouse coordinates</span>)، ضربات أزرار الكيبورد (<span class="ltr-inline">Keystrokes</span>)، أو ضغطات قلم الرسم (<span class="ltr-inline">Data tablet</span>).
+            </div>
+            <div class="step-item">
+              <strong>3. رسائل نظام التشغيل (<span class="ltr-inline">OS Messages</span>):</strong><br>
+              إشارات بتيجي من الويندوز أو نظام التشغيل (زي: تصغير النافذة، تحريكها، أو فقدان التركيز <span class="ltr-inline">Focus</span>).
+            </div>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block pt-2">المخرج الأساسي (The Primary Output):</h5>
+          <div class="step-list">
+            <div class="step-item">الصورة والرسوميات النهائية الموجهة إلى <strong>أجهزة الإخراج (<span class="ltr-inline">Output Devices</span>)</strong>، مثل الشاشات أو أجهزة العرض.</div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 2. المجموعات السبع لدوال واجهات الرسوميات -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">2. المجموعات السبع لدوال واجهات الرسوميات (The 7 Major Graphics Function Groups)</h4>
+          <p class="ar-block">أي مكتبة رسوميات ناضجة (<span class="ltr-inline">Graphics API</span>) زي <span class="ltr-inline">OpenGL</span> أو <span class="ltr-inline">DirectX</span> لازم توفر للمبرمج مكتبة دوال مقسمة بدقة إلى <strong>سبع مجموعات رئيسية</strong> تغطي كل احتياجات بناء المشهد والتحكم فيه:</p>
+
+          <div class="step-list">
+            <!-- Group 1 -->
+            <div class="step-item space-y-1">
+              <div class="font-extrabold text-base" style="color: var(--accent-primary);">1. دوال الكيانات الأساسية (<span class="ltr-inline">Primitive Functions</span>) — تجيب عن سؤال: "What"</div>
+              <p>• <strong>المفهوم:</strong> بتحدد الكائنات منخفضة المستوى أو الكيانات الذرية التي يستطيع الهاردوير عرضها مباشرة وبسرعة فائقة (<span class="ltr-inline">Define low-level objects or atomic entities that can be displayed rapidly on the hardware</span>).</p>
+              <p>• <strong>أمثلة الكيانات:</strong> النقاط (<span class="ltr-inline">Points</span>)، القطع المستقيمة (<span class="ltr-inline">Line Segments</span>)، المضلعات (<span class="ltr-inline">Polygons</span>)، البكسلات (<span class="ltr-inline">Pixels</span>)، النصوص (<span class="ltr-inline">Text</span>)، المنحنيات والأسطح (<span class="ltr-inline">Curves &amp; Surfaces</span>).</p>
+              <p>• <strong>القاعدة الحتمية:</strong> هي التي تجيب عن سؤال: <strong>"What"</strong> (إيه الشكل أو الكيان اللي هيترسم؟).</p>
+            </div>
+
+            <!-- Group 2 -->
+            <div class="step-item space-y-1">
+              <div class="font-extrabold text-base" style="color: var(--accent-primary);">2. دوال الخصائص (<span class="ltr-inline">Attribute Functions</span>) — تجيب عن سؤال: "How"</div>
+              <p>• <strong>المفهوم:</strong> بتحدد مظهر وطريقة إخراج تلك الكيانات على الشاشة (<span class="ltr-inline">Allow us to perform operations ranging from choosing color to picking a pattern</span>).</p>
+              <p>• <strong>أمثلة:</strong> اختيار لون الخط (<span class="ltr-inline">Color</span>)، نمط الخط (<span class="ltr-inline">Solid</span> أو <span class="ltr-inline">Dashed</span>)، شكل التهشير أو النمط الداخلي للمضلع (<span class="ltr-inline">Pattern / Fill</span>)، نوع وحجم خط النصوص (<span class="ltr-inline">Typeface / Font</span>).</p>
+              <p>• <strong>القاعدة الحتمية:</strong> إذا كانت الـ <span class="ltr-inline">Primitives</span> هي الـ <strong>What</strong>، فإن الـ <span class="ltr-inline">Attributes</span> هي الـ <strong>How</strong> (كيف سيظهر الكائن؟).</p>
+            </div>
+
+            <!-- Group 3 -->
+            <div class="step-item space-y-1">
+              <div class="font-extrabold text-base" style="color: var(--accent-primary);">3. دوال الرؤية والكاميرا (<span class="ltr-inline">Viewing Functions</span>)</div>
+              <p>• <strong>المفهوم:</strong> بتحدد الكاميرا الافتراضية باصة منين وإزاي (<span class="ltr-inline">Allow us to specify various views</span>).</p>
+              <p>• <strong>وظيفتها:</strong> تحديد موقع الكاميرا في الفضاء ثلاثي الأبعاد (<span class="ltr-inline"><span class="math-expr" dir="ltr">3D</span></span>)، تحديد اتجاه العدسة وزاوية الرؤية (<span class="ltr-inline">Field of View</span>)، وتحديد نوع الإسقاط (<span class="ltr-inline">Projection</span>: متوازي <span class="ltr-inline">Orthographic</span> أم منظوري <span class="ltr-inline">Perspective</span>).</p>
+            </div>
+
+            <!-- Group 4 -->
+            <div class="step-item space-y-1">
+              <div class="font-extrabold text-base" style="color: var(--accent-primary);">4. دوال التحويلات الهندسية (<span class="ltr-inline">Transformation Functions</span>)</div>
+              <p>• <strong>المفهوم:</strong> بتوفر للمطور القدرة الرياضية على تغيير وضعيات وأشكال المجسمات في الفضاء.</p>
+              <p>• <strong>العمليات الأساسية الثلاث:</strong> 1. التدوير (<span class="ltr-inline">Rotation</span>) • 2. الإزاحة / النقل (<span class="ltr-inline">Translation</span>) • 3. تغيير الحجم / المقياس (<span class="ltr-inline">Scaling</span>).</p>
+            </div>
+
+            <!-- Group 5 -->
+            <div class="step-item space-y-1">
+              <div class="font-extrabold text-base" style="color: var(--accent-primary);">5. دوال الإدخال التفاعلي (<span class="ltr-inline">Input Functions</span>)</div>
+              <p>• <strong>المفهوم:</strong> للتطبيقات التفاعلية (<span class="ltr-inline">Interactive Applications</span>)، تتيح استقبال الأحداث والبيانات القادمة من أجهزة المستخدم المتنوعة مثل لوحة المفاتيح (<span class="ltr-inline">Keyboards</span>)، الفأرة (<span class="ltr-inline">Mice</span>)، وألواح الرسم الرقمية (<span class="ltr-inline">Data Tablets</span>).</p>
+            </div>
+
+            <!-- Group 6 -->
+            <div class="step-item space-y-1">
+              <div class="font-extrabold text-base" style="color: var(--accent-primary);">6. دوال التحكم وإدارة النظام (<span class="ltr-inline">Control Functions</span>)</div>
+              <p>• <strong>المفهوم:</strong> البرنامج شغال في بيئة متعددة النوافذ والمهام (<span class="ltr-inline">Multiprocessing, multi-window environment</span>).</p>
+              <p>• <strong>مهامها:</strong> فتح وتهيئة نوافذ العرض والاتصال بنظام النوافذ (<span class="ltr-inline">Window System</span>)، تهيئة وإعداد البرنامج (<span class="ltr-inline">Initialization</span>)، والتعامل مع الأخطاء أثناء التنفيذ (<span class="ltr-inline">Error Handling</span>).</p>
+            </div>
+
+            <!-- Group 7 -->
+            <div class="step-item space-y-1">
+              <div class="font-extrabold text-base" style="color: var(--accent-primary);">7. دوال الاستعلام (<span class="ltr-inline">Query Functions</span>)</div>
+              <p>• <strong>المفهوم:</strong> دوال بتمكن التطبيق البرمجي من فحص وسؤال مكتبة الجرافيكس عن حالتها الداخلية ومعلوماتها اللحظية (<span class="ltr-inline">Retrieve internal information within the API</span>).</p>
+              <p>• <strong>أمثلة ما يتم الاستعلام عنه:</strong> معرفة بارامترات الكاميرا وموقعها الحالي (<span class="ltr-inline">Camera parameters</span>)، قراءة قيم بكسلات أو ألوان موجودة حالياً جوة ذاكرة الإطار (<span class="ltr-inline">Frame Buffer values</span>)، ومعرفة إمكانيات كارت الشاشة.</p>
+            </div>
+          </div>
+
+          <!-- English Reference Summary from P1.txt -->
+          <div class="en-summary-card space-y-3" dir="ltr">
+            <h4 class="text-lg font-extrabold text-emerald-700">Part 1: Core Concepts Summary (English Reference)</h4>
+            <div>
+              <strong>1. The Graphics System as a Black Box:</strong>
+              <ul class="list-disc list-inside text-sm mt-1 space-y-1">
+                <li><strong>3 Major Inputs:</strong> 1. Application Program Function Calls • 2. Input Device Measurements (mouse, keyboard) • 3. Operating System Messages.</li>
+                <li><strong>Primary Output:</strong> Rendered graphics sent directly to output devices.</li>
+              </ul>
+            </div>
+            <div>
+              <strong>2. The Seven Functional Groups of a Graphics API:</strong>
+              <ul class="list-disc list-inside text-sm mt-1 space-y-1">
+                <li><strong>1. Primitive Functions ("The What"):</strong> Low-level atomic entities displayable rapidly in hardware (Points, lines, polygons, pixels, text, curves).</li>
+                <li><strong>2. Attribute Functions ("The How"):</strong> Define how primitives appear (Colors, line styles, fill patterns, font typefaces).</li>
+                <li><strong>3. Viewing Functions:</strong> Specify camera positions, viewing orientations, and projections.</li>
+                <li><strong>4. Transformation Functions:</strong> Carry out Rotation, Translation, and Scaling.</li>
+                <li><strong>5. Input Functions:</strong> Handle data from interactive devices (keyboards, mice, data tablets).</li>
+                <li><strong>6. Control Functions:</strong> Communicate with window systems, initialize programs, and handle errors in multiprocessing environments.</li>
+                <li><strong>7. Query Functions:</strong> Retrieve internal API information, camera parameters, or frame buffer values.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz for Section 1 -->
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-4 border-2" style="border-color: var(--accent-primary);">
+        <h3 class="text-xl font-extrabold ar-block">أسئلة الجزء الأول (Practice Questions - Part 1 • كويز تفاعلي بالعامية)</h3>
+        <div id="quiz-sec1" class="space-y-4"></div>
+      </div>
+
+      <div class="flex justify-end">
+        <button type="button" data-section-link="sec2" class="section-next">
+          انتقل للجزء الثاني (Part 2): الكيانات الهندسية، المضلعات، والمثلثات ←
+        </button>
+      </div>
+    </section>
+
+    <!-- الجزء الثاني -->
+    <section id="sec2" class="study-section hidden space-y-8">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="border-b pb-4" style="border-color: var(--border-color);">
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الثاني <bdi dir="ltr" lang="en">(Part 2)</bdi>: الكيانات الهندسية، المضلعات، وعملية التثليث <bdi dir="ltr" lang="en">(Primitives, Polygons &amp; Triangulation)</bdi></h2>
+        </div>
+
+        <!-- 1. تصنيف الكيانات الرسومية -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">1. تصنيف الكيانات الرسومية (Classes of Primitives)</h4>
+          <p class="ar-block">الأنظمة البسيطة (<span class="ltr-inline">Minimal Systems</span>) استقرت تاريخياً على دعم: <strong>الخطوط (<span class="ltr-inline">Lines</span>)، المضلعات (<span class="ltr-inline">Polygons</span>)، والنصوص (<span class="ltr-inline">Text</span>)</strong>؛ والسبب المباشر إن الهاردوير بيقدر يولدها ويرسمها بكفاءة وسرعة فائقة (<span class="ltr-inline">Generated efficiently in hardware</span>).</p>
+          <p class="ar-block">علمياً، بتنقسم كل الكيانات الرسومية إلى فئتين كبيرتين:</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <strong>1. الكيانات الهندسية المستمرة (<span class="ltr-inline">Geometric Primitives</span>):</strong><br>
+              • تُعرّف في فضاء المشكلة الحقيقي (<strong><span class="ltr-inline">Problem Domain</span></strong>) باستخدام إحداثيات رياضية متصلة (<span class="ltr-inline"><span class="math-expr" dir="ltr"><span class="math-var">x</span>, <span class="math-var">y</span>, <span class="math-var">z</span></span></span>).<br>
+              • <strong>أمثلة:</strong> النقاط (<span class="ltr-inline">Points</span>)، القطع المستقيمة (<span class="ltr-inline">Line Segments</span>)، المضلعات (<span class="ltr-inline">Polygons</span>)، المنحنيات (<span class="ltr-inline">Curves</span>)، والأسطح (<span class="ltr-inline">Surfaces</span>).<br>
+              • <strong>تمثيل النقطة (<span class="ltr-inline">Point</span>):</strong> على الشاشة الرسومية بتتعرض إما كـ <strong>بكسل مفرد (<span class="ltr-inline">Single pixel</span>)</strong> أو <strong>مجموعة بكسلات صغيرة متجاورة (<span class="ltr-inline">Small group of pixels</span>)</strong>.<br>
+              • <strong>القطع المستقيمة (<span class="ltr-inline">Line Segments</span>):</strong> محصورة بين نقطتين تُسميان الرؤوس (<span class="ltr-inline">Vertices</span>)، وتُستخدم لتوصيل نقاط البيانات في الرسوم البيانية (<span class="ltr-inline">Data graphs</span>) أو تشكيل الحواف الخارجية للأجسام المغلقة (<span class="ltr-inline">Edges of closed objects</span>).
+            </div>
+
+            <div class="step-item">
+              <strong>2. الكيانات النقطية المنفصلة (<span class="ltr-inline">Raster / Image Primitives</span>):</strong><br>
+              • تُعرّف في فضاء الذاكرة والشاشة (<strong><span class="ltr-inline">Raster Domain</span></strong>) كقيم منفصلة مرتبطة بمواقع الـ <span class="ltr-inline">Frame Buffer</span>.<br>
+              • <strong>أمثلة:</strong> البكسلات (<span class="ltr-inline">Pixels</span>)، خرائط البتات (<span class="ltr-inline">Bitmaps</span>)، وكتل البتات (<span class="ltr-inline">Bit Blocks</span>).
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 2. المضلعات وسر مكانتها الخاصة -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">2. المضلعات (Polygons) وسر مكانتها الخاصة</h4>
+
+          <div class="slide-quote">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">القاعدة الذهبية في السلايدات:</div>
+            <p class="font-bold text-base">"Polygons play a special role in computer graphics because we can display them rapidly and use them to approximate arbitrary surfaces."</p>
+          </div>
+
+          <div class="ar-block space-y-2">
+            <p><strong>توضيح:</strong> المضلعات ليها مكانة خاصة جداً لسببين:</p>
+            <div class="step-list">
+              <div class="step-item"><strong>1. السرعة الخارقة:</strong> دوائر الهاردوير والـ <span class="ltr-inline">GPU</span> مصممة عشان تعرض المضلعات بسرعة عالية جداً.</div>
+              <div class="step-item"><strong>2. التقريب (<span class="ltr-inline">Approximation</span>):</strong> بنقدر نستخدم مجموعة مضلعات صغيرة ومسطحة عشان نقرب ونبني أي سطح منحني معقد في العالم (زي الكرة أو السيارات).</div>
+            </div>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block pt-2">طرق رسم وعرض المضلع (Methods of Displaying a Polygon):</h5>
+          <div class="step-list">
+            <div class="step-item"><strong>1. رسم الحواف فقط (<span class="ltr-inline">Edges only</span>):</strong> رسم الخطوط الخارجية المحددة للمضلع كإطار سلكي (<span class="ltr-inline">Wireframe</span>).</div>
+            <div class="step-item"><strong>2. تعبئة المساحة الداخلية (<span class="ltr-inline">Filled Interior</span>):</strong> ملء قلب المضلع بلون مصمت (<span class="ltr-inline">Solid color</span>) أو بنمط ونقشة معينة (<span class="ltr-inline">Pattern</span>).</div>
+            <div class="step-item"><strong>3. الدمج بينهما:</strong> رسم المساحة الداخلية مع إظهار أو إخفاء الحواف الخارجية.</div>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block pt-2">تصنيف المضلعات هندسياً (Simple vs. Non-Simple Polygons):</h5>
+          <!-- Clean SVG Visual Comparing Simple vs Non-Simple Polygon -->
+          <div class="subtle-surface rounded-xl p-5 space-y-3">
+            <div class="font-extrabold text-sm ar-block">رسم توضيحي للفرق بين المضلع البسيط <bdi dir="ltr" lang="en">(Simple)</bdi> والمضلع غير البسيط المتقاطع ذاتياً <bdi dir="ltr" lang="en">(Non-Simple)</bdi>:</div>
+            <div class="polygon-comparison">
+              <figure class="card-surface">
+                <svg viewBox="35 20 190 150" aria-hidden="true">
+                  <polygon points="65,45 165,35 205,110 135,155 55,125" fill="#dbeafe" stroke="#2563eb" stroke-width="3" />
+                  <circle cx="65" cy="45" r="4.5" fill="#1e3a8a" />
+                  <circle cx="165" cy="35" r="4.5" fill="#1e3a8a" />
+                  <circle cx="205" cy="110" r="4.5" fill="#1e3a8a" />
+                  <circle cx="135" cy="155" r="4.5" fill="#1e3a8a" />
+                  <circle cx="55" cy="125" r="4.5" fill="#1e3a8a" />
+                </svg>
+                <figcaption><bdi dir="ltr" lang="en">Simple Polygon</bdi> (لا تتقاطع أضلاعه)</figcaption>
+              </figure>
+              <figure class="card-surface">
+                <svg viewBox="290 20 190 150" aria-hidden="true">
+                  <polygon points="310,40 460,145 460,40 310,145" fill="rgba(239, 68, 68, 0.18)" stroke="#dc2626" stroke-width="3" />
+                  <circle cx="385" cy="92.5" r="6" fill="#dc2626" />
+                </svg>
+                <figcaption><bdi dir="ltr" lang="en">Non-Simple Polygon</bdi> (متقاطع ذاتياً)<br>
+                  النقطة الحمراء بتبيّن التقاطع الذاتي <bdi dir="ltr" lang="en">(Self-Intersection)</bdi>.
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+
+          <div class="step-list">
+            <div class="step-item"><strong>• المضلع البسيط (<span class="ltr-inline">Simple Polygon</span>):</strong> مضلع مغلق لا تتقاطع أضلاعه مع بعضها نهائياً، وتحدد حدوده مساحة داخلية واحدة واضحة.</div>
+            <div class="step-item"><strong>• المضلع غير البسيط (<span class="ltr-inline">Non-Simple Polygon</span>):</strong> مضلع تتقاطع حوافه وأضلاعه ذاتياً (<span class="ltr-inline">Self-intersecting</span>)، مما يسبب تعقيداً شديداً في حساب وتحديد ما هو "داخل" المضلع وما هو "خارجه".</div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 3. المثلثات وسر التفضيل المطلق -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">3. المثلثات وسر التفضيل المطلق (The Supremacy of Triangles)</h4>
+          <p class="ar-block">ليه كروت الشاشة ومكتبات الجرافيكس بتفضل المثلثات وتحول كل الأشكال ليها؟ السلايد حددت السبب الحاسم في ثلاث كلمات:</p>
+
+          <div class="slide-quote">
+            <p class="font-bold text-base">"The triangle is simple, flat, and convex. Consequently, triangles are easy to render."</p>
+          </div>
+
+          <div class="step-list">
+            <div class="step-item"><strong>1. بسيط (<span class="ltr-inline">Simple</span>):</strong> أبسط مضلع مغلق بـ 3 رؤوس فقط، مستحيل أضلاعه تتقاطع مع نفسها.</div>
+            <div class="step-item"><strong>2. مسطح تماماً (<span class="ltr-inline">Flat / Planar</span>):</strong> أي 3 نقاط في الفضاء ثلاثي الأبعاد تحدد مستوى واحد حتماً (مستحيل المثلث يتلوى في الـ 3D).</div>
+            <div class="step-item"><strong>3. محدب دائماً (<span class="ltr-inline">Convex</span>):</strong> أي خط يربط بين نقطتين داخل المثلث يقع بالكامل جواه.</div>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block pt-2">طرق عرض المثلثات الثلاث (The 3 Ways to Display Triangles):</h5>
+          <div class="step-list">
+            <div class="step-item"><strong>1. كنقاط فقط (<span class="ltr-inline">Points</span>):</strong> عرض الرؤوس الثلاثة (<span class="ltr-inline"><span class="math-expr" dir="ltr">3 Vertices</span></span>) كنقاط منفصلة.</div>
+            <div class="step-item"><strong>2. كحواف فقط (<span class="ltr-inline">Edges</span>):</strong> عرض الأضلاع الثلاثة كخطوط خارجية.</div>
+            <div class="step-item"><strong>3. كمساحة ممتلئة (<span class="ltr-inline">Interiors filled</span>):</strong> ملء المساحة الداخلية للمثلث بالكامل — <strong>وهي الطريقة الافتراضية (<span class="ltr-inline">The Default Mode</span>)!</strong></div>
+          </div>
+
+          <div class="slide-quote">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">سؤال امتحاني مهم من السلايد:</div>
+            <p class="font-bold text-base">"The third way (with the interiors filled) is the default one."</p>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 4. عملية التثليث (Triangulation) وتقريب الأجسام المنحنية -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">4. عملية التثليث (Triangulation) وتقريب الأجسام المنحنية</h4>
+
+          <div class="step-list">
+            <div class="step-item">
+              <strong>ما هي عملية التثليث (<span class="ltr-inline">Triangulation</span>)؟</strong><br>
+              هي الاستراتيجية المتبعة لتحويل أي مضلع معقد (له قائمة من الرؤوس <span class="ltr-inline"><span class="math-expr" dir="ltr"><span class="math-var">V</span><sub>1</sub>, <span class="math-var">V</span><sub>2</sub>, &hellip;, <span class="math-var">V</span><sub>n</sub></span></span>) إلى <strong>مجموعة متناسقة من المثلثات البسيطة</strong> التي تغطي نفس المساحة تماماً (مثل التثليث العودي للمضلعات المحدبة <span class="ltr-inline">Recursive Triangulation of a Convex Polygon</span>).
+            </div>
+            <div class="step-item">
+              <strong>تقريب المجسمات المنحنية (<span class="ltr-inline">Approximating Curved Objects - Sphere</span>):</strong><br>
+              بنمثل الأسطح المنحنية كالكرة (<span class="ltr-inline">Sphere</span>) في الجرافيكس بإحدى طريقتين:<br>
+              1. <strong>التقريب بالمثلثات (<span class="ltr-inline">Approximating with Triangles</span>):</strong> تقسيم سطح الكرة إلى شبكة من المثلثات الصغيرة المسطحة.<br>
+              2. <strong>التقريب بالأشكال الرباعية (<span class="ltr-inline">Approximating with Quadrilaterals</span>):</strong> تقسيم السطح إلى شبكة من المضلعات الرباعية (<span class="ltr-inline">Quads</span>).
+            </div>
+          </div>
+
+          <!-- English Reference Summary from P2.txt -->
+          <div class="en-summary-card space-y-3" dir="ltr">
+            <h4 class="text-lg font-extrabold text-emerald-700">Part 2: Core Concepts Summary (English Reference)</h4>
+            <ul class="list-disc list-inside text-sm space-y-1.5">
+              <li><strong>Classes of Primitives:</strong> <strong>Geometric primitives</strong> are specified in the continuous <strong>problem domain</strong> (points, line segments, polygons). A point is rendered as a single pixel or small group of pixels. <strong>Raster primitives</strong> live in discrete screen/memory space.</li>
+              <li><strong>Polygons:</strong> Play a special role because hardware displays them rapidly and they approximate arbitrary 3D surfaces. Displayed as: edges only, filled interior, or both. Classified into <strong>Simple</strong> (no self-intersection) and <strong>Non-Simple</strong> (edges cross each other).</li>
+              <li><strong>Supremacy of Triangles:</strong> A triangle is guaranteed to be <strong>simple, flat (planar), and convex</strong>. Display modes: 1. Vertices as points • 2. Edges only • 3. <strong>Interiors filled (the default mode)</strong>.</li>
+              <li><strong>Triangulation &amp; Spheres:</strong> Triangulation decomposes a polygon vertex list into a consistent set of triangles. Curved objects like spheres are approximated with meshes of <strong>triangles or quadrilaterals</strong>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz for Section 2 -->
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-4 border-2" style="border-color: var(--accent-primary);">
+        <h3 class="text-xl font-extrabold ar-block">أسئلة الجزء الثاني (Practice Questions - Part 2 • كويز تفاعلي بالعامية)</h3>
+        <div id="quiz-sec2" class="space-y-4"></div>
+      </div>
+
+      <div class="flex justify-between">
+        <button type="button" data-section-link="sec1" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ الجزء الأول</button>
+        <button type="button" data-section-link="sec3" class="section-next">انتقل للجزء الثالث (Part 3): النصوص، المنحنيات، والخصائص ←</button>
+      </div>
+    </section>
+
+    <!-- الجزء الثالث -->
+    <section id="sec3" class="study-section hidden space-y-8">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="border-b pb-4" style="border-color: var(--border-color);">
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الثالث <bdi dir="ltr" lang="en">(Part 3)</bdi>: تمثيل النصوص، المنحنيات، والخصائص <bdi dir="ltr" lang="en">(Text, Curved Objects &amp; Attributes)</bdi></h2>
+        </div>
+
+        <!-- 1. تمثيل النصوص في الرسوميات -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">1. تمثيل النصوص في الرسوميات (Text Representation)</h4>
+          <p class="ar-block">في أي تطبيق رسومي حقيقي، لابد من وجود نصوص توضيحية للمخططات (<strong><span class="ltr-inline">Annotation</span></strong>)، زي كتابة أسماء المحاور والعناوين (<span class="ltr-inline">Labels on graphs</span>).</p>
+
+          <div class="step-list">
+            <div class="step-item"><strong>ما هو الخط (<span class="ltr-inline">Font</span>) وعائلة الخطوط (<span class="ltr-inline">Typefaces</span>)؟</strong><br>الـ <strong><span class="ltr-inline">Fonts</span></strong> هي عائلات من أشكال وتصميمات الحروف (<span class="ltr-inline">Typefaces</span>) ذات طراز محدد متناسق، مثل: <strong><span class="ltr-inline">Times</span>، <span class="ltr-inline">Computer Modern</span>، أو <span class="ltr-inline">Helvetica</span></strong>.</div>
+          </div>
+
+          <h5 id="text-comparison-heading" class="text-lg font-extrabold ar-block pt-2">مقارنة حتمية للامتحان: Stroke Text مقابل Raster Text</h5>
+
+          <!-- Clean Comparison Table -->
+          <div class="comparison-table" tabindex="0" role="region" aria-labelledby="text-comparison-heading">
+            <table class="w-full text-sm border-collapse card-surface rounded-xl overflow-hidden">
+              <thead>
+                <tr class="text-white" style="background-color: var(--accent-primary);">
+                  <th class="p-3 border border-white/20 text-right">وجه المقارنة</th>
+                  <th class="p-3 border border-white/20 text-right"><span class="ltr-inline">Stroke Text</span> (النص المتجه / الهندسي)</th>
+                  <th class="p-3 border border-white/20 text-right"><span class="ltr-inline">Raster Text</span> (النص النقطي / البت ماب)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y" style="border-color: var(--border-color);">
+                <tr>
+                  <td class="p-3 font-bold">طريقة التكوين</td>
+                  <td class="p-3">يُعامل كأي <strong>كائن هندسي (<span class="ltr-inline">Geometric object</span>)</strong>؛ بيتبني برؤوس (<span class="ltr-inline">Vertices</span>) تحدد قطع مستقيمة أو منحنيات ترسم حدود الحرف.</td>
+                  <td class="p-3">الحرف عبارة عن مستطيل من البتات يُسمى <strong><span class="ltr-inline">Bit Block</span></strong>، كل بكسل فيه إما <span class="ltr-inline"><span class="math-expr" dir="ltr">0</span></span> (خلفية) أو <span class="ltr-inline"><span class="math-expr" dir="ltr">1</span></span> (لون الحرف).</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">سرعة العرض</td>
+                  <td class="p-3">أبطأ نسبياً؛ لأنه بيحتاج معالجة رياضية وتحويل هندسي لكل حرف إلى بكسلات.</td>
+                  <td class="p-3"><strong>بسيط وفائق السرعة (<span class="ltr-inline">Simple and fast</span>)</strong>.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">آلية النقل للذاكرة</td>
+                  <td class="p-3">خوارزميات مسح ورسم خطوط ومنحنيات هندسية.</td>
+                  <td class="p-3">عملية نقل كتل بتات سريعة جداً تُسمى <strong><span class="ltr-inline">Bit-Block-Transfer (BitBlt)</span></strong>.</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">المرونة والتحجيم (<span class="ltr-inline">Scaling</span>)</td>
+                  <td class="p-3"><strong>ممتازة وغير محدودة:</strong> يقبل التكبير والتدوير بدون أي تشوه، ولو له حدود مغلقة نقدر نملأ قلبه بلون (<span class="ltr-inline">Filled boundaries</span>).</td>
+                  <td class="p-3"><strong>سيئة جداً:</strong> عند التكبير تكبر البكسلات وتظهر حواف مسننة وتشوّه (<span class="ltr-inline">Pixelation</span>).</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-bold">أشهر مثال</td>
+                  <td class="p-3 font-mono font-bold text-blue-600" dir="ltr">PostScript fonts</td>
+                  <td class="p-3">خطوط الشاشات النقطية البسيطة (<span class="ltr-inline">Bitmap fonts</span>).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 2. تمثيل الأجسام المنحنية -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">2. تمثيل الأجسام المنحنية (Curved Objects - Two Approaches)</h4>
+          <p class="ar-block">السلايد وضحت إن عندنا <strong>نهجين (<span class="ltr-inline">Two Approaches</span>)</strong> عشان ننشئ مجموعات غنية ومتنوعة من الأجسام المنحنية:</p>
+
+          <div class="step-list">
+            <div class="step-item">
+              <strong>1. نهج التقريب بالكيانات البسيطة (<span class="ltr-inline">Approximation using Primitives</span>):</strong><br>
+              • بنستخدم الكيانات المتاحة لدينا بالفعل (خطوط ومضلعات): نقرب المنحنى بسلسلة قطع مستقيمة قصيرة، ونقرب السطح ثلاثي الأبعاد المنحني (زي الكرة <span class="ltr-inline">Sphere</span>) بشبكة من المثلثات أو الأشكال الرباعية (<span class="ltr-inline">Quadrilaterals</span>).<br>
+              • <strong>الميزة:</strong> متوافق 100% مع هاردوير الجرافيكس السريع.
+            </div>
+            <div class="step-item">
+              <strong>2. نهج التعريفات والمعادلات الرياضية (<span class="ltr-inline">Mathematical Definitions</span>):</strong><br>
+              • بنبدأ بالتعريف الرياضي الدقيق للمنحنى أو السطح (زي منحنيات بيزييه <span class="ltr-inline">Bézier curves</span> والأسطح البارامترية)، ونبني دوال رسومية متخصصة تحسب نقاط المنحنى بدقة عالية عند الرندر.
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 3. دوال الخصائص بالتفصيل (Attributes) -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">3. دوال الخصائص بالتفصيل (Attributes in Graphics)</h4>
+
+          <div class="slide-quote">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">تعريف الـ Attributes في السلايد:</div>
+            <p class="font-bold text-base">"Properties that describe how an object should be rendered are called attributes."</p>
+          </div>
+
+          <p class="ar-block"><strong>توضيح:</strong> الخصائص المتاحة بتعتمد كلياً على نوع الكيان اللي بنرسمه (<span class="ltr-inline">Object Dependent</span>):</p>
+          <div class="step-list">
+            <div class="step-item">
+              <strong>1. خصائص الخطوط والقطع المستقيمة (<span class="ltr-inline">Line Attributes</span>):</strong><br>
+              • <strong>اللون (<span class="ltr-inline">Color</span>):</strong> أسود، أخضر، أو أي قيمة <span class="ltr-inline">RGB</span>.<br>
+              • <strong>النوع / النمط (<span class="ltr-inline">Style</span>):</strong> متصل ومصمت (<span class="ltr-inline">Solid</span>) أو متقطع (<span class="ltr-inline">Dashed / Dotted</span>).<br>
+              • <strong>السُمك (<span class="ltr-inline">Width</span>):</strong> خط رفيع بكسل واحد أو خط عريض متعدد البكسلات.
+            </div>
+            <div class="step-item">
+              <strong>2. خصائص المضلعات (<span class="ltr-inline">Polygon Attributes</span>):</strong><br>
+              • <strong>تعبئة بلون مفرد (<span class="ltr-inline">Solid Color</span>):</strong> ملء المساحة الداخلية بلون واحد موحد.<br>
+              • <strong>تعبئة بنمط (<span class="ltr-inline">Pattern</span>):</strong> ملء المساحة بنقشة أو تهشير هندسي متكرر.<br>
+              • <strong>خصائص الحواف (<span class="ltr-inline">Edges</span>):</strong> تحديد لون ونمط وسُمك حواف المضلع أو إخفاؤها تماماً.
+            </div>
+          </div>
+
+          <!-- English Reference Summary from P3.txt -->
+          <div class="en-summary-card space-y-3" dir="ltr">
+            <h4 class="text-lg font-extrabold text-emerald-700">Part 3: Core Concepts Summary (English Reference)</h4>
+            <ul class="list-disc list-inside text-sm space-y-1.5">
+              <li><strong>Fonts &amp; Typefaces:</strong> Families of typefaces of a particular style (Times, Computer Modern, Helvetica).</li>
+              <li><strong>Stroke Text (e.g., PostScript):</strong> Built geometrically from vertices, lines, and curves; closed boundaries can be filled; scales/rotates smoothly without loss of quality.</li>
+              <li><strong>Raster Text:</strong> Characters defined as rectangular grids of bits (<strong>Bit Blocks</strong>). Simple and fast to place in memory via <strong>Bit-Block-Transfer (BitBlt)</strong>, but exhibits pixelation when scaled.</li>
+              <li><strong>Curved Objects (2 Approaches):</strong> 1. Approximation using existing primitives (lines, triangles, quadrilaterals) • 2. Starting from mathematical definitions of curved objects and building graphics functions for them.</li>
+              <li><strong>Attributes:</strong> Properties describing <strong>how</strong> an object should be rendered (Line color/style/width; Polygon solid color or pattern fill).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz for Section 3 -->
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-4 border-2" style="border-color: var(--accent-primary);">
+        <h3 class="text-xl font-extrabold ar-block">أسئلة الجزء الثالث (Practice Questions - Part 3 • كويز تفاعلي بالعامية)</h3>
+        <div id="quiz-sec3" class="space-y-4"></div>
+      </div>
+
+      <div class="flex justify-between">
+        <button type="button" data-section-link="sec2" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ الجزء الثاني</button>
+        <button type="button" data-section-link="sec4" class="section-next">انتقل للجزء الرابع (Part 4): فيزياء الألوان، RGB، والشفافية ←</button>
+      </div>
+    </section>
+
+    <!-- الجزء الرابع -->
+    <section id="sec4" class="study-section hidden space-y-8">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
+        <div class="border-b pb-4" style="border-color: var(--border-color);">
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الرابع <bdi dir="ltr" lang="en">(Part 4)</bdi>: فيزياء الألوان، نموذج <bdi dir="ltr" lang="en">RGB</bdi>، وحسابات الذاكرة والشفافية <bdi dir="ltr" lang="en">(Color Physics, RGB Buffers &amp; Opacity)</bdi></h2>
+        </div>
+
+        <!-- 1. فيزياء الألوان ونظام الرؤية البشري -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">1. فيزياء الألوان ونظام الرؤية البشري (Color &amp; Human Perception)</h4>
+
+          <div class="slide-quote">
+            <div class="text-xs font-bold uppercase tracking-wider mb-1 opacity-75">قاعدة الإدراك البصري في السلايد:</div>
+            <p class="font-bold text-base">"We can use the model of the human visual system to obtain a simple but useful color model."</p>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block">الطيف المرئي وتوزيع الألوان (The Visible Spectrum):</h5>
+          <div class="step-list">
+            <div class="step-item">أي لون مرئي فيزيائياً بيتعرف كدالة مستمرة في الطول الموجي اسمها <strong><span class="ltr-inline"><span class="math-expr" dir="ltr"><span class="math-var">C</span>(<span class="math-var">&lambda;</span>)</span></span></strong>، حيث <span class="ltr-inline"><span class="math-expr" dir="ltr"><span class="math-var">&lambda;</span></span></span> هو الطول الموجي للضوء (<span class="ltr-inline">Wavelength</span>).</div>
+            <div class="step-item">
+              الضوء المرئي اللي عين الإنسان بتقدر تشوفه بيشغل مدى أطوال موجية محددة بدقة:
+              <div class="math-box border-2 border-amber-500"><div class="math-box" dir="ltr" role="math" aria-label="350 nm to 780 nm">350&nbsp;nm &nbsp;&mdash;&nbsp; 780&nbsp;nm</div></div>
+            </div>
+            <div class="step-item"><strong>معنى الدالة <span class="ltr-inline"><span class="math-expr" dir="ltr"><span class="math-var">C</span>(<span class="math-var">&lambda;</span>)</span></span>:</strong> القيمة عند طول موجي معين <span class="ltr-inline"><span class="math-expr" dir="ltr"><span class="math-var">&lambda;</span></span></span> بتعبر عن <strong>شدة الإشعاع (<span class="ltr-inline">Intensity</span>)</strong> لهذا الطول الموجي داخل اللون.</div>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block pt-2">نظرية الألوان الثلاثية في عين الإنسان (Trichromatic Vision):</h5>
+          <div class="step-list">
+            <div class="step-item">شبكية عين الإنسان بتحتوي على <strong>3 أنواع من مستقبلات الألوان (<span class="ltr-inline">3 Types of Cones</span>)</strong>.</div>
+            <div class="step-item"><strong>النتيجة الهندسية والفيزيائية:</strong> مش محتاجين شاشات تولد ملايين الأطوال الموجية الحقيقية! يكفي تماماً استخدام <strong>3 ألوان أساسية فقط (<span class="ltr-inline">3 Primary Colors</span>)</strong> عشان ننتج القيم الثلاثية المنبهة لعين المشاهد البشري (<span class="ltr-inline">Tri-stimulus values</span>).</div>
+          </div>
+
+          <div class="slide-quote">
+            <p class="font-bold text-base">"A display needs only three primary colors to produce the three tri-stimulus values needed for a human observer."</p>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 2. الأنظمة اللونية: الجمعي مقابل الطرحي -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">2. الأنظمة اللونية: الجمعي مقابل الطرحي (Additive vs. Subtractive Color)</h4>
+
+          <div class="step-list">
+            <div class="step-item">
+              <strong>أ. النظام الجمعي (<span class="ltr-inline">Additive Color System - RGB</span>):</strong><br>
+              • <strong>الألوان الأساسية:</strong> الأحمر (<span class="ltr-inline">Red</span>)، الأخضر (<span class="ltr-inline">Green</span>)، والأزرق (<span class="ltr-inline">Blue</span>).<br>
+              • <strong>كيف يعمل؟</strong> بيعتمد على انبعاث الضوء؛ كل لون ضوئي بيتضاف للآخر (مثال: شاشات الـ <span class="ltr-inline">CRT</span> والشاشات الحديثة).<br>
+              • غياب كل الألوان = <strong>أسود (<span class="ltr-inline">Black</span>)</strong>، واجتماع الألوان الثلاثة بأقصى شدة = <strong>أبيض (<span class="ltr-inline">White</span>)</strong>.
+            </div>
+
+            <div class="step-item">
+              <strong>ب. النظام الطرحي (<span class="ltr-inline">Subtractive Color System - CMY</span>):</strong><br>
+              • <strong>الألوان الأساسية:</strong> هي الألوان المكملة للـ <span class="ltr-inline">RGB</span>، وتسمى: <strong><span class="ltr-inline">Cyan</span> (سماوي)، <span class="ltr-inline">Magenta</span> (أرجواني)، و <span class="ltr-inline">Yellow</span> (أصفر)</strong>.<br>
+              • <strong>كيف يعمل؟</strong> بيعتمد على امتصاص (طرح) أطوال موجية معينة من الضوء الأبيض الساقط وعكس الباقي للعين (مثال: الطباعة والأحبار والدهانات).<br>
+              • اجتماع الألوان الثلاثة بأقصى تركيز = <strong>أسود (<span class="ltr-inline">Black</span>)</strong>.
+            </div>
+
+            <div class="step-item">
+              <strong>ج. مجسم الألوان (<span class="ltr-inline">Color Solid</span>):</strong><br>
+              • هو التمثيل ثلاثي الأبعاد (<span class="ltr-inline"><span class="math-expr" dir="ltr">3D</span></span>) لنموذج الألوان (<span class="ltr-inline">The 3D representation of a color model</span>)، وهو المعادل ثلاثي الأبعاد لعجلة الألوان ثنائية الأبعاد (<span class="ltr-inline">Color Wheel</span>).
+            </div>
+          </div>
+
+          <div class="slide-quote">
+            <p class="font-bold text-base">"An RGB additive system has a dual with a CMY subtractive system."</p>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 3. معمارية ذاكرة ألوان RGB وحساباتها -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">3. معمارية ذاكرة ألوان RGB وحساباتها (RGB Color Buffers &amp; Calculations)</h4>
+          <div class="step-list">
+            <div class="step-item">في نظام <span class="ltr-inline">RGB</span> الجمعي، الذاكرة بتحتوي مفهومياً على <strong>3 مخازن منفصلة (<span class="ltr-inline">Separate buffers</span>)</strong> لصور: الأحمر، الأخضر، والأزرق.</div>
+            <div class="step-item">كل بكسل على الشاشة له 3 مركبات لونية منفصلة (<span class="ltr-inline">Red, Green, Blue components</span>) تناظر مواقع محددة في الذاكرة.</div>
+          </div>
+
+          <h5 class="text-lg font-extrabold ar-block pt-2">المسألة الحسابية القياسية المذكورة نصاً في السلايدات:</h5>
+          <div class="step-list">
+            <div class="step-item">
+              <strong>المواصفات القياسية:</strong><br>
+              • أبعاد الشاشة: <span class="ltr-inline"><span class="math-expr" dir="ltr">1280 &times; 1024</span></span> بكسل.<br>
+              • عمق البكسل الواحد (<span class="ltr-inline">Pixel Depth</span>): <strong>24 بت (يعني 3 بايت)</strong>؛ بواقع <strong>1 بايت (<span class="ltr-inline"><span class="math-expr" dir="ltr">8 bits</span></span>)</strong> لكل لون من <span class="ltr-inline">Red, Green, Blue</span>.
+            </div>
+            <div class="step-item">
+              <strong>1. القيم المتاحة لكل قناة لونية (<span class="ltr-inline">1 Byte = 8 bits</span>):</strong>
+              <div class="math-box"><div class="math-box" dir="ltr" role="math" aria-label="0 to 2^8 - 1 = 255">0 &le; Color Value &le; 2<sup>8</sup> &minus; 1 = 255</div></div>
+            </div>
+            <div class="step-item">
+              <strong>2. إجمالي عدد الألوان الممكنة للبكسل الواحد:</strong>
+              <div class="math-box"><div class="math-box" dir="ltr" role="math" aria-label="Total Colors = 2^24 = 16,777,216 colors">Total Colors = 2<sup>24</sup> = 16,777,216 colors</div></div>
+            </div>
+            <div class="step-item">
+              <strong>3. ليه بنسميه نظام الـ <span class="ltr-inline">16M colors</span> (Full-Color System)؟</strong><br>
+              لأن حرف <span class="ltr-inline"><span class="math-expr" dir="ltr">M</span></span> في مصطلحات الحاسب الثنائية يشير إلى <span class="ltr-inline"><span class="math-expr" dir="ltr">2<sup>20</sup> = 1,048,576</span></span>:
+              <div class="math-box border-2 border-blue-500"><div class="math-box" dir="ltr" role="math" aria-label="16M = 16 * 2^20 = 2^4 * 2^20 = 2^24 = 16,777,216">16M = 16 &times; 2<sup>20</sup> = 2<sup>4</sup> &times; 2<sup>20</sup> = 2<sup>24</sup> = 16,777,216</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 4. الشفافية والتعتيم (Transparency and Opacity) -->
+        <div class="space-y-4">
+          <h4 class="text-xl font-extrabold ar-block">4. الشفافية والتعتيم (Transparency and Opacity)</h4>
+
+          <div class="slide-quote">
+            <p class="font-bold text-base">"Transparency and opacity are complements of each other."</p>
+          </div>
+
+          <div class="step-list">
+            <div class="step-item"><strong>• الجسم المعتم (<span class="ltr-inline">Opaque Object</span>):</strong> لا يمرر أي ضوء من خلاله نهائياً (<span class="ltr-inline">Passes no light through it</span>)، ومعامل التعتيم له <strong><span class="ltr-inline"><span class="math-expr" dir="ltr"><span class="math-var">A</span> = 1.0</span></span></strong>.</div>
+            <div class="step-item"><strong>• الجسم الشفاف (<span class="ltr-inline">Transparent Object</span>):</strong> يمرر كل الضوء الساقط عليه بالكامل (<span class="ltr-inline">Passes all light</span>)، ومعامل التعتيم له <strong><span class="ltr-inline"><span class="math-expr" dir="ltr"><span class="math-var">A</span> = 0.0</span></span></strong>.</div>
+            <div class="step-item"><strong>• الجسم نصف الشفاف (<span class="ltr-inline">Translucent</span>):</strong> قيمته محصورة بين <span class="ltr-inline"><span class="math-expr" dir="ltr">0.0 &lt; <span class="math-var">A</span> &lt; 1.0</span></span>.</div>
+          </div>
+
+          <!-- English Reference Summary from P4.txt -->
+          <div class="en-summary-card space-y-3" dir="ltr">
+            <h4 class="text-lg font-extrabold text-emerald-700">Part 4: Core Concepts Summary (English Reference)</h4>
+            <ul class="list-disc list-inside text-sm space-y-1.5">
+              <li><strong>Visible Spectrum &amp; <span class="math-expr" dir="ltr"><span class="math-var">C</span>(<span class="math-var">&lambda;</span>)</span>:</strong> Spans <strong><span class="math-expr" dir="ltr">350 nm</span> to <span class="math-expr" dir="ltr">780 nm</span></strong>. <span class="math-expr" dir="ltr"><span class="math-var">C</span>(<span class="math-var">&lambda;</span>)</span> gives the intensity of wavelength <span class="math-expr" dir="ltr"><span class="math-var">&lambda;</span></span>. Because the human eye has <strong>three types of cones</strong>, a display needs only <strong>three primary colors</strong> to produce the tri-stimulus values.</li>
+              <li><strong>Additive (RGB) vs. Subtractive (CMY):</strong> Additive RGB (CRTs/monitors) adds emitted light; Subtractive CMY (printing/inks) subtracts wavelengths from white light. RGB and CMY are duals. A <strong>Color Solid</strong> is the 3D representation of a color model (3D analogue of a color wheel).</li>
+              <li><strong>24-Bit RGB Color Buffer:</strong> 3 bytes per pixel (<strong>1 byte / 8 bits per R, G, B channel</strong>). Total colors = <span class="math-expr" dir="ltr">2<sup>24</sup> = 16,777,216 = <strong>16M colors</strong></span>, where <span class="math-expr" dir="ltr"><strong>M = 2<sup>20</sup></strong></span>.</li>
+              <li><strong>Opacity (<span class="math-expr" dir="ltr"><span class="math-var">A</span></span>) and Transparency:</strong> Complements of each other. Opaque (<span class="math-expr" dir="ltr"><span class="math-var">A</span> = 1.0</span>) passes no light; Transparent (<span class="math-expr" dir="ltr"><span class="math-var">A</span> = 0.0</span>) passes all light.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz for Section 4 -->
+      <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-4 border-2" style="border-color: var(--accent-primary);">
+        <h3 class="text-xl font-extrabold ar-block">أسئلة الجزء الرابع (Practice Questions - Part 4 • كويز تفاعلي بالعامية)</h3>
+        <div id="quiz-sec4" class="space-y-4"></div>
+      </div>
+
+      <div class="flex justify-between">
+        <button type="button" data-section-link="sec3" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ الجزء الثالث</button>
+        <button type="button" data-section-link="sec5" class="section-next">انتقل لبنك الكويزات الشامل (48 سؤال) ←</button>
+      </div>
+    </section>
+
+    <!-- الجزء الخامس: بنك الأسئلة الشامل -->
+    <section id="sec5" class="study-section hidden space-y-6">
+      <div class="card-surface rounded-2xl p-6 sm:p-8 flex flex-wrap items-center justify-between gap-3">
+        <div class="ar-block">
+          <h2 class="text-2xl font-extrabold">بنك كويزات الفصل الثاني بالكامل (48 سؤال بالعامية المصرية)</h2>
+          <p class="text-sm mt-1" style="color: var(--text-muted);">جميع أسئلة الـ MCQ والـ True/False للأجزاء الأربعة مجمعة هنا للمراجعة النهائية.</p>
+        </div>
+        <button id="btnResetAllQuizzes" type="button" class="px-4 py-2 rounded-xl font-bold text-xs sm:text-sm bg-rose-600 text-white">
+          إعادة تصفير الإجابات
+        </button>
+      </div>
+
+      <div id="quiz-all" class="space-y-4"></div>
+    </section>
+
+  </main>
+
+  <div id="quizAnswerStatus" class="quiz-answer-status" role="status" aria-atomic="true"></div>
+
+  <script src="../../js/shared/study-state.js"></script>
+  <script src="../../js/study-modules.js"></script>
+  <script src="../../js/study-session.js"></script>
+  <script src="../../js/study-shell.js"></script>
+  <script src="../../js/shared/quiz-choices.js"></script>
+  <script src="chapter-2.js"></script>
+</body>
+</html>
