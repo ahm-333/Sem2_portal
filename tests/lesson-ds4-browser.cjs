@@ -103,6 +103,14 @@ async function register({ scenario: testScenario }) {
       assert(await part.isVisible(), `Part ${i} is visible`);
     }
 
+    assert.equal(await page.locator('main > #part-2').count(), 1, 'Part 2 is outside Part 1');
+    assert.equal(await page.locator('main > .border-t-sky-900').count(), 1, 'Only one lesson introduction');
+
+    const draft = page.locator('#student-code-area');
+    await draft.fill('Stack s;');
+    await page.locator('#btn-clear-draft').click();
+    assert.equal(await draft.inputValue(), '');
+
     // Verify all 10 authored questions are preserved in quizQuestions
     const questions = extractArrays(html, ['quizQuestions']);
     assert.equal(questions.length, 10, 'All 10 authored questions preserved in quizQuestions');
@@ -179,6 +187,9 @@ async function register({ scenario: testScenario }) {
     displayText = await simDisplay.innerText();
     assert(displayText.includes('pop') && displayText.includes('30'), 'Stage 5 shows pop twice and top = 2');
 
+    const stageCode = simDisplay.locator('.code-surface');
+    assert.match(await stageCode.innerText(), /s\.pop\(\);[^\n]*\ns\.pop\(\);[^\n]*\ns\.peek\(\);/);
+
     // Prev button returns to Stage 4
     await simPrev.click();
     assert.match(await simBadge.innerText(), /4\/5/);
@@ -187,6 +198,27 @@ async function register({ scenario: testScenario }) {
     const stage1Tab = page.locator('.arr-sim-tab[data-arr-stage="0"]');
     await stage1Tab.click();
     assert.match(await simBadge.innerText(), /1\/5/);
+
+    const input = page.locator('#sim-input-val');
+    const push = page.locator('#sim-btn-push');
+    const liveStack = page.locator('#sim-live-display');
+    await input.fill('60');
+    await push.click();
+    await page.locator('.arr-sim-tab[data-arr-stage="1"]').click();
+    await page.locator('#sim-btn-peek').click();
+    assert.match(await simDisplay.innerText(), /top = 2/);
+    assert.match(await liveStack.innerText(), /top = 0/);
+    assert.match(await liveStack.innerText(), /60/);
+    assert.match(await page.locator('#sim-interactive-status').innerText(), /60/);
+
+    await input.fill('12.5');
+    await push.click();
+    assert.match(await liveStack.innerText(), /top = 0/);
+    await input.fill('1e2');
+    await push.click();
+    assert.match(await liveStack.innerText(), /100/);
+    await page.locator('#sim-btn-reset').click();
+    assert.match(await liveStack.innerText(), /top = -1/);
 
     // Static accessible walkthrough exists
     const staticWalkthrough = page.locator('.static-walkthrough, details[data-static-walkthrough]');
@@ -198,6 +230,8 @@ async function register({ scenario: testScenario }) {
     assert(nextBox.width >= 24, `simNext width >= 24px, got ${nextBox.width}`);
 
     // Keyboard navigation on simulator controls
+    assert.match(await simBadge.innerText(), /2\/5/, 'Reset leaves the walkthrough stage unchanged');
+    await stage1Tab.click();
     await simNext.focus();
     assert.equal(await page.evaluate(() => document.activeElement.id), 'arr-sim-next');
     await page.keyboard.press('Enter');
@@ -225,6 +259,13 @@ async function register({ scenario: testScenario }) {
     await btnOpenToc.click();
     assert(await sidebarToc.evaluate(el => el.classList.contains('open')), 'TOC drawer opens on click');
     assert(await tocBackdrop.evaluate(el => el.classList.contains('open')), 'TOC backdrop opens on click');
+
+    assert.equal(await page.locator('#toc-backdrop').evaluate(el => getComputedStyle(el).position), 'fixed');
+    const subsectionLinks = await page.locator('#sidebar-toc .toc-link[class~="py-1.5"]').evaluateAll(links => links.map(link => link.hash));
+    assert.equal(new Set(subsectionLinks).size, subsectionLinks.length);
+    assert(subsectionLinks.includes('#p4-display'));
+    assert(subsectionLinks.includes('#p6-comparison'));
+    assert.equal(await page.evaluate(hashes => hashes.every(hash => document.querySelector(hash)), subsectionLinks), true);
 
     // Check TOC contains links to all parts and quiz
     const tocLinks = await sidebarToc.locator('a[href^="#"]').evaluateAll(links =>
@@ -336,6 +377,7 @@ async function register({ scenario: testScenario }) {
     await correctOpt.click();
 
     // Score display updates
+    assert.equal(await q1Card.locator('.quiz-explanation').evaluate(el => el === document.activeElement), true);
     const scoreDisplay = page.locator('#quizScoreDisplay');
     assert.match(await scoreDisplay.innerText(), /1\s*\/\s*10/, 'Score display reflects correct answer');
 

@@ -151,7 +151,7 @@
     {
       badge: 'خطوة 5/5',
       title: 'المرحلة 5: تنفيذ s.pop() مرتين ثم s.peek() (السطور 88–91)',
-      code: 's.pop(); // 50 popped   s.pop(); // 40 popped   s.peek(); // Top is 30',
+      code: 's.pop(); // 50 popped\ns.pop(); // 40 popped\ns.peek(); // Top is 30',
       desc: 'خرجت 50 ثم خرجت 40 ونزل المؤشر مرتين ليصبح top = 2 واقفاً عند العنصر 30:',
       html: renderStackCells([10, 20, 30], 2)
     }
@@ -168,7 +168,7 @@
     arrSimBadge.textContent = st.badge;
     arrSimDisplay.innerHTML =
       '<div class="font-black text-emerald-950 dark:text-emerald-300 text-base sm:text-lg">' + st.title + '</div>' +
-      '<div class="code-surface p-3 rounded-xl border border-slate-700 text-xs sm:text-sm text-emerald-300 font-mono" dir="ltr">' + st.code + '</div>' +
+      '<div class="code-surface whitespace-pre-wrap p-3 rounded-xl border border-slate-700 text-xs sm:text-sm text-emerald-300 font-mono" dir="ltr">' + st.code + '</div>' +
       '<div class="text-sm sm:text-base text-slate-900 dark:text-slate-100 font-bold">' + st.desc + '</div>' +
       '<div class="pt-2 bg-[#faf5e8] dark:bg-slate-800/80 p-4 rounded-xl border border-[#d6cbb5] dark:border-slate-700">' + st.html + '</div>';
 
@@ -208,7 +208,8 @@
   renderArrSim();
 
   // 4b. Interactive Push / Pop / Peek / Reset controls for free exploration
-  let interactiveStack = [];
+  const interactiveStack = [];
+  const liveDisplay = document.getElementById('sim-live-display');
   const MAX_CAPACITY = 5;
   const inputVal = document.getElementById('sim-input-val');
   const btnPush = document.getElementById('sim-btn-push');
@@ -224,9 +225,9 @@
   }
 
   function renderInteractiveCells() {
-    if (!arrSimDisplay) return;
+    if (!liveDisplay) return;
     const topIdx = interactiveStack.length - 1;
-    arrSimDisplay.innerHTML =
+    liveDisplay.innerHTML =
       '<div class="font-black text-emerald-950 dark:text-emerald-300 text-base sm:text-lg">تجربة حية تفاعلية للمكدس (Live Interactive Stack)</div>' +
       '<div class="code-surface p-3 rounded-xl border border-slate-700 text-xs sm:text-sm text-emerald-300 font-mono" dir="ltr">// Elements count: ' + interactiveStack.length + ' / ' + MAX_CAPACITY + ' | top = ' + topIdx + '</div>' +
       '<div class="pt-2 bg-[#faf5e8] dark:bg-slate-800/80 p-4 rounded-xl border border-[#d6cbb5] dark:border-slate-700">' + renderStackCells(interactiveStack, topIdx) + '</div>';
@@ -234,8 +235,8 @@
 
   if (btnPush && inputVal) {
     btnPush.addEventListener('click', function () {
-      const val = parseInt(inputVal.value, 10);
-      if (isNaN(val)) {
+      const val = inputVal.valueAsNumber;
+      if (!Number.isSafeInteger(val)) {
         updateInteractiveStatus('⚠️ الرجاء إدخال رقم صحيح!', true);
         return;
       }
@@ -275,12 +276,20 @@
 
   if (btnReset) {
     btnReset.addEventListener('click', function () {
-      interactiveStack = [];
+      interactiveStack.length = 0;
       updateInteractiveStatus('🔄 تم تفريغ المكدس وإعادة ضبط top إلى -1');
-      currentArrStage = 0;
-      renderArrSim();
+      renderInteractiveCells();
     });
   }
+
+  renderInteractiveCells();
+
+  const draft = document.getElementById('student-code-area');
+  document.getElementById('btn-clear-draft')?.addEventListener('click', () => {
+    if (!draft) return;
+    draft.value = '';
+    draft.focus();
+  });
 
   // 5. Copy Code Buttons
   const toast = document.getElementById('toast');
@@ -386,20 +395,11 @@
         btn.className = 'quiz-option w-full p-3.5 rounded-xl text-right text-xs sm:text-sm font-bold transition flex items-center justify-between';
         btn.innerHTML = '<span>' + choice.text + '</span>';
 
-        if (answeredState[q.id] !== undefined) {
-          btn.disabled = true;
-          if (choice.index === q.correct) {
-            btn.classList.add('correct');
-          } else if (choice.index === answeredState[q.id]) {
-            btn.classList.add('wrong');
-          }
-        }
-
         btn.addEventListener('click', () => {
           if (answeredState[q.id] !== undefined) return;
           answeredState[q.id] = choice.index;
           updateScore();
-          renderQuestions(filter);
+          showAnswer().focus();
         });
 
         optionsGrid.appendChild(btn);
@@ -409,13 +409,23 @@
       article.appendChild(prompt);
       article.appendChild(optionsGrid);
 
-      if (answeredState[q.id] !== undefined) {
+      function showAnswer() {
+        choiceItems.forEach((choice, index) => {
+          const option = optionsGrid.children[index];
+          option.disabled = true;
+          if (choice.isCorrect) option.classList.add('correct');
+          else if (choice.index === answeredState[q.id]) option.classList.add('wrong');
+        });
+
         const expBox = document.createElement('div');
         expBox.className = 'quiz-explanation p-3.5 rounded-xl border text-xs sm:text-sm';
+        expBox.tabIndex = -1;
         expBox.textContent = q.explanation;
         article.appendChild(expBox);
+        return expBox;
       }
 
+      if (answeredState[q.id] !== undefined) showAnswer();
       quizContainer.appendChild(article);
     });
   }

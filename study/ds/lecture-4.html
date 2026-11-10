@@ -13,6 +13,7 @@
   <title>المحاضرة الرابعة — المكدس (Stack) | وضع القراءة</title>
   <link href="../../css/fonts/study/cb180f1c5ed1.css" rel="stylesheet">
   <link rel="stylesheet" href="../../css/fonts/fonts.css">
+  <link rel="stylesheet" href="../../css/study/ds-lecture-4.css">
   <link rel="stylesheet" href="../../css/study-shell.css">
   <link rel="stylesheet" href="lecture-4.css">
   <script type="application/json" data-study-tailwind>{"theme":{"extend":{"fontFamily":{"sans":["Tajawal","Cairo","sans-serif"],"heading":["Cairo","sans-serif"],"mono":["JetBrains Mono","monospace"]}}}}</script>
@@ -66,9 +67,9 @@
           الجزء الثاني (2 / 6): عمليات الـ Stack الستة ومؤشر القمة (top)
         </a>
         <div class="pr-3 space-y-1 text-xs border-r-4 border-amber-800">
-          <a href="#part-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. العمليات الستة الأساسية (Slide 9)</a>
-          <a href="#part-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. التحكم عبر Push و Pop ومؤشر Top (Slide 10)</a>
-          <a href="#part-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. طرق التنفيذ برمجياً (Array vs Linked List) (Slide 11)</a>
+          <a href="#p2-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. العمليات الستة الأساسية (Slide 9)</a>
+          <a href="#p2-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. التحكم عبر Push و Pop ومؤشر Top (Slide 10)</a>
+          <a href="#p2-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. طرق التنفيذ برمجياً (Array vs Linked List) (Slide 11)</a>
         </div>
       </div>
 
@@ -77,10 +78,10 @@
           الجزء الثالث (3 / 6): تنفيذ الـ Stack بالمصفوفة — التأسيس و isFull و Push
         </a>
         <div class="pr-3 space-y-1 text-xs border-r-4 border-teal-800">
-          <a href="#part-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. فكرة المصفوفة ولماذا يبدأ top بـ -1؟ (Slides 12–13)</a>
-          <a href="#part-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تأسيس الكلاس والـ Constructor (Slide 14)</a>
-          <a href="#part-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. دالة isFull() وطفح المكدس (Slides 15 &amp; 17)</a>
-          <a href="#part-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. كود push وسر ++top (Slide 16)</a>
+          <a href="#p3-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. فكرة المصفوفة ولماذا يبدأ top بـ -1؟ (Slides 12–13)</a>
+          <a href="#p3-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تأسيس الكلاس والـ Constructor (Slide 14)</a>
+          <a href="#p3-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. دالة isFull() وطفح المكدس (Slides 15 &amp; 17)</a>
+          <a href="#p3-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. كود push وسر ++top (Slide 16)</a>
         </div>
       </div>
 
@@ -90,8 +91,8 @@
         </a>
         <div class="pr-3 space-y-1 text-xs border-r-4 border-indigo-800">
           <a href="#p4-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. عملية Pop ودالة isEmpty() (Slides 18 &amp; 20)</a>
-          <a href="#p4-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. دالة peek() (Slide 21)</a>
-          <a href="#p4-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. دالة display() (Slide 22)</a>
+          <a href="#p4-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. دالة peek() (Slide 21)</a>
+          <a href="#p4-display" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. دالة display() (Slide 22)</a>
           <a href="#p4-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. كود main() ومحاكي Array Stack (Slides 23–24)</a>
           <a href="#p4-sec-5" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">5. الكود الكامل لـ Array Stack</a>
         </div>
@@ -102,9 +103,10 @@
           الجزء الخامس (5 / 6): الـ Stack بالقائمة المتصلة — القوالب Templates و Push و Pop
         </a>
         <div class="pr-3 space-y-1 text-xs border-r-4 border-purple-800">
-          <a href="#part-5" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. لماذا Linked List؟ وموقع top عند head (Slides 25–26)</a>
-          <a href="#part-5" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. القوالب Templates وبنية Node&lt;T&gt; (Slides 27–28)</a>
-          <a href="#part-5" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. دالة push ودالة pop بالقائمة المتصلة (Slides 29–30)</a>
+          <a href="#p5-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. لماذا Linked List؟ وموقع top عند head (Slides 25–26)</a>
+          <a href="#p5-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. القوالب Templates وبنية Node&lt;T&gt; (Slides 27–28)</a>
+          <a href="#p5-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. دالة push بالقائمة المتصلة (Slide 29)</a>
+          <a href="#p5-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. دالة pop بالقائمة المتصلة (Slide 30)</a>
         </div>
       </div>
 
@@ -113,11 +115,11 @@
           الجزء السادس (6 / 6): استكمال Linked List Stack، سر مخرجات الشريحة 35، والمقارنة الشاملة
         </a>
         <div class="pr-3 space-y-1 text-xs border-r-4 border-emerald-800">
-          <a href="#part-6" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. تفكيك دوال isEmpty() و peek() و display() (Slides 31–33)</a>
-          <a href="#part-6" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تشريح كود main() لـ Stack&lt;int&gt; و Stack&lt;string&gt; (Slide 34)</a>
-          <a href="#part-6" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. لغز الشريحة 35: سر سطور pop الأربعة الأخيرة (Slide 35)</a>
-          <a href="#part-6" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. الكود الكامل لـ Linked List Stack</a>
-          <a href="#part-6" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">5. المقارنة الشاملة: Array Stack مقابل Linked List Stack</a>
+          <a href="#p6-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. تفكيك دوال isEmpty() و peek() و display() (Slides 31–33)</a>
+          <a href="#p6-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تشريح كود main() لـ Stack&lt;int&gt; و Stack&lt;string&gt; (Slide 34)</a>
+          <a href="#p6-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. لغز الشريحة 35: سر سطور pop الأربعة الأخيرة (Slide 35)</a>
+          <a href="#p6-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. الكود الكامل لـ Linked List Stack</a>
+          <a href="#p6-comparison" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">5. المقارنة الشاملة: Array Stack مقابل Linked List Stack</a>
         </div>
       </div>
 
@@ -183,66 +185,6 @@
     <main class="space-y-12 reading-content">
 
       <!-- Hero Banner Card -->
-      <section class="card-surface p-5 sm:p-9 border-t-8 border-t-sky-900 space-y-5">
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-200 text-amber-950 border border-amber-500">📖 وضع القراءة الورقي المريح للعين</span>
-          <span class="px-3 py-1 rounded-full text-xs font-black bg-sky-200 text-sky-950 border border-sky-500">🎨 تغطية 100% لجميع شرائح المحاضرة الـ 36</span>
-          <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-200 text-emerald-950 border border-emerald-500">🔍 تفكيك كل كود سطر بسطر وكلمة بكلمة</span>
-        </div>
-
-        <h2 class="text-xl sm:text-3xl font-black text-slate-950 leading-snug">
-          المحاضرة الرابعة الشاملة (Lecture 4) — المكدس (Stack): من الصفر إلى الاحتراف (Array &amp; Linked List)
-        </h2>
-
-        <p class="font-bold text-slate-900">
-          تم تصميم هذا المرجع التفاعلي بنفس أسلوب وطريقة موقع القوائم المتصلة (<span class="inline-code">Linked Lists</span>) بالمللي، ليشرح كل كلمة وكل رسمة وكل سطر برمجي في شرائح المحاضرة الـ 36 بدون ترك أي تفصيلة، مقسماً إلى <strong>6 أجزاء متكاملة</strong>:
-        </p>
-
-        <!-- Agenda Box from Slide 2 -->
-        <div class="p-4 sm:p-5 rounded-2xl bg-[#f5efe2] border-2 border-[#b8a98e] space-y-2">
-          <div class="text-xs sm:text-sm font-black text-sky-950 flex items-center gap-2">
-            <span>📌</span>
-            <span>أجندة المحاضرة الرسمية (Lecture 4 Agenda — Slide 2):</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm font-extrabold text-slate-900" dir="ltr">
-            <div class="p-2.5 rounded-xl bg-white border border-slate-300">4.1 What is a Stack?</div>
-            <div class="p-2.5 rounded-xl bg-white border border-slate-300">4.2 Stack Operations</div>
-            <div class="p-2.5 rounded-xl bg-white border border-slate-300">4.3 Stack Implementation as an Array</div>
-            <div class="p-2.5 rounded-xl bg-white border border-slate-300">4.4 Stack Implementation as a Linked List</div>
-          </div>
-        </div>
-
-        <!-- Quick Jump Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
-          <a href="#part-1" class="p-3.5 rounded-xl bg-sky-100 hover:bg-sky-200 border-2 border-sky-600 text-sky-950 font-black text-xs sm:text-sm flex items-center gap-2.5 transition-all">
-            <span class="w-7 h-7 rounded-lg bg-sky-900 text-white flex items-center justify-center shrink-0">1</span>
-            <span>الجزء 1: التصنيف ومفهوم Stack و LIFO</span>
-          </a>
-          <a href="#part-2" class="p-3.5 rounded-xl bg-indigo-100 hover:bg-indigo-200 border-2 border-indigo-600 text-indigo-950 font-black text-xs sm:text-sm flex items-center gap-2.5 transition-all">
-            <span class="w-7 h-7 rounded-lg bg-indigo-900 text-white flex items-center justify-center shrink-0">2</span>
-            <span>الجزء 2: عمليات الـ Stack ومؤشر top</span>
-          </a>
-          <a href="#part-3" class="p-3.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 border-2 border-emerald-600 text-emerald-950 font-black text-xs sm:text-sm flex items-center gap-2.5 transition-all">
-            <span class="w-7 h-7 rounded-lg bg-emerald-900 text-white flex items-center justify-center shrink-0">3</span>
-            <span>الجزء 3: Stack بالمصفوفة و Push و Overflow</span>
-          </a>
-          <a href="#part-4" class="p-3.5 rounded-xl bg-amber-100 hover:bg-amber-200 border-2 border-amber-600 text-amber-950 font-black text-xs sm:text-sm flex items-center gap-2.5 transition-all">
-            <span class="w-7 h-7 rounded-lg bg-amber-900 text-white flex items-center justify-center shrink-0">4</span>
-            <span>الجزء 4: Pop و Peek و Display ومحاكي Array</span>
-          </a>
-          <a href="#part-5" class="p-3.5 rounded-xl bg-rose-100 hover:bg-rose-200 border-2 border-rose-600 text-rose-950 font-black text-xs sm:text-sm flex items-center gap-2.5 transition-all">
-            <span class="w-7 h-7 rounded-lg bg-rose-900 text-white flex items-center justify-center shrink-0">5</span>
-            <span>الجزء 5: Stack بالـ Linked List والـ Templates</span>
-          </a>
-          <a href="#part-6" class="p-3.5 rounded-xl bg-purple-100 hover:bg-purple-200 border-2 border-purple-600 text-purple-950 font-black text-xs sm:text-sm flex items-center gap-2.5 transition-all">
-            <span class="w-7 h-7 rounded-lg bg-purple-900 text-white flex items-center justify-center shrink-0">6</span>
-            <span>الجزء 6: باقي Linked List ولغز شريحة 35 والمقارنة</span>
-          </a>
-        </div>
-      </section>
-
-      
-
       <section class="card-surface p-5 sm:p-9 border-t-8 border-t-sky-900 space-y-5">
         <div class="flex flex-wrap items-center gap-2">
           <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-200 text-amber-950 border border-amber-500">📖 وضع القراءة الورقي المريح للعين</span>
@@ -616,6 +558,8 @@
             </div>
           </div>
         </section>
+
+      </div>
 
       <section id="part-2" class="scroll-mt-20 space-y-8 pt-8">
         <div class="p-5 sm:p-8 rounded-2xl bg-indigo-900 text-white shadow-xl flex flex-wrap items-center justify-between gap-4 border-b-4 border-amber-400">
@@ -1541,7 +1485,7 @@ public:
               </div>
             </div>
 
-            <div class="mt-9 mb-4 p-4 sm:p-5 rounded-xl bg-amber-100/95 border-r-8 border-r-amber-700 font-black text-amber-950 text-base sm:text-xl shadow-xs">
+            <div id="p4-display" class="scroll-mt-24 mt-9 mb-4 p-4 sm:p-5 rounded-xl bg-amber-100/95 border-r-8 border-r-amber-700 font-black text-amber-950 text-base sm:text-xl shadow-xs">
               السطور 62 إلى 65 (الشريحة 22 — بداية <code class="inline-code" dir="ltr">display()</code>): <code class="inline-code" dir="ltr">if (isEmpty()) { cout &lt;&lt; "Stack is empty." &lt;&lt; endl; }</code>
             </div>
 
@@ -1732,10 +1676,12 @@ Stack elements (top to bottom): 30 20 10 </code></pre>
                 <button id="sim-btn-peek" type="button" class="px-3 py-1.5 rounded-lg bg-sky-700 hover:bg-sky-800 text-white font-bold transition">Peek()</button>
                 <button id="sim-btn-reset" type="button" class="px-3 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-800 text-white font-bold transition">إعادة ضبط (Reset)</button>
               </div>
-              <div id="sim-interactive-status" class="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+              <div id="sim-interactive-status" role="status" class="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
                 الحالة: جاهز للتشغيل
               </div>
             </div>
+
+            <div id="sim-live-display" class="p-4 sm:p-6 rounded-2xl bg-[var(--bg-card)] border-2 border-emerald-700 space-y-4"></div>
 
             <!-- Accessible Static Walkthrough for Screen Readers & Reduced Motion -->
             <details class="static-walkthrough mt-6 p-4 rounded-xl border border-emerald-700/60 bg-[var(--bg-card)] text-xs sm:text-sm" data-static-walkthrough>
@@ -2960,7 +2906,7 @@ int main() {
             </div>
 
             <!-- Final Comprehensive Exam Cheatsheet -->
-            <div class="my-8 p-5 sm:p-8 rounded-2xl bg-[#efe5d2] border-2 border-[#a39374] space-y-4 shadow-md">
+            <div id="p6-comparison" class="scroll-mt-24 my-8 p-5 sm:p-8 rounded-2xl bg-[#efe5d2] border-2 border-[#a39374] space-y-4 shadow-md">
               <div class="flex items-center gap-2.5 border-b-2 border-[#b8a98e] pb-3">
                 <span class="text-2xl">📋</span>
                 <h4 class="text-lg sm:text-2xl font-black text-slate-950">المقارنة النهائية الشاملة للامتحان: Stack as Array vs. Stack as Linked List</h4>
