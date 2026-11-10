@@ -22,13 +22,12 @@
   <header id="mainReadingHeader" class="compact-header sticky top-0 z-40 backdrop-blur-md border-b">
     <div class="reading-container px-3 py-1.5 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2 sm:gap-3">
-        <a id="cgCourseLink" href="../../subject.html?id=computer-graphics&amp;kind=lectures" title="الرجوع إلى صفحة مقرر رسوميات الحاسب" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-900 text-white hover:bg-blue-600 font-bold text-xs shadow-sm transition">
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-          <span class="hidden sm:inline">الرجوع للمقرر</span>
+        <a id="cgCourseLink" href="../../subject.html?id=computer-graphics&amp;kind=lectures" aria-label="الرجوع إلى صفحة مقرر رسوميات الحاسب" class="course-back">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
         <span class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-heading font-bold text-xs shadow-sm shrink-0">CG2</span>
         <div>
-          <h1 class="font-heading font-bold text-xs sm:text-sm leading-tight truncate">الفصل الثاني: برمجة الرسوميات، الكيانات، ونماذج الألوان (Chapter 2)</h1>
+          <h1 class="font-heading font-bold text-xs sm:text-sm leading-tight truncate">الفصل الثاني: برمجة الرسوميات، الكيانات، ونماذج الألوان <bdi dir="ltr" lang="en">(Chapter 2)</bdi></h1>
         </div>
       </div>
 
@@ -85,7 +84,7 @@
     <div class="card-surface p-3 flex items-center justify-between gap-4">
       <div class="flex items-center gap-2">
         <span class="text-xs font-bold text-[var(--text-muted)]">إنجاز كويزات الفصل:</span>
-        <span id="scoreBadge" class="score-badge">0 / 48</span>
+        <span id="scoreBadge" class="score-badge" dir="ltr">0 / 48</span>
       </div>
       <div class="flex-1 max-w-xs">
         <div class="progress-track">
@@ -98,7 +97,7 @@
     <section id="sec1" class="study-section space-y-8">
       <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
         <div class="border-b pb-4" style="border-color: var(--border-color);">
-          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الأول (Part 1): معمارية النظام ودوال واجهات برمجة الرسوميات (Graphics System Architecture &amp; API Functions)</h2>
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الأول <bdi dir="ltr" lang="en">(Part 1)</bdi>: معمارية النظام ودوال واجهات برمجة الرسوميات <bdi dir="ltr" lang="en">(Graphics System Architecture &amp; API Functions)</bdi></h2>
         </div>
 
         <!-- 1. نظام الرسوميات كصندوق أسود -->
@@ -114,8 +113,8 @@
 
           <!-- Clean SVG Diagram of Black Box System -->
           <div class="subtle-surface rounded-xl p-5 space-y-3">
-            <div class="font-extrabold text-sm ar-block">رسم تخطيطي لنظام الرسوميات كصندوق أسود (The Black Box Model):</div>
-            <div class="flex justify-center">
+            <div id="black-box-heading" class="font-extrabold text-sm ar-block">رسم تخطيطي لنظام الرسوميات كصندوق أسود <bdi dir="ltr" lang="en">(The Black Box Model)</bdi>:</div>
+            <div class="black-box-scroll" dir="ltr" tabindex="0" role="region" aria-labelledby="black-box-heading">
               <svg viewBox="0 0 640 200" class="w-full max-w-2xl h-auto card-surface rounded-xl p-2" dir="ltr">
                 <!-- Inputs Column -->
                 <rect x="15" y="18" width="185" height="44" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2" />
@@ -263,7 +262,7 @@
       </div>
 
       <div class="flex justify-end">
-        <button type="button" data-section-link="sec2" class="px-6 py-3 rounded-xl font-bold text-white shadow-md" style="background-color: var(--accent-primary);">
+        <button type="button" data-section-link="sec2" class="section-next">
           انتقل للجزء الثاني (Part 2): الكيانات الهندسية، المضلعات، والمثلثات ←
         </button>
       </div>
@@ -273,7 +272,7 @@
     <section id="sec2" class="study-section hidden space-y-8">
       <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
         <div class="border-b pb-4" style="border-color: var(--border-color);">
-          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الثاني (Part 2): الكيانات الهندسية، المضلعات، وعملية التثليث (Primitives, Polygons &amp; Triangulation)</h2>
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الثاني <bdi dir="ltr" lang="en">(Part 2)</bdi>: الكيانات الهندسية، المضلعات، وعملية التثليث <bdi dir="ltr" lang="en">(Primitives, Polygons &amp; Triangulation)</bdi></h2>
         </div>
 
         <!-- 1. تصنيف الكيانات الرسومية -->
@@ -328,24 +327,28 @@
           <h5 class="text-lg font-extrabold ar-block pt-2">تصنيف المضلعات هندسياً (Simple vs. Non-Simple Polygons):</h5>
           <!-- Clean SVG Visual Comparing Simple vs Non-Simple Polygon -->
           <div class="subtle-surface rounded-xl p-5 space-y-3">
-            <div class="font-extrabold text-sm ar-block">رسم توضيحي للفرق بين المضلع البسيط (Simple) والمضلع غير البسيط المتقاطع ذاتياً (Non-Simple):</div>
-            <div class="flex justify-center">
-              <svg viewBox="0 0 520 190" class="w-full max-w-xl h-auto card-surface rounded-xl p-2" dir="ltr">
-                <!-- Simple Polygon -->
-                <polygon points="65,45 165,35 205,110 135,155 55,125" fill="#dbeafe" stroke="#2563eb" stroke-width="3" />
-                <circle cx="65" cy="45" r="4.5" fill="#1e3a8a" />
-                <circle cx="165" cy="35" r="4.5" fill="#1e3a8a" />
-                <circle cx="205" cy="110" r="4.5" fill="#1e3a8a" />
-                <circle cx="135" cy="155" r="4.5" fill="#1e3a8a" />
-                <circle cx="55" cy="125" r="4.5" fill="#1e3a8a" />
-                <text x="130" y="180" text-anchor="middle" font-size="12" font-weight="bold" fill="#2563eb">Simple Polygon (لا تتقاطع أضلاعه)</text>
-
-                <!-- Non-Simple Self-Intersecting Polygon -->
-                <polygon points="310,40 460,145 460,40 310,145" fill="rgba(239, 68, 68, 0.18)" stroke="#dc2626" stroke-width="3" />
-                <circle cx="385" cy="92.5" r="6" fill="#dc2626" />
-                <text x="385" y="75" text-anchor="middle" font-size="11" font-weight="bold" fill="#dc2626">Self-Intersection</text>
-                <text x="385" y="180" text-anchor="middle" font-size="12" font-weight="bold" fill="#dc2626">Non-Simple Polygon (متقاطع ذاتياً)</text>
-              </svg>
+            <div class="font-extrabold text-sm ar-block">رسم توضيحي للفرق بين المضلع البسيط <bdi dir="ltr" lang="en">(Simple)</bdi> والمضلع غير البسيط المتقاطع ذاتياً <bdi dir="ltr" lang="en">(Non-Simple)</bdi>:</div>
+            <div class="polygon-comparison">
+              <figure class="card-surface">
+                <svg viewBox="35 20 190 150" aria-hidden="true">
+                  <polygon points="65,45 165,35 205,110 135,155 55,125" fill="#dbeafe" stroke="#2563eb" stroke-width="3" />
+                  <circle cx="65" cy="45" r="4.5" fill="#1e3a8a" />
+                  <circle cx="165" cy="35" r="4.5" fill="#1e3a8a" />
+                  <circle cx="205" cy="110" r="4.5" fill="#1e3a8a" />
+                  <circle cx="135" cy="155" r="4.5" fill="#1e3a8a" />
+                  <circle cx="55" cy="125" r="4.5" fill="#1e3a8a" />
+                </svg>
+                <figcaption><bdi dir="ltr" lang="en">Simple Polygon</bdi> (لا تتقاطع أضلاعه)</figcaption>
+              </figure>
+              <figure class="card-surface">
+                <svg viewBox="290 20 190 150" aria-hidden="true">
+                  <polygon points="310,40 460,145 460,40 310,145" fill="rgba(239, 68, 68, 0.18)" stroke="#dc2626" stroke-width="3" />
+                  <circle cx="385" cy="92.5" r="6" fill="#dc2626" />
+                </svg>
+                <figcaption><bdi dir="ltr" lang="en">Non-Simple Polygon</bdi> (متقاطع ذاتياً)<br>
+                  النقطة الحمراء بتبيّن التقاطع الذاتي <bdi dir="ltr" lang="en">(Self-Intersection)</bdi>.
+                </figcaption>
+              </figure>
             </div>
           </div>
 
@@ -425,7 +428,7 @@
 
       <div class="flex justify-between">
         <button type="button" data-section-link="sec1" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ الجزء الأول</button>
-        <button type="button" data-section-link="sec3" class="px-6 py-3 rounded-xl font-bold text-white shadow-md" style="background-color: var(--accent-primary);">انتقل للجزء الثالث (Part 3): النصوص، المنحنيات، والخصائص ←</button>
+        <button type="button" data-section-link="sec3" class="section-next">انتقل للجزء الثالث (Part 3): النصوص، المنحنيات، والخصائص ←</button>
       </div>
     </section>
 
@@ -433,7 +436,7 @@
     <section id="sec3" class="study-section hidden space-y-8">
       <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
         <div class="border-b pb-4" style="border-color: var(--border-color);">
-          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الثالث (Part 3): تمثيل النصوص، المنحنيات، والخصائص (Text, Curved Objects &amp; Attributes)</h2>
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الثالث <bdi dir="ltr" lang="en">(Part 3)</bdi>: تمثيل النصوص، المنحنيات، والخصائص <bdi dir="ltr" lang="en">(Text, Curved Objects &amp; Attributes)</bdi></h2>
         </div>
 
         <!-- 1. تمثيل النصوص في الرسوميات -->
@@ -445,10 +448,10 @@
             <div class="step-item"><strong>ما هو الخط (<span class="ltr-inline">Font</span>) وعائلة الخطوط (<span class="ltr-inline">Typefaces</span>)؟</strong><br>الـ <strong><span class="ltr-inline">Fonts</span></strong> هي عائلات من أشكال وتصميمات الحروف (<span class="ltr-inline">Typefaces</span>) ذات طراز محدد متناسق، مثل: <strong><span class="ltr-inline">Times</span>، <span class="ltr-inline">Computer Modern</span>، أو <span class="ltr-inline">Helvetica</span></strong>.</div>
           </div>
 
-          <h5 class="text-lg font-extrabold ar-block pt-2">مقارنة حتمية للامتحان: Stroke Text مقابل Raster Text</h5>
+          <h5 id="text-comparison-heading" class="text-lg font-extrabold ar-block pt-2">مقارنة حتمية للامتحان: Stroke Text مقابل Raster Text</h5>
 
           <!-- Clean Comparison Table -->
-          <div class="overflow-x-auto">
+          <div class="comparison-table" tabindex="0" role="region" aria-labelledby="text-comparison-heading">
             <table class="w-full text-sm border-collapse card-surface rounded-xl overflow-hidden">
               <thead>
                 <tr class="text-white" style="background-color: var(--accent-primary);">
@@ -557,7 +560,7 @@
 
       <div class="flex justify-between">
         <button type="button" data-section-link="sec2" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ الجزء الثاني</button>
-        <button type="button" data-section-link="sec4" class="px-6 py-3 rounded-xl font-bold text-white shadow-md" style="background-color: var(--accent-primary);">انتقل للجزء الرابع (Part 4): فيزياء الألوان، RGB، والشفافية ←</button>
+        <button type="button" data-section-link="sec4" class="section-next">انتقل للجزء الرابع (Part 4): فيزياء الألوان، RGB، والشفافية ←</button>
       </div>
     </section>
 
@@ -565,7 +568,7 @@
     <section id="sec4" class="study-section hidden space-y-8">
       <div class="card-surface rounded-2xl p-6 sm:p-8 space-y-6">
         <div class="border-b pb-4" style="border-color: var(--border-color);">
-          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الرابع (Part 4): فيزياء الألوان، نموذج RGB، وحسابات الذاكرة والشفافية (Color Physics, RGB Buffers &amp; Opacity)</h2>
+          <h2 class="text-2xl sm:text-3xl font-extrabold ar-block">الجزء الرابع <bdi dir="ltr" lang="en">(Part 4)</bdi>: فيزياء الألوان، نموذج <bdi dir="ltr" lang="en">RGB</bdi>، وحسابات الذاكرة والشفافية <bdi dir="ltr" lang="en">(Color Physics, RGB Buffers &amp; Opacity)</bdi></h2>
         </div>
 
         <!-- 1. فيزياء الألوان ونظام الرؤية البشري -->
@@ -700,7 +703,7 @@
 
       <div class="flex justify-between">
         <button type="button" data-section-link="sec3" class="px-5 py-2.5 rounded-xl font-bold subtle-surface">→ الجزء الثالث</button>
-        <button type="button" data-section-link="sec5" class="px-6 py-3 rounded-xl font-bold text-white shadow-md" style="background-color: var(--accent-primary);">انتقل لبنك الكويزات الشامل (48 سؤال) ←</button>
+        <button type="button" data-section-link="sec5" class="section-next">انتقل لبنك الكويزات الشامل (48 سؤال) ←</button>
       </div>
     </section>
 

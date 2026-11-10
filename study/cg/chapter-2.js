@@ -815,13 +815,11 @@
       btn.addEventListener('click', function() {
         const target = btn.dataset.target || btn.dataset.sectionLink;
         switchSection(target);
-        if (btn.dataset.sectionLink) {
-          const heading = document.getElementById(target).querySelector('h2');
-          heading.tabIndex = -1;
-          heading.focus({ preventScroll: true });
-        }
+        const heading = document.getElementById(target).querySelector('h2');
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        window.scrollTo({ top: 0, behavior: reduceMotion ? 'instant' : 'smooth' });
+        heading.scrollIntoView({ block: 'start', inline: 'nearest', behavior: reduceMotion ? 'instant' : 'smooth' });
       });
     });
 

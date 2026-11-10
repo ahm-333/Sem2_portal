@@ -265,6 +265,32 @@ async function register({ scenario: testScenario }) {
     assert.equal(new URL(await courseLink.evaluate(link => link.href)).searchParams.get('id'), 'computer-graphics');
   });
 
+  await testScenario('cg2-mobile-table-scroll-stays-inside-lesson', async ({ page, go }) => {
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 568 });
+      await go('study/cg/chapter-2.html');
+      await page.locator('.tab-btn[data-target="sec3"]').press('Enter');
+      const table = page.locator('#sec3 table');
+      const scroller = table.locator('..');
+      await scroller.focus();
+      const start = await scroller.evaluate(el => el.scrollLeft);
+      await page.keyboard.press('ArrowLeft');
+      await page.waitForFunction(initial => document.activeElement.scrollLeft < initial, start, { timeout: 1500 });
+      assert.equal(await page.evaluate(() => window.scrollX), 0, `At ${width}px the document must not scroll sideways`);
+    }
+  }, { reducedMotion: 'reduce' });
+
+  await testScenario('cg2-mobile-header-course-link-has-hit-area', async ({ page, go }) => {
+    for (const width of [320, 390, 1440]) {
+      await page.setViewportSize({ width, height: 568 });
+      await go('study/cg/chapter-2.html');
+      const link = page.locator('#mainReadingHeader').getByRole('link', { name: /الرجوع إلى صفحة مقرر رسوميات الحاسب/ });
+      const area = await link.boundingBox();
+      assert(area?.width >= 40 && area.height >= 40, `Header link must be usable at ${width}px`);
+      await link.click({ trial: true });
+    }
+  });
+
   await testScenario('cg2-quiz-deep-links', async ({ page, go }) => {
     for (const route of ['study/cg/chapter-2.html', '/study/cg/chapter-2.html']) {
       await go(route + '#sec5');
@@ -311,16 +337,52 @@ async function register({ scenario: testScenario }) {
   });
 
   await testScenario('cg2-reduced-motion-section-navigation', async ({ page, go }) => {
-    await go('study/cg/chapter-2.html');
-    const immediateScroll = await page.evaluate(() => {
-      const control = document.querySelector('.tabs-nav [data-target="sec2"]');
-      window.scrollTo(0, 500);
-      const initialScroll = window.scrollY;
-      control.click();
-      return initialScroll > 0 && window.scrollY === 0;
-    });
-    assert(immediateScroll, 'Section navigation scrolls instantly with reduced motion enabled');
+    for (const width of [320, 390, 1440]) {
+      await page.setViewportSize({ width, height: 568 });
+      await go('study/cg/chapter-2.html');
+      const control = page.locator('.tabs-nav [data-target="sec2"]');
+      const heading = await control.evaluate(button => {
+        button.focus();
+        button.click();
+        const target = document.querySelector('#sec2 h2');
+        const rect = target.getBoundingClientRect();
+        return {
+          focused: target === document.activeElement,
+          unobscured: rect.top >= document.querySelector('#mainReadingHeader').getBoundingClientRect().bottom,
+          onScreen: rect.bottom <= window.innerHeight
+        };
+      });
+      assert.deepEqual(heading, { focused: true, unobscured: true, onScreen: true },
+        `The selected section receives focus and is visible immediately at ${width}px`);
+    }
   }, { reducedMotion: 'reduce' });
+
+  await testScenario('cg2-readable-diagram-and-bidi-score', async ({ page, go }) => {
+    await page.setViewportSize({ width: 320, height: 568 });
+    await go('study/cg/chapter-2.html');
+    const badge = page.locator('#scoreBadge');
+    assert.equal(await badge.evaluate(el => getComputedStyle(el).direction), 'ltr');
+    const englishHeading = page.locator('#sec1 h2 :is(bdi, [dir="ltr"])').last();
+    assert.equal(await englishHeading.innerText(), '(Graphics System Architecture & API Functions)');
+
+    await page.locator('.tab-btn[data-target="sec2"]').press('Enter');
+    const caption = page.locator('#sec2 figcaption').filter({ hasText: 'Non-Simple Polygon' });
+    assert(await caption.isVisible(), 'The diagram label is visible as a caption at 320px');
+    assert((await caption.evaluate(el => parseFloat(getComputedStyle(el).fontSize))) >= 14);
+  });
+
+  await testScenario('cg2-navigation-and-content-contrast-in-all-themes', async ({ page, go }) => {
+    await go('study/cg/chapter-2.html');
+    for (const theme of ['light', 'dark', 'reading']) {
+      await page.locator('#study-shell-theme').selectOption(theme);
+      assert.equal(await page.locator('html').getAttribute('data-theme'), theme);
+      await page.locator('.tab-btn[data-target="sec4"]').press('Enter');
+      for (const target of ['#sec4 [data-section-link="sec5"]', '#scoreBadge', '#sec4 .math-expr']) {
+        const ratio = await measureElementContrast(page, target);
+        assert(ratio >= 4.5, `${theme} contrast for ${target} was ${ratio.toFixed(2)}:1`);
+      }
+    }
+  });
 
   // Visual verification and screenshot captures across modes and viewports
   await testScenario('cg2-visual-verification-and-screenshots', async ({ page, go }) => {
