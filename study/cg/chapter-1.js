@@ -176,14 +176,7 @@
     readout.textContent = `${bits} bit => 2^${bits} = ${colors} لوناً${note}`;
 
     document.querySelectorAll('[data-pixel-btn]').forEach(btn => {
-      const b = parseInt(btn.getAttribute('data-pixel-btn'), 10);
-      if (b === bits) {
-        btn.classList.add('bg-blue-600', 'text-white');
-        btn.classList.remove('subtle-surface');
-      } else {
-        btn.classList.remove('bg-blue-600', 'text-white');
-        btn.classList.add('subtle-surface');
-      }
+      btn.setAttribute('aria-pressed', String(Number(btn.dataset.pixelBtn) === bits));
     });
   };
 

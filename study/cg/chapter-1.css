@@ -138,9 +138,9 @@ html[data-study-shell] body {
   border: 1px solid var(--study-line, #e2e8f0);
 }
 
-html[data-study-shell] body .tab-btn:is(.active, :hover) {
-  background-color: var(--study-accent, #2563eb);
-  color: var(--study-on-accent, #ffffff) !important;
+html[data-study-shell] body :is(.cg-accent-surface, .tab-btn:is(.active, :hover), [data-pixel-btn][aria-pressed="true"]) {
+  background-color: var(--study-accent);
+  color: var(--study-on-accent);
 }
 
 /* Quiz Card & Options */
@@ -174,6 +174,20 @@ html[data-study-shell] body .tab-btn:is(.active, :hover) {
   max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Keep diagram labels readable while their own frame scrolls on narrow screens. */
+.diagram-frame {
+  min-inline-size: 0;
+}
+
+.diagram-frame svg {
+  min-inline-size: 40rem;
+}
+
+.diagram-frame:focus-visible {
+  outline: 3px solid var(--study-focus);
+  outline-offset: 3px;
 }
 
 /* Header toolbar layout */

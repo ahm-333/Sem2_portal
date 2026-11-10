@@ -126,6 +126,15 @@ async function register({ scenario: testScenario }) {
     const text24 = await depthReadout.innerText();
     assert(text24.includes('24') && (text24.includes('16,777,216') || text24.includes('16.7')), '24-bit shows 16.7M colors');
 
+    const defaultDepth = page.getByRole('button', { name: '24-bits (Full-Color)', pressed: true });
+    assert.equal(await defaultDepth.count(), 1);
+    const eightBits = page.getByRole('button', { name: '8-bits', exact: true });
+    await eightBits.focus();
+    await page.keyboard.press('Space');
+    assert.equal(await eightBits.getAttribute('aria-pressed'), 'true');
+    assert.equal(await defaultDepth.count(), 0);
+    assert.match(await depthReadout.innerText(), /256/);
+
     // 7. Verify formulas use semantic markup and no unparsed TeX delimiters ($$ or raw math)
     const formulaElements = await page.locator('[role="math"], .math-formula').count();
     assert(formulaElements >= 2, 'Formulas rendered with semantic math markup');
@@ -220,12 +229,58 @@ async function register({ scenario: testScenario }) {
         const el = document.querySelector(sel);
         if (!el) return 0;
         const s = getComputedStyle(el);
-        const fg = parseRgba(s.webkitTextFillColor || s.color);
+        const fg = parseRgba(el instanceof window.SVGTextElement ? s.fill : (s.webkitTextFillColor || s.color));
         const bg = getBg(el);
         const l1 = lum(fg), l2 = lum(bg);
         return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
       }, selector);
     };
+
+    for (const width of [320, 390, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await go('study/cg/chapter-1.html');
+      for (const theme of ['light', 'dark', 'reading']) {
+        await page.locator('#study-shell-theme').selectOption(theme);
+        await page.waitForFunction(t => document.documentElement.dataset.theme === t, theme);
+        const pixelBackgrounds = await page.locator('[data-pixel-btn]').evaluateAll(buttons => ({
+          selected: getComputedStyle(buttons.find(el => el.getAttribute('aria-pressed') === 'true')).backgroundColor,
+          unselected: getComputedStyle(buttons.find(el => el.getAttribute('aria-pressed') === 'false')).backgroundColor
+        }));
+        assert.notEqual(pixelBackgrounds.selected, pixelBackgrounds.unselected);
+        for (const selector of [
+          'button[onclick*="sec2"]',
+          '#depthReadout',
+          '[data-pixel-btn][aria-pressed="true"]',
+          '[data-pixel-btn][aria-pressed="false"]',
+          'thead th',
+          '.en-summary-card h4',
+          '#sec2 svg text:last-child',
+          '#sec3 svg text:nth-of-type(2)'
+        ]) {
+          const ratio = await measureSelectorContrast(selector);
+          assert(ratio >= 4.5, [width, theme, selector, ratio.toFixed(2)].join(' '));
+        }
+      }
+      assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
+      for (const figure of await page.locator('.diagram-frame').all()) {
+        assert(await figure.evaluate(el => {
+          const svg = el.querySelector('svg');
+          const bounds = svg.viewBox.baseVal;
+          return [...svg.querySelectorAll('text')].every(label => {
+            const box = label.getBBox();
+            return box.x >= bounds.x && box.x + box.width <= bounds.x + bounds.width &&
+              parseFloat(getComputedStyle(label).fontSize) * label.getScreenCTM().a >= 9.5;
+          });
+        }), 'Diagram labels fit the viewBox and retain their size at ' + width);
+        if (width < 500) {
+          assert(await figure.evaluate(el => {
+            el.scrollLeft = el.scrollWidth;
+            return el.scrollLeft > 0;
+          }), 'Narrow figures scroll within their own frame');
+        }
+      }
+    }
+    assert.equal(await page.locator('#sec3 h2 bdi[dir="ltr"]').last().innerText(), '(Image Formation & The Pinhole Camera)');
 
     // Check light and reading modes
     for (const theme of ['light', 'reading']) {
