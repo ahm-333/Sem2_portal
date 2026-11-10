@@ -124,6 +124,20 @@
       white-space: pre-wrap;
     }
 
+    .code-toolbar > span {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .stack-walkthrough-step {
+      background: var(--study-paper);
+      color: var(--study-ink);
+    }
+
+    .stack-diagram-top {
+      color: #1c2305;
+    }
+
     html[data-study-shell] body .arr-sim-tab,
     html[data-study-shell] body #arr-sim-reset {
       background: var(--study-paper);
@@ -682,7 +696,8 @@
           <a href="#p6-sec-1" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">1. تفكيك دوال isEmpty() و peek() و display() (Slides 31–33)</a>
           <a href="#p6-sec-2" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">2. تشريح كود main() لـ Stack&lt;int&gt; و Stack&lt;string&gt; (Slide 34)</a>
           <a href="#p6-sec-3" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">3. لغز الشريحة 35: لماذا طُبعت 4 سطور pop إضافية في النهاية؟ (Slide 35)</a>
-          <a href="#p6-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. الكود الكامل ومسودة التدريب</a>
+          <a href="#p6-sec-4" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">4. الكود الكامل للقائمة المتصلة</a>
+          <a href="#p6-draft" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">مسودة التدريب</a>
           <a href="#p6-comparison" class="toc-link block py-1.5 px-2 rounded hover:bg-amber-100 text-slate-900 font-bold">مقارنة تنفيذ المكدّس بالمصفوفة والقائمة المتصلة</a>
         </div>
       </div>
@@ -925,7 +940,7 @@
                 <div class="text-sm font-black text-emerald-900 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-400">
                   ⬇ Push (إدخال عنصر من القمة)
                 </div>
-                <div class="px-4 py-1.5 rounded-lg bg-emerald-600 text-white font-mono text-xs font-bold animate-bounce">
+                <div class="stack-diagram-element px-4 py-1.5 rounded-lg bg-emerald-900 text-white font-mono text-xs font-bold">
                   Data Element (داخل للـ Stack)
                 </div>
                 <div class="w-44 border-x-4 border-b-4 border-slate-800 rounded-b-xl p-2 bg-slate-50 space-y-1.5 pt-4">
@@ -1277,22 +1292,22 @@
               <!-- Green top box -->
               <div class="flex items-center gap-2 flex-wrap">
                 
-                <div class="px-6 py-3 rounded-xl bg-[#8ea627] border-2 border-[#5c6e14] text-white font-mono font-black text-lg shadow-md">
+                <div class="stack-diagram-top px-6 py-3 rounded-xl bg-[#8ea627] border-2 border-[#5c6e14] font-mono font-black text-lg shadow-md">
                   top = 2
                 </div>
-                <span class="text-2xl font-black text-[#6f851b]">━━►</span>
+                <span class="stack-diagram-arrow text-2xl font-black text-slate-800">━━►</span>
               </div>
 
               <!-- Vertical Array -->
               <div class="w-48 border-2 border-[#6f851b] rounded-xl overflow-hidden shadow-lg bg-[#a62c14] text-white font-mono">
-                <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between bg-[#992711]/80 text-white/60 text-xs">
+                <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between bg-[#992711]/80 text-white text-xs">
                   <span>arr[4]</span><span>(فارغ)</span>
                 </div>
-                <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between bg-[#992711]/80 text-white/60 text-xs">
+                <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between bg-[#992711]/80 text-white text-xs">
                   <span>arr[3]</span><span>(فارغ)</span>
                 </div>
                 <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between bg-[#c2381b] ring-2 ring-amber-300 font-black text-lg">
-                  <span class="text-xs text-amber-200">arr[2] (Top)</span><span>30</span>
+                  <span class="stack-diagram-index text-xs text-white">arr[2] (Top)</span><span>30</span>
                 </div>
                 <div class="p-3 border-b-2 border-[#6f851b] flex items-center justify-between font-bold text-base">
                   <span class="text-xs text-amber-100">arr[1]</span><span>20</span>
@@ -1318,7 +1333,7 @@
           </div>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 14 — Stack Class Definition (Lines 1 to 14)</span>
               <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="#include &lt;iostream&gt;
 using namespace std;
@@ -1509,7 +1524,7 @@ public:
           </h4>
 
           <div class="my-4 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 17 — isFull() Implementation (Lines 23 to 26)</span>
               <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Check if stack is full
     bool isFull() {
@@ -1560,7 +1575,7 @@ public:
           </div>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 16 — push() Implementation (Lines 29 to 38)</span>
               <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Function to add an element to the stack
     void push(int value) {
@@ -1791,7 +1806,7 @@ public:
           </h4>
 
           <div class="my-4 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 20 — isEmpty() Implementation (Lines 16 to 19)</span>
               <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Check if stack is empty
     bool isEmpty() {
@@ -1819,7 +1834,7 @@ public:
           </div>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 19 — pop() Implementation (Lines 40 to 48)</span>
               <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Function to remove the top element
     void pop() {
@@ -1919,7 +1934,7 @@ public:
           </div>
 
           <div class="my-4 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slides 21 &amp; 22 — peek() and display() (Lines 50 to 74)</span>
               <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Function to get the top element
     void peek() {
@@ -2042,7 +2057,7 @@ public:
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 my-6">
             <!-- Slide 23 main() -->
             <div class="rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md flex flex-col">
-              <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+              <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
                 <span class="text-xs font-mono text-emerald-300 font-bold">Slide 23 — Usage "main()" (Lines 76 to 95)</span>
                 <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="int main() {
     Stack s;
@@ -2187,27 +2202,27 @@ Stack elements (top to bottom): 30 20 10 </code></pre>
             <div id="static-stack-walkthrough" class="static-walkthrough mt-6 p-5 rounded-2xl bg-[#faf5e8] dark:bg-slate-800/80 border-2 border-[#d6cbb5] dark:border-slate-700 space-y-3">
               <h5 class="font-black text-sm sm:text-base text-slate-950 dark:text-slate-100">📖 مسار التتبع الكامل للمحاكي (Static Walkthrough):</h5>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-                <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 space-y-1">
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
                   <div class="text-amber-800 dark:text-amber-400 font-black">المرحلة 1: الإنشاء (Stack s;)</div>
                   <div>top = -1 | المصفوفة فارغة تماماً | isEmpty() = true</div>
                 </div>
-                <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 space-y-1">
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
                   <div class="text-emerald-800 dark:text-emerald-400 font-black">المرحلة 2: إضافة s.push(10..30)</div>
                   <div>top = 2 | العناصر: arr[0]=10, arr[1]=20, arr[2]=30 ⬅ TOP</div>
                 </div>
-                <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 space-y-1">
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
                   <div class="text-emerald-800 dark:text-emerald-400 font-black">المرحلة 3: امتلاء المكدس s.push(40, 50)</div>
                   <div>top = 4 (MAX-1) | الخانات الخمس ممتلئة | isFull() = true</div>
                 </div>
-                <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 space-y-1">
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
                   <div class="text-rose-800 dark:text-rose-400 font-black">المرحلة 4: تجاوز السعة s.push(60)</div>
                   <div>Stack Overflow! لا يمكن الإضافة ومؤشر top يظل ثابتاً عند 4</div>
                 </div>
-                <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 space-y-1">
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
                   <div class="text-sky-800 dark:text-sky-400 font-black">المرحلة 5: الحذف مرتين s.pop() ثم s.peek()</div>
                   <div>خروج 50 ثم 40 | top = 2 | العنصر في القمة هو arr[2] = 30</div>
                 </div>
-                <div class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 space-y-1">
+                <div class="stack-walkthrough-step p-3 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
                   <div class="text-rose-800 dark:text-rose-400 font-black">المرحلة 6: الحذف بعد تفريغ المكدس</div>
                   <div>خروج 30 ثم 20 ثم 10 | top = -1 | محاولة pop() مرة أخرى تؤدي إلى Stack Underflow، ويظل top = -1.</div>
                 </div>
@@ -2238,7 +2253,7 @@ Stack elements (top to bottom): 30 20 10 </code></pre>
           <div id="p4-sec-5" class="scroll-mt-24 pt-4 space-y-6">
             <h4 class="text-lg sm:text-2xl font-black text-emerald-950">💻 الكود الكامل المتكامل لـ Stack Using Array (تجميع الشرائح 14 إلى 23 في ملف واحد جاهز للتشغيل):</h4>
             <div class="rounded-2xl overflow-hidden border-2 border-emerald-800 shadow-lg">
-              <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+              <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
                 <span class="text-xs font-mono text-emerald-300 font-bold">array_stack_complete.cpp — Full Lecture Code (Lines 1 to 95)</span>
                 <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold" data-code="#include &lt;iostream&gt;
 using namespace std;
@@ -2535,7 +2550,7 @@ int main() {
           </div>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slides 27 &amp; 28 — Node &amp; Stack Classes with Templates (Lines 1 to 25)</span>
               <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="#include &lt;iostream&gt;
 using namespace std;
@@ -2697,7 +2712,7 @@ public:
           <p class="font-semibold">تذكر: عملية <code class="inline-code">push</code> في الـ Linked List Stack هي عملية <strong>الإضافة في بداية القائمة (<span class="inline-code">insertAtBeginning</span>)</strong> اللي شرحناها في المحاضرة التانية!</p>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 29 — Push Implementation (Lines 27 to 33)</span>
               <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Push operation
     void push(T value) {
@@ -2788,7 +2803,7 @@ public:
           </div>
           <p class="font-semibold">عملية <code class="inline-code">pop()</code> هنا هي عملية <strong>الحذف من بداية القائمة المتصلة (<span class="inline-code">deleteFromBeginning</span>)</strong> التي درسناها في المحاضرة الثانية!</p>
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slide 30 — Pop Implementation (Lines 35 to 46)</span>
               <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Pop operation
     void pop() {
@@ -2941,7 +2956,7 @@ public:
           </div>
 
           <div class="my-6 rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md">
-            <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+            <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
               <span class="text-xs font-mono text-emerald-300 font-bold">Slides 31, 32 &amp; 33 — peek(), isEmpty(), and display() (Lines 49 to 78)</span>
               <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="    // Peek (top element)
     void peek() {
@@ -3090,7 +3105,7 @@ public:
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 my-6">
             <!-- Slide 34 main() -->
             <div class="rounded-2xl overflow-hidden border-2 border-slate-800 shadow-md flex flex-col">
-              <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+              <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
                 <span class="text-xs font-mono text-emerald-300 font-bold">Slide 34 — Usage "main()" (Lines 88 to 108)</span>
                 <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold transition-all" data-code="int main() {
     cout &lt;&lt; &quot;Stack of Integers:\n&quot;;
@@ -3200,7 +3215,7 @@ AI popped from stack.
           <div id="p6-sec-4" class="scroll-mt-24 pt-4 space-y-6">
             <h4 class="text-lg sm:text-2xl font-black text-purple-950">💻 الكود الكامل المتكامل لـ Stack Using Linked List (تجميع الشرائح 27 إلى 35 بالـ Destructor):</h4>
             <div class="rounded-2xl overflow-hidden border-2 border-purple-800 shadow-lg">
-              <div class="bg-slate-800 px-4 py-2.5 flex items-center justify-between" dir="ltr">
+              <div class="code-toolbar bg-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2" dir="ltr">
                 <span class="text-xs font-mono text-emerald-300 font-bold">linked_list_stack_complete.cpp — Full Lecture Code (Lines 1 to 108)</span>
                 <button type="button" class="copy-code-btn px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold" data-code="#include &lt;iostream&gt;
 using namespace std;
@@ -3420,7 +3435,7 @@ int main() {
             </div>
 
             <!-- Hands-on Practice Box -->
-            <div class="p-5 sm:p-6 rounded-2xl bg-[#f5efe2] border-2 border-[#b8a98e] space-y-4">
+            <div id="p6-draft" class="scroll-mt-24 p-5 sm:p-6 rounded-2xl bg-[#f5efe2] border-2 border-[#b8a98e] space-y-4">
               <div class="flex items-center justify-between">
                 <label for="student-code-area" class="text-xs sm:text-sm font-black text-slate-950">✍️ مساحة مسودة لكتابة وتجربة كود الـ Stack بإيدك:</label>
                 <button type="button" id="btn-clear-draft" class="text-xs font-extrabold text-rose-800 hover:underline">مسح المسودة</button>
@@ -3734,7 +3749,7 @@ int main() {
       liveControls.addEventListener('submit', function (event) {
         event.preventDefault();
         const value = liveInput.valueAsNumber;
-        if (!Number.isSafeInteger(value)) {
+        if (!/^-?\d+$/.test(liveInput.value) || !Number.isSafeInteger(value)) {
           liveInput.setAttribute('aria-invalid', 'true');
           liveStatus.textContent = 'أدخل عددًا صحيحًا.';
           liveInput.focus();

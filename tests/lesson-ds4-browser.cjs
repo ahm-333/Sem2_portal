@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
 const { chromium } = require('playwright');
+const { auditActionContrast } = require('./control-contrast.cjs');
 
 const root = path.resolve(__dirname, '..');
 const output = path.resolve(process.env.PORTAL_TEST_OUTPUT || path.join(root, 'test-results'));
@@ -192,6 +193,8 @@ async function register({ scenario: testScenario }) {
     assert(partLinks.includes('#section-quiz'), 'TOC links to #section-quiz');
     assert(partLinks.includes('#p4-display'), 'TOC links directly to display()');
     assert(partLinks.includes('#p6-comparison'), 'TOC links directly to the implementation comparison');
+    assert.equal(await page.locator('#p6-draft #student-code-area').count(), 1, 'Draft has a direct outline destination');
+    assert(partLinks.includes('#p6-draft'), 'TOC links directly to the draft');
     const missingTargets = await page.evaluate(() => {
       return [...document.querySelectorAll('#sidebar-toc a[href^="#"]')]
         .map(link => link.hash.slice(1))
@@ -323,11 +326,13 @@ async function register({ scenario: testScenario }) {
 
     await page.getByRole('button', { name: 'Pop()', exact: true }).click();
     assert.match(await status.innerText(), /Stack Underflow/);
-    await input.fill('1.5');
-    await input.press('Enter');
-    assert.match(await status.innerText(), /عددًا صحيحًا/);
-    assert.equal(await input.getAttribute('aria-invalid'), 'true');
-    assert.match(await display.innerText(), /top = -1/);
+    for (const invalid of ['1.5', '4503599627370495.9', '9007199254740992']) {
+      await input.fill(invalid);
+      await input.press('Enter');
+      assert.match(await status.innerText(), /عددًا صحيحًا/);
+      assert.equal(await input.getAttribute('aria-invalid'), 'true');
+      assert.match(await display.innerText(), /top = -1/);
+    }
 
     for (const value of ['-10', '0', '20', '30', '40']) {
       await input.fill(value);
@@ -439,9 +444,29 @@ async function register({ scenario: testScenario }) {
     // Verify no body horizontal overflow at 320px
     const mobileHeader = await page.locator('#mainReadingHeader').boundingBox();
     assert(mobileHeader.height < 200, `Mobile header stays compact, got ${mobileHeader.height}px`);
+    const mobileTitle = page.locator('#mainReadingHeader h1');
+    assert(await mobileTitle.isVisible(), 'Lesson title remains visible at 320px');
+    assert(await mobileTitle.evaluate(el => el.clientHeight <= parseFloat(getComputedStyle(el).lineHeight) + 1), 'Lesson title fits on one line');
     const bodyScrollWidth = await page.evaluate(() => document.body.scrollWidth);
     const bodyClientWidth = await page.evaluate(() => document.body.clientWidth);
     assert(bodyScrollWidth <= bodyClientWidth + 1, `No horizontal overflow at 320px: scrollWidth ${bodyScrollWidth} <= clientWidth ${bodyClientWidth}`);
+
+    const clippedActions = await page.locator('main button, main input, main a[href]').evaluateAll(actions => {
+      return actions.filter(el => {
+        const rect = el.getBoundingClientRect();
+        return rect.width && (rect.left < -1 || rect.right > window.innerWidth + 1);
+      }).map(el => el.textContent.trim());
+    });
+    assert.deepEqual(clippedActions, [], 'Lesson actions fit within the mobile viewport');
+
+    for (const theme of ['light', 'reading', 'dark']) {
+      await page.evaluate(mode => window.PortalTheme.setTheme(mode), theme);
+      assert.deepEqual(await page.evaluate(auditActionContrast, 'main'), [], `Lesson action contrast in ${theme}`);
+      for (const selector of ['.stack-walkthrough-step > div:last-child', '.stack-diagram-element', '.stack-diagram-top', '.stack-diagram-index']) {
+        const contrast = await measureElementContrast(page, selector);
+        assert(contrast >= 4.5, `${selector} contrast in ${theme}, got ${contrast}`);
+      }
+    }
 
     // Verify code block direction is LTR and scrollable
     const preBlocksCheck = await page.evaluate(() => {
