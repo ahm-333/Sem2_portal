@@ -62,9 +62,12 @@ async function main(){
         await page.locator('#midterm-confirm-submit').click();
         await page.locator('#midterm-result-banner').waitFor();
         await page.keyboard.press('Escape');
-        if(['computer-graphics','report-writing'].includes(id)){
+        if(id==='report-writing'){
           assert(await page.locator('.is-upcoming-tool').isDisabled());
           assert.equal(await page.locator('[data-open-power-tool="interactive"]').count(),0);
+        }
+        if(id==='computer-graphics'){
+          assert.equal(await page.locator('[data-open-power-tool="interactive"]').count(),1);
         }
         cases++;
       }
@@ -73,7 +76,7 @@ async function main(){
           await page.goto(base+prefix+`education-preview/os/?unit=os-${String(unit).padStart(2,'0')}`);
           await page.locator('#glossary-content article').last().waitFor();cases++;
         }
-        for(const folder of ['arch','db','ds'])for(const file of fs.readdirSync(path.join(root,'study',folder)).filter(name=>name.endsWith('.html'))){
+        for(const folder of ['arch','db','ds','cg'])for(const file of fs.readdirSync(path.join(root,'study',folder)).filter(name=>name.endsWith('.html'))){
           await page.goto(base+prefix+`study/${folder}/${file}`);assert(await page.locator('h1').first().isVisible());cases++;
         }
       }

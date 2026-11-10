@@ -1966,6 +1966,24 @@
             "Priority Queue ADT & C++ STL std::queue / std::priority_queue"
           ],
           "notes": "سلايدات المحاضرة الخامسة الرسمية المعتمدة لمادة هياكل البيانات على Google Drive"
+        },
+        {
+          "id": 7,
+          "chapter": "Lecture 7",
+          "title": "Lecture 7: Trees",
+          "arabicTitle": "المحاضرة السابعة — الأشجار",
+          "studyManualUrl": "study/ds/lecture-7.html",
+          "fileType": "pdf",
+          "driveId": "1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH",
+          "driveViewUrl": "https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/view",
+          "drivePreviewUrl": "https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/preview",
+          "driveDownloadUrl": "https://drive.google.com/uc?export=download&id=1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH",
+          "pdfUrl": "https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/preview",
+          "topics": [
+            "Tree Terminology",
+            "Binary Nodes in Memory",
+            "Tree Traversals"
+          ]
         }
       ],
       "sections": [
@@ -2770,6 +2788,11 @@
         "before": "        \"driveDownloadUrl\": \"https://drive.google.com/uc?export=download&id=1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x\",\n        \"sheetUrl\": \"https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0\",\n        \"codeUrl\": \"https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit\",\n        \"localFile\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"videoUrl\": \"https://drive.google.com/file/d/1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x/view\",",
         "after": "        \"driveDownloadUrl\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"sheetUrl\": \"https://drive.google.com/drive/folders/1PQnl2IbsX84jcqpRFtOHvbbDNsHQPvz0\",\n        \"codeUrl\": \"https://docs.google.com/document/d/1cDO1AmEVzNkkAFW4SJ0L6haLIstZJnFE85HZ4k0yBMw/edit\",\n        \"localFile\": \"materials/ds/Stack_DynamicStack.cpp\",\n        \"videoUrl\": \"https://drive.google.com/file/d/1yLjnAw9-1IHLMcjtusVeWbbaIbmOLY0x/view\",",
         "reason": "F24: download the advertised C++ file instead of its MP4 recording"
+      },
+      {
+        "before": "      }",
+        "after": "      },\n      {\n        \"id\": 7,\n        \"chapter\": \"Lecture 7\",\n        \"title\": \"Lecture 7: Trees\",\n        \"arabicTitle\": \"المحاضرة السابعة — الأشجار\",\n        \"studyManualUrl\": \"study/ds/lecture-7.html\",\n        \"fileType\": \"pdf\",\n        \"driveId\": \"1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH\",\n        \"driveViewUrl\": \"https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/view\",\n        \"drivePreviewUrl\": \"https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/preview\",\n        \"driveDownloadUrl\": \"https://drive.google.com/uc?export=download&id=1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH\",\n        \"pdfUrl\": \"https://drive.google.com/file/d/1-rdyskhW9JeX2BoNFqCt4Gcpm1Fk72KH/preview\",\n        \"topics\": [\"Tree Terminology\", \"Binary Nodes in Memory\", \"Tree Traversals\"]\n      }",
+        "reason": "Add the verified Trees lecture row and preserve the existing lecture and resource records"
       }
     ]
   }

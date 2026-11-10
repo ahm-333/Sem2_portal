@@ -20,16 +20,15 @@ async function register({scenario}) {
     await ready(page); await go('index.html#library');
     await page.locator('#library-kind').selectOption('interactive');
     for (const [course, count, path] of [
-      ['data-structure', 3, 'study/ds/lecture-2.html'],
+      ['data-structure', 5, 'study/ds/lecture-2.html'],
       ['computer-architecture', 1, 'study/arch/chapter-7.html'],
-      ['operating-system', 19, 'education-preview/os/index.html?unit=os-19']
+      ['operating-system', 19, 'education-preview/os/index.html?unit=os-19'],
+      ['computer-graphics', 3, 'study/cg/chapter-1.html']
     ]) {
       await page.locator('#library-course').selectOption(course);
       assert.equal(await page.locator('#library-results .studio-library-row').count(), count);
       assert(await page.locator(`#library-results a[href="${path}"]`).count(), `interactive library opens ${path}`);
     }
-    await page.locator('#library-course').selectOption('computer-graphics');
-    assert.equal(await page.locator('#library-results .studio-library-row').count(), 0);
   });
   await scenario('integration-standalone-history-resumes-section', async ({page, go}) => {
     await ready(page); await go('study/ds/lecture-2.html');

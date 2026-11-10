@@ -8,6 +8,11 @@
   add('data-structure', 'lecture', 1, 'Data Structures · Lecture 1', 'study/ds/lecture-1.html');
   add('data-structure', 'lecture', 2, 'Data Structures · Lecture 2', 'study/ds/lecture-2.html');
   add('data-structure', 'lecture', 3, 'Data Structures · Lecture 3', 'study/ds/lecture-3.html');
+  add('data-structure', 'lecture', 4, 'Data Structures · Lecture 4: Stacks', 'study/ds/lecture-4.html');
+  add('data-structure', 'lecture', 7, 'Data Structures · Lecture 7: Trees', 'study/ds/lecture-7.html');
+  add('computer-graphics', 'lecture', 1, 'Computer Graphics · Chapter 1: Introduction & Systems', 'study/cg/chapter-1.html');
+  add('computer-graphics', 'lecture', 2, 'Computer Graphics · Chapter 2: Graphics Programming, Primitives & Color', 'study/cg/chapter-2.html');
+  add('computer-graphics', 'lecture', 3, 'Computer Graphics · Chapter 3: Output Primitives & Bresenham Algorithm', 'study/cg/chapter-3.html');
   add('database-systems', 'lecture', 2, 'Database · Chapter 1', 'study/db/chapter-1.html');
   add('database-systems', 'lecture', 3, 'Database · Chapter 2', 'study/db/chapter-2.html');
   add('computer-architecture', 'lecture', 5, 'Input / Output & DMA', 'study/arch/chapter-7.html');
