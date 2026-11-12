@@ -87,6 +87,17 @@
             </button>
           </form>
 
+          <div class="backup-settings-row">
+            <div class="backup-settings-copy">
+              <p class="backup-settings-title">النسخ الاحتياطي لتقدم المذاكرة</p>
+              <p class="backup-settings-desc">حفظ نسخة من تقدم الدروس والاختبارات أو استرجاعها من ملف</p>
+            </div>
+            <button type="button" data-open-backup-modal class="backup-entry-btn">
+              <i data-lucide="archive" class="w-4 h-4" aria-hidden="true"></i>
+              <span>النسخة الاحتياطية</span>
+            </button>
+          </div>
+
         </div>
       </div>
     `;
