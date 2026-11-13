@@ -45,7 +45,7 @@ async function main(){
         assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1));
         if(id==='database-systems'){
           assert.equal(await page.evaluate(()=>!!window.LECTURE_EXPLANATIONS),false,'full study data remains lazy');
-          await page.locator('[data-open-study-lecture="2"]').first().click();
+          await page.evaluate(()=>window.PortalStudyReader.current.open('database-systems',2));
           await page.locator('#study-slides-feed .slide-study-card').first().waitFor();
           await page.locator('#study-tab-btn-quiz').click();await page.locator('.full-quiz-opt-btn').first().waitFor();
           await page.locator('#full-q-1 .full-quiz-opt-btn').filter({hasText:'Traditional applications (Numeric and Textual databases)'}).click();

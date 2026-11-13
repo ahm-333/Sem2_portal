@@ -19,7 +19,7 @@ const out=path.resolve(__dirname,'../test-results/education/os-course/portal-ent
    await page.locator('.study-shell-brand').click();await page.locator('#courses-grid').waitFor();assert.equal(new URL(page.url()).pathname,'/'+prefix+'index.html');
    results.push({prefix,width,chapter,unit,passed:true});
   }
-  await page.goto(origin+prefix+'subject.html?id=database-systems');assert.equal(await page.locator('[data-os-course-link]').count(),0);await page.locator('[data-open-study-lecture="2"]').first().click();await page.locator('#lecture-study-modal').waitFor();await page.locator('#study-slides-feed img').first().waitFor({state:'attached'});await page.keyboard.press('Escape');
+  await page.goto(origin+prefix+'subject.html?id=database-systems');assert.equal(await page.locator('[data-os-course-link]').count(),0);assert.equal(await page.locator('a[href="study/db/lesson.html?lecture=2"]').count(),1);await page.evaluate(()=>window.PortalStudyReader.current.open('database-systems',2));await page.locator('#lecture-study-modal').waitFor();await page.locator('#study-slides-feed img').first().waitFor({state:'attached'});await page.keyboard.press('Escape');
   assert.deepEqual(errors,[]);await context.close();
  }
  fs.writeFileSync(path.join(out,'results.json'),JSON.stringify({date:new Date().toISOString(),results,otherSubjectReaderPassed:true},null,2));console.log('PASS OS portal entry: three chapter links, primary actions, real lesson/catalog/home navigation, root/Pages prefixes and mobile/desktop; other-subject reader preserved.');

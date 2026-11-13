@@ -254,19 +254,30 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const staff = window.StudentProfile ? window.StudentProfile.getCourseStaff(course.id) : null;
+    const escapeHtml = window.PortalUI.escapeHtml;
+    const safeHref = raw => {
+      if (!raw || raw === "#") return "#";
+      try {
+        const parsed = new URL(String(raw), "https://portal.local/");
+        return ["http:", "https:", "file:"].includes(parsed.protocol) ? String(raw) : "#";
+      } catch (_) {
+        return "#";
+      }
+    };
 
     lecturesList.innerHTML = course.lectures.map((lec) => {
-      const previewUrl = lec.drivePreviewUrl || lec.pdfUrl || lec.slidesUrl || "#";
-      const viewUrl = lec.driveViewUrl || lec.pdfUrl || lec.slidesUrl || "#";
-      const downloadUrl = lec.driveDownloadUrl || lec.pdfUrl || "#";
+      const previewUrl = safeHref(lec.drivePreviewUrl || lec.pdfUrl || lec.slidesUrl || "#");
+      const viewUrl = safeHref(lec.driveViewUrl || lec.pdfUrl || lec.slidesUrl || "#");
+      const downloadUrl = safeHref(lec.driveDownloadUrl || lec.pdfUrl || "#");
       const filename = `${course.name}_Lecture_${lec.id}.${lec.fileType || 'pdf'}`;
       const contentKey = window.PortalCatalog ? window.PortalCatalog.key(course.id, "lecture", lec.id) : JSON.stringify([String(course.id), "lecture", String(lec.id)]);
 
       const allExp = window.STUDY_CATALOG;
       const osUnit = course.id === "operating-system" ? {1: "os-01", 2: "os-09", 3: "os-13"}[lec.id] : null;
-      const smartStudyData = !osUnit && allExp && allExp[course.id] && allExp[course.id][lec.id];
       const catalogEntry = window.PortalCatalog ? window.PortalCatalog.get(contentKey) : null;
-      const standaloneUrl = catalogEntry?.module?.url || lec.studyManualUrl || null;
+      const rawStandaloneUrl = catalogEntry?.module?.url || lec.studyManualUrl || null;
+      const standaloneUrl = rawStandaloneUrl ? safeHref(rawStandaloneUrl) : null;
+      const smartStudyData = !osUnit && !catalogEntry?.module && allExp && allExp[course.id] && allExp[course.id][lec.id];
       const hasExplanation = Boolean(smartStudyData || osUnit || standaloneUrl);
 
       const fileTypeLabel = (lec.fileType || 'pdf').toUpperCase();
@@ -281,7 +292,7 @@ document.addEventListener("DOMContentLoaded", function () {
             أبرز المحاور والمفاهيم في هذه المحاضرة:
           </span>
           <div class="flex flex-wrap gap-1.5">
-            ${lec.topics.map(t => `<span class="text-[11px] px-2.5 py-0.5 rounded-lg bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-subtle)]">${t}</span>`).join("")}
+            ${lec.topics.map(t => `<span class="text-[11px] px-2.5 py-0.5 rounded-lg bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-subtle)]">${escapeHtml(t)}</span>`).join("")}
           </div>
         </div>
       ` : "";
@@ -294,19 +305,19 @@ document.addEventListener("DOMContentLoaded", function () {
         : (lec.doctorNote || "");
 
       return `
-        <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect" data-content-key='${contentKey}'>
+        <div class="glass-panel p-5 sm:p-6 rounded-3xl border flex flex-col justify-between gap-5 card-hover-effect" data-content-key='${escapeHtml(contentKey)}'>
           <div class="flex items-start gap-3.5">
             <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-600 text-white font-bold flex flex-col items-center justify-center text-xs flex-shrink-0 shadow-md font-mono icon-box-modern">
-              <span>L${lec.id}</span>
-              ${lec.chapter ? `<span class="text-[9px] opacity-80">${lec.chapter.replace("Chapter ", "Ch").replace("Lecture ", "Lec ")}</span>` : ""}
+              <span>L${escapeHtml(lec.id)}</span>
+              ${lec.chapter ? `<span class="text-[9px] opacity-80">${escapeHtml(lec.chapter.replace("Chapter ", "Ch").replace("Lecture ", "Lec "))}</span>` : ""}
             </div>
 
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                <span class="text-xs font-bold text-indigo-400">${lec.date || `المحاضرة ${lec.id}`}</span>
-                <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${lec.week || lec.id}</span>
+                <span class="text-xs font-bold text-indigo-400">${escapeHtml(lec.date || `المحاضرة ${lec.id}`)}</span>
+                <span class="text-[11px] text-[var(--text-dim)] font-mono">• أسبوع ${escapeHtml(lec.week || lec.id)}</span>
                 <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold border ${fileTypeBadgeColor}">
-                  ${fileTypeLabel}
+                  ${escapeHtml(fileTypeLabel)}
                 </span>
                 ${lec.driveId ? `
                   <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold flex items-center gap-1">
@@ -316,28 +327,28 @@ document.addEventListener("DOMContentLoaded", function () {
                 ` : ""}
                 <span class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-bold flex items-center gap-1" title="أستاذ المادة المخصص لمجموعتك في جدول الكلية">
                   <i data-lucide="graduation-cap" class="w-3 h-3"></i>
-                  <span>${doctorName}</span>
-                  ${doctorNote ? `<span class="text-[9px] opacity-80">(${doctorNote})</span>` : ""}
+                  <span>${escapeHtml(doctorName)}</span>
+                  ${doctorNote ? `<span class="text-[9px] opacity-80">(${escapeHtml(doctorNote)})</span>` : ""}
                 </span>
-                ${lec.pages ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">${lec.pages} صفحة</span>` : ""}
+                ${lec.pages ? `<span class="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">${escapeHtml(lec.pages)} صفحة</span>` : ""}
               </div>
 
               <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
-                <h4 class="text-base font-bold text-[var(--text-main)]">${lec.title}</h4>
+                <h4 class="text-base font-bold text-[var(--text-main)]">${escapeHtml(lec.title)}</h4>
                 ${smartStudyData ? `
                   <button
                     type="button"
-                    data-open-study-course="${course.id}"
-                    data-open-study-lecture="${lec.id}"
+                    data-open-study-course="${escapeHtml(course.id)}"
+                    data-open-study-lecture="${escapeHtml(lec.id)}"
                     data-action-id="internal-study" class="btn-open-smart-study inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-md shadow-purple-500/20 transition-all btn-smooth cursor-pointer"
                   >
                     <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-                    <span>✨ الشرح وتفكيك السلايدات (${smartStudyData.totalSlides} شريحة)</span>
+                    <span>✨ الشرح وتفكيك السلايدات (${escapeHtml(smartStudyData.totalSlides)} شريحة)</span>
                   </button>
                 ` : ""}
               </div>
-              <p class="text-xs font-semibold text-[var(--text-muted)] mb-2">${lec.arabicTitle || ""}</p>
-              ${lec.notes ? `<p class="text-xs text-[var(--text-dim)] bg-[var(--bg-surface)] p-2.5 rounded-xl border border-[var(--border-subtle)] leading-relaxed">💡 <strong>ملاحظة:</strong> ${lec.notes}</p>` : ""}
+              <p class="text-xs font-semibold text-[var(--text-muted)] mb-2">${escapeHtml(lec.arabicTitle || "")}</p>
+              ${lec.notes ? `<p class="text-xs text-[var(--text-dim)] bg-[var(--bg-surface)] p-2.5 rounded-xl border border-[var(--border-subtle)] leading-relaxed">💡 <strong>ملاحظة:</strong> ${escapeHtml(lec.notes)}</p>` : ""}
               ${topicsHtml}
             </div>
           </div>
@@ -346,9 +357,9 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)]">
             <div class="flex flex-wrap items-center gap-2">
               ${osUnit ? `
-                <a href="education-preview/os/?unit=${osUnit}" data-os-course-link="${lec.id}" data-action-id="standalone-study"
+                <a href="education-preview/os/?unit=${escapeHtml(osUnit)}" data-os-course-link="${escapeHtml(lec.id)}" data-action-id="standalone-study"
                   class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm btn-smooth"
-                  aria-label="فتح شرح Chapter ${lec.id}: الرسومات والأسئلة والمصطلحات">
+                  aria-label="فتح شرح Chapter ${escapeHtml(lec.id)}: الرسومات والأسئلة والمصطلحات">
                   <i data-lucide="book-open" class="w-4 h-4"></i>
                   <span>فتح الشرح والرسومات والأسئلة</span>
                 </a>
@@ -357,8 +368,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- زر المذاكرة التفاعلية -->
                 <button
                   type="button"
-                  data-open-study-course="${course.id}"
-                  data-open-study-lecture="${lec.id}"
+                  data-open-study-course="${escapeHtml(course.id)}"
+                  data-open-study-lecture="${escapeHtml(lec.id)}"
                   data-action-id="internal-study" class="btn-open-smart-study px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-purple-500/25 cursor-pointer btn-smooth"
                   title="تصفح الشريحة وتحتها تفكيكها الكامل وتريكات الامتحان وكويز تدريبي بالإنجليزي"
                 >
@@ -369,8 +380,8 @@ document.addEventListener("DOMContentLoaded", function () {
               ${standaloneUrl ? `
                 <!-- زر الشرح التفاعلي للمحاضرة -->
                 <a
-                  href="${standaloneUrl}"
-                  data-standalone-study-link="${lec.id}"
+                  href="${escapeHtml(standaloneUrl)}"
+                  data-standalone-study-link="${escapeHtml(lec.id)}"
                   data-action-id="${catalogEntry?.module ? 'standalone-study' : 'studyManualUrl'}"
                   class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:from-amber-600 hover:to-orange-700 text-white text-xs font-extrabold flex items-center gap-2 transition-all shadow-md shadow-amber-500/25 btn-smooth"
                   title="فتح موقع الشرح التفاعلي للمحاضرة وتفكيك الأكواد والرسومات"
@@ -399,12 +410,12 @@ document.addEventListener("DOMContentLoaded", function () {
               <!-- زر المعاينة داخل الصفحة -->
               <button
                 type="button"
-                data-preview-file="${previewUrl}"
-                data-preview-title="${lec.title}"
-                data-preview-subtitle="${lec.arabicTitle || ""}"
-                data-preview-filename="${filename}"
-                data-preview-download="${downloadUrl}"
-                data-preview-view="${viewUrl}"
+                data-preview-file="${escapeHtml(previewUrl)}"
+                data-preview-title="${escapeHtml(lec.title)}"
+                data-preview-subtitle="${escapeHtml(lec.arabicTitle || "")}"
+                data-preview-filename="${escapeHtml(filename)}"
+                data-preview-download="${escapeHtml(downloadUrl)}"
+                data-preview-view="${escapeHtml(viewUrl)}"
                 data-action-id="drivePreviewUrl" class="btn-preview-pdf px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer btn-smooth"
               >
                 <i data-lucide="eye" class="w-4 h-4"></i>
@@ -413,7 +424,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
               <!-- زر فتح في Google Drive -->
               <a
-                href="${viewUrl}"
+                href="${escapeHtml(viewUrl)}"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="px-3.5 py-2 rounded-xl glass-panel border text-xs font-bold text-[var(--text-main)] hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-1.5 shadow-sm btn-smooth"
@@ -425,8 +436,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
               <!-- زر تحميل مباشر للملف -->
               <a
-                href="${downloadUrl}"
-                download="${filename}"
+                href="${escapeHtml(downloadUrl)}"
+                download="${escapeHtml(filename)}"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm btn-smooth"

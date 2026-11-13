@@ -27,8 +27,9 @@ exports.register = async ({scenario}) => {
     assert.match(await userView.locator('.feedback').innerText(), /إجابة صحيحة/);
   });
   await scenario('choices-reader-slide-check-keeps-the-authored-answer-text-correct', async ({page, go}) => {
-    await settled(page); await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await settled(page);
+    await go(`subject.html?id=database-systems&item=${encodeURIComponent('["database-systems","lecture","2"]')}&action=internal-study`);
+    await page.locator('#lecture-study-modal').waitFor({state: 'visible'});
     await page.locator('[data-jump-to="slide-card-3"]').click();
     const card = page.locator('.slide-study-card:not([hidden]) .quiz-card');
     const texts = await card.locator('.quiz-opt-text').allTextContents();
@@ -81,8 +82,9 @@ exports.register = async ({scenario}) => {
     }
   });
   await scenario('choices-reader-full-quiz-keeps-scoring-after-answer-permutation', async ({page, go}) => {
-    await settled(page); await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await settled(page);
+    await go(`subject.html?id=database-systems&item=${encodeURIComponent('["database-systems","lecture","2"]')}&action=internal-study`);
+    await page.locator('#lecture-study-modal').waitFor({state: 'visible'});
     await page.locator('#study-tab-btn-quiz').click();
     const card = page.locator('#full-q-1');
     const originalCorrect = 'Traditional applications (Numeric and Textual databases)';

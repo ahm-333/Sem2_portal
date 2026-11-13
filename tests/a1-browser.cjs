@@ -125,7 +125,7 @@ async function main() {
   });
   await scenario('a1-journey-focused-reader-and-one-question', async ({page, go}) => {
     await settled(page); await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await page.evaluate(() => window.PortalStudyReader.current.open('database-systems', 2));
     await page.locator('#slide-card-1').waitFor();
     assert.equal(await page.locator('.slide-study-card:visible').count(), 1);
     await page.locator('[data-reader-step="next"]').click();
@@ -144,7 +144,7 @@ async function main() {
     await settled(page); await go('subject.html');
     assert.equal(await page.locator('.a1-resource-tabs').count(), 1, 'bare subject URL keeps the existing default-course behavior');
     await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await page.evaluate(() => window.PortalStudyReader.current.open('database-systems', 2));
     const paragraph = page.locator('#slide-card-1 [data-reader-part="explanation"] p').first();
     await paragraph.waitFor();
     const normal = await paragraph.evaluate(el => Number.parseFloat(getComputedStyle(el).fontSize));
@@ -171,13 +171,13 @@ async function main() {
     });
     await go('subject.html?id=database-systems');
     assert.equal(await page.locator('body').evaluate(el => getComputedStyle(el).backgroundColor), 'rgb(245, 246, 251)', 'saved light theme must be applied before the content paints');
-    await page.locator('[data-open-study-lecture="2"]').first().click(); await page.locator('#study-tab-btn-quiz').click();
+    await page.evaluate(() => window.PortalStudyReader.current.open('database-systems', 2)); await page.locator('#study-tab-btn-quiz').click();
     await page.locator('#full-quiz-reset-btn').click();
     assert(await page.locator('#full-q-1').evaluate(el => el === document.activeElement || el.contains(document.activeElement)), 'reset returns keyboard focus to question one');
   });
   await scenario('a1-journey-keyboard-continues-in-current-content', async ({page, go}) => {
     await settled(page); await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="2"]').first().click(); await page.locator('[data-reader-step="next"]').click();
+    await page.evaluate(() => window.PortalStudyReader.current.open('database-systems', 2)); await page.locator('[data-reader-step="next"]').click();
     await page.keyboard.press('Tab');
     assert(await page.evaluate(() => !!document.activeElement.closest('.a1-reader-body')), 'Tab from the selected slide must continue in the reading pane');
     await page.locator('#study-tab-btn-quiz').click(); await page.locator('[data-quiz-step="next"]').click();
@@ -189,7 +189,7 @@ async function main() {
   });
   await scenario('a1-journey-mobile-outline-follows-current-slide', async ({page, go}) => {
     await settled(page); await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await page.evaluate(() => window.PortalStudyReader.current.open('database-systems', 2));
     for (let i = 0; i < 12; i++) await page.locator('[data-reader-step="next"]').click();
     const pill = await page.locator('.study-jump-pill[aria-current="step"]').boundingBox();
     const rail = await page.locator('#study-jump-bar').boundingBox();
@@ -270,7 +270,7 @@ async function main() {
     await page.keyboard.press('Tab'); await page.locator('input[name="student_group"][value="B2"]').focus();
     if (await page.locator('input[name="student_group"][value="B2"]').evaluate(el => getComputedStyle(el.nextElementSibling).outlineStyle) === 'none') problems.push({state: 'profile-keyboard-focus', name: 'group radio', issue: 'no visible focus on the custom control'});
     await page.keyboard.press('Escape');
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await page.evaluate(() => window.PortalStudyReader.current.open('database-systems', 2));
     await page.locator('#study-slides-feed img').first().waitFor({state: 'attached'});
     await check('#lecture-study-modal', 'reader-and-slide-quiz');
     await page.locator('#study-tab-btn-quiz').click();
@@ -341,7 +341,12 @@ async function main() {
       assert.equal(await page.locator('#course-drive-folder-link').getAttribute('href'), course.driveFolderUrl);
       assert.deepEqual(await page.locator('#video-explanations-list [data-play-url]').evaluateAll(xs => xs.map(x => x.dataset.playUrl)), course.videoExplanations.map(x => x.url));
       assert.deepEqual(await page.locator('#lectures-list [data-preview-file]').evaluateAll(xs => xs.map(x => x.dataset.previewFile)), course.lectures.map(x => x.drivePreviewUrl || x.pdfUrl || x.slidesUrl || '#'));
-      for (const lecture of course.lectures) if (lecture.studyManualUrl) assert(await page.locator('#lectures-list a').evaluateAll((xs, url) => xs.some(x => x.getAttribute('href') === url), lecture.studyManualUrl));
+      for (const lecture of course.lectures) if (lecture.studyManualUrl) {
+        const expectedStudyUrl = course.id === 'database-systems' && (lecture.id === 2 || lecture.id === 3)
+          ? `study/db/lesson.html?lecture=${lecture.id}`
+          : lecture.studyManualUrl;
+        assert(await page.locator('#lectures-list a').evaluateAll((xs, url) => xs.some(x => x.getAttribute('href') === url), expectedStudyUrl), `${course.id} L${lecture.id} expected ${expectedStudyUrl}`);
+      }
       await resource(page, 'resources');
       const allTheory = page.locator('.btn-toggle-all-theory');
       if (await allTheory.count()) await allTheory.click();
@@ -389,7 +394,7 @@ async function main() {
         const brand = await page.locator(selector).boundingBox();
         assert(brand.x >= profile.x + profile.width || brand.x + brand.width <= profile.x, selector + ' must not overlap profile at ' + width);
       }
-      await page.locator('[data-open-study-lecture="2"]').first().click();
+      await page.evaluate(() => window.PortalStudyReader.current.open('database-systems', 2));
       for (const selector of ['#study-font-zoom-in', '#study-font-zoom-out', '#study-modal-close', '#study-modal-fullscreen', '#study-tab-btn-quiz']) {
         const rect = await page.locator(selector).boundingBox();
         assert(rect && rect.x >= 0 && rect.x + rect.width <= width + 1 && rect.y >= 0 && rect.y + rect.height <= 900, selector + ' fits ' + width);
@@ -408,7 +413,7 @@ async function main() {
     assert.equal(await page.evaluate(() => document.activeElement.id), 'main-content');
     await page.screenshot({path: path.join(output, 'reflow-200-percent.png')});
     await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="3"]').first().click();
+    await page.evaluate(() => window.PortalStudyReader.current.open('database-systems', 3));
     await page.locator('#study-slides-feed img').first().waitFor({state: 'attached'});
     assert.equal(await page.locator('#study-slides-feed img').count(), 32);
     await page.locator('#study-tab-btn-quiz').click();
@@ -432,7 +437,7 @@ async function main() {
     await page.evaluate(() => window.PortalTheme.setTheme('light'));
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1));
     await page.screenshot({animations: 'disabled', timeout: 30000, path: path.join(output, `subject-${width}.png`), fullPage: true});
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await page.evaluate(() => window.PortalStudyReader.current.open('database-systems', 2));
     await page.locator('#study-slides-feed img').first().waitFor({state: 'attached'});
     assert.equal(await page.locator('#study-slides-feed img').count(), 30);
     await page.screenshot({animations: 'disabled', timeout: 30000, path: path.join(output, `reader-${width}.png`)});

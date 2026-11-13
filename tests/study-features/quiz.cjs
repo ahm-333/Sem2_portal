@@ -10,10 +10,12 @@ async function settled(page) {
 exports.register = async ({ scenario }) => {
   await scenario('quiz-reader-hydrates-answers-score-and-active-question-on-reload', async ({ page, go }) => {
     await settled(page);
-    await go('subject.html?id=database-systems');
+    const key = '["database-systems","lecture","2"]';
+    const internalUrl = `subject.html?id=database-systems&item=${encodeURIComponent(key)}&action=internal-study`;
+    await go(internalUrl);
 
-    // Open Lecture 2
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    // Explicit legacy deep link opens Lecture 2 modal
+    await page.locator('#lecture-study-modal').waitFor({ state: 'visible' });
     await page.locator('#study-tab-btn-quiz').click();
 
     // Verify initial score is 0 / 20
@@ -29,7 +31,6 @@ exports.register = async ({ scenario }) => {
     assert.match(await page.locator('[data-quiz-position]').innerText(), /السؤال 2 من 20/);
 
     // Verify state in PortalStudyState before reload
-    const key = '["database-systems","lecture","2"]';
     const stateBefore = await page.evaluate(k => window.PortalStudyState.getItem(k), key);
     assert.ok(stateBefore?.quiz, 'PortalStudyState must contain quiz state');
     assert.equal(stateBefore.quiz.answers['1'], 0, 'Q1 authored answer index 0 must be stored');
@@ -37,7 +38,7 @@ exports.register = async ({ scenario }) => {
 
     // Reload page
     await page.reload();
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await page.locator('#lecture-study-modal').waitFor({ state: 'visible' });
     await page.locator('#study-tab-btn-quiz').click();
 
     // Verify score is hydrated as 1 / 20 (not 0 / 20)
@@ -74,8 +75,8 @@ exports.register = async ({ scenario }) => {
       }));
     }, { k: key, ver: catalogVersion });
 
-    await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await go(`subject.html?id=database-systems&item=${encodeURIComponent(key)}&action=internal-study`);
+    await page.locator('#lecture-study-modal').waitFor({ state: 'visible' });
     await page.locator('#study-tab-btn-quiz').click();
 
     // Should be on Q20

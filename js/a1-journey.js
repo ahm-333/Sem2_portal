@@ -129,13 +129,15 @@
         const item = items.find(value => value.title === title.textContent.trim());
         let subtitle = title.nextElementSibling?.tagName === 'P' ? title.nextElementSibling : null;
         if (!subtitle && (item?.arabicTitle || item?.subtitle)) { subtitle = document.createElement('p'); subtitle.textContent = item.arabicTitle || item.subtitle; }
+        const localStudySelector = window.PortalContentLinks?.LOCAL_STUDY_SELECTOR || '[data-open-study-lecture],[data-os-course-link],[data-standalone-study-link][data-action-id="standalone-study"]';
         const actions = document.createElement('div'); actions.className = 'a1-source-actions';
         let internal = false;
         for (const action of [...row.querySelectorAll('a[href],button')]) {
-          if (action.matches('[data-open-study-lecture],[data-os-course-link]')) { if (internal) { action.remove(); continue; } internal = true; action.textContent = 'فتح الشرح'; } else if (action.matches('[data-standalone-study-link]')) { action.textContent = 'فتح الشرح'; } else if (action.matches('[data-study-unavailable]')) { action.setAttribute('disabled', 'true'); action.setAttribute('aria-disabled', 'true'); action.classList.add('a1-action-disabled'); action.textContent = 'الشرح — قريبًا'; }
+          if (action.matches(localStudySelector)) { if (internal) { action.remove(); continue; } internal = true; action.textContent = 'فتح الشرح'; } else if (action.matches('[data-standalone-study-link]')) { action.textContent = 'فتح الشرح'; } else if (action.matches('[data-study-unavailable]')) { action.setAttribute('disabled', 'true'); action.setAttribute('aria-disabled', 'true'); action.classList.add('a1-action-disabled'); action.textContent = 'الشرح — قريبًا'; }
           actions.append(action);
         }
-        const primary = actions.querySelector(':is([data-open-study-lecture],[data-os-course-link],[data-standalone-study-link]):not(:disabled):not([aria-disabled="true"])') || actions.querySelector('[data-preview-file]') || actions.querySelector('[data-play-url]') || actions.querySelector('a:not([aria-disabled="true"])');
+        // Also promote external studyManualUrl lecture links (e.g., Arch L1-L4) as primary CTA while keeping localStudySelector internal-only.
+        const primary = actions.querySelector(`:is(${localStudySelector},[data-standalone-study-link]):not(:disabled):not([aria-disabled="true"])`) || actions.querySelector('[data-preview-file]') || actions.querySelector('[data-play-url]') || actions.querySelector('a:not([aria-disabled="true"])');
         primary?.classList.add('a1-action-primary');
         const copy = document.createElement('div'); copy.className = 'a1-source-copy'; title.dir = 'auto'; copy.append(title); if (subtitle) copy.append(subtitle);
         const meta = document.createElement('p'); meta.className = 'a1-source-meta';

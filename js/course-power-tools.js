@@ -152,7 +152,7 @@
       bar.innerHTML = `
         ${hasInteractiveHub || hasUpcomingHub ? `<div class="course-study-entry">
           <div><h3>الشرح التفاعلي</h3></div>
-          ${hasUpcomingHub ? `<button type="button" class="power-tool-btn is-upcoming-tool" disabled title="${escapeHtml(powerData.interactiveHub.desc)}">الشرح التفاعلي — قريبًا</button>` : ''}
+          ${hasUpcomingHub ? `<button type="button" class="power-tool-btn is-upcoming-tool" disabled aria-disabled="true" title="${escapeHtml(powerData.interactiveHub.desc)}">الشرح التفاعلي — قريبًا</button>` : ''}
           ${hasInteractiveHub ? `<button type="button" class="power-tool-btn is-interactive-tool" data-open-power-tool="interactive">افتح الشرح</button>` : ''}
         </div>` : ''}
         <div class="course-exam-entry">
@@ -340,34 +340,53 @@
     function renderInteractivePanel() {
       if (!panelInteractive || !powerData?.interactiveHub) return;
       const hub = powerData.interactiveHub;
-      const itemsHtml = (hub.items || []).map(item => `
+      const resolveInteractiveUrl = (item) => {
+        const rawUrl = typeof item?.url === 'string' ? item.url : '';
+        const catalog = window.PortalCatalog;
+        const links = window.PortalContentLinks;
+        if (item?.lectureReaderId && catalog && links) {
+          const key = catalog.key(course.id, 'lecture', item.lectureReaderId);
+          const entry = catalog.get(key);
+          if (entry?.module) {
+            return links.href(key, { actionId: 'standalone-study' });
+          }
+        }
+        if (rawUrl && Array.isArray(window.PortalStudyModules)) {
+          const mod = window.PortalStudyModules.find(m =>
+            m.url === rawUrl || (Array.isArray(m.aliases) && m.aliases.includes(rawUrl))
+          );
+          if (mod) {
+            return links ? links.href(mod.key, { actionId: 'standalone-study' }) : mod.url;
+          }
+        }
+        return rawUrl || '#';
+      };
+      const itemsHtml = (hub.items || []).map(item => {
+        const resolvedUrl = resolveInteractiveUrl(item);
+        return `
         <article class="smart-card">
           <div class="smart-card-header">
             <div>
-              <h3 class="smart-card-title">${escapeHtml(item.title)}</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">${escapeHtml(item.sub)}</p>
+              <h3 class="smart-card-title" dir="auto">${escapeHtml(item.title)}</h3>
+              <p class="text-xs text-[var(--text-muted)] mt-1" dir="auto">${escapeHtml(item.sub)}</p>
             </div>
             <div class="flex flex-wrap gap-2">
-              ${item.lectureReaderId ? `
-                <button type="button" class="power-tool-btn is-primary-tool" data-launch-internal-reader="${escapeHtml(item.lectureReaderId)}">
-                  <span>📖 فتح القارئ التفاعلي والكويز</span>
-                </button>
-              ` : ''}
-              <a href="${escapeHtml(item.url)}" target="${item.url.startsWith('http') ? '_blank' : '_self'}" rel="noopener noreferrer" class="power-action-link is-interactive-tool">
+              <a href="${escapeHtml(resolvedUrl)}" target="${resolvedUrl.startsWith('http') ? '_blank' : '_self'}" rel="noopener noreferrer" class="power-action-link is-interactive-tool">
                 <span>🚀 فتح صفحة الشرح التفاعلي</span>
               </a>
             </div>
           </div>
         </article>
-      `).join('');
+      `;
+      }).join('');
 
       const practiceBankHtml = hub.practiceBank ? `
-        <article class="smart-card mt-3" style="border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.05);">
+        <article class="smart-card is-practice-bank mt-3">
           <div class="smart-card-header">
             <div>
-              <span class="smart-card-tag" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">🎯 بنك تدريبي شامل</span>
-              <h3 class="smart-card-title mt-1">${escapeHtml(hub.practiceBank.title)}</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">${escapeHtml(hub.practiceBank.sub)}</p>
+              <span class="smart-card-tag is-practice">🎯 بنك تدريبي شامل</span>
+              <h3 class="smart-card-title mt-1" dir="auto">${escapeHtml(hub.practiceBank.title)}</h3>
+              <p class="text-xs text-[var(--text-muted)] mt-1" dir="auto">${escapeHtml(hub.practiceBank.sub)}</p>
             </div>
             <a href="${escapeHtml(hub.practiceBank.url)}" class="power-action-link is-interactive-tool" id="ds-practice-bank-link">
               <span>📝 ${escapeHtml(hub.practiceBank.label || 'فتح بنك التدريبات')}</span>
@@ -381,8 +400,8 @@
           <div class="smart-card-header">
             <div>
               <span class="smart-card-tag">✨ البوابة التفاعلية المعتمدة</span>
-              <h3 class="smart-card-title mt-2">${escapeHtml(course.arabicName)} (${escapeHtml(course.name)})</h3>
-              <p class="text-xs text-[var(--text-muted)] mt-1">${escapeHtml(hub.desc)}</p>
+              <h3 class="smart-card-title mt-2" dir="auto">${escapeHtml(course.arabicName)} (<bdi lang="en">${escapeHtml(course.name)}</bdi>)</h3>
+              <p class="text-xs text-[var(--text-muted)] mt-1" dir="auto">${escapeHtml(hub.desc)}</p>
             </div>
             <a href="${escapeHtml(hub.mainUrl)}" target="${hub.mainUrl.startsWith('http') ? '_blank' : '_self'}" rel="noopener noreferrer" class="power-action-link is-interactive-tool" id="interactive-hub-main-link">
               <span>⚡ ${escapeHtml(hub.mainLabel)}</span>
@@ -949,16 +968,6 @@
       const tabBtn = event.target.closest('[data-power-tab]');
       if (tabBtn) {
         switchPowerTab(tabBtn.dataset.powerTab);
-        return;
-      }
-
-      // فتح القارئ التفاعلي الداخلي للمحاضرة
-      const readerBtn = event.target.closest('[data-launch-internal-reader]');
-      if (readerBtn) {
-        const lecId = readerBtn.dataset.launchInternalReader;
-        closePowerModal();
-        const trigger = document.querySelector(`[data-open-study-lecture="${lecId}"]`);
-        if (trigger) trigger.click();
         return;
       }
 

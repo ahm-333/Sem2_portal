@@ -139,10 +139,11 @@
       window.addEventListener('resize',() => closePicker(false));
       window.addEventListener('pagehide',() => closePicker(false));
     } else copy.append(controls);
+    const localStudySelector = window.PortalContentLinks?.LOCAL_STUDY_SELECTOR || '[data-open-study-lecture],[data-os-course-link],[data-standalone-study-link][data-action-id="standalone-study"]';
     const firstSource = document.querySelector('#lectures-list .a1-source-actions .a1-action-primary');
     if (firstSource) {
       const start = document.createElement('button'); start.type = 'button'; start.dataset.atlasStart = 'true';
-      start.textContent = firstSource.matches('[data-open-study-lecture],[data-os-course-link]') ? 'ابدأ الشرح' : 'افتح أول مصدر';
+      start.textContent = firstSource.matches(localStudySelector) ? 'ابدأ الشرح' : 'افتح أول مصدر';
       start.addEventListener('click',() => {window.PortalJourney.selectFamily('lectures');document.querySelector('#lectures-list .a1-source-actions .a1-action-primary')?.click();});
       controls.append(start);
     }
@@ -177,7 +178,7 @@
           if (!row.querySelector('.atlas-source-marker')) {
             const marker = document.createElement('span'); marker.className = 'atlas-source-marker'; marker.setAttribute('aria-hidden','true'); marker.textContent = String(index+1).padStart(2,'0');
             row.prepend(marker);
-            if (row.querySelector('[data-open-study-lecture],[data-os-course-link]')) row.classList.add('atlas-has-explanation');
+            if (row.querySelector(localStudySelector)) row.classList.add('atlas-has-explanation');
           }
           if (window.PortalStudyProgressUI && !row.dataset.studyProgressDecorated) {
             row.dataset.studyProgressDecorated = 'true';
