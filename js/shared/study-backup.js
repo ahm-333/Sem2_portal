@@ -142,7 +142,9 @@
     }
   }
 
-  function safeTree(value, seen = new Set()) {
+  function safeTree(value, seen = new Set(), depth = 0) {
+    // Valid backup records are shallow; reject excessive nesting before recursion can overflow.
+    if (depth > 64) return false;
     if (value === null || typeof value === 'string' || typeof value === 'boolean') return true;
     if (typeof value === 'number') return Number.isFinite(value);
     if ((!isPlainObject(value) && !Array.isArray(value)) || seen.has(value)) return false;
@@ -165,7 +167,7 @@
       }
     }
     seen.add(value);
-    const ok = ownNames.every(key => (Array.isArray(value) && key === 'length') || safeTree(value[key], seen));
+    const ok = ownNames.every(key => (Array.isArray(value) && key === 'length') || safeTree(value[key], seen, depth + 1));
     seen.delete(value);
     return ok;
   }
@@ -686,7 +688,7 @@
       const result = state.replaceBundle({
         studyState: inspected.normalized.studyState,
         standalone: inspected.normalized.standalone,
-        expectedRevision: restoreOptions.expectedRevision
+        ...(restoreOptions.expectedRevision !== undefined ? { expectedRevision: restoreOptions.expectedRevision } : {})
       });
 
       if (!result.saved) {

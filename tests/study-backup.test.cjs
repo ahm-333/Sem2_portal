@@ -581,3 +581,26 @@ describe('PortalStudyBackup export, validation, preview, and atomic restore (Sli
     assert.equal(storage.getItem('sem2_active_exam_v1:' + encodeURIComponent(db2)), JSON.stringify({ active: true }));
   });
 });
+
+test('confirmed backup restore works without an optional revision token', () => {
+  const { createStudyBackup } = require('../js/shared/study-backup.js');
+  const state = createStudyState({ storage: createMockStorage() });
+  const backup = createStudyBackup({ state });
+  const exported = backup.exportBackup();
+  const result = backup.restoreBackup(exported.json, { confirmed: true });
+  assert.equal(result.restored, true, JSON.stringify(result));
+});
+
+test('deeply nested backup input returns a validation error without throwing or writing', () => {
+  const { createStudyBackup } = require('../js/shared/study-backup.js');
+  const storage = createMockStorage();
+  const state = createStudyState({ storage });
+  const backup = createStudyBackup({ state });
+  const nested = '{"x":'.repeat(10000) + 'null' + '}'.repeat(10000);
+  assert.ok(Buffer.byteLength(nested) < backup.MAX_BYTES);
+  const result = backup.inspectBackup(nested);
+  assert.equal(result.ok, false);
+  assert.equal(result.reason, 'unsafe_value');
+  assert.equal(backup.restoreBackup(nested, { confirmed: true }).restored, false);
+  assert.equal(storage._stats.setItemCalls, 0);
+});

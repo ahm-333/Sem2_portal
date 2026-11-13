@@ -10,6 +10,36 @@ async function readDownloadText(download) {
 }
 
 async function register({ scenario }) {
+  for (const separateTab of [false, true]) {
+    await scenario('backup-open-quiz-preserves-restored-results-' + (separateTab ? 'other-tab' : 'same-tab'), async ({ page, context, go, errors }) => {
+      await go('subject.html?id=database-systems');
+      await page.locator('[data-open-study-lecture="2"]').first().click();
+      await page.locator('#study-tab-btn-quiz').click();
+      const restorer = separateTab ? await context.newPage() : page;
+      if (separateTab) await restorer.goto(page.url());
+      const key = JSON.stringify(['database-systems', 'lecture', '2']);
+      const quiz = await restorer.evaluate(k => {
+        const exported = window.PortalStudyBackup.exportBackup();
+        const result = { version: '0f77d6ceae5a', score: 2, total: 20, completedAt: '2026-11-12T10:00:00.000Z' };
+        const quiz = { version: result.version, answers: { '1': 0, '2': 0 }, activeQuestionId: 1,
+          completedVersions: [result.version], lastCompleted: result, bestCompleted: result };
+        exported.envelope.payload.studyState.items[k] = { quiz };
+        const restored = window.PortalStudyBackup.restoreBackup(JSON.stringify(exported.envelope), {
+          confirmed: true, expectedRevision: window.PortalStudyState.getRevisionToken()
+        });
+        if (!restored.restored) throw new Error(JSON.stringify(restored));
+        return quiz;
+      }, key);
+      await page.locator('[data-quiz-step="next"]').click();
+      const saved = await page.evaluate(k => window.PortalStudyState.getItem(k).quiz, key);
+      assert.deepEqual(saved.answers, quiz.answers, 'Navigation must preserve restored answers');
+      assert.deepEqual(saved.completedVersions, quiz.completedVersions);
+      assert.deepEqual(saved.lastCompleted, quiz.lastCompleted);
+      assert.deepEqual(saved.bestCompleted, quiz.bestCompleted);
+      assert.equal((await page.locator('#full-quiz-answered-count').innerText()).trim(), '2 من 20 تم حله');
+      assert.deepEqual(errors, []);
+    });
+  }
   await scenario('backup-settings-footer-export-preview-cancel-and-roundtrip', async ({ page, go, errors }) => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sem2-backup-test-'));
     try {
