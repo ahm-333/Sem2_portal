@@ -416,10 +416,24 @@ test('dashboard: resumeOptions falls back within same entry when last.actionId i
   const item = { startedAt: last.updatedAt, reader: { slideId: 3, tab: 'quiz' } };
 
   const options = studio.resumeOptions(entry, item, last);
-  // Must NOT use non-existent-action-xyz, but recover within the SAME entry to internal-study
-  assert.equal(options.actionId, 'internal-study');
+  // Must NOT use non-existent-action-xyz, and must recover unified DB lessons to standalone-study
+  assert.equal(options.actionId, 'standalone-study');
   assert.equal(options.slide, 3);
   assert.equal(options.tab, 'quiz');
+  assert.equal(scope.window.PortalContentLinks.href(key, options), 'study/db/lesson.html?lecture=2&view=practice');
+
+  // Even an explicit legacy internal-study marker on a unified module normalizes to standalone-study
+  const normalized = studio.resumeOptions(entry, { reader: { slideId: 5, tab: 'explanation' } }, { key, actionId: 'internal-study' });
+  assert.equal(normalized.actionId, 'standalone-study');
+  assert.equal(normalized.slide, 5);
+  assert.equal(scope.window.PortalContentLinks.href(key, normalized), 'study/db/lesson.html?lecture=2&slide=5');
+
+  // Legacy standalone-study without a valid bridge keeps its section ordinal instead of rewriting to slide
+  const legacyStandalone = studio.resumeOptions(entry, { reader: { slideId: 4, tab: 'explanation' } }, { key, actionId: 'standalone-study' });
+  assert.equal(legacyStandalone.actionId, 'standalone-study');
+  assert.equal(legacyStandalone.slide, undefined);
+  assert.equal(legacyStandalone.section, 4);
+  assert.equal(scope.window.PortalContentLinks.href(key, legacyStandalone), 'study/db/lesson.html?lecture=2&section=4');
 });
 
 test('dashboard: resumeOptions restores reader slide and tab, and validates standalone bridge anchor', () => {
@@ -482,7 +496,15 @@ test('dashboard: readingHistory shows continue card when valid lastUsed exists',
   assert.equal(resume.hidden, false, '#studio-resume must be visible');
   assert.ok(resume.innerHTML.includes('studio-resume-link'));
   assert.ok(resume.innerHTML.includes('كمّل من آخر مرة'));
-  assert.ok(resume.innerHTML.includes('item=%5B%22database-systems%22%2C%22lecture%22%2C%222%22%5D'));
+  assert.ok(resume.innerHTML.includes('study/db/lesson.html?lecture=2'));
+
+  const ts = new Date().toISOString();
+  state.updateItem(key, { startedAt: ts, reader: { slideId: 2, tab: 'explanation', updatedAt: ts } });
+  studio.readingHistory();
+  assert.ok(
+    resume.innerHTML.includes('study/db/lesson.html?lecture=2&amp;slide=2') ||
+    resume.innerHTML.includes('study/db/lesson.html?lecture=2&slide=2')
+  );
 });
 
 test('dashboard: readingHistory provides explicit recovery when lastUsed item is deleted or unavailable without deleting orphan history', () => {
@@ -605,4 +627,55 @@ test('dashboard: course progress and continue state never leak into #schedule-se
   assert.equal(scheduleSection.querySelector('.studio-course-summary'), null);
   assert.equal(scheduleSection.querySelector('.studio-resume-link'), null);
   assert.equal(scheduleSection.querySelector('.studio-resume-recovery'), null);
+});
+
+test('dashboard: libraryOptions routes DB unified modules via standalone-study and study-session matches aliases', () => {
+  const { scope } = setupDashboardTestEnv();
+  const studio = scope.window.PortalStudio;
+  const catalog = scope.window.PortalCatalog;
+
+  assert.equal(typeof studio.libraryOptions, 'function');
+  const db2 = catalog.get(catalog.key('database-systems', 'lecture', 2));
+  const db3 = catalog.get(catalog.key('database-systems', 'lecture', 3));
+  assert.equal(studio.libraryOptions(db2)?.actionId, 'standalone-study');
+  assert.equal(studio.libraryOptions(db3)?.actionId, 'standalone-study');
+
+  const sessionStore = new Map();
+  const mockSessionStorage = {
+    getItem: k => (sessionStore.has(k) ? sessionStore.get(k) : null),
+    setItem: (k, v) => sessionStore.set(k, String(v)),
+    removeItem: k => sessionStore.delete(k),
+    clear: () => sessionStore.clear(),
+    get length() { return sessionStore.size; },
+    key: i => [...sessionStore.keys()][i] || null
+  };
+  const sessionScope = {
+    console,
+    URL,
+    URLSearchParams,
+    document: { body: {}, addEventListener: () => {}, querySelectorAll: () => [], getElementById: () => null },
+    localStorage: mockSessionStorage,
+    sessionStorage: mockSessionStorage,
+    MutationObserver: class { observe() {} },
+    requestAnimationFrame: fn => fn(),
+    setTimeout: fn => fn()
+  };
+  sessionScope.window = Object.assign(sessionScope, {
+    location: { href: 'http://localhost/Sem2_portal/study/db/chapter-1.html?raw=1' },
+    addEventListener: () => {}
+  });
+  vm.createContext(sessionScope);
+  for (const file of ['js/shared/storage.js', 'js/shared/study-state.js', 'js/study-modules.js', 'js/study-session.js']) {
+    vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), sessionScope, { filename: path.join(root, file) });
+  }
+  assert.equal(sessionScope.PortalStudySession?.module?.key, '["database-systems","lecture","2"]');
+  assert.equal(
+    sessionScope.PortalStudyState.getSnapshot().lastUsed?.actionId,
+    'standalone-study',
+    'Aliased standalone DB page must record canonical standalone-study session'
+  );
+  assert.equal(
+    sessionScope.PortalStudyState.getSnapshot().lastUsed?.key,
+    '["database-systems","lecture","2"]'
+  );
 });

@@ -55,11 +55,10 @@ async function register({scenario}) {
     assert.equal(await page.locator('.studio-library-row').count(), 2);
     const target = page.locator('.studio-library-row').first();
     const link = new URL(await target.getAttribute('href'), page.url());
-    assert.equal(link.searchParams.get('action'), 'internal-study');
+    assert.equal(link.pathname.endsWith('/study/db/lesson.html'), true);
+    assert.equal(link.searchParams.get('lecture'), '2');
     await target.click();
-    await page.locator('#lecture-study-modal').waitFor({state:'visible'});
-    await page.locator('#study-slides-feed .slide-study-card').first().waitFor({state:'visible'});
-    await page.keyboard.press('Escape');
+    await page.locator('#topic-block-1').waitFor({state:'visible'});
     await page.goBack();
     await page.locator('#studio-library').waitFor({state:'visible'});
     await page.locator('#library-query').fill('zzzz-no-resource');
@@ -72,8 +71,7 @@ async function register({scenario}) {
   });
   await scenario('studio-reader-resume-survives-navigation-and-reload', async ({page, go}) => {
     await page.addInitScript(() => {localStorage.setItem('sem2_first_visit_configured', 'true');window.sessionStorage.setItem('sem2-studio-rift-intro-v3','seen');});
-    await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await go(`subject.html?id=database-systems&item=${encodeURIComponent('["database-systems","lecture","2"]')}&action=internal-study`);
     await page.locator('#slide-card-1').waitFor({state:'visible'});
     for (let i = 0; i < 4; i++) await page.locator('[data-reader-step="next"]').click();
     await page.locator('[data-reader-mode="slide"]').click();
@@ -81,14 +79,14 @@ async function register({scenario}) {
     await go('index.html#continue');
     assert.equal(await page.locator('#continue-results .studio-library-row').count(), 1);
     await page.reload();
+    assert.equal(await page.locator('#continue-results .studio-library-row').getAttribute('href'), 'study/db/lesson.html?lecture=2&slide=5&tab=original');
     await page.locator('#continue-results .studio-library-row').click();
-    await page.locator('#lecture-study-modal').waitFor({state:'visible'});
     await page.locator('#slide-card-5').waitFor({state:'visible'});
-    assert.equal(await page.locator('[data-reader-mode="slide"]').getAttribute('aria-pressed'), 'true');
-    assert.match(await page.locator('[data-reader-position]').innerText(), /5/);
-    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('#view-btn-slides').getAttribute('aria-pressed'), 'true');
+    assert.match(await page.locator('#slide-stepper-counter').innerText(), /5/);
     await go('index.html');
     assert(await page.locator('#studio-resume').isVisible());
+    assert.equal(await page.locator('#studio-resume a.studio-resume-link').getAttribute('href'), 'study/db/lesson.html?lecture=2&slide=5&tab=original');
   });
   await scenario('studio-library-ta-and-profile-change', async ({page, go}) => {
     await page.addInitScript(() => {localStorage.setItem('sem2_first_visit_configured', 'true');window.sessionStorage.setItem('sem2-studio-rift-intro-v3','seen');});
@@ -140,8 +138,7 @@ async function register({scenario}) {
   });
   await scenario('studio-mobile-study-content-visible-with-save-notice', async ({page, go}) => {
     await page.addInitScript(() => {localStorage.setItem('sem2_first_visit_configured', 'true');window.sessionStorage.setItem('sem2-studio-rift-intro-v3','seen');});
-    await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await go(`subject.html?id=database-systems&item=${encodeURIComponent('["database-systems","lecture","2"]')}&action=internal-study`);
     await page.locator('#slide-card-1').waitFor({state:'visible'});
     const header = await page.locator('.a1-reader-header').boundingBox();
     assert(header.height < 150, 'reader chrome leaves room for actual lesson content');

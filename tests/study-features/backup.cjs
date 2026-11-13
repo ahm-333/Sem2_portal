@@ -12,12 +12,12 @@ async function readDownloadText(download) {
 async function register({ scenario }) {
   for (const separateTab of [false, true]) {
     await scenario('backup-open-quiz-preserves-restored-results-' + (separateTab ? 'other-tab' : 'same-tab'), async ({ page, context, go, errors }) => {
-      await go('subject.html?id=database-systems');
-      await page.locator('[data-open-study-lecture="2"]').first().click();
+      const key = JSON.stringify(['database-systems', 'lecture', '2']);
+      await go(`subject.html?id=database-systems&item=${encodeURIComponent(key)}&action=internal-study`);
+      await page.locator('#lecture-study-modal').waitFor({ state: 'visible' });
       await page.locator('#study-tab-btn-quiz').click();
       const restorer = separateTab ? await context.newPage() : page;
       if (separateTab) await restorer.goto(page.url());
-      const key = JSON.stringify(['database-systems', 'lecture', '2']);
       const quiz = await restorer.evaluate(k => {
         const exported = window.PortalStudyBackup.exportBackup();
         const result = { version: '0f77d6ceae5a', score: 2, total: 20, completedAt: '2026-11-12T10:00:00.000Z' };

@@ -13,6 +13,16 @@
   },
   "normalization": "CRLF is normalized to LF; teaching bodies were first verified against the original byte hashes before this platform normalization.",
   "navigationFixes": {
+    "study/db/index.html": [
+      {
+        "before": "<a href=\"chapter-1.html\" class=\"btn-gradient",
+        "after": "<a href=\"lesson.html?lecture=2\" class=\"btn-gradient"
+      },
+      {
+        "before": "<a href=\"chapter-2.html\" class=\"btn-gradient",
+        "after": "<a href=\"lesson.html?lecture=3\" class=\"btn-gradient"
+      }
+    ],
     "study/ds/index.html": [
       {
         "before": "",

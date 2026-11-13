@@ -60,6 +60,10 @@ body.studio .a1-header-actions button.header-smart-btn svg {
   border: 1px solid var(--line);
 }
 
+[data-study-timer-readout] {
+  font-variant-numeric: tabular-nums;
+}
+
 @media (max-width: 920px) {
   body.studio .a1-header-actions button.header-smart-btn .header-smart-label,
   body.studio .a1-header-actions button#portal-timer-nav-btn [data-study-timer-readout] {
@@ -209,7 +213,7 @@ a.power-action-link {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 40px;
+  min-height: 44px;
   padding: 8px 14px;
   border-radius: 9px;
   font-size: 11.5px;
@@ -440,6 +444,17 @@ button.power-modal-tab[aria-selected="true"] {
   background-color: var(--soft);
   color: var(--ink);
   border: 1px solid var(--line);
+}
+
+.smart-card.is-practice-bank {
+  background-color: var(--soft);
+  border-color: var(--warning);
+}
+
+.smart-card-tag.is-practice {
+  background-color: var(--paper);
+  color: var(--warning);
+  border-color: var(--warning);
 }
 
 .smart-card-tag.is-new {
@@ -734,9 +749,9 @@ button.power-action-btn:is(.is-submit, .is-active-preset):hover:not(:disabled) {
   #course-power-modal .power-modal-title-wrap { min-width: 0; flex: 1; gap: 5px; }
   #course-power-modal .power-modal-title { font-size: 12px; line-height: 1.4; }
   .power-modal-course-code { display: none; }
-  .power-modal-close-btn { flex-shrink: 0; min-height: 40px; }
+  .power-modal-close-btn { flex-shrink: 0; min-height: 44px; }
   #course-power-modal .power-modal-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 0; margin: 0; }
-  button.power-modal-tab { padding: 7px 6px; min-height: 40px; gap: 4px; font-size: 10px; }
+  button.power-modal-tab { padding: 7px 6px; min-height: 44px; gap: 4px; font-size: 10px; }
   button.power-modal-tab svg { width: 12px; height: 12px; }
   .power-modal-body { min-height: 0; padding: 10px; }
   .study-timer-box { padding: 16px 10px; gap: 12px; }

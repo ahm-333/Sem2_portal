@@ -2,8 +2,8 @@ const assert = require('node:assert/strict');
 
 async function register({ scenario }) {
   await scenario('storage-warning-remains-accessible-in-reader-and-quiz', async ({page, go}) => {
-    await go('subject.html?id=database-systems');
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await go(`subject.html?id=database-systems&item=${encodeURIComponent('["database-systems","lecture","2"]')}&action=internal-study`);
+    await page.locator('#lecture-study-modal').waitFor({state: 'visible'});
     await page.locator('#study-slides-feed .slide-study-card').first().waitFor();
     await page.evaluate(() => {
       const write = Storage.prototype.setItem;

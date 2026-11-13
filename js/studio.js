@@ -128,6 +128,9 @@
     const text = status === 'completed' ? 'مكتمل' : status === 'in-progress' ? 'قيد المذاكرة' : 'لم تبدأ';
     return ` <span class="studio-status-badge status-${escape(status)}" role="status">${escape(text)}</span>`;
   }
+  function libraryOptions(entry) {
+    return entry?.module ? {actionId: 'standalone-study'} : entry?.study ? {actionId: 'internal-study'} : {};
+  }
   function resourceRow(entry, options = {}) {
     const url = window.PortalContentLinks.href(entry.key, options);
     const badge = statusBadge(entry);
@@ -151,15 +154,19 @@
         actionId = last.actionId;
       }
     }
-    if (!actionId) {
-      if (entry.module && (!entry.study || bridge)) actionId = 'standalone-study';
+    const recordedActionId = actionId;
+    if (!actionId || (actionId === 'internal-study' && entry.module)) {
+      if (entry.module) actionId = 'standalone-study';
       else if (entry.study) actionId = 'internal-study';
       else if (entry.actions?.[0]) actionId = entry.actions[0].id;
     }
     const options = actionId ? {actionId} : {};
     if (item?.reader) {
+      // Legacy standalone-study saved a 1-based section ordinal in reader.slideId when no valid bridge exists.
+      const isLegacySectionOrdinal = !bridge?.anchor && Boolean(entry.module) && recordedActionId === 'standalone-study' && item.reader.tab === 'explanation';
       if (item.reader.slideId !== undefined && item.reader.slideId !== null) {
-        options.slide = item.reader.slideId;
+        if (isLegacySectionOrdinal) options.section = item.reader.slideId;
+        else options.slide = item.reader.slideId;
       }
       if (item.reader.tab) {
         options.tab = item.reader.tab;
@@ -229,7 +236,7 @@
       const results = document.getElementById('library-results');
       document.getElementById('library-result-count').textContent = `${entries.length} مصدر متاح${query.value.trim() ? ' لبحثك' : ''}`;
       clear.hidden = !query.value;
-      results.innerHTML = entries.length ? entries.map(entry => resourceRow(entry, entry.study ? {actionId: 'internal-study'} : entry.module ? {actionId: 'standalone-study'} : {})).join('') : '<div class="studio-empty"><i data-lucide="search-x" aria-hidden="true"></i><h3>مفيش مصادر مطابقة</h3><p>جرّب كلمة أقل، غيّر المادة أو نوع المصدر أو حالة المذاكرة، أو اعرض مصادر كل المعيدين.</p><button class="studio-button" id="library-reset">مسح البحث والفلاتر</button></div>';
+      results.innerHTML = entries.length ? entries.map(entry => resourceRow(entry, libraryOptions(entry))).join('') : '<div class="studio-empty"><i data-lucide="search-x" aria-hidden="true"></i><h3>مفيش مصادر مطابقة</h3><p>جرّب كلمة أقل، غيّر المادة أو نوع المصدر أو حالة المذاكرة، أو اعرض مصادر كل المعيدين.</p><button class="studio-button" id="library-reset">مسح البحث والفلاتر</button></div>';
       document.getElementById('library-reset')?.addEventListener('click', () => {
         query.value = '';
         courseSelect.value = 'all';
@@ -313,13 +320,8 @@
     window.PortalUI.icons(document.querySelector('.a1-resource-tabs'));
     const share = document.getElementById('share-btn');
     if (share) document.querySelector('.a1-course-breadcrumb')?.append(share);
-    const parsed = window.PortalContentLinks.parse(window.location);
-    const entry = parsed.isValid && window.PortalCatalog.get(parsed.item);
-    if (entry?.study && parsed.actionId === 'internal-study') {
-      document.querySelector(`[data-open-study-lecture="${Number(entry.id)}"]`)?.click();
-    }
   }
-  const api = { resumeOptions, readingHistory, decorateCourses, updateCourseSummaries };
+  const api = { resumeOptions, libraryOptions, readingHistory, decorateCourses, updateCourseSummaries };
   window.PortalStudio = api;
   if (typeof module === 'object' && module.exports) module.exports = api;
   document.addEventListener('DOMContentLoaded', () => { shell(); if (home) homeViews(); else subjectView(); });

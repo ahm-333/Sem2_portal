@@ -2,8 +2,10 @@
 (function (root) {
   'use strict';
   const modules = [];
-  function add(courseId, type, id, title, url) {
-    modules.push({key: JSON.stringify([courseId, type, String(id)]), courseId, type, id, title, url});
+  function add(courseId, type, id, title, url, aliases) {
+    const entry = {key: JSON.stringify([courseId, type, String(id)]), courseId, type, id, title, url};
+    if (Array.isArray(aliases) && aliases.length) entry.aliases = aliases.slice();
+    modules.push(entry);
   }
   add('data-structure', 'lecture', 1, 'Data Structures · Lecture 1', 'study/ds/lecture-1.html');
   add('data-structure', 'lecture', 2, 'Data Structures · Lecture 2', 'study/ds/lecture-2.html');
@@ -13,8 +15,8 @@
   add('computer-graphics', 'lecture', 1, 'Computer Graphics · Chapter 1: Introduction & Systems', 'study/cg/chapter-1.html');
   add('computer-graphics', 'lecture', 2, 'Computer Graphics · Chapter 2: Graphics Programming, Primitives & Color', 'study/cg/chapter-2.html');
   add('computer-graphics', 'lecture', 3, 'Computer Graphics · Chapter 3: Output Primitives & Bresenham Algorithm', 'study/cg/chapter-3.html');
-  add('database-systems', 'lecture', 2, 'Database · Chapter 1', 'study/db/chapter-1.html');
-  add('database-systems', 'lecture', 3, 'Database · Chapter 2', 'study/db/chapter-2.html');
+  add('database-systems', 'lecture', 2, 'Database · Chapter 1', 'study/db/lesson.html?lecture=2', ['study/db/chapter-1.html']);
+  add('database-systems', 'lecture', 3, 'Database · Chapter 2', 'study/db/lesson.html?lecture=3', ['study/db/chapter-2.html']);
   add('computer-architecture', 'lecture', 5, 'Input / Output & DMA', 'study/arch/chapter-7.html');
   const units = ['Computer-system roles', 'Computer startup', 'I/O and interrupts', 'Memory, storage and caching', 'Processors, cores and clusters', 'Multiprogramming and time sharing', 'Modes, protection and timers', 'Resource management overview', 'Operating-system services', 'APIs, system calls and parameters', 'Historical execution models', 'Operating-system organizations', 'Programs, processes and memory', 'Process states and context switching', 'Threads and Linux representation', 'Scheduling queues and schedulers', 'Historical mobile multitasking', 'Process creation and termination', 'Cooperation and IPC'];
   units.forEach((title, index) => {

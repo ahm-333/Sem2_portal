@@ -3,10 +3,15 @@
   'use strict';
   const current = new URL(window.location.href);
   const currentPath = current.pathname.endsWith('/') ? current.pathname + 'index.html' : current.pathname;
-  const lesson = (window.PortalStudyModules || []).find(value => {
-    const url = new URL(value.url, current.origin + '/');
+  function matchesLessonUrl(candidate) {
+    const url = new URL(candidate, current.origin + '/');
     return currentPath.endsWith('/' + url.pathname.slice(1)) &&
-      (!url.searchParams.has('unit') || (current.searchParams.get('unit') || 'os-01') === url.searchParams.get('unit'));
+      (!url.searchParams.has('unit') || (current.searchParams.get('unit') || 'os-01') === url.searchParams.get('unit')) &&
+      (!url.searchParams.has('lecture') || current.searchParams.get('lecture') === url.searchParams.get('lecture'));
+  }
+  const lesson = (window.PortalStudyModules || []).find(value => {
+    const candidates = [value.url, ...(Array.isArray(value.aliases) ? value.aliases : [])];
+    return candidates.some(matchesLessonUrl);
   });
   if (!lesson || !window.PortalStudyState || !window.PortalStorage) return;
   const state = window.PortalStudyState;

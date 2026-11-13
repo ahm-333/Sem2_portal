@@ -1,6 +1,48 @@
 /* Content row revelation and safe deep-link navigation for Study Hub. */
 (function () {
   let focusGeneration = 0;
+  let activeModalFocusCleanup = null;
+
+  function hasVisibleModal() {
+    return [...document.querySelectorAll('[aria-modal="true"]')].some(dialog => dialog.getClientRects().length);
+  }
+
+  function focusRowTarget(targetRow, preferredBtn = null) {
+    const focusTarget = preferredBtn ||
+      targetRow?.querySelector('[data-action-id="internal-study"], .btn-open-smart-study, .a1-action-primary, a[href], button:not(:disabled)') ||
+      targetRow;
+    if (!focusTarget || focusTarget.closest('[inert]')) return false;
+    if (focusTarget === targetRow && !targetRow.hasAttribute('tabindex')) {
+      targetRow.setAttribute('tabindex', '-1');
+    }
+    focusTarget.focus?.({ preventScroll: true });
+    return document.activeElement === focusTarget;
+  }
+
+  function registerModalCloseFocusRestore(key, fallbackRow) {
+    if (activeModalFocusCleanup) {
+      window.removeEventListener('portal:dialog-changed', activeModalFocusCleanup);
+      activeModalFocusCleanup = null;
+    }
+    const modalEl = typeof document !== 'undefined' ? document.getElementById('lecture-study-modal') : null;
+    if (!modalEl) return;
+    // While html.portal-booting hides #main-content or before a1-journey compacts rows, the initial
+    // focus attempt stays on <body>; restore focus to the live compacted row when the dialog closes.
+    const onDialogChanged = (event) => {
+      if (event.detail?.open || !modalEl.classList.contains('hidden')) return;
+      window.removeEventListener('portal:dialog-changed', onDialogChanged);
+      if (activeModalFocusCleanup === onDialogChanged) activeModalFocusCleanup = null;
+      Promise.resolve().then(() => {
+        if (hasVisibleModal()) return;
+        const currentActive = document.activeElement;
+        if (currentActive && currentActive !== document.body && !modalEl.contains(currentActive)) return;
+        const liveRow = findRow(key) || (fallbackRow?.isConnected ? fallbackRow : null);
+        if (liveRow) focusRowTarget(liveRow);
+      });
+    };
+    activeModalFocusCleanup = onDialogChanged;
+    window.addEventListener('portal:dialog-changed', onDialogChanged);
+  }
   function removeNotices() {
     document.querySelectorAll('.portal-nav-notice').forEach(el => el.remove());
   }
@@ -129,7 +171,7 @@
       const isInternal = options.actionId === 'internal-study';
       const isStandalone = options.actionId === 'standalone-study';
       if (isInternal || isStandalone) {
-        const isDb = entry.courseId === 'database-systems' && (String(entry.id) === '2' || String(entry.id) === '3');
+        const isDb = isUnifiedDbLecture(entry, key);
         const hasStudy = Boolean(entry.study || isDb);
         const hasModule = Boolean(entry.module || isDb || (entry.actions || []).some(a => a.id === 'standalone-study'));
         const isActionAvailable = isInternal ? hasStudy : hasModule;
@@ -192,7 +234,7 @@
     // Focus only after those synchronous moves, while this navigation is still current.
     window.requestAnimationFrame(() => {
       if (generation !== focusGeneration || !row.isConnected || navigation !== window.location.href) return;
-      if ([...document.querySelectorAll('[aria-modal="true"]')].some(dialog => dialog.getClientRects().length)) return;
+      if (hasVisibleModal()) return;
       if (document.activeElement !== previousFocus && document.activeElement !== document.body) return;
     const header = document.querySelector('header');
     const navHeight = header ? header.getBoundingClientRect().height : 70;
@@ -213,6 +255,18 @@
     });
   }
 
+  function isUnifiedDbLecture(entry, key) {
+    if (typeof window !== 'undefined' && window.PortalContentLinks?.isUnifiedDbLecture) {
+      return window.PortalContentLinks.isUnifiedDbLecture(entry, key);
+    }
+    return Boolean(
+      entry &&
+      entry.courseId === 'database-systems' &&
+      entry.type === 'lecture' &&
+      (String(entry.id) === '2' || String(entry.id) === '3')
+    );
+  }
+
   function resolveAction(key, actionId, context = {}) {
     const catalog = context.catalog || (typeof window !== 'undefined' && window.PortalCatalog);
     if (!catalog) return { valid: false, reason: 'catalog_unavailable' };
@@ -223,7 +277,7 @@
     if (!actionId || typeof actionId !== 'string') return { valid: false, reason: 'action_required' };
     let action = Array.isArray(entry.actions) && entry.actions.find(a => a.id === actionId);
     if (!action && actionId === 'standalone-study') {
-      const isDb = entry.courseId === 'database-systems' && (String(entry.id) === '2' || String(entry.id) === '3');
+      const isDb = isUnifiedDbLecture(entry, key);
       if (isDb || entry.module) {
         action = {
           id: 'standalone-study',
@@ -265,7 +319,7 @@
       return resolved;
     }
 
-    const isDb = resolved.entry.courseId === 'database-systems' && (String(resolved.entry.id) === '2' || String(resolved.entry.id) === '3');
+    const isDb = isUnifiedDbLecture(resolved.entry, key);
     if (isDb && actionId === 'standalone-study') {
       const loc = (typeof window !== 'undefined' && window.PortalLessonLocation) ||
         (typeof require !== 'undefined' ? (() => { try { return require('./shared/lesson-location.js').PortalLessonLocation; } catch (_) { return null; } })() : null);
@@ -290,11 +344,13 @@
     }
 
     if (actionId === 'internal-study') {
+      const btn = row?.querySelector('[data-action-id="internal-study"], .btn-open-smart-study');
+      focusRowTarget(row, btn);
+      registerModalCloseFocusRestore(key, row);
       if (window.PortalStudyReader?.current?.open) {
         window.PortalStudyReader.current.open(resolved.entry.courseId, resolved.entry.id);
-      } else {
-        const btn = row?.querySelector('[data-action-id="internal-study"], .btn-open-smart-study');
-        if (btn) btn.click();
+      } else if (btn) {
+        btn.click();
       }
       return { dispatched: true, action: resolved.action };
     }
@@ -325,12 +381,32 @@
     if (typeof window === 'undefined' || !window.location) return;
     if (!window.PortalContentLinks) return;
 
+    let checkGeneration = 0;
+    let lastDispatchedActionKey = null;
+
+    function buildActionDispatchKey(parsed) {
+      return JSON.stringify([
+        parsed.courseId || '',
+        parsed.item || '',
+        parsed.actionId || '',
+        parsed.slide ?? null,
+        parsed.tab || ''
+      ]);
+    }
+
     async function checkAndReveal() {
+      const navGeneration = ++checkGeneration;
       const parsed = window.PortalContentLinks.parse(window.location);
       if (parsed.isValid && parsed.item) {
+        const actionKey = parsed.actionId ? buildActionDispatchKey(parsed) : null;
+        if (actionKey && lastDispatchedActionKey === actionKey) return;
         const revealed = await reveal(parsed.item, { focus: !parsed.actionId, actionId: parsed.actionId });
+        if (navGeneration !== checkGeneration) return;
         if (parsed.actionId && revealed.found) {
-          await dispatchAction(parsed.item, parsed.actionId, revealed.element, parsed);
+          if (lastDispatchedActionKey !== actionKey) {
+            lastDispatchedActionKey = actionKey;
+            await dispatchAction(parsed.item, parsed.actionId, revealed.element, parsed);
+          }
         } else if (parsed.actionId && !revealed.found && revealed.reason !== 'hidden_by_ta_filter') {
           showUnavailableNotice(parsed.item, { actionId: parsed.actionId });
         }
@@ -342,6 +418,7 @@
     });
 
     window.addEventListener('popstate', () => {
+      lastDispatchedActionKey = null;
       checkAndReveal();
     });
   }

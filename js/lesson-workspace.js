@@ -30,6 +30,29 @@
   let isBooting = true;
   let topicScrollTimer = null;
 
+  function escapeHtml(value) {
+    if (typeof window !== 'undefined' && window.PortalUI?.escapeHtml) {
+      return window.PortalUI.escapeHtml(value);
+    }
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[ch]));
+  }
+
+  function safeHref(raw) {
+    if (!raw || raw === '#') return '';
+    try {
+      const u = new URL(String(raw), 'https://portal.local/');
+      return ['http:', 'https:', 'file:'].includes(u.protocol) ? String(raw) : '';
+    } catch (_) {
+      return '';
+    }
+  }
+
   function getLocationHelper() {
     if (typeof window !== 'undefined' && window.PortalLessonLocation) {
       return window.PortalLessonLocation;
@@ -101,11 +124,9 @@
       const anchor = locHelper ? locHelper.formatBridgeAnchor('slide', slideNum) : 'slide-' + slideNum;
       bridgeData.anchor = anchor;
       bridgeData.updatedAt = updatedAt;
-      if (!bridgeCorrupt) {
-        writeBridgeRecord(contentKey, bridgeData, state, storage);
-      }
+      const bridgeSaved = !bridgeCorrupt && writeBridgeRecord(contentKey, bridgeData, state, storage);
       state.updateItem(contentKey, { reader: { slideId: slideNum, tab: 'explanation', updatedAt } });
-      state.setLastUsed({ key: contentKey, actionId: 'internal-study', updatedAt });
+      state.setLastUsed({ key: contentKey, actionId: bridgeSaved ? 'standalone-study' : 'internal-study', updatedAt });
 
       try {
         if (typeof history !== 'undefined' && history.replaceState && typeof window !== 'undefined' && window.location) {
@@ -121,13 +142,11 @@
       const anchor = locHelper ? locHelper.formatBridgeAnchor('practice') : 'practice';
       bridgeData.anchor = anchor;
       bridgeData.updatedAt = updatedAt;
-      if (!bridgeCorrupt) {
-        writeBridgeRecord(contentKey, bridgeData, state, storage);
-      }
+      const bridgeSaved = !bridgeCorrupt && writeBridgeRecord(contentKey, bridgeData, state, storage);
       const existingReader = state.getItem(contentKey)?.reader;
       const sId = existingReader?.slideId !== undefined && existingReader?.slideId !== null ? existingReader.slideId : 0;
       state.updateItem(contentKey, { reader: { slideId: sId, tab: 'quiz', updatedAt } });
-      state.setLastUsed({ key: contentKey, actionId: 'standalone-study', updatedAt });
+      state.setLastUsed({ key: contentKey, actionId: bridgeSaved ? 'standalone-study' : 'internal-study', updatedAt });
 
       try {
         if (typeof history !== 'undefined' && history.replaceState && typeof window !== 'undefined' && window.location) {
@@ -143,11 +162,10 @@
       const anchor = loc.anchor || (lastTopicAnchor ? 'topic-' + lastTopicAnchor : 'topic-block-1');
       bridgeData.anchor = anchor;
       bridgeData.updatedAt = updatedAt;
-      if (!bridgeCorrupt && writeBridgeRecord(contentKey, bridgeData, state, storage)) {
-        const slideId = state.getItem(contentKey)?.reader?.slideId ?? 0;
-        state.updateItem(contentKey, { reader: { slideId, tab: 'explanation', updatedAt } });
-        state.setLastUsed({ key: contentKey, actionId: 'standalone-study', updatedAt });
-      }
+      const bridgeSaved = !bridgeCorrupt && writeBridgeRecord(contentKey, bridgeData, state, storage);
+      const slideId = state.getItem(contentKey)?.reader?.slideId ?? 0;
+      state.updateItem(contentKey, { reader: { slideId, tab: 'explanation', updatedAt } });
+      state.setLastUsed({ key: contentKey, actionId: bridgeSaved ? 'standalone-study' : 'internal-study', updatedAt });
 
       try {
         if (typeof history !== 'undefined' && history.replaceState && typeof window !== 'undefined' && window.location) {
@@ -248,7 +266,8 @@
     window.PortalDialog.close(modal);
   }
 
-  async function switchView(view) {
+  async function switchView(view, options = {}) {
+    const shouldPersist = options.persist !== false;
     const topicView = document.getElementById('topic-reading-view');
     const slideView = document.getElementById('slide-detail-view');
     const practiceView = document.getElementById('practice-hub');
@@ -272,7 +291,9 @@
         practiceBtn.classList.remove('is-active');
         practiceBtn.setAttribute('aria-pressed', 'false');
       }
-      writeLocation({ view: 'topics', anchor: lastTopicAnchor ? 'topic-' + lastTopicAnchor : 'topic-block-1' });
+      if (shouldPersist) {
+        writeLocation({ view: 'topics', anchor: lastTopicAnchor ? 'topic-' + lastTopicAnchor : 'topic-block-1' });
+      }
     } else if (view === 'slides') {
       if (topicView) topicView.hidden = true;
       if (slideView) slideView.hidden = false;
@@ -289,8 +310,10 @@
         practiceBtn.classList.remove('is-active');
         practiceBtn.setAttribute('aria-pressed', 'false');
       }
-      const sNum = currentLectureData?.slides?.[currentSlideIndex]?.num || 1;
-      writeLocation({ view: 'slides', slideNum: sNum });
+      if (shouldPersist) {
+        const sNum = currentLectureData?.slides?.[currentSlideIndex]?.num || 1;
+        writeLocation({ view: 'slides', slideNum: sNum });
+      }
     } else if (view === 'practice') {
       if (topicView) topicView.hidden = true;
       if (slideView) slideView.hidden = true;
@@ -317,7 +340,9 @@
         }
         await practiceMountPromise;
       }
-      writeLocation({ view: 'practice' });
+      if (shouldPersist) {
+        writeLocation({ view: 'practice' });
+      }
     }
   }
 
@@ -334,7 +359,7 @@
     currentSlideIndex = index;
     if (callerAnchor) lastTopicAnchor = callerAnchor;
 
-    switchView('slides');
+    switchView('slides', { persist: false });
 
     const feed = document.getElementById('slide-viewer-feed');
     if (feed) {
@@ -421,14 +446,15 @@
       icon = '📚';
     }
 
+    const fallbackHref = errorInfo.fallbackUrl ? safeHref(errorInfo.fallbackUrl) : '';
     recoveryView.innerHTML = `
       <div class="workspace-recovery-card" role="alert">
-        <span class="recovery-icon" aria-hidden="true">${icon}</span>
-        <h2>${title}</h2>
-        <p>${message}</p>
+        <span class="recovery-icon" aria-hidden="true">${escapeHtml(icon)}</span>
+        <h2>${escapeHtml(title)}</h2>
+        <p>${escapeHtml(message)}</p>
         <div class="recovery-links">
-          ${errorInfo.fallbackUrl ? `
-            <a href="${errorInfo.fallbackUrl}" class="workspace-btn-primary">
+          ${fallbackHref ? `
+            <a href="${escapeHtml(fallbackHref)}" class="workspace-btn-primary">
               <i data-lucide="external-link" class="w-4 h-4"></i>
               <span>فتح الشرح الأصلي</span>
             </a>
@@ -473,35 +499,39 @@
 
     for (const item of items) {
       if (item.kind === 'topic-block') {
+        const safeId = escapeHtml(item.id);
         html += `
-          <a href="#topic-${item.id}" class="outline-link" data-topic-link="${item.id}">
-            <span>${item.title}</span>
+          <a href="#topic-${safeId}" class="outline-link" data-topic-link="${safeId}">
+            <span>${escapeHtml(item.title)}</span>
           </a>
         `;
         if (item.contextualSlides && item.contextualSlides.length > 0) {
           for (const s of item.contextualSlides) {
+            const safeNum = escapeHtml(s.num);
             html += `
-              <a href="#slide-card-${s.num}" class="outline-sub-link" data-slide-link="${s.num}">
-                <span>#${s.num} ${s.title}</span>
+              <a href="#slide-card-${safeNum}" class="outline-sub-link" data-slide-link="${safeNum}">
+                <span>#${safeNum} ${escapeHtml(s.title)}</span>
               </a>
             `;
           }
         }
       } else if (item.kind === 'supplementary-examples') {
         html += `
-          <div class="outline-section-title mt-4">${item.title}</div>
+          <div class="outline-section-title mt-4">${escapeHtml(item.title)}</div>
         `;
         for (const s of item.slides || []) {
+          const safeNum = escapeHtml(s.num);
           html += `
-            <a href="#slide-card-${s.num}" class="outline-link" data-slide-link="${s.num}">
-              <span>#${s.num} ${s.title}</span>
+            <a href="#slide-card-${safeNum}" class="outline-link" data-slide-link="${safeNum}">
+              <span>#${safeNum} ${escapeHtml(s.title)}</span>
             </a>
           `;
         }
       } else if (item.kind === 'slide') {
+        const safeNum = escapeHtml(item.slideNum);
         html += `
-          <a href="#slide-card-${item.slideNum}" class="outline-link" data-slide-link="${item.slideNum}">
-            <span>#${item.slideNum} ${item.title}</span>
+          <a href="#slide-card-${safeNum}" class="outline-link" data-slide-link="${safeNum}">
+            <span>#${safeNum} ${escapeHtml(item.title)}</span>
           </a>
         `;
       }
@@ -528,7 +558,7 @@
         e.preventDefault();
         const blockId = link.getAttribute('data-topic-link');
         lastTopicAnchor = blockId;
-        switchView('topics');
+        switchView('topics', { persist: false });
         const target = document.getElementById('topic-' + blockId) || document.getElementById(blockId);
         if (target) {
           target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
@@ -575,8 +605,8 @@
       const header = document.createElement('div');
       header.className = 'topic-block-header';
       header.innerHTML = `
-        <span class="topic-block-order">الموضوع ${b.order}</span>
-        <h2 class="topic-block-title">${b.title}</h2>
+        <span class="topic-block-order">الموضوع ${escapeHtml(b.order)}</span>
+        <h2 class="topic-block-title">${escapeHtml(b.title)}</h2>
       `;
       section.appendChild(header);
 
@@ -593,10 +623,12 @@
             ${b.slides.map(num => {
               const slideMeta = window.DBLessonMap ? window.DBLessonMap.getSlide(lectureKey, num) : null;
               const title = slideMeta ? slideMeta.title : `Slide #${num}`;
+              const safeNum = escapeHtml(num);
+              const safeTitle = escapeHtml(title);
               return `
-                <button type="button" class="contextual-slide-pill" data-jump-slide="${num}" data-source-topic="${b.id}" aria-label="عرض تفاصيل الشريحة ${num}: ${title}">
-                  <span class="slide-pill-num">#${num}</span>
-                  <span class="max-w-[200px] truncate">${title}</span>
+                <button type="button" class="contextual-slide-pill" data-jump-slide="${safeNum}" data-source-topic="${escapeHtml(b.id)}" aria-label="عرض تفاصيل الشريحة ${safeNum}: ${safeTitle}">
+                  <span class="slide-pill-num">#${safeNum}</span>
+                  <span class="max-w-[200px] truncate">${safeTitle}</span>
                 </button>
               `;
             }).join('')}
@@ -755,11 +787,18 @@
     // Bind toolbar and view switching
     const btnTopics = document.getElementById('view-btn-topics');
     const btnSlides = document.getElementById('view-btn-slides');
+    const btnAllSlides = document.getElementById('btn-show-all-slides');
     if (btnTopics) btnTopics.addEventListener('click', () => switchView('topics'));
-    if (btnSlides) btnSlides.addEventListener('click', () => {
-      switchView('slides');
-      showSlide(currentLectureData.slides[0].num);
-    });
+    if (btnSlides) {
+      btnSlides.addEventListener('click', () => {
+        showSlide(currentLectureData.slides[0].num);
+      });
+    }
+    if (btnAllSlides) {
+      btnAllSlides.addEventListener('click', () => {
+        showSlide(currentLectureData.slides[0].num);
+      });
+    }
 
     // Font zoom controls
     const fontIn = document.getElementById('workspace-font-zoom-in');
@@ -857,8 +896,7 @@
     if (initialLocation.view === 'practice') {
       await switchView('practice');
     } else if (initialLocation.view === 'slides') {
-      await switchView('slides');
-      showSlide(initialLocation.slideNum || 1);
+      showSlide(initialLocation.slideNum || currentLectureData.slides[0]?.num || 1);
     } else {
       await switchView('topics');
       if (initialLocation.anchor || initialLocation.topicId) {
@@ -912,6 +950,7 @@
       try {
         const contentKey = window.PortalCatalog.key('database-systems', 'lecture', lectureKey);
         const item = window.PortalStudyState.getItem(contentKey);
+        const prevLastUsed = window.PortalStudyState.getSnapshot()?.lastUsed;
         const now = new Date().toISOString();
         if (!item?.startedAt) {
           window.PortalStudyState.updateItem(contentKey, { startedAt: now });
@@ -919,11 +958,15 @@
 
         const currentAnchor = initialLocation.anchor || (initialLocation.topicId ? 'topic-' + initialLocation.topicId : 'topic-block-1');
         const bridgeState = readBridgeRecord(contentKey, window.PortalStudyState, window.PortalStorage, locHelper);
+        const bridgeTs = bridgeState.bridge?.updatedAt ? Date.parse(bridgeState.bridge.updatedAt) : NaN;
+        const readerTs = item?.reader?.updatedAt ? Date.parse(item.reader.updatedAt) : NaN;
+        const hadValidBridge = !bridgeState.corrupt && Boolean(bridgeState.bridge?.anchor) &&
+          (!Number.isFinite(readerTs) || !Number.isFinite(bridgeTs) || bridgeTs >= readerTs);
         const bridgeData = { version: 1, anchor: currentAnchor, updatedAt: now, checks: bridgeState.bridge.checks || [] };
         const bridgeSaved = !bridgeState.corrupt && writeBridgeRecord(contentKey, bridgeData, window.PortalStudyState, window.PortalStorage);
         // Without a saved bridge, the reader can represent slides and practice only.
         if (bridgeSaved || initialLocation.view !== 'topics') {
-          const resumedLegacySection = initialLocation.source === 'reader' &&
+          const resumedLegacySection = (initialLocation.source === 'reader' || (!hadValidBridge && prevLastUsed?.key === contentKey && prevLastUsed?.actionId === 'standalone-study')) &&
             initialLocation.slideNum === null && item?.reader?.tab === 'explanation';
           const slideId = resumedLegacySection ? 0 : (initialLocation.slideNum ?? item?.reader?.slideId ?? 0);
           const readerPatch = {
@@ -940,6 +983,7 @@
       }
     }
 
+    // Preserve initial scroll-settle guard so pre-settle view clicks do not prematurely persist navigation state.
     setTimeout(() => {
       isBooting = false;
     }, 250);

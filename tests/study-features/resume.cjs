@@ -3,10 +3,11 @@ const assert = require('node:assert/strict');
 exports.register = async ({ scenario }) => {
   await scenario('resume-quiz-tab-persistence-and-continue', async ({ page, go }) => {
     page.setDefaultTimeout(15000);
-    await go('subject.html?id=database-systems');
+    const key = '["database-systems","lecture","2"]';
+    const internalUrl = `subject.html?id=database-systems&item=${encodeURIComponent(key)}&action=internal-study`;
+    await go(internalUrl);
 
-    // Open study modal for Lecture 2
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    // Open study modal for Lecture 2 via explicit legacy internal-study deep link
     await page.locator('#lecture-study-modal').waitFor({ state: 'visible' });
 
     // Switch to quiz tab
@@ -18,7 +19,6 @@ exports.register = async ({ scenario }) => {
     });
 
     // Verify PortalStudyState saved quiz tab
-    const key = '["database-systems","lecture","2"]';
     const state = await page.evaluate(k => window.PortalStudyState.getItem(k), key);
     assert.equal(state?.reader?.tab, 'quiz', 'Reader tab must be persisted as quiz');
 
@@ -26,11 +26,8 @@ exports.register = async ({ scenario }) => {
     await page.keyboard.press('Escape');
     await page.locator('#lecture-study-modal').waitFor({ state: 'hidden' });
 
-    // Reload page to simulate resuming later
+    // Reload page to reopen study modal on Lecture 2 and simulate resuming later
     await page.reload();
-
-    // Reopen study modal on Lecture 2
-    await page.locator('[data-open-study-lecture="2"]').first().click();
     await page.locator('#lecture-study-modal').waitFor({ state: 'visible' });
     await page.locator('#study-tab-btn-quiz.active').waitFor({ state: 'visible' });
 

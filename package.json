@@ -20,10 +20,11 @@
     "test:lesson": "node tests/lesson-workspace-browser.cjs",
     "test:practice": "node tests/lesson-practice-browser.cjs",
     "test:location": "node tests/lesson-location-browser.cjs",
+    "test:lesson-entry": "node tests/lesson-entry-browser.cjs",
     "test:os": "node education-preview/os/check.cjs",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-include=js/shared/*.js tests/*.test.cjs",
     "test:production": "npm run package && node tests/production-browser.cjs",
-    "verify": "npm run build && npm run check && npm run validate && npm run lint && npm test && npm run test:browser && npm run test:a1 && npm run test:study && npm run test:os && npm run test:production && npm run test:lesson && npm run test:practice && npm run test:location"
+    "verify": "npm run build && npm run check && npm run validate && npm run lint && npm test && npm run test:browser && npm run test:a1 && npm run test:study && npm run test:os && npm run test:production && npm run test:lesson && npm run test:practice && npm run test:location && npm run test:lesson-entry"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "6.5.1",

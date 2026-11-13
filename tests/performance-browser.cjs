@@ -38,7 +38,7 @@ async function register({scenario}) {
     });
     await configured(page);await go('subject.html?id=database-systems');
     await page.waitForFunction(()=>document.querySelector('.course-atlas').classList.contains('energy-awake'));
-    await page.locator('[data-open-study-lecture="2"]').first().click();
+    await page.evaluate(()=>window.PortalStudyReader.current.open('database-systems',2));
     await page.locator('#lecture-study-modal').waitFor({state:'visible'});
     await page.waitForFunction(()=>!document.querySelector('.course-atlas').classList.contains('energy-awake'),null,{timeout:1500});
     const paused=await page.evaluate(()=>window.energyDraws);
@@ -61,7 +61,7 @@ async function register({scenario}) {
     await page.route('**/js/studio-course.js',route=>route.abort());
     await go('subject.html?id=database-systems');
     await page.locator('#main-content').waitFor({state:'visible'});
-    assert.equal(await page.locator('[data-open-study-lecture="2"]').count()>0,true);
+    assert.equal(await page.locator('a[href="study/db/lesson.html?lecture=2"]').count()>0,true);
     const fallback=await context.browser().newContext({javaScriptEnabled:false});
     try {
       const staticPage=await fallback.newPage();await staticPage.goto(page.url());

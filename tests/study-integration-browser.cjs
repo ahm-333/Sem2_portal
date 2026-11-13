@@ -108,7 +108,8 @@ async function register({scenario}) {
     await page.waitForTimeout(400);
     await go('study/ds/lecture-1.html');
     await go('index.html#continue');
-    assert.equal(await page.locator('#continue-results a[href^="study/db/chapter-1.html"]').count(), 1);
+    assert.equal(await page.locator('#continue-results a[href^="study/db/lesson.html?lecture=2#topic-block-3"]').count(), 1);
+    assert.equal(await page.locator('#continue-results a[href^="study/ds/lecture-1.html"]').count(), 1);
   });
   await scenario('integration-ds2-tabs-merge-checks-and-unchecks', async ({page, context, go}) => {
     await ready(page); await go('study/ds/lecture-2.html');

@@ -173,7 +173,7 @@ async function register({ scenario: testScenario }) {
 
     const resumeLink = page.locator('#studio-resume a.studio-resume-link');
     const href = await resumeLink.getAttribute('href');
-    assert.ok(href.includes('chapter-1.html'), 'Resume link preserves standalone chapter URL');
+    assert.ok(href.includes('lesson.html?lecture=2'), 'Resume link routes to unified workspace URL');
     assert.ok(href.includes('topic-block-3'), 'Resume link contains preserved anchor');
 
     await resumeLink.click();
