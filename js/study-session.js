@@ -14,14 +14,42 @@
   const bridgeKey = 'sem2_standalone_v1:' + encodeURIComponent(lesson.key);
   let bridge = {version: 1, anchor: '', updatedAt: '', checks: []};
   let warning = '';
-  try {
-    const parsed = JSON.parse(storage.getItem(bridgeKey));
-    if (parsed !== null) {
-      if (!parsed || parsed.version !== 1 || typeof parsed.anchor !== 'string' || (parsed.anchor && !/^[\w.-]+$/.test(parsed.anchor)) || typeof parsed.updatedAt !== 'string' || (parsed.updatedAt && !Number.isFinite(Date.parse(parsed.updatedAt))) || !Array.isArray(parsed.checks) || parsed.checks.some(id => typeof id !== 'string' || !/^[\w-]+$/.test(id)) || Object.keys(parsed).some(key => !['version', 'anchor', 'updatedAt', 'checks'].includes(key))) warning = 'corrupt';
-      else bridge = parsed;
+  function normalizeBridge(raw) {
+    return raw
+      ? {
+        version: 1,
+        anchor: raw.anchor || '',
+        updatedAt: raw.updatedAt || '',
+        checks: Array.isArray(raw.checks) ? raw.checks.slice() : []
+      }
+      : {version: 1, anchor: '', updatedAt: '', checks: []};
+  }
+  const initialBridgeState = typeof state.getStandaloneBridgeState === 'function' ? state.getStandaloneBridgeState(lesson.key) : null;
+  if (initialBridgeState) {
+    if (initialBridgeState.status === 'corrupt' || initialBridgeState.status === 'unsupported-version') warning = 'corrupt';
+    else if (initialBridgeState.status === 'ok' && initialBridgeState.bridge) {
+      bridge = normalizeBridge(initialBridgeState.bridge);
     }
-  } catch { warning = 'corrupt'; }
-  const bridgeCorrupt = warning === 'corrupt';
+  } else {
+    try {
+      const parsed = JSON.parse(storage.getItem(bridgeKey));
+      if (parsed !== null) {
+        if (!parsed || parsed.version !== 1 || typeof parsed.anchor !== 'string' || (parsed.anchor && !/^[\w.-]+$/.test(parsed.anchor)) || typeof parsed.updatedAt !== 'string' || (parsed.updatedAt && !Number.isFinite(Date.parse(parsed.updatedAt))) || !Array.isArray(parsed.checks) || parsed.checks.some(id => typeof id !== 'string' || !/^[\w-]+$/.test(id)) || Object.keys(parsed).some(key => !['version', 'anchor', 'updatedAt', 'checks'].includes(key))) warning = 'corrupt';
+        else bridge = parsed;
+      }
+    } catch { warning = 'corrupt'; }
+  }
+  let bridgeCorrupt = warning === 'corrupt';
+  function syncBridgeFromState() {
+    if (bridgeCorrupt || typeof state.getStandaloneBridgeState !== 'function') return;
+    const live = state.getStandaloneBridgeState(lesson.key);
+    if (live.status === 'corrupt' || live.status === 'unsupported-version') {
+      bridgeCorrupt = true;
+      warn('corrupt');
+      return;
+    }
+    bridge = normalizeBridge(live.status === 'ok' ? live.bridge : null);
+  }
   function warn(reason) {
     warning = reason || warning;
     if (!warning || !document.body) return;
@@ -35,6 +63,11 @@
   }
   function saveBridge() {
     if (bridgeCorrupt) { warn('corrupt'); return false; }
+    if (typeof state.setStandaloneBridge === 'function') {
+      const res = state.setStandaloneBridge(lesson.key, bridge);
+      if (!res?.saved) warn(res?.reason === 'corrupt' || res?.reason === 'unsupported-version' ? 'corrupt' : 'session');
+      return Boolean(res?.saved);
+    }
     const saved = storage.setItem(bridgeKey, JSON.stringify(bridge));
     if (!saved) warn('session');
     return saved;
@@ -64,6 +97,7 @@
     } else {
       result(state.updateItem(lesson.key, {reader: {slideId: index + 1, tab: 'explanation', updatedAt}}));
     }
+    syncBridgeFromState();
     bridge.anchor = bridgeAnchor; bridge.updatedAt = updatedAt; saveBridge();
     result(state.setLastUsed({key: lesson.key, actionId: 'standalone-study', updatedAt}));
     return true;
@@ -91,6 +125,8 @@
     if (!item?.startedAt) result(state.updateItem(lesson.key, {startedAt: new Date().toISOString()}));
     result(state.setLastUsed({key: lesson.key, actionId: 'standalone-study'}));
     warn(warning);
+    syncBridgeFromState();
+    if (typeof state.subscribe === 'function') state.subscribe(syncBridgeFromState);
     for (const button of document.querySelectorAll('.check-sec-btn[data-check]')) {
       const id = button.dataset.check;
       const checkKey = 'sem2_standalone_check_v1:' + encodeURIComponent(lesson.key) + ':' + encodeURIComponent(id);
@@ -104,8 +140,14 @@
           return value.checked;
         } catch { corrupt = true; warn('corrupt'); return checked; }
       }
-      const saved = storage.getItem(checkKey);
-      if (saved !== null) checked = readCheck(saved);
+      const savedState = typeof state.getStandaloneCheckState === 'function' ? state.getStandaloneCheckState(lesson.key, id) : null;
+      if (savedState) {
+        if (savedState.status === 'corrupt' || savedState.status === 'unsupported-version') { corrupt = true; warn('corrupt'); }
+        else if (savedState.status === 'ok' && savedState.check) checked = savedState.check.checked;
+      } else {
+        const saved = storage.getItem(checkKey);
+        if (saved !== null) checked = readCheck(saved);
+      }
       if (checked) button.click(); // Restore through the lesson's own completion control.
       button.setAttribute('aria-pressed', String(checked));
       button.addEventListener('click', () => {
@@ -113,8 +155,24 @@
         if (replaying || corrupt) return;
         // Each completion control has its own atomic value: another tab cannot
         // overwrite an independent section with a stale whole-lesson snapshot.
-        if (!storage.setItem(checkKey, JSON.stringify({version: 1, checked}))) warn('session');
+        if (typeof state.setStandaloneCheck === 'function') {
+          const res = state.setStandaloneCheck(lesson.key, id, checked);
+          if (!res?.saved) warn(res?.reason === 'corrupt' || res?.reason === 'unsupported-version' ? 'corrupt' : 'session');
+        } else if (!storage.setItem(checkKey, JSON.stringify({version: 1, checked}))) {
+          warn('session');
+        }
       });
+      if (typeof state.subscribe === 'function') {
+        state.subscribe(() => {
+          if (corrupt) return;
+          const liveState = state.getStandaloneCheckState(lesson.key, id);
+          if (liveState.status === 'corrupt' || liveState.status === 'unsupported-version') {
+            corrupt = true; warn('corrupt'); return;
+          }
+          const next = liveState.status === 'ok' && liveState.check ? liveState.check.checked : bridge.checks.includes(id);
+          if (next !== checked) { replaying = true; button.click(); replaying = false; }
+        });
+      }
       window.addEventListener('storage', event => {
         if (event.key !== checkKey && event.key !== null) return;
         const next = readCheck(event.key === null ? null : event.newValue);

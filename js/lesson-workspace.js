@@ -40,21 +40,23 @@
     return null;
   }
 
-  function writeLocation(loc) {
-    if (isBooting || !currentLectureKey) return;
-    const state = typeof window !== 'undefined' ? window.PortalStudyState : null;
-    const storage = typeof window !== 'undefined' ? window.PortalStorage : null;
-    if (!state || !storage) return;
-
-    const contentKey = window.PortalCatalog
-      ? window.PortalCatalog.key('database-systems', 'lecture', currentLectureKey)
-      : JSON.stringify(['database-systems', 'lecture', String(currentLectureKey)]);
-    const updatedAt = new Date().toISOString();
-    const locHelper = getLocationHelper();
-    const bridgeKey = 'sem2_standalone_v1:' + encodeURIComponent(contentKey);
+  function readBridgeRecord(contentKey, state, storage, locHelper) {
+    if (state && typeof state.getStandaloneBridgeState === 'function') {
+      const res = state.getStandaloneBridgeState(contentKey);
+      if (res.status === 'corrupt' || res.status === 'unsupported-version') {
+        return { bridge: { version: 1, anchor: '', updatedAt: '', checks: [] }, corrupt: true };
+      }
+      const b = res.bridge;
+      return {
+        bridge: b
+          ? { version: 1, anchor: b.anchor || '', updatedAt: b.updatedAt || '', checks: Array.isArray(b.checks) ? b.checks : [] }
+          : { version: 1, anchor: '', updatedAt: '', checks: [] },
+        corrupt: false
+      };
+    }
     let bridgeData = { version: 1, anchor: '', updatedAt: '', checks: [] };
     let bridgeCorrupt = false;
-    const rawBridge = storage.getItem(bridgeKey);
+    const rawBridge = storage ? storage.getItem('sem2_standalone_v1:' + encodeURIComponent(contentKey)) : null;
     if (rawBridge !== null) {
       try {
         const parsed = JSON.parse(rawBridge);
@@ -71,6 +73,28 @@
         bridgeCorrupt = true;
       }
     }
+    return { bridge: bridgeData, corrupt: bridgeCorrupt };
+  }
+
+  function writeBridgeRecord(contentKey, bridgeData, state, storage) {
+    if (state && typeof state.setStandaloneBridge === 'function') {
+      return Boolean(state.setStandaloneBridge(contentKey, bridgeData)?.saved);
+    }
+    return Boolean(storage && storage.setItem('sem2_standalone_v1:' + encodeURIComponent(contentKey), JSON.stringify(bridgeData)));
+  }
+
+  function writeLocation(loc) {
+    if (isBooting || !currentLectureKey) return;
+    const state = typeof window !== 'undefined' ? window.PortalStudyState : null;
+    const storage = typeof window !== 'undefined' ? window.PortalStorage : null;
+    if (!state || !storage) return;
+
+    const contentKey = window.PortalCatalog
+      ? window.PortalCatalog.key('database-systems', 'lecture', currentLectureKey)
+      : JSON.stringify(['database-systems', 'lecture', String(currentLectureKey)]);
+    const updatedAt = new Date().toISOString();
+    const locHelper = getLocationHelper();
+    const { bridge: bridgeData, corrupt: bridgeCorrupt } = readBridgeRecord(contentKey, state, storage, locHelper);
 
     if (loc.view === 'slides') {
       const slideNum = loc.slideNum || (currentSlideIndex + 1);
@@ -78,7 +102,7 @@
       bridgeData.anchor = anchor;
       bridgeData.updatedAt = updatedAt;
       if (!bridgeCorrupt) {
-        storage.setItem(bridgeKey, JSON.stringify(bridgeData));
+        writeBridgeRecord(contentKey, bridgeData, state, storage);
       }
       state.updateItem(contentKey, { reader: { slideId: slideNum, tab: 'explanation', updatedAt } });
       state.setLastUsed({ key: contentKey, actionId: 'internal-study', updatedAt });
@@ -98,7 +122,7 @@
       bridgeData.anchor = anchor;
       bridgeData.updatedAt = updatedAt;
       if (!bridgeCorrupt) {
-        storage.setItem(bridgeKey, JSON.stringify(bridgeData));
+        writeBridgeRecord(contentKey, bridgeData, state, storage);
       }
       const existingReader = state.getItem(contentKey)?.reader;
       const sId = existingReader?.slideId !== undefined && existingReader?.slideId !== null ? existingReader.slideId : 0;
@@ -119,7 +143,7 @@
       const anchor = loc.anchor || (lastTopicAnchor ? 'topic-' + lastTopicAnchor : 'topic-block-1');
       bridgeData.anchor = anchor;
       bridgeData.updatedAt = updatedAt;
-      if (!bridgeCorrupt && storage.setItem(bridgeKey, JSON.stringify(bridgeData))) {
+      if (!bridgeCorrupt && writeBridgeRecord(contentKey, bridgeData, state, storage)) {
         const slideId = state.getItem(contentKey)?.reader?.slideId ?? 0;
         state.updateItem(contentKey, { reader: { slideId, tab: 'explanation', updatedAt } });
         state.setLastUsed({ key: contentKey, actionId: 'standalone-study', updatedAt });
@@ -808,7 +832,9 @@
       const snapshotLastUsed = state ? state.getSnapshot()?.lastUsed : null;
       const lastUsed = snapshotLastUsed?.key === contentKey ? snapshotLastUsed : null;
       let bridge = null;
-      if (storage) {
+      if (state && typeof state.getStandaloneBridge === 'function') {
+        bridge = state.getStandaloneBridge(contentKey);
+      } else if (storage) {
         try {
           bridge = JSON.parse(storage.getItem('sem2_standalone_v1:' + encodeURIComponent(contentKey)));
         } catch (_) {}
@@ -892,27 +918,9 @@
         }
 
         const currentAnchor = initialLocation.anchor || (initialLocation.topicId ? 'topic-' + initialLocation.topicId : 'topic-block-1');
-        const bridgeKey = 'sem2_standalone_v1:' + encodeURIComponent(contentKey);
-        let bridgeData = { version: 1, anchor: currentAnchor, updatedAt: now, checks: [] };
-        let bridgeCorrupt = false;
-        const rawBridge = window.PortalStorage.getItem(bridgeKey);
-        if (rawBridge !== null) {
-          try {
-            const parsed = JSON.parse(rawBridge);
-            if (locHelper && typeof locHelper.validateBridge === 'function') {
-              const res = locHelper.validateBridge(parsed);
-              if (!res.ok) bridgeCorrupt = true;
-              else if (Array.isArray(res.bridge.checks)) bridgeData.checks = res.bridge.checks;
-            } else if (parsed?.version === 1 && Array.isArray(parsed.checks)) {
-              bridgeData.checks = parsed.checks;
-            } else {
-              bridgeCorrupt = true;
-            }
-          } catch (_) {
-            bridgeCorrupt = true;
-          }
-        }
-        const bridgeSaved = !bridgeCorrupt && window.PortalStorage.setItem(bridgeKey, JSON.stringify(bridgeData));
+        const bridgeState = readBridgeRecord(contentKey, window.PortalStudyState, window.PortalStorage, locHelper);
+        const bridgeData = { version: 1, anchor: currentAnchor, updatedAt: now, checks: bridgeState.bridge.checks || [] };
+        const bridgeSaved = !bridgeState.corrupt && writeBridgeRecord(contentKey, bridgeData, window.PortalStudyState, window.PortalStorage);
         // Without a saved bridge, the reader can represent slides and practice only.
         if (bridgeSaved || initialLocation.view !== 'topics') {
           const resumedLegacySection = initialLocation.source === 'reader' &&

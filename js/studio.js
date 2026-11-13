@@ -137,7 +137,9 @@
     if (!entry) return {};
     let bridge;
     try {
-      const saved = JSON.parse(window.PortalStorage.getItem('sem2_standalone_v1:' + encodeURIComponent(entry.key)));
+      const saved = window.PortalStudyState && typeof window.PortalStudyState.getStandaloneBridge === 'function'
+        ? window.PortalStudyState.getStandaloneBridge(entry.key)
+        : JSON.parse(window.PortalStorage.getItem('sem2_standalone_v1:' + encodeURIComponent(entry.key)));
       if (saved?.version === 1 && typeof saved.anchor === 'string' && /^[\w.-]+$/.test(saved.anchor) && saved.updatedAt === item?.reader?.updatedAt) bridge = saved;
     } catch { /* A malformed standalone marker cannot override the validated reader. */ }
     let actionId = null;
@@ -247,6 +249,9 @@
     clear.addEventListener('click', () => { query.value = ''; render(); query.focus(); });
     window.addEventListener('studentProfileChanged', render);
     window.addEventListener('portal:progress-changed', render);
+    if (window.PortalStudyState && typeof window.PortalStudyState.subscribe === 'function') {
+      window.PortalStudyState.subscribe(render);
+    }
     window.addEventListener('portal:view-changed', () => { if (dirty) render(); });
     render();
   }

@@ -786,10 +786,89 @@ All bridge anchors must strictly conform to `/^[\w.-]+$/` (no colons, spaces, sl
    - `sem2_standalone_v1:<encoded-key>`: Lesson anchor and sub-section completion index.
    - `sem2_standalone_check_v1:<encoded-key>:<check-id>`: Independent section check states.
 2. **Preservation Guarantees:**
-   - Backup serialization extracts exact JSON bytes for both keys without modification.
+   - Backup serialization extracts validated standalone JSON structures for both keys without dropping `#34` bridge/alias data or mutating raw corrupt/future backing bytes.
    - Restore performs defensive shape validation before writing:
      - `version === 1`
      - `anchor` conforms to `/^[\w.-]*$/`
      - `checks` conforms to string array of `/^[\w-]+$/`
-   - Invalid or corrupted backup records are refused atomically without partial overwrite of existing study state.
+   - Invalid, corrupt, future-version, or conflicting backup records are refused atomically (see Section 11) without partial overwrite of existing study state.
+
+---
+
+## 11. Study 09 — Complete Study Backup Coverage, Atomic Export & Restore
+
+**Owner:** Issue #13 (`[Study 09] Define complete study-backup coverage, then export and atomically restore it`)
+
+### Covered Stores vs. Explicit Exclusions
+
+| Category | Storage Keys / Adapter | Included in Backup | Restore Behavior |
+| :--- | :--- | :--- | :--- |
+| Canonical Study Journal | `sem2_study_v1:*` via `PortalStudyState` (`startedAt`, `manualComplete`, `reader`, `quiz`, `lastUsed`) | **Yes** | Replaced atomically via single commit operation (preserving valid orphan records and ID `"0"`; canonical progress recomputed dynamically by `PortalStudyProgress`) |
+| Standalone Bridges | `sem2_standalone_v1:<encoded-key>` via `PortalStudyState` standalone accessors (`study-session.js`, `lesson-workspace.js`, `studio.js`) | **Yes** | Replaced atomically in the exact same single-`setItem` commit |
+| Standalone Native Checks | `sem2_standalone_check_v1:<encoded-key>:<check-id>` via `PortalStudyState` standalone accessors (`study-session.js`) | **Yes** | Replaced atomically in the exact same single-`setItem` commit |
+| Student Profile & Onboarding | `sem2_student_profile`, `sem2_first_visit_configured` | **No** | Untouched |
+| Themes & Local Display Prefs | `sem2_portal_theme`, `study-arch-theme`, `sem2_theme`, `sem2_cg_font_scale`, `sem2_cg_line_spacing`, intro session flags | **No** | Untouched |
+| Power-Tools Runtime State | `sem2_active_exam_v1:*`, `sem2_study_timer_sessions_v1`, `sem2_study_timer_active_v1`, `sem2_study_timer_completed_v1:*`, `sem2_read_notifications_v1` | **No** | Untouched |
+| Ephemeral Choice Order | `sessionStorage` `sem2_quiz_choices_v1:*` | **No** | Untouched |
+| Legacy Standalone Quiz/Bookmark Keys | `sem2_ds_question_bank_bookmarks`, `sem2_cg_chapter1_answers_v1`, `sem2_cg_chapter2_answers_v1`, `sem2_cg_chapter3_answers_v1` | **No** | Untouched |
+| Authored Course/Schedule/Raw Site Keys | Static course/quiz data, credentials, arbitrary non-allowlisted keys | **No** | Never exported; rejected if injected into payload |
+
+### Browser Singleton & Node Factory (`js/shared/study-backup.js`)
+
+- **Browser Global:** `window.PortalStudyBackup`
+- **Node Factory:** `createStudyBackup({ state, storage, catalog, now })` exported from `js/shared/study-backup.js`.
+
+```typescript
+interface StudyBackupEnvelope {
+  project: 'sem2-portal-study';
+  formatVersion: 1;
+  schemaVersion: 1;
+  exportedAt: string; // ISO 8601 timestamp with UTC/numeric offset
+  payload: {
+    studyState: StudySnapshot; // schemaVersion: 1, items, optional/nullable lastUsed
+    standalone: {
+      bridges: Record<string, { version: 1; anchor: string; updatedAt: string; checks: string[] }>;
+      checks: Record<string, Record<string, { version: 1; checked: boolean }>>; // [lessonKey][checkId]
+    };
+  };
+}
+
+PortalStudyBackup.MAX_BYTES // 1048576 (1 MiB)
+PortalStudyBackup.getCoverageManifest(): { included: CoverageEntry[]; excluded: CoverageEntry[] };
+PortalStudyBackup.exportBackup(): { ok: boolean; reason?: string; json?: string; envelope?: StudyBackupEnvelope; summary?: BackupSummary };
+PortalStudyBackup.inspectBackup(rawInput: string | ArrayBuffer | Uint8Array): { ok: boolean; reason?: string; code?: string; message?: string; preview?: BackupPreview; normalized?: StudyBackupPayload };
+PortalStudyBackup.restoreBackup(rawInput: string | ArrayBuffer | Uint8Array, options?: { confirmed?: boolean; expectedRevision?: string }): { restored: boolean; reason?: string; code?: string; message?: string; refreshedPreview?: BackupPreview };
+```
+
+### Atomic Publication Architecture & Concurrency Invariants
+
+1. **Journal Schema Stability:** `PortalStudyState.getSnapshot()` strictly returns `{ schemaVersion: 1, items, lastUsed }` and never introduces non-standard fields into `schemaVersion: 1`.
+2. **Unified Standalone Seam (`PortalStudyState`):** `PortalStudyState` exposes `getStandaloneBridgeState(key)`, `getStandaloneBridge(key)`, `setStandaloneBridge(key, bridge)`, `getStandaloneCheckState(key, checkId)`, `getStandaloneCheck(key, checkId)`, `setStandaloneCheck(key, checkId, checked)`, `getStandaloneSnapshot()`, `getStandaloneStatus()`, `getRevisionToken()`, and `replaceBundle({ studyState, standalone, expectedRevision })`.
+   - `js/study-session.js`, `js/lesson-workspace.js`, and `js/studio.js` read standalone state through these accessors (which seamlessly fold legacy/physical `sem2_standalone_*` keys with clock-ordered operations in `sem2_study_v1:op:*`).
+   - Normal interactive writes via `setStandaloneBridge` / `setStandaloneCheck` commit an immutable operation in `sem2_study_v1:op:*` and mirror physical keys for direct-read backwards compatibility while honoring per-key `corrupt` byte preservation.
+   - `PortalStudyState.getStatus()` continues to reflect only `sem2_study_v1:*` status so an isolated corrupt standalone key keeps legacy non-backup lesson fallbacks non-destructive (`#34`), while `getStandaloneStatus()` explicitly checks all physical `sem2_standalone_v1:*` and `sem2_standalone_check_v1:*` records.
+3. **Single-`setItem` Cross-Store Commit:** Before committing, `replaceBundle`:
+   - Re-reads physical and op-log state for both journal and standalone stores. Refuses immediately without writes if **either** `getStatus()` or `getStandaloneStatus()` is `'corrupt'`, `'unsupported-version'`, or unavailable (`'session'` without writable storage), keeping raw backing bytes untouched.
+   - Checks `expectedRevision` against the current live `getRevisionToken()`. If another tab updated either journal or standalone state since preview was built, refuses with `{ saved: false, reason: 'concurrent_change' }` without writing.
+   - Snapshots pre-restore physical `sem2_standalone_*` key digests (`len:fnv1a`) in `standalone.baseline` inside a single `replace-bundle` operation payload, then calls `storage.setItem(OPS + op.id, raw)` **exactly once**.
+   - Any failure (including `QuotaExceededError` or `SecurityError`) leaves zero partial writes across `sem2_study_v1:*`, `sem2_standalone_v1:*`, and `sem2_standalone_check_v1:*`.
+
+### Pre-Parse Size Bounds, Validation & Version Handling
+
+1. **Pre-Parse Size Guard:** Reject inputs exceeding `1,048,576` UTF-8 bytes (or empty inputs) **before** calling `JSON.parse` (both raw file size in UI and UTF-8 byte calculation in `inspectBackup`).
+2. **Prototype & Shape Safety:** Reject non-plain prototypes, own getters/`toJSON`, sparse arrays, `__proto__`/`constructor`/`prototype` own properties at every depth, unknown top-level/payload/item/bridge/check properties, invalid ISO timestamps, non-canonical keys, non-allowlisted strings/anchors/check IDs, and executable/URL values in fields like `actionId` or `anchor`.
+3. **Catalog-Aware Quiz Validation:**
+   - Keep valid orphan records (`catalog.get(key) === null`) intact across round-trips.
+   - When `catalog.get(key)?.study?.hasFullQuiz` matches `quiz.version === catalogEntry.study.quizVersion`, reject unknown question IDs, negative/non-integer/out-of-bounds answer indices (`choice >= optionCounts[idx]`), unknown `activeQuestionId`, or mismatched current-version `total`.
+   - When `quiz.version !== catalogEntry.study.quizVersion` (authored quiz questions changed since backup), retain historical `version`, `completedVersions`, `lastCompleted`, `bestCompleted`, and `archivedResults`, and clear stale live `answers` and `activeQuestionId` on restore so obsolete answers are never applied to changed questions.
+
+### Preview, Explicit Confirmation & UI Guarantees
+
+1. **Settings Entry (`index.html`, `subject.html`, `js/profile-modal.js`, `js/study-backup-ui.js`):** Accessible trigger inside existing student settings (`#student-profile-modal`) and page footer triggers on home and subject views opening `#study-backup-modal` via `PortalDialog`.
+2. **Two-Step Safe Flow:**
+   - Users can review exact covered vs. excluded categories and download their current backup copy (`sem2-study-backup-YYYY-MM-DD.json`) before uploading a replacement.
+   - File selection strictly runs `inspectBackup` and renders a preview (exported date, versions, items/progress/reader/quiz/standalone/check/orphan counts, current copy comparison, explicit full-replacement notice). It **never** auto-restores.
+   - Clicking confirm invokes `restoreBackup(..., { confirmed: true, expectedRevision })`. If concurrent cross-tab edits occurred (`concurrent_change`), UI alerts the user via live announcements, refreshes the comparison with updated current state, and requires explicit re-confirmation.
+3. **Corrupt/Unsupported Backing State Behavior:** When active storage is `corrupt` or `unsupported-version`, UI disables export and restore cleanly with an explicit non-destructive Arabic explanation and leaves stored bytes untouched.
+
 

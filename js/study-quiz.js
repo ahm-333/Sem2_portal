@@ -3,7 +3,9 @@
   'use strict';
 
   function create(studyFullQuizView) {
+    let unsubscribe = null;
     function renderFullQuiz(data, context = {}) {
+      if (unsubscribe) { unsubscribe(); unsubscribe = null; }
       if (!studyFullQuizView) return;
       const sourceQuestions = data?.fullQuiz || [];
       if (sourceQuestions.length === 0) {
@@ -27,6 +29,7 @@
 
       const storedItem = (canonicalKey && window.PortalStudyState) ? window.PortalStudyState.getItem(canonicalKey) : null;
       const storedQuiz = storedItem?.quiz || null;
+      let persistedQuiz = JSON.stringify(storedQuiz);
 
       let currentAttempt = window.PortalQuizAttempt
         ? window.PortalQuizAttempt.hydrateAttempt(storedQuiz, sourceQuestions, quizVersion)
@@ -55,11 +58,29 @@
         if (!canonicalKey || !window.PortalStudyState || !window.PortalQuizAttempt) return;
         try {
           const existing = window.PortalStudyState.getItem(canonicalKey);
+          const quiz = window.PortalQuizAttempt.serializeForStorage(currentAttempt);
+          // Publish updates after recording our baseline, since subscribers run synchronously.
+          persistedQuiz = JSON.stringify(quiz);
           window.PortalStudyState.updateItem(canonicalKey, {
             startedAt: existing?.startedAt || new Date().toISOString(),
-            quiz: window.PortalQuizAttempt.serializeForStorage(currentAttempt)
+            quiz
           });
         } catch { /* Honest in-session fallback if storage is blocked */ }
+      }
+
+      function syncQuizState() {
+        if (!canonicalKey || !window.PortalStudyState || !window.PortalQuizAttempt) return;
+        const quiz = window.PortalStudyState.getItem(canonicalKey)?.quiz || null;
+        const serialized = JSON.stringify(quiz);
+        if (serialized === persistedQuiz) return;
+        persistedQuiz = serialized;
+        currentAttempt = window.PortalQuizAttempt.hydrateAttempt(quiz, sourceQuestions, quizVersion);
+        userAnswers = currentAttempt.answers;
+        score = currentAttempt.score;
+        const index = questions.findIndex(q => String(q.id) === String(currentAttempt.activeQuestionId));
+        studyFullQuizView.innerHTML = buildQuizHtml();
+        selectQuestion(index >= 0 ? index : 0);
+        window.PortalUI.icons(studyFullQuizView);
       }
 
       function selectQuestion(index, focus = false) {
@@ -254,6 +275,8 @@
       }
 
       studyFullQuizView.onclick = function (event) {
+        // Read storage before acting even if another tab's storage event is still queued.
+        syncQuizState();
         const option = event.target.closest(".full-quiz-opt-btn");
         if (option && studyFullQuizView.contains(option)) {
           const qid = Number(option.dataset.qid);
@@ -391,6 +414,9 @@
       studyFullQuizView.innerHTML = buildQuizHtml();
       selectQuestion(activeIndex);
       window.PortalUI.icons(studyFullQuizView);
+      if (canonicalKey && window.PortalStudyState?.subscribe) {
+        unsubscribe = window.PortalStudyState.subscribe(syncQuizState);
+      }
     }
 
     return { render: renderFullQuiz };
