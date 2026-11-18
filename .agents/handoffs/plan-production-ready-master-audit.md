@@ -21,7 +21,7 @@
 | 7 | WP-09 | Use existing #15 for the four named browsers, accessibility, performance and host evidence. |
 | 8 | WP-10 | Maintainers record actual phone/provider and five-student evidence, the release/rollback decision and any separately authorized live verification on #15. |
 
-The master plan specifies exact file locks, dependencies, acceptance and stop conditions. #4 and #27 supply context. Upstream #2 supplies maintainer evidence. The fork's content-discovery issues have a separate approval process.
+The master plan specifies exact file locks, dependencies, acceptance and stop conditions, plus Track **R6** for aggressive dead-code pruning (guided by V8 JS/CSS coverage), cold-path lazy splitting, single-pass DOM/rAF rendering, `content-visibility` containment and Before/After performance telemetry. #4 and #27 supply context. Upstream #2 supplies maintainer evidence. The fork's content-discovery issues have a separate approval process.
 
 ## First regressions to verify
 
