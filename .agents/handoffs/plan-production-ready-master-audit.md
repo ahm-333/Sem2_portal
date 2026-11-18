@@ -1,20 +1,32 @@
-# [ChatGPT-Architect-Handoff] 0-to-100 Production-Ready & Clean Architecture Master Audit Plan
+# Production-readiness planning handoff
 
-- **Branch:** `plan/production-ready-master-audit`
-- **Base Commit:** `68d516c6abe3ec74f7468a808bb8941b26acdf32` (`ahm-333/Sem2_portal` `main`)
-- **Full Master Plan:** [`docs/plans/2026-11-18-production-ready-master-audit.md`](../../docs/plans/2026-11-18-production-ready-master-audit.md)
-- **Execution Model Contract:**
-  - **Orchestrator / Architect:** `Argon`
-  - **Worker Agents:** `Hydrogen` on **`High` setting only** (NOT `Extra High`)
-  - **Verification & Review Gates:** RED→GREEN TDD, 5-Attempt Silent Verification Loop (`npm run verify`), Anti-Oracle-Bias (zero test weakening), Two-Stage Independent Review (`spec-reviewer` + `code-quality-reviewer`).
+**Decision pending in [upstream #77](https://github.com/ahm-333/Sem2_portal/issues/77).** [Draft PR #76](https://github.com/ahm-333/Sem2_portal/pull/76) carries the [reviewed master plan](../../docs/plans/2026-11-18-production-ready-master-audit.md). The accepted runtime baseline was `68d516c6abe3ec74f7468a808bb8941b26acdf32`. The review input was `cd0ecc401df735f52a783c60ec79c2490248aa4f` on `ahm-333:plan/production-ready-master-audit`. Re-read live GitHub state at dispatch.
 
-## Summary of Requested External Architectural Review (`Codex / ChatGPT`)
+## What needs a maintainer decision
 
-1. Stress-test the **8-Pillar Production Readiness Audit** (`WP-01`, `WP-08`, `WP-09`, `WP-10`) for completeness against `Issue #39`, `Issue #15`, `PRODUCT.md`, `DESIGN.md`, and `docs/STUDY-FEATURE-CONTRACTS.md`.
-2. Deepen and sharpen the **5 Clean Code / Clean Architecture / Orthogonality / ETC (`Easy To Change`) Refactoring Tracks** (`R1`–`R5`, mapped to `WP-02`–`WP-07`):
-   - `R1`: Decomposing `js/course-power-tools.js` (`1,161` lines) into orthogonal Midterm, Timer, and Notifications engines.
-   - `R2`: Eliminating duplicated `escapeHtml` (`6` copies), `safeURL`/`safeHref`, and `PortalStorage` wrappers across `js/` and `study/`.
-   - `R3`: Simplifying the 3-generation course rendering pipeline (`js/subject.js` + `js/subject-content.js` + `js/a1-journey.js` + `js/studio-course.js`) into an ETC viewmodel/presenter seam.
-   - `R4`: Designing safe Lamport-clock journal compaction in `js/shared/study-state.js` and evaluating unified persistence for `study/cg/*` & `study/ds/question-bank.js`.
-   - `R5`: Eliminating the post-72-loop `6000ms` timeout flakiness in `tests/browser.cjs`, resolving Windows LF/CRLF `npm run build` churn in `.gitattributes`, and auditing ignored legacy `tools/*.js` & unused CSS.
-3. Verify zero file-ownership overlaps across `WP-01`..`WP-10` so `Argon` can deploy `Hydrogen (High)` workers cleanly in parallel waves.
+- Approve the package scopes and confirm accountable issue owners before implementation. Argon orchestrates. Hydrogen workers run on **High only**. An unavailable configuration stays queued. Two independent reviewers evaluate each implementation head.
+- Confirm the intended public hosts, release format and owner of any hosting correction. On 18 November the advertised Vercel alias returned 404 for home, the DB lesson and shell CSS. The historical Vercel alias served home and returned 404 for the lesson and stylesheet. GitHub Pages served both lesson files matching the source on `main:/`. Local packaged verification passed 101 checks. Each public target needs revision-bound evidence under #15.
+- Retain the append-only journal and existing backup coverage in this release. Compaction and importing standalone CG/DS state would require separate, reviewed contracts.
+
+## Dispatch order
+
+| Wave | Package(s) | Handoff |
+|---|---|---|
+| 1 | WP-01 | Pin the baseline and defects, inventory routes, freeze budgets and expected case IDs. |
+| 2 | WP-05 | Diagnose the canonical browser failure and validate the response-header policy before broad code verification. |
+| 3 | WP-02 and WP-07 | Cross-platform generator checks and current persistence evidence have disjoint file ownership. |
+| 4 | WP-03 and WP-04 | Fix delayed lesson resume and characterize helper semantics; isolate power-tool behavior behind stable interfaces. |
+| 5 | WP-06 | Characterize one keyed course-resource family, including action priority, profile changes and history. |
+| 6 | WP-08 | Use existing #39 for combined lessons, protected content and packaged interaction evidence. |
+| 7 | WP-09 | Use existing #15 for the four named browsers, accessibility, performance and host evidence. |
+| 8 | WP-10 | Maintainers record actual phone/provider and five-student evidence, the release/rollback decision and any separately authorized live verification on #15. |
+
+The master plan specifies exact file locks, dependencies, acceptance and stop conditions. #4 and #27 supply context. Upstream #2 supplies maintainer evidence. The fork's content-discovery issues have a separate approval process.
+
+## First regressions to verify
+
+1. **Practice can overwrite the last selected DB view.** Delaying the first practice chunk, returning to Topics and completing the load left Topics visible but wrote `view=practice`. Reload reopened Practice. WP-03 owns the repair and WP-08 verifies the integrated reader.
+2. **Full browser order matters.** On Windows the canonical run stopped on `quiz-scoring-completion-and-reset` at navigation (22/23). The isolated case passed (1/1). Preserve the failure evidence, behavioral assertions and a bounded readiness check.
+3. **A pass needs executed cases.** Register-only modules can exit silently when run directly. The study runner also falls back to Chromium on an unknown engine and accepts an empty scenario filter. Record the actual binary, channel and case IDs.
+
+Each approved implementation issue gets one worktree and linked PR, RED → GREEN at a public seam, up to five silent verification attempts and sequential `spec-reviewer` and `code-quality-reviewer` gates. A fifth failure goes to a Draft PR with logs. A fresh passing canonical run, four-browser evidence, manual accessibility checks, real phone/pilot results and live parity remain release gates.
